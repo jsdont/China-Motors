@@ -1,0 +1,761 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Open Sans', 'Roboto', sans-serif;
+  line-height: 1.6;
+  color: #000;
+  background-color: #f9f9f9;
+}
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Navbar */
+
+.nav-links {
+  position: relative;
+}
+
+.nav-links:hover::before {
+  width: 100%;
+}
+
+.nav-links a {
+  position: relative;
+}
+
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #F95738;
+  transition: width 0.3s ease, left 0.3s ease;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+.navbar {
+  background: linear-gradient(90deg, #0D3B66, #1A6B8C);
+  color: #FFFFFF;
+  padding: 15px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+}
+
+.navbar .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-family: 'Oswald', sans-serif;
+  font-size: 32px;
+  font-weight: 600;
+  color: #FFFFFF;
+  transition: color 0.3s ease;
+}
+
+.logo:hover {
+  color: #F95738;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 30px;
+}
+
+.nav-links a {
+  color: #FFFFFF;
+  text-decoration: none;
+  font-family: 'Roboto', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.nav-links a:hover, .nav-links a.active {
+  color: #F95738;
+  transform: translateY(-2px);
+}
+
+.nav-links i {
+  margin-right: 10px;
+}
+
+/* Hero Section */
+.hero {
+  position: relative;
+  height: 630px;
+  background: url('images/Изображение WhatsApp 2025-05-27 в 18.33.35_cbb88195.jpg') no-repeat center center/cover;
+  background-attachment: fixed;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color:rgb(255, 255, 255);
+  text-align: center;
+  padding: 20px;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+}
+
+.hero-overlay h1 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 60px;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.hero-overlay p {
+  font-size: 24px;
+  font-weight: 400;
+  max-width: 800px;
+}
+
+/* Section */
+.section {
+  padding: 80px 0;
+  text-align: center;
+}
+
+.white-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 36px;
+  color:rgb(255, 255, 255);
+  margin-bottom: 40px;
+  position: relative;
+}
+.blue-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 36px;
+  color: #0D3B66;
+  margin-bottom: 40px;
+  position: relative;
+}
+h2::after {
+  font-family: 'Montserrat', sans-serif;
+  content: '';
+  width: 50px;
+  height: 4px;
+  background:rgb(255, 255, 255);
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.blue-title::after {
+  font-family: 'Montserrat', sans-serif;
+  content: '';
+  width: 50px;
+  height: 4px;
+  background:#0D3B66;
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+h2{
+  font-family: 'Montserrat', sans-serif;
+  font-size: 36px;
+  color: #0D3B66;
+  margin-bottom: 40px;
+  position: relative;
+}
+h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px;
+  color:rgb(255, 255, 255);
+  margin-bottom: 10px;
+}
+h4 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  color:rgb(255, 255, 255);
+  margin-bottom: 10px;
+}
+
+p {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
+  margin-bottom: 10px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  color:rgb(255, 255, 255);
+}
+.last-words p{
+  color=rgba(255, 255, 255, 0.14)
+  position: absolute;
+}
+/* About Section */
+#about {
+  background: url('images/Изображение WhatsApp 2025-05-27 в 18.33.35_04a1068c.jpg') no-repeat center center/cover;
+  color: #0D3B66;
+  position: relative;
+}
+#about .container {
+  background: rgba(13, 59, 102, 0.6);
+  padding: 50px;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.card i {
+  color: #1282A2;
+  font-size: 40px;
+  margin-bottom: 15px;
+}
+
+.card h4 {
+  color: #0D3B66;
+}
+
+.card p {
+  color: #000;
+}
+
+/* Gallery Section */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 25px;
+  margin-top: 30px;
+}
+
+.gallery-card {
+  overflow: hidden;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.gallery-card:hover {
+  transform: translateY(-5px);
+}
+
+.gallery-img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 15px 15px 0 0;
+  transition: opacity 0.3s ease;
+}
+
+.gallery-card:hover .gallery-img {
+  opacity: 0.9;
+}
+
+.gallery-card p {
+  margin: 15px;
+  font-size: 14px;
+  color: #0D3B66;
+  font-weight: 500;
+}
+/* Reviews Section */
+#reviews {
+  background: url('images/Изображение WhatsApp 2025-05-27 в 18.33.37_7578422b.jpg') no-repeat center center/cover;
+  color: #FFFFFF;
+}
+
+#reviews .container {
+  background: rgba(13, 59, 102, 0.7);
+  padding: 50px;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 25px;
+  margin-top: 30px;
+}
+
+.review-card {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 15px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.review-card:hover {
+  transform: translateY(-5px);
+}
+
+.review-img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.review-caption {
+  font-size: 14px;
+  color: #000;
+  padding: 0 10px;
+  font-weight: 500;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  background: linear-gradient(90deg, #1282A2, #1A6B8C);
+  color: #FFFFFF;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 8px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(18, 130, 162, 0.3);
+}
+
+.btn:hover {
+  background: linear-gradient(90deg, #F95738, #FF6B3B);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(249, 87, 56, 0.4);
+  color: #FFFFFF; /* Убедимся, что цвет текста остается белым */
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.7); /* Свечение текста */
+}
+
+.btn i {
+  margin-right: 8px;
+}
+
+.btn.instagram {
+  background: linear-gradient(90deg, #E4405F, #E1306C); /* Instagram */
+}
+
+.btn.instagram:hover {
+  background: linear-gradient(90deg, #F56040, #FF7E6D);
+  box-shadow: 0 4px 15px rgba(245, 96, 64, 0.4);
+  color: #FFFFFF;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.7); /* Свечение текста */
+}
+
+.btn.tiktok {
+  background: linear-gradient(90deg, #000000, #111111); /* TikTok */
+}
+
+.btn.tiktok:hover {
+  background: linear-gradient(90deg, #111111, #222222);
+  box-shadow: 0 4px 15px rgba(17, 17, 17, 0.4);
+  color: #FFFFFF;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.7); /* Свечение текста */
+}
+/* Social Links */
+.social-links {
+  margin-top: 30px;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Catalog Section */
+#catalog {
+  background: #f9f9f9;
+}
+
+/* Catalog Filters */
+.filter-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.filter-container label {
+  margin-right: 10px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: #0D3B66;
+  font-weight: 500;
+}
+
+.filter-container label i {
+  margin-right: 8px;
+  color: #1282A2;
+}
+
+.filter-container select {
+  padding: 10px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 2px solid #0D3B66;
+  background: #FFFFFF;
+  color: #0D3B66;
+  cursor: pointer;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.filter-container select:hover, .filter-container select:focus {
+  border-color: #F95738;
+  box-shadow: 0 0 10px rgba(249, 87, 56, 0.3);
+  outline: none;
+}
+
+/* Catalog Grid */
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.catalog-item {
+  text-align: center;
+  background: #FFFFFF;
+  padding: 15px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.catalog-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.catalog-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 15px 15px 0 0;
+}
+
+.catalog-item h3 {
+  color: #0D3B66;
+  margin: 10px 0;
+}
+
+.catalog-item h3 i {
+  margin-right: 8px;
+}
+
+.catalog-item p {
+  color: #0D3B66;
+  margin: 5px 0;
+}
+
+.catalog-item p i {
+  margin-right: 8px;
+  color: #1282A2;
+}
+
+.catalog-item .btn {
+  margin-top: 10px;
+}
+
+/* Contact Form */
+.contact-info p {
+  font-family: 'Roboto', sans-serif;
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: #0D3B66;
+  font-weight: 500;
+}
+
+.contact-info i {
+  margin-right: 10px;
+  color: #1282A2;
+}
+
+.contact-form {
+  max-width: 600px;
+  margin: 30px auto;
+  text-align: left;
+  background: #FFFFFF;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  background: #f9f9f9;
+  color: #000;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  border-color: #0D3B66;
+  box-shadow: 0 0 10px rgba(13, 59, 102, 0.3);
+  outline: none;
+}
+
+.contact-form button {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+}
+
+/* Footer */
+
+.footer {
+  background: linear-gradient(90deg, #0D3B66, #1A6B8C);
+  color: #FFFFFF;
+  padding: 40px 0 20px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.footer-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 40px;
+}
+
+.footer-logo h2 {
+  font-family: 'Oswald', sans-serif;
+  margin-bottom: 10px;
+  font-size: 24px;
+  color:rgb(255, 255, 255);
+}
+.footer-logo h2::after { //убирает подчеркивание
+  font-family: 'Montserrat', sans-serif;
+  content: '';
+  width: 50px;
+  height: 4px;
+  background:rgba(222, 0, 0, 0);
+  position: left;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.footer-links ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-links li {
+  margin-bottom: 8px;
+}
+
+.footer-links a,
+.footer-contact a {
+  color: #ffffff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: #F95738;
+}
+
+.footer-contact .social-links {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.footer-contact .social-links a {
+  background: linear-gradient(90deg, #E4405F, #E1306C); /* Instagram по умолчанию */
+  color: #FFFFFF;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: bold;
+  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
+  box-shadow: 0 2px 10px rgba(228, 64, 95, 0.3);
+  text-decoration: none;
+}
+
+.footer-contact .social-links a:hover {
+  background: linear-gradient(90deg, #F56040, #FF7E6D);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(245, 96, 64, 0.4);
+  color: #FFFFFF;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.7); /* Свечение текста */
+}
+
+.footer-contact .social-links a:nth-child(2) {
+  background: linear-gradient(90deg, #000000, #111111); /* TikTok */
+}
+
+.footer-contact .social-links a:nth-child(2):hover {
+  background: linear-gradient(90deg, #111111, #222222);
+  box-shadow: 0 4px 15px rgba(17, 17, 17, 0.4);
+  color: #FFFFFF;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.7); /* Свечение текста */
+}
+
+.footer-bottom {
+  margin-top: 30px;
+  text-align: center;
+  font-size: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 15px;
+}
+
+a:focus {
+  outline: none;
+  box-shadow: none;
+}
+.footer-section ul li a {
+  color: #FFFFFF;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.3s ease;
+}
+
+.footer-section ul li a:hover {
+  color: #F95738;
+}
+
+.footer-section p a {
+  color: #FFFFFF;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-section p a:hover {
+  color: #F95738;
+}
+/* Fade-in Animation */
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 1s ease forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .navbar .container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 15px;
+  }
+
+  .hero {
+    height: 400px;
+  }
+
+  .hero-overlay h1 {
+    font-size: 40px;
+  }
+
+  .hero-overlay p {
+    font-size: 18px;
+  }
+
+  .feature-grid, .gallery-grid, .catalog-grid, .reviews-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .container {
+    padding: 15px;
+  }
+
+  .logo {
+    font-size: 28px;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  h2 {
+    font-size: 28px;
+  }
+
+  h3 {
+    font-size: 18px;
+  }
+
+  .hero-overlay h1 {
+    font-size: 30px;
+  }
+
+  .hero-overlay p {
+    font-size: 16px;
+  }
+
+  .card, .gallery-card, .review-card {
+    padding: 15px;
+  }
+
+  .gallery-img, .review-img, .catalog-img {
+    height: 180px;
+  }
+
+  .btn {
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+}

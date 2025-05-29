@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><a href="index.html">China Motors</a> - Каталог</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <h1 class="logo"><a href="index.html" style="text-decoration: none; color: inherit;">China Motors</a></h1>
+      <ul class="nav-links">
+        <li><a href="index.html"><i class="fas fa-home"></i> Главная</a></li>
+        <li><a href="catalog.html"class="active"><i class="fas fa-car"></i> Каталог</a></li>
+        <li><a href="services.html"><i class="fas fa-tools"></i> Услуги</a></li>
+        <li><a href="contacts.html"><i class="fas fa-envelope"></i> Контакты</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section id="catalog" class="section fade-in">
+    <div class="container">
+      <h2 class="blue-title">Каталог техники</h2>
+      <div class="filter-container">
+        <div>
+          <label for="category"><i class="fas fa-filter"></i> Категория:</label>
+          <select id="category" onchange="filterCatalog()">
+            <option value="All">Все</option>
+            <option value="Самосвал">Самосвалы</option>
+            <option value="Тягач">Тягачи</option>
+            <option value="Полуприцеп">Полуприцепы</option>
+            <option value="Прицеп">Прицепы</option>
+            <option value="Специальная техника">Специальная техника</option>
+            <option value="Легковые авто">Легковые авто</option>
+          </select>
+        </div>
+        <div>
+          <label for="availability"><i class="fas fa-check-circle"></i> Наличие:</label>
+          <select id="availability" onchange="filterCatalog()">
+            <option value="All">Все</option>
+            <option value="In stock">В наличии</option>
+            <option value="On order">Под заказ</option>
+          </select>
+        </div>
+        <div>
+          <label for="price"><i class="fas fa-dollar-sign"></i> Цена:</label>
+          <select id="price" onchange="filterCatalog()">
+            <option value="All">Любая цена</option>
+            <option value="0-25000">до 25 000</option>
+            <option value="25000-50000">25 000 – 50 000</option>
+            <option value="50000-100000">50 000 – 100 000</option>
+            <option value="100000+">свыше 100 000</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="catalog-grid">
+        <!-- Item 1: SHACMAN X3000 Dump Truck -->
+        <div class="catalog-item" data-category="Самосвал" data-availability="In stock" data-price="44300">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 18.33.39_ce6abd1d.jpg" alt="SHACMAN X3000" class="catalog-img">
+          <h3>Шахман X3000 SX32586T384C</h3>
+          <p><i class="fas fa-truck"></i> 8x4, Cummins 385 hp, Euro V, 31,000 kg GVW</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: 44300$</p>
+          <p><i class="fas fa-check-circle"></i>В наличии</p>
+          <p><i class="fas fa-info-circle"></i> MAN axles, SCR system, 12-month injector warranty</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 2: SHACMAN X3000 Dump Truck -->
+        <div class="catalog-item" data-category="Самосвал" data-availability="In stock" data-price="52800">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 18.33.42_b3aedb97.jpg" alt="SHACMAN X3000 40T" class="catalog-img">
+          <h3>Шахман X3000 40T</h3>
+          <p><i class="fas fa-truck"></i> 8x4, 40T, Euro V</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $52800</p>
+          <p><i class="fas fa-check-circle"></i>В наличии</p>
+          <p><i class="fas fa-info-circle"></i>MAN мосты, SCR система</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 3: SHACMAN X6000 Tractor Unit -->
+        <div class="catalog-item" data-category="Тягач" data-availability="In stock" data-price="55420">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 18.35.37_af0ef4b8.jpg" alt="SHACMAN X6000 4x2" class="catalog-img">
+          <h3>Шахман X6000 4x2</h3>
+          <p><i class="fas fa-tractor"></i> 4x2, Euro V, автомат, 4 пневмоподушки</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $55,420</p>
+          <p><i class="fas fa-check-circle"></i>В наличии</p>
+          <p><i class="fas fa-info-circle"></i>Комфортная кабина, экономичный двигатель, подходит для междугородних перевозок</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 4: SHACMAN X6000 Tractor Unit -->
+        <div class="catalog-item" data-category="Тягач" data-availability="In stock" data-price="60200">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 18.35.45_a380d561.jpg" alt="SHACMAN X6000 6x4" class="catalog-img">
+          <h3>Шахман X6000 6x4</h3>
+          <p><i class="fas fa-tractor"></i> 6x4, Euro V, автомат, 8 пневмоподушек</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $60,200</p>
+          <p><i class="fas fa-check-circle"></i>В наличии</p>
+          <p><i class="fas fa-info-circle"></i>Увеличенная грузоподъёмность, мягкая подвеска, ресурс до 1 млн км</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 5: SHACMAN X3000 Tractor Unit -->
+        <div class="catalog-item" data-category="Тягач" data-availability="In stock" data-price="54020">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 18.37.19_d47d2132.jpg" alt="SHACMAN X3000 6x6" class="catalog-img">
+          <h3>Шахман X3000 6x6</h3>
+          <p><i class="fas fa-tractor"></i> 6x6, Euro V</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $54,020</p>
+          <p><i class="fas fa-check-circle"></i>В наличии</p>
+          <p><i class="fas fa-info-circle"></i>овышенная проходимость, усиленные мосты, полный привод</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 6: SHACMAN X3000 Tractor Unit -->
+        <div class="catalog-item" data-category="Тягач" data-availability="In stock" data-price="43150">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 20.10.50_aafc80b1.jpg" alt="SHACMAN X3000 440hp" class="catalog-img">
+          <h3>Шахман X3000 460 л.с.</h3>
+          <p><i class="fas fa-tractor"></i> 6x4, 460 hp, Euro V</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $43,150</p>
+          <p><i class="fas fa-check-circle"></i>В наличии</p>
+          <p><i class="fas fa-info-circle"></i>Cummins двигатель, тяга под горку, усиленное шасси</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 7: SHACMAN X5000 Tractor Unit -->
+        <div class="catalog-item" data-category="Тягач" data-availability="In stock" data-price="51800">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 18.37.28_dd057065.jpg" alt="SHACMAN X5000" class="catalog-img">
+          <h3>Шахман X5000</h3>
+          <p><i class="fas fa-tractor"></i> 6x4, Euro V, механика, рессоры</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $51,800</p>
+          <p><i class="fas fa-check-circle"></i>В наличии</p>
+          <p><i class="fas fa-info-circle"></i>Простота обслуживания, высокая ремонтопригодность, 12-ступенчатая КПП</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 8: AHV9404ZHX Semi-Trailer -->
+        <div class="catalog-item" data-category="Полуприцеп" data-availability="In stock" data-price="22620">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 18.38.34_6ac5b0ab.jpg" alt="AHV9404ZHX" class="catalog-img">
+          <h3>AHV9404ZHX Самосвальный</h3>
+          <p><i class="fas fa-trailer"></i> 3 оси, односкатный, пневмоподвеска</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $22,620</p>
+          <p><i class="fas fa-check-circle"></i>В наличии</p>
+          <p><i class="fas fa-info-circle"></i>Стальной кузов, надёжная рама, подходит под XCMG/X3000</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 9: TONGDA Semi-Trailer -->
+        <div class="catalog-item" data-category="Полуприцеп" data-availability="In stock" data-price="23315">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 18.38.36_513591d9.jpg" alt="TONGDA Dump" class="catalog-img">
+          <h3>TONGDA Самосвальный</h3>
+          <p><i class="fas fa-trailer"></i> 3 оси, Fuhe, односкатный, ОТТС</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $23,315</p>
+          <p><i class="fas fa-check-circle"></i>В наличии</p>
+          <p><i class="fas fa-info-circle"></i> Сертифицирован в РК, высокопрочная платформа, пневмосистема Wabco</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 10: AIHUA Semi-Trailer -->
+        <div class="catalog-item" data-category="Полуприцеп" data-availability="In stock" data-price="24300">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 18.38.39_d1082357.jpg" alt="AIHUA AHV9400ZHX" class="catalog-img">
+          <h3>AIHUA AHV9400ZHX</h3>
+          <p><i class="fas fa-trailer"></i> 4 оси, самосвальный</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $24,300</p>
+          <p><i class="fas fa-check-circle"></i>В наличии</p>
+          <p><i class="fas fa-info-circle"></i> Усиленные рессоры, алюминиевый борт, поворотные оси</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 11: XINHONGDONG Flatbed Semi-Trailer -->
+        <div class="catalog-item" data-category="Полуприцеп" data-availability="In stock" data-price="14550">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 18.38.43_c9c76e5a.jpg" alt="XINHONGDONG Flatbed" class="catalog-img">
+          <h3>XINHONGDONG Бортовой</h3>
+          <p><i class="fas fa-trailer"></i> 3 оси, дно 3мм, борта 2мм</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $14,550</p>
+          <p><i class="fas fa-check-circle"></i> В наличии</p>
+          <p><i class="fas fa-info-circle"></i> Срок поставки: 10-15 дней</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 12: SHANTUI SD16 Bulldozer -->
+        <div class="catalog-item" data-category="Специальная техника" data-availability="In stock" data-price="75800">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 18.41.32_2fc62ffb.jpg" alt="SHANTUI SD16" class="catalog-img">
+          <h3>SHANTUI SD16 Бульдозер</h3>
+          <p><i class="fas fa-tools"></i> Без 3-зубого рыхлителя</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $75,800</p>
+          <p><i class="fas fa-check-circle"></i> Наличие: В наличии</p>
+          <p><i class="fas fa-info-circle"></i> Срок поставки: 20-30 дней</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 13: XINHONGDONG Lowbed Semi-Trailer -->
+        <div class="catalog-item" data-category="Полуприцеп" data-availability="In stock" data-price="37820">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 18.41.36_12a78880.jpg" alt="XINHONGDONG Lowbed" class="catalog-img">
+          <h3>XINHONGDONG LHD9404TDP</h3>
+          <p><i class="fas fa-trailer"></i> 17м, 8 осей, удлиняется до 22м</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $37,820</p>
+          <p><i class="fas fa-check-circle"></i> Наличие: В наличии</p>
+          <p><i class="fas fa-info-circle"></i> Пневмоподвеска, стандартный трап</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 15: SHACMAN Grain Truck -->
+        <div class="catalog-item" data-category="Специальная техника" data-availability="In stock" data-price="48300">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 18.41.38_03533b12.jpg" alt="SHACMAN Grain Truck" class="catalog-img">
+          <h3>Шахман Зерновоз</h3>
+          <p><i class="fas fa-truck"></i> Euro V</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $48,300</p>
+          <p><i class="fas fa-check-circle"></i> Наличие: В наличии</p>
+          <p><i class="fas fa-info-circle"></i> FOB pricing</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 16: 7.1m Trailer -->
+        <div class="catalog-item" data-category="Прицеп" data-availability="In stock" data-price="15365">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 18.41.40_2db38d6c.jpg" alt="7.1m Trailer" class="catalog-img">
+          <h3>Прицеп 7.1м</h3>
+          <p><i class="fas fa-trailer"></i> 3 оси</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $15,365</p>
+          <p><i class="fas fa-check-circle"></i> Наличие: В наличии</p>
+          <p><i class="fas fa-info-circle"></i>ростая конструкция, универсальное крепление, усиленная балка</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 18: XINHONGDONG Trailer -->
+        <div class="catalog-item" data-category="Прицеп" data-availability="In stock" data-price="15920">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 18.41.42_107aa1a9.jpg" alt="XINHONGDONG Trailer" class="catalog-img">
+          <h3>XINHONGDONG 8м Прицеп</h3>
+          <p><i class="fas fa-trailer"></i> 8x2.3x1.5м, 27.6м³, 3 оси</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $15,920</p>
+          <p><i class="fas fa-check-circle"></i> Наличие: В наличии</p>
+          <p><i class="fas fa-info-circle"></i> С фаркопом</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 20: SHANTUI SD22 Bulldozer -->
+        <div class="catalog-item" data-category="Специальная техника" data-availability="In stock" data-price="121245">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\OIP.jpeg" alt="SHANTUI SD22" class="catalog-img">
+          <h3>SHANTUI SD22 Бульдозер</h3>
+          <p><i class="fas fa-tools"></i> С 1-зубым рыхлителем</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $121,245</p>
+          <p><i class="fas fa-check-circle"></i> Наличие: В наличии</p>
+          <p><i class="fas fa-info-circle"></i> Срок поставки: 35-40 дней</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 21: SHACMAN Manipulator -->
+        <div class="catalog-item" data-category="Специальная техника" data-availability="In stock" data-price="58765">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 18.43.17_ef440df5.jpg" alt="SHACMAN Manipulator" class="catalog-img">
+          <h3>Шахман Манипулятор 12Т</h3>
+          <p><i class="fas fa-tools"></i> 6x4, Euro VI, 14.5м-18.75м</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $58,765–$61,415</p>
+          <p><i class="fas fa-check-circle"></i> Наличие: В наличии</p>
+          <p><i class="fas fa-info-circle"></i> Срок: 30-80 дней, +$429 за двойной насос</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 22: SHACMAN Mixer -->
+        <div class="catalog-item" data-category="Специальная техника" data-availability="In stock" data-price="49840">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 18.44.39_cf0b1470.jpg" alt="SHACMAN Mixer 10m3" class="catalog-img">
+          <h3>Шахман Миксер 10м³</h3>
+          <p><i class="fas fa-tools"></i> 6x4, Euro V</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $49,840</p>
+          <p><i class="fas fa-check-circle"></i> Наличие: В наличии</p>
+          <p><i class="fas fa-info-circle"></i> Срок поставки: 60 дней</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 23: SHACMAN X5000 Tractor Unit -->
+        <div class="catalog-item" data-category="Тягач" data-availability="In stock" data-price="41860">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 18.44.43_97d42875.jpg" alt="SHACMAN X5000 4x2" class="catalog-img">
+          <h3>Шахман X5000 4x2</h3>
+          <p><i class="fas fa-tractor"></i> 4x2, Euro V, автомат, 4 пневмоподушки</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $41,860</p>
+          <p><i class="fas fa-check-circle"></i> Наличие: В наличии</p>
+          <p><i class="fas fa-info-circle"></i> Удобство для магистральных перевозок, низкий расход, комфорт кабины</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 24: XCMG XC936 Wheel Loader -->
+        <div class="catalog-item" data-category="Специальная техника" data-availability="In stock" data-price="26415">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\image.webp" alt="XCMG XC936" class="catalog-img">
+          <h3>XCMG XC936 1.8м³</h3>
+          <p><i class="fas fa-tools"></i> Колесный, джойстик</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $26,415</p>
+          <p><i class="fas fa-check-circle"></i> Наличие: В наличии</p>
+          <p><i class="fas fa-info-circle"></i>Китайский CAT аналог, высокая маневренность</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 25: XCMG XC938 Wheel Loader -->
+        <div class="catalog-item" data-category="Специальная техника" data-availability="In stock" data-price="28916">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\R.jpeg" alt="XCMG XC938" class="catalog-img">
+          <h3>XCMG XC938 1.8м³</h3>
+          <p><i class="fas fa-tools"></i> Колесный, джойстик</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $28,916</p>
+          <p><i class="fas fa-check-circle"></i> Наличие: В наличии</p>
+          <p><i class="fas fa-info-circle"></i> Гидравлика Bosch, 4WD, стабилизация ковша</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 26: XCMG ZL50GN Wheel Loader -->
+        <div class="catalog-item" data-category="Специальная техника" data-availability="In stock" data-price="44200">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 18.48.22_06782d7e.jpg" alt="XCMG ZL50GN" class="catalog-img">
+          <h3>XCMG ZL50GN 3м³</h3>
+          <p><i class="fas fa-tools"></i> Джойстик</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $44,200</p>
+          <p><i class="fas fa-check-circle"></i> Наличие: В наличии</p>
+          <p><i class="fas fa-info-circle"></i>3-кубовый ковш, высокая проходимость, быстрая смена навесного</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 27: XINHONGDONG Lowbed Semi-Trailer -->
+        <div class="catalog-item" data-category="Полуприцеп" data-availability="In stock" data-price="23950">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\f7br3lafo8jgn3spherjmvi8f77xwthy.webp" alt="XINHONGDONG Lowbed 5axle" class="catalog-img">
+          <h3>XINHONGDONG Трал 16м</h3>
+          <p><i class="fas fa-trailer"></i> 5 осей, пневмоподвеска, 2 подъемные оси</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $23,950–$25,300</p>
+          <p><i class="fas fa-check-circle"></i> В наличии</p>
+          <p><i class="fas fa-info-circle"></i> Срок: 35-60 дней, механическая/гидравлическая лестница</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 28: XINHONGDONG Lowbed Semi-Trailer -->
+        <div class="catalog-item" data-category="Полуприцеп" data-availability="In stock" data-price="22550">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Трал 4 оси(1).jpg" alt="XINHONGDONG Lowbed 4axle" class="catalog-img">
+          <h3>XINHONGDONG Трал 16м</h3>
+          <p><i class="fas fa-trailer"></i> 4 оси</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $22,550</p>
+          <p><i class="fas fa-check-circle"></i> В наличии</p>
+          <p><i class="fas fa-info-circle"></i> Срок поставки: 35-45 дней</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 30: XINHONGDONG Semi-Trailer -->
+        <div class="catalog-item" data-category="Полуприцеп" data-availability="In stock" data-price="17750">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 23.01.44_2c79daff.jpg" alt="XINHONGDONG 16m" class="catalog-img">
+          <h3>XINHONGDONG Полуприцеп 16м</h3>
+          <p><i class="fas fa-trailer"></i> 4 осей, пневмоподвеска</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $17,750</p>
+          <p><i class="fas fa-check-circle"></i> В наличии</p>
+          <p><i class="fas fa-info-circle"></i> Срок поставки: 35-45 дней</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 31: XINHONGDONG Semi-Trailer -->
+        <div class="catalog-item" data-category="Полуприцеп" data-availability="In stock" data-price="19420">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 23.08.53_19b9475b.jpg" alt="XINHONGDONG 16m 5axle" class="catalog-img">
+          <h3>XINHONGDONG Полуприцеп 16м</h3>
+          <p><i class="fas fa-trailer"></i> 5 осей, пневмоподвеска</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $19,420</p>
+          <p><i class="fas fa-check-circle"></i> В наличии</p>
+          <p><i class="fas fa-info-circle"></i> Срок поставки: 35-45 дней</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 32: SHACMAN Mixer -->
+        <div class="catalog-item" data-category="Специальная техника" data-availability="In stock" data-price="29640">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 20.56.38_3b81a7d3.jpg" alt="SHACMAN Mixer 6m3" class="catalog-img">
+          <h3>Шахман Миксер 6м³</h3>
+          <p><i class="fas fa-tools"></i> 4x2, Euro VI</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $29,640</p>
+          <p><i class="fas fa-check-circle"></i> В наличии</p>
+          <p><i class="fas fa-info-circle"></i> Срок поставки: 40-45 дней</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 33: ZHENGCHI Cement Semi-Trailer -->
+        <div class="catalog-item" data-category="Полуприцеп" data-availability="In stock" data-price="19700">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 18.49.24_25d89ab6.jpg" alt="ZHENGCHI Cement" class="catalog-img">
+          <h3>ZHENGCHI JJD9403GFL</h3>
+          <p><i class="fas fa-trailer"></i> Цементовоз, 45м³, 3 оси</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $19,700</p>
+          <p><i class="fas fa-check-circle"></i> В наличии</p>
+          <p><i class="fas fa-info-circle"></i>Усиленная цистерна, разгрузка 3-4 мин, сертифицирован</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 34: CIMC Cement Semi-Trailer -->
+        <div class="catalog-item" data-category="Полуприцеп" data-availability="In stock" data-price="21900">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 18.49.25_40433f28.jpg" alt="CIMC Cement" class="catalog-img">
+          <h3>CIMC SDW9407GFLA</h3>
+          <p><i class="fas fa-trailer"></i> Цементовоз, 45м³</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $21,900</p>
+          <p><i class="fas fa-check-circle"></i> В наличии</p>
+          <p><i class="fas fa-info-circle"></i>Легкий корпус, стабилизация при движении, антикор</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 35: SHACMAN Fuel Tanker -->
+        <div class="catalog-item" data-category="Специальная техника" data-availability="In stock" data-price="55800">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 18.49.28_39c6f509.jpg" alt="SHACMAN Fuel Tanker" class="catalog-img">
+          <h3>Шахман X3000 Бензовоз</h3>
+          <p><i class="fas fa-truck"></i> 8x4, 22м³ + 14м³ прицеп, Euro V</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $55,800</p>
+          <p><i class="fas fa-check-circle"></i> В наличии</p>
+          <p><i class="fas fa-info-circle"></i> Срок: 50-55 дней</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 36: ZHENGCHI Cement Semi-Trailer -->
+        <div class="catalog-item" data-category="Полуприцеп" data-availability="In stock" data-price="20950">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\index-2.jpg" alt="ZHENGCHI Cement 40m3" class="catalog-img">
+          <h3>ZHENGCHI JJD9403GFL</h3>
+          <p><i class="fas fa-trailer"></i> Цементовоз, 40м³, 4 оси, односкатный</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $20,950</p>
+          <p><i class="fas fa-check-circle"></i> В наличии</p>
+          <p><i class="fas fa-info-circle"></i> Срок: 40-45 дней</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 37: Fuel Tanker Semi-Trailer -->
+        <div class="catalog-item" data-category="Полуприцеп" data-availability="In stock" data-price="21950">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 23.12.32_7e4f5128.jpg" alt="Fuel Tanker 32m3" class="catalog-img">
+          <h3>Бензовоз Полуприцеп</h3>
+          <p><i class="fas fa-trailer"></i> 32м³, 3 секции, 4 оси</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $21,950</p>
+          <p><i class="fas fa-check-circle"></i> В наличии</p>
+          <p><i class="fas fa-info-circle"></i> Срок: 55-60 дней</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 38: SHENGRUN Cement Semi-Trailer -->
+        <div class="catalog-item" data-category="Полуприцеп" data-availability="In stock" data-price="20800">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\OIP (1).jpeg" alt="SHENGRUN Cement" class="catalog-img">
+          <h3>SHENGRUN SKW9405GFLA</h3>
+          <p><i class="fas fa-trailer"></i> Цементовоз, 45м³, 4 оси</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $20,800</p>
+          <p><i class="fas fa-check-circle"></i> В наличии</p>
+          <p><i class="fas fa-info-circle"></i> Срок: 50 дней</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 39: SHACMAN Refrigerated -->
+        <div class="catalog-item" data-category="Специальная техника" data-availability="In stock" data-price="38650">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 20.59.38_a66fe993.jpg" alt="SHACMAN Refrigerated" class="catalog-img">
+          <h3>Шахман Рефрижератор</h3>
+          <p><i class="fas fa-truck"></i> 4x2, Euro V</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $38,650</p>
+          <p><i class="fas fa-check-circle"></i> В наличии</p>
+          <p><i class="fas fa-info-circle"></i> Срок: 55-60 дней</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 40: DONGFENG Water Truck -->
+        <div class="catalog-item" data-category="Специальная техника" data-availability="In stock" data-price="24350">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 18.50.51_23ff96e4.jpg" alt="DONGFENG Water Truck" class="catalog-img">
+          <h3>DONGFENG Поливамоечная</h3>
+          <p><i class="fas fa-truck"></i> 15м³, Euro VI</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $24,350</p>
+          <p><i class="fas fa-check-circle"></i> В наличии</p>
+          <p><i class="fas fa-info-circle"></i>Водяная пушка, 2 режима распыления, насосы Weichai</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 41: Car Carrier Semi-Trailer -->
+        <div class="catalog-item" data-category="Полуприцеп" data-availability="In stock" data-price="19300">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 18.50.54_0861c7ee.jpg" alt="Car Carrier" class="catalog-img">
+          <h3>Автовоз Полуприцеп</h3>
+          <p><i class="fas fa-trailer"></i> 8 мест, 3 оси</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $19,300</p>
+          <p><i class="fas fa-check-circle"></i> В наличии</p>
+          <p><i class="fas fa-info-circle"></i> Срок: 30-35 дней</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 42: 3-Axle Trailer -->
+        <div class="catalog-item" data-category="Прицеп" data-availability="In stock" data-price="16170">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 18.51.27_b90f544d.jpg" alt="3-Axle Trailer" class="catalog-img">
+          <h3>Прицеп 8x2.4x2м</h3>
+          <p><i class="fas fa-trailer"></i> 3 оси</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $16,170 (DAP Хоргос)</p>
+          <p><i class="fas fa-check-circle"></i> В наличии</p>
+          <p><i class="fas fa-info-circle"></i> Срок поставки: 35 дней</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 43: Flatbed Semi-Trailer -->
+        <div class="catalog-item" data-category="Полуприцеп" data-availability="In stock" data-price="21400">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 22.44.02_3f2770d4.jpg" alt="Flatbed 14m" class="catalog-img">
+          <h3>Бортовой Полуприцеп</h3>
+          <p><i class="fas fa-trailer"></i> 14м, 4 оси, боковая загрузка</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $21,400</p>
+          <p><i class="fas fa-check-circle"></i> В наличии</p>
+          <p><i class="fas fa-info-circle"></i> Срок: 30-55 дней</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 44: JINGYUE Dump Semi-Trailer -->
+        <div class="catalog-item" data-category="Полуприцеп" data-availability="In stock" data-price="24320">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 18.51.25_de1f124f.jpg" alt="JINGYUE Dump 4axle" class="catalog-img">
+          <h3>JINGYUE LYD9404ZZX</h3>
+          <p><i class="fas fa-trailer"></i> 4 оси, двухскатный, самосвальный</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $24,320</p>
+          <p><i class="fas fa-check-circle"></i> В наличии</p>
+          <p><i class="fas fa-info-circle"></i> В наличии</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+
+        <!-- Item 45: JINGYUE Dump Semi-Trailer -->
+        <div class="catalog-item" data-category="Полуприцеп" data-availability="In stock" data-price="21800">
+          <img src="C:\Users\zhuma\Desktop\China-Motors\images\Изображение WhatsApp 2025-05-27 в 18.51.29_003fcb75.jpg" alt="JINGYUE Dump" class="catalog-img">
+          <h3>JINGYUE LYD9409ZZX</h3>
+          <p><i class="fas fa-trailer"></i> 3 оси, самосвальный</p>
+          <p><i class="fas fa-dollar-sign"></i> Цена: $21,800 </p>
+          <p><i class="fas fa-check-circle"></i> В наличии</p>
+          <p><i class="fas fa-info-circle"></i> В наличии</p>
+          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+        </div>
+      </div>
+    </div>
+  </section>
+    <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <h2>China Motors</h2>
+          <p>Надежная техника из Китая под заказ и в наличии.</p>
+        </div>
+        <div class="footer-links">
+          <h3>Навигация</h3>
+          <ul>
+            <li><a href="index.html">Главная</a></li>
+            <li><a href="catalog.html">Каталог</a></li>
+            <li><a href="services.html">Услуги</a></li>
+            <li><a href="contacts.html">Контакты</a></li>
+          </ul>
+        </div>
+        <div class="footer-contact">
+          <h3>Контакты</h3>
+          <p>Телефон: +7 777 613 3731</p>
+          <p>Email: alijumdd@mail.ru</p>
+          <div class="social-links">
+            <a href="https://www.instagram.com/china_motors_ala" target="_blank" class="btn instagram">
+              <i class="fab fa-instagram"></i> Instagram
+            </a>
+            <a href="https://www.tiktok.com/@china.motors_ala" target="_blank" class="btn tiktok">
+              <i class="fab fa-tiktok"></i> TikTok
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 China Motors. Все права защищены.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function filterCatalog() {
+      const category = document.getElementById('category').value;
+      const availability = document.getElementById('availability').value;
+      const price = document.getElementById('price').value;
+      const items = document.querySelectorAll('.catalog-item');
+
+      items.forEach(item => {
+        const itemCategory = item.getAttribute('data-category');
+        const itemAvailability = item.getAttribute('data-availability');
+        const itemPrice = parseFloat(item.getAttribute('data-price')) || 0;
+
+        const categoryMatch = category === 'All' || category === itemCategory;
+        const availabilityMatch = availability === 'All' || availability === itemAvailability;
+        let priceMatch = false;
+        if (price === 'All') {
+          priceMatch = true;
+        } else if (price === '0-25000') {
+          priceMatch = itemPrice > 0 && itemPrice <= 25000;
+        } else if (price === '25000-50000') {
+          priceMatch = itemPrice >= 25000 && itemPrice <= 50000;
+        } else if (price === '50000-100000') {
+          priceMatch = itemPrice >= 50000 && itemPrice <= 100000;
+        } else if (price === '100000+') {
+          priceMatch = itemPrice > 100000;
+        }
+
+        item.style.display = categoryMatch && availabilityMatch && priceMatch ? 'block' : 'none';
+      });
+    }
+  </script>
+  <!-- JavaScript для сортировки -->
+  <script>
+    document.getElementById('sort').addEventListener('change', function() {
+      const grid = document.getElementById('catalogGrid');
+      const items = Array.from(grid.getElementsByClassName('catalog-item'));
+      const sortValue = this.value;
+
+      items.sort((a, b) => {
+        const priceA = parseInt(a.getAttribute('data-price'));
+        const priceB = parseInt(b.getAttribute('data-price'));
+        if (sortValue === 'asc') return priceA - priceB;
+        if (sortValue === 'desc') return priceB - priceA;
+        return 0; // По умолчанию
+      });
+
+      items.forEach(item => grid.appendChild(item));
+    });
+  </script>
+</body>
+</html>
