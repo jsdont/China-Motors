@@ -576,14 +576,14 @@
       </div>
     </div>
   </footer>
-
+  
   <!-- JavaScript -->
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', function() {
       const menuToggle = document.querySelector('.menu-toggle');
       const navLinks = document.querySelector('.nav-links');
 
-      menuToggle.addEventListener('click', () => {
+      menuToggle.addEventListener('click', function() {
         navLinks.classList.toggle('active');
       });
     });
@@ -631,17 +631,5 @@
       items.forEach(item => grid.appendChild(item));
     });
   </script>
-  <!-- JavaScript -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const menuToggle = document.querySelector('.menu-toggle');
-      const navLinks = document.querySelector('.nav-links');
-
-      menuToggle.addEventListener('click', function() {
-        navLinks.classList.toggle('active');
-      });
-    });
-  </script>
-
 </body>
 </html>
