@@ -511,6 +511,7 @@ p {
   margin-top: 30px;
 }
 
+
 .catalog-item {
   background: #fff;
   border-radius: 12px;
@@ -521,12 +522,24 @@ p {
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 100%;
+  width: 100%; /* добавь это, чтобы они занимали всю ширину ячейки */
 }
 
 .catalog-item:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.catalog-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 12px 12px 0 0;
+  transition: opacity 0.3s ease;
+}
+
+.catalog-item:hover .catalog-img {
+  opacity: 0.9;
 }
 
 .catalog-item h4 {
@@ -554,7 +567,6 @@ p {
   font-weight: 500;
   margin-bottom: 10px;
 }
-
 /* Contact Section */
 #contact {
   background: #f9f9f9;
