@@ -3,14 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><a href="index.html">China Motors</a> - Контакты</title>
+  <title>China Motors - Контакты</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
+  <!-- Navbar -->
   <nav class="navbar">
     <div class="container">
-      <h1 class="logo"><a href="index.html" style="text-decoration: none; color: inherit;">China Motors</a></h1>
+      <h1 class="logo">China Motors</h1>
+      <div class="menu-toggle">☰</div>
       <ul class="nav-links">
         <li><a href="index.html"><i class="fas fa-home"></i> Главная</a></li>
         <li><a href="catalog.html"><i class="fas fa-car"></i> Каталог</a></li>
@@ -20,22 +23,39 @@
     </div>
   </nav>
 
-  <section id="contacts" class="section fade-in">
+  <!-- Hero Section -->
+  <section class="hero section fade-in">
     <div class="container">
-      <h2>Контакты</h2>
-      <div class="contact-info">
-        <p><i class="fas fa-phone"></i> <strong>Телефон:</strong> +7 777 613 3731 (Жомарт)</p>
-        <p><i class="fas fa-envelope"></i> <strong>Email:</strong> alijumdd@mail.ru</p>
-        <p><i class="fab fa-whatsapp"></i> <strong>WhatsApp:</strong> +7 777 613 3731</p>
+      <div class="hero-overlay">
+        <h1>Свяжитесь с нами</h1>
+        <p class="White-p">Мы готовы помочь вам с выбором техники и ответить на любые вопросы!</p>
       </div>
-      <h3>Оставить заявку</h3>
-      <form action="#" method="post" class="contact-form">
-        <input type="text" name="name" placeholder="Ваше имя" required>
-        <input type="tel" name="phone" placeholder="Ваш телефон" required>
-        <textarea name="message" placeholder="Ваше сообщение" rows="4" required></textarea>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="section fade-in">
+    <div class="container">
+      <h2 class="blue-title">Контакты</h2>
+      <div class="contact-info">
+        <p><i class="fas fa-phone"></i> <a href="tel:+77776133731">+7 (777) 613-3731 (Жомарт)</a></p>
+        <p><i class="fas fa-envelope"></i> <a href="mailto:info@chinamotors.kz">info@chinamotors.kz</a></p>
+        <p><i class="fab fa-whatsapp"></i> <a href="https://wa.me/+77776133731" target="_blank">+7 (777) 613-3731</a></p>
+        <p><i class="fas fa-map-marker-alt"></i> г. Алматы, ул. Санаи 30А, офис 300</p>
+      </div>
+      <h2 class="blue-title">Оставить заявку</h2>
+      <form class="contact-form">
+        <label for="name">Имя:</label>
+        <input type="text" id="name" name="name" placeholder="Введите ваше имя" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" placeholder="Введите ваш email" required>
+        <label for="phone">Телефон:</label>
+        <input type="tel" id="phone" name="phone" placeholder="Введите ваш номер телефона" required>
+        <label for="message">Сообщение:</label>
+        <textarea id="message" name="message" placeholder="Введите ваше сообщение" required></textarea>
         <button type="submit" class="btn"><i class="fas fa-paper-plane"></i> Отправить</button>
       </form>
-      <p class="note">Примечание: Форма может не работать в некоторых средах из-за ограничений sandbox. Для реальной отправки настройте серверную часть.</p>
+      <p class="form-note">Примечание: Форма может не работать в некоторых средах из-за ограничений sandbox. Для реальной отправки настройте серверную часть.</p>
       <div class="social-links">
         <a href="https://www.instagram.com/china_motors_ala" target="_blank" class="btn instagram">
           <i class="fab fa-instagram"></i> Instagram
@@ -47,6 +67,7 @@
     </div>
   </section>
 
+  <!-- Footer -->
   <footer class="footer">
     <div class="container">
       <div class="footer-content">
@@ -65,8 +86,9 @@
         </div>
         <div class="footer-contact">
           <h3>Контакты</h3>
-          <p>Телефон: +7 777 613 3731</p>
-          <p>Email: alijumdd@mail.ru</p>
+          <p><i class="fas fa-phone"></i> <a href="tel:+77776133731">+7 (777) 613-3731</a></p>
+          <p><i class="fas fa-envelope"></i> <a href="mailto:info@chinamotors.kz">info@chinamotors.kz</a></p>
+          <p><i class="fas fa-map-marker-alt"></i> г. Алматы, ул. Санаи 30А, офис 300</p>
           <div class="social-links">
             <a href="https://www.instagram.com/china_motors_ala" target="_blank" class="btn instagram">
               <i class="fab fa-instagram"></i> Instagram
@@ -78,9 +100,22 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2025 China Motors. Все права защищены.</p>
+        <p>© 2025 China Motors. Все права защищены.</p>
+        <p class="last-words">"Сайт в данное время находится в стадии разработки и в дальнейшем будет обновляться"</p>
       </div>
     </div>
   </footer>
+
+  <!-- JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const menuToggle = document.querySelector('.menu-toggle');
+      const navLinks = document.querySelector('.nav-links');
+
+      menuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+      });
+    });
+  </script>
 </body>
 </html>
