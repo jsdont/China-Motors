@@ -45,12 +45,13 @@ body {
   font-family: 'Oswald', sans-serif;
   font-size: 32px;
   font-weight: 600;
-  color: #FFFFFF;
+  color: #FFFFFF !important;
   transition: color 0.3s ease;
+  text-decoration: none;
 }
 
 .logo:hover {
-  color: #F95738;
+  color: #F95738 !important;
 }
 
 .nav-links {
@@ -197,10 +198,15 @@ h2::after {
 h3 {
   font-family: 'Montserrat', sans-serif;
   font-size: 20px;
-  color: rgb(255, 255, 255);
+  color: #0D3B66;
   margin-bottom: 10px;
 }
-
+.white-title-h3{
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px;
+  color:rgb(255, 255, 255);
+  margin-bottom: 10px;
+}
 h4 {
   font-family: 'Montserrat', sans-serif;
   font-size: 18px;
@@ -504,7 +510,6 @@ p {
   margin-top: 30px;
 }
 
-
 .catalog-item {
   background: #fff;
   border-radius: 12px;
@@ -515,24 +520,12 @@ p {
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 100%; /* добавь это, чтобы они занимали всю ширину ячейки */
+  width: 100%;
 }
 
 .catalog-item:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-}
-
-.catalog-img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  border-radius: 12px 12px 0 0;
-  transition: opacity 0.3s ease;
-}
-
-.catalog-item:hover .catalog-img {
-  opacity: 0.9;
 }
 
 .catalog-item h4 {
@@ -572,6 +565,9 @@ p {
   padding: 20px;
   border-radius: 15px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .contact-info p {
@@ -774,18 +770,35 @@ a:focus {
 /* Responsive Design */
 @media (max-width: 768px) {
   .navbar .container {
-    flex-direction: column;
-    text-align: center;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+  }
+
+  .navbar .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
   }
 
   .nav-links {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 70%;
+    height: 100vh;
+    background: linear-gradient(90deg, #0D3B66, #1A6B8C);
     flex-direction: column;
-    gap: 15px;
-    margin-top: 15px;
-    display: none;
+    gap: 25px;
+    padding: 60px 20px;
+    margin-top: 0;
+    transition: left 0.5s ease-in-out;
+    z-index: 99;
   }
 
   .nav-links.active {
+    left: 0;
     display: flex;
   }
 
@@ -799,6 +812,9 @@ a:focus {
 
   .hero {
     height: 350px;
+    background-size: contain;
+    background-position: center;
+    background-attachment: scroll;
   }
 
   .hero-overlay h1 {
@@ -811,6 +827,16 @@ a:focus {
 
   .feature-grid, #gallery .gallery-grid, .reviews-grid, .catalog-grid {
     grid-template-columns: 1fr;
+  }
+
+  #about {
+    background-size: contain;
+    background-attachment: scroll;
+  }
+
+  #reviews {
+    background-size: contain;
+    background-attachment: scroll;
   }
 
   .container {
@@ -899,6 +925,9 @@ a:focus {
 
   .hero {
     height: 250px;
+    background-size: contain;
+    background-position: center;
+    background-attachment: scroll;
   }
 
   .hero-overlay h1 {
@@ -966,10 +995,40 @@ a:focus {
   .footer-content {
     flex-direction: column;
     text-align: center;
+    gap: 20px;
+  }
+
+  .footer-logo, .footer-links, .footer-contact {
+    margin-bottom: 20px;
   }
 
   .footer-logo h2 {
     font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  .footer-logo p {
+    margin-bottom: 10px;
+  }
+
+  .footer-links h3, .footer-contact h3 {
+    margin-bottom: 15px;
+  }
+
+  .footer-links ul {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .footer-contact p {
+    margin-bottom: 10px;
+  }
+
+  .footer-contact .social-links {
+    justify-content: center;
+    margin-top: 10px;
   }
 
   .footer-contact .social-links a {
@@ -979,6 +1038,12 @@ a:focus {
 
   .footer-bottom {
     font-size: 10px;
+    padding-top: 10px;
+  }
+
+  .footer-bottom p:last-child {
+    margin-top: 10px;
+    font-style: italic;
   }
 
   .catalog-img {
@@ -986,19 +1051,17 @@ a:focus {
   }
   
   .catalog-item.hidden {
-  display: none; /* Полностью убираем элемент из сетки */
+    display: none;
   }
 
-.catalog-item .btn {
-  display: inline-block;
-  width: auto !important;
-  min-width: 140px;
-  max-width: 90%;
-  padding: 10px 20px;
-  margin: 10px auto 0;
-  align-self: center;
-  box-sizing: border-box;
-}
+  .catalog-item .btn {
+    display: inline-block;
+    width: auto !important;
+    min-width: 140px;
+    max-width: 90%;
+    padding: 10px 20px;
+    margin: 10px auto 0;
+    align-self: center;
+    box-sizing: border-box;
+  }
 
-
-}
