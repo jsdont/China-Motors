@@ -3,60 +3,82 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><a href="index.html">China Motors</a> - Каталог</title>
+  <title>China Motors - Каталог</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
+  <!-- Navbar -->
   <nav class="navbar">
     <div class="container">
-      <h1 class="logo"><a href="index.html" style="text-decoration: none; color: inherit;">China Motors</a></h1>
+      <h1 class="logo">China Motors</h1>
+      <div class="menu-toggle">☰</div>
       <ul class="nav-links">
         <li><a href="index.html"><i class="fas fa-home"></i> Главная</a></li>
-        <li><a href="catalog.html"class="active"><i class="fas fa-car"></i> Каталог</a></li>
+        <li><a href="catalog.html" class="active"><i class="fas fa-car"></i> Каталог</a></li>
         <li><a href="services.html"><i class="fas fa-tools"></i> Услуги</a></li>
         <li><a href="contacts.html"><i class="fas fa-envelope"></i> Контакты</a></li>
       </ul>
     </div>
   </nav>
 
+  <!-- Hero Section -->
+  <section class="hero section fade-in">
+    <div class="container">
+      <div class="hero-overlay">
+        <h1>Каталог техники</h1>
+        <p class="White-p">Выберите технику из Китая под ваши нужды</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Catalog Section -->
   <section id="catalog" class="section fade-in">
     <div class="container">
       <h2 class="blue-title">Каталог техники</h2>
+
       <div class="filter-container">
-        <div>
-          <label for="category"><i class="fas fa-filter"></i> Категория:</label>
+        <div class="filter-item">
+          <label for="category">Категория:</label>
           <select id="category" onchange="filterCatalog()">
             <option value="All">Все</option>
             <option value="Самосвал">Самосвалы</option>
             <option value="Тягач">Тягачи</option>
             <option value="Полуприцеп">Полуприцепы</option>
-            <option value="Прицеп">Прицепы</option>
             <option value="Специальная техника">Специальная техника</option>
-            <option value="Легковые авто">Легковые авто</option>
           </select>
         </div>
-        <div>
-          <label for="availability"><i class="fas fa-check-circle"></i> Наличие:</label>
+        <div class="filter-item">
+          <label for="availability">Наличие:</label>
           <select id="availability" onchange="filterCatalog()">
             <option value="All">Все</option>
             <option value="In stock">В наличии</option>
-            <option value="On order">Под заказ</option>
+            <option value="Preorder">Под заказ</option>
           </select>
         </div>
-        <div>
-          <label for="price"><i class="fas fa-dollar-sign"></i> Цена:</label>
+        <div class="filter-item">
+          <label for="price">Цена:</label>
           <select id="price" onchange="filterCatalog()">
-            <option value="All">Любая цена</option>
+            <option value="All">Любая</option>
             <option value="0-25000">до 25 000</option>
-            <option value="25000-50000">25 000 – 50 000</option>
-            <option value="50000-100000">50 000 – 100 000</option>
-            <option value="100000+">свыше 100 000</option>
+            <option value="25000-50000">25 000 - 50 000</option>
+            <option value="50000-100000">50 000 - 100 000</option>
+            <option value="100000+">от 100 000</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <label for="sort">Сортировка:</label>
+          <select id="sort">
+            <option value="none">Без сортировки</option>
+            <option value="asc">По возрастанию цены</option>
+            <option value="desc">По убыванию цены</option>
           </select>
         </div>
       </div>
-
-      <div class="catalog-grid">
+  <!-- Catalog Section -->
+  <section id="catalog" class="section fade-in">
+      <div class="catalog-grid" id="catalogGrid">
         <!-- Item 1: SHACMAN X3000 Dump Truck -->
         <div class="catalog-item" data-category="Самосвал" data-availability="In stock" data-price="44300">
           <img src="images\Изображение WhatsApp 2025-05-27 в 18.33.39_ce6abd1d.jpg" alt="SHACMAN X3000" class="catalog-img">
@@ -108,7 +130,7 @@
           <p><i class="fas fa-tractor"></i> 6x6, Euro V</p>
           <p><i class="fas fa-dollar-sign"></i> Цена: $54,020</p>
           <p><i class="fas fa-check-circle"></i>В наличии</p>
-          <p><i class="fas fa-info-circle"></i>овышенная проходимость, усиленные мосты, полный привод</p>
+          <p><i class="fas fa-info-circle"></i>Повышенная проходимость, усиленные мосты, полный привод</p>
           <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
         </div>
 
@@ -510,7 +532,9 @@
       </div>
     </div>
   </section>
-    <footer class="footer">
+
+<!-- Footer -->
+  <footer class="footer">
     <div class="container">
       <div class="footer-content">
         <div class="footer-logo">
@@ -528,8 +552,9 @@
         </div>
         <div class="footer-contact">
           <h3>Контакты</h3>
-          <p>Телефон: +7 777 613 3731</p>
-          <p>Email: alijumdd@mail.ru</p>
+          <p><i class="fas fa-phone"></i> <a href="tel:+77776133731">+7 (777) 613-3731</a></p>
+          <p><i class="fas fa-envelope"></i> <a href="mailto:info@chinamotors.kz">info@chinamotors.kz</a></p>
+          <p><i class="fas fa-map-marker-alt"></i> г. Алматы, ул. Санаи 30А, офис 300</p>
           <div class="social-links">
             <a href="https://www.instagram.com/china_motors_ala" target="_blank" class="btn instagram">
               <i class="fab fa-instagram"></i> Instagram
@@ -541,7 +566,8 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2025 China Motors. Все права защищены.</p>
+        <p>© 2025 China Motors. Все права защищены.</p>
+        <p class="last-words">"Сайт в данное время находится в стадии разработки и в дальнейшем будет обновляться"</p>
       </div>
     </div>
   </footer>
@@ -560,40 +586,43 @@
 
         const categoryMatch = category === 'All' || category === itemCategory;
         const availabilityMatch = availability === 'All' || availability === itemAvailability;
+
         let priceMatch = false;
-        if (price === 'All') {
-          priceMatch = true;
-        } else if (price === '0-25000') {
-          priceMatch = itemPrice > 0 && itemPrice <= 25000;
-        } else if (price === '25000-50000') {
-          priceMatch = itemPrice >= 25000 && itemPrice <= 50000;
-        } else if (price === '50000-100000') {
-          priceMatch = itemPrice >= 50000 && itemPrice <= 100000;
-        } else if (price === '100000+') {
-          priceMatch = itemPrice > 100000;
-        }
+        if (price === 'All') priceMatch = true;
+        else if (price === '0-25000') priceMatch = itemPrice > 0 && itemPrice <= 25000;
+        else if (price === '25000-50000') priceMatch = itemPrice >= 25000 && itemPrice <= 50000;
+        else if (price === '50000-100000') priceMatch = itemPrice >= 50000 && itemPrice <= 100000;
+        else if (price === '100000+') priceMatch = itemPrice > 100000;
 
         item.style.display = categoryMatch && availabilityMatch && priceMatch ? 'block' : 'none';
       });
     }
-  </script>
-  <!-- JavaScript для сортировки -->
-  <script>
-    document.getElementById('sort').addEventListener('change', function() {
+
+    document.getElementById('sort').addEventListener('change', function () {
       const grid = document.getElementById('catalogGrid');
       const items = Array.from(grid.getElementsByClassName('catalog-item'));
       const sortValue = this.value;
 
       items.sort((a, b) => {
-        const priceA = parseInt(a.getAttribute('data-price'));
-        const priceB = parseInt(b.getAttribute('data-price'));
+        const priceA = parseFloat(a.getAttribute('data-price'));
+        const priceB = parseFloat(b.getAttribute('data-price'));
         if (sortValue === 'asc') return priceA - priceB;
         if (sortValue === 'desc') return priceB - priceA;
-        return 0; // По умолчанию
+        return 0;
       });
 
       items.forEach(item => grid.appendChild(item));
     });
   </script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.catalog-item .btn').forEach(btn => {
+        btn.style.width = 'auto';
+        btn.style.display = 'inline-block';
+        btn.style.margin = '10px auto 0';
+      });
+    });
+  </script>
+
 </body>
 </html>
