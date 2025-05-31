@@ -576,8 +576,8 @@
       </div>
     </div>
   </footer>
-  
-  <!-- JavaScript -->
+
+  <!-- Navabar -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const menuToggle = document.querySelector('.menu-toggle');
@@ -588,7 +588,7 @@
       });
     });
   </script>
-
+<!-- фильтр -->
   <script>
     function filterCatalog() {
       const category = document.getElementById('category').value;
@@ -631,5 +631,17 @@
       items.forEach(item => grid.appendChild(item));
     });
   </script>
+<!-- убирает большие кнопки -->
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.catalog-item .btn').forEach(btn => {
+        btn.style.width = 'auto';
+        btn.style.display = 'inline-block';
+        btn.style.margin = '10px auto 0';
+      });
+    });
+  </script>
+
+
 </body>
 </html>
