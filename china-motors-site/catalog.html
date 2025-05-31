@@ -10,10 +10,16 @@
 </head>
 <body>
   <!-- Navbar -->
-  <nav class="navbar">
+  <header class="navbar">
     <div class="container">
-      <h1 class="logo">China Motors</h1>
-      <div class="menu-toggle">☰</div>
+      <div class="logo-container">
+        <h1 class="logo">
+          <a href="index.html" style="color: white; text-decoration: none;" onmouseover="this.style.color='#F95738'" onmouseout="this.style.color='white'">
+          China Motors
+          </a>
+        </h1>
+        <div class="menu-toggle">☰</div>
+      </div>
       <ul class="nav-links">
         <li><a href="index.html"><i class="fas fa-home"></i> Главная</a></li>
         <li><a href="catalog.html" class="active"><i class="fas fa-car"></i> Каталог</a></li>
@@ -21,7 +27,7 @@
         <li><a href="contacts.html"><i class="fas fa-envelope"></i> Контакты</a></li>
       </ul>
     </div>
-  </nav>
+  </header>
 
   <!-- Hero Section -->
   <section class="hero section fade-in">
@@ -542,7 +548,7 @@
           <p>Надежная техника из Китая под заказ и в наличии.</p>
         </div>
         <div class="footer-links">
-          <h3>Навигация</h3>
+          <h3 class="white-title-h3">Навигация</h3>
           <ul>
             <li><a href="index.html">Главная</a></li>
             <li><a href="catalog.html">Каталог</a></li>
@@ -551,10 +557,9 @@
           </ul>
         </div>
         <div class="footer-contact">
-          <h3>Контакты</h3>
+          <h3 class="white-title-h3">Контакты</h3>
           <p><i class="fas fa-phone"></i> <a href="tel:+77776133731">+7 (777) 613-3731</a></p>
           <p><i class="fas fa-envelope"></i> <a href="mailto:info@chinamotors.kz">info@chinamotors.kz</a></p>
-          <p><i class="fas fa-map-marker-alt"></i> г. Алматы, ул. Санаи 30А, офис 300</p>
           <div class="social-links">
             <a href="https://www.instagram.com/china_motors_ala" target="_blank" class="btn instagram">
               <i class="fab fa-instagram"></i> Instagram
@@ -571,6 +576,18 @@
       </div>
     </div>
   </footer>
+
+  <!-- JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const menuToggle = document.querySelector('.menu-toggle');
+      const navLinks = document.querySelector('.nav-links');
+
+      menuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+      });
+    });
+  </script>
 
   <script>
     function filterCatalog() {
@@ -614,12 +631,14 @@
       items.forEach(item => grid.appendChild(item));
     });
   </script>
+  <!-- JavaScript -->
   <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('.catalog-item .btn').forEach(btn => {
-        btn.style.width = 'auto';
-        btn.style.display = 'inline-block';
-        btn.style.margin = '10px auto 0';
+    document.addEventListener('DOMContentLoaded', function() {
+      const menuToggle = document.querySelector('.menu-toggle');
+      const navLinks = document.querySelector('.nav-links');
+
+      menuToggle.addEventListener('click', function() {
+        navLinks.classList.toggle('active');
       });
     });
   </script>
