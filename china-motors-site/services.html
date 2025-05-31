@@ -3,14 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><a href="index.html">China Motors</a> - Услуги</title>
+  <title>China Motors - Услуги</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
+  <!-- Navbar -->
   <nav class="navbar">
     <div class="container">
-      <h1 class="logo"><a href="index.html" style="text-decoration: none; color: inherit;">China Motors</a></h1>
+      <h1 class="logo">China Motors</h1>
+      <div class="menu-toggle">☰</div>
       <ul class="nav-links">
         <li><a href="index.html"><i class="fas fa-home"></i> Главная</a></li>
         <li><a href="catalog.html"><i class="fas fa-car"></i> Каталог</a></li>
@@ -20,27 +23,38 @@
     </div>
   </nav>
 
+  <!-- Hero Section -->
+  <section class="hero section fade-in">
+    <div class="container">
+      <div class="hero-overlay">
+        <h1>Наши услуги</h1>
+        <p class="White-p">Комплексные решения для поставки и обслуживания техники</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section -->
   <section id="services" class="section fade-in">
     <div class="container">
-      <h2>Услуги</h2>
+      <h2 class="blue-title">Услуги</h2>
       <div class="feature-grid">
         <div class="card">
-          <i class="fas fa-car-side fa-2x"></i>
+          <i class="fas fa-truck"></i>
           <h4>Заказ и поставка</h4>
           <p>Автомобили и спецтехника из Китая под ваши нужды.</p>
         </div>
         <div class="card">
-          <i class="fas fa-file-alt fa-2x"></i>
+          <i class="fas fa-file-alt"></i>
           <h4>Таможенное оформление</h4>
-          <p>Помощь при томожней отчиске.</p>
+          <p>Помощь с таможенной очисткой.</p>
         </div>
         <div class="card">
-          <i class="fas fa-truck fa-2x"></i>
+          <i class="fas fa-shipping-fast"></i>
           <h4>Доставка</h4>
-          <p>Доставка с Хоргоса в Алматы</p>
+          <p>Доставка с Хоргоса в Алматы.</p>
         </div>
         <div class="card">
-          <i class="fas fa-trailer fa-2x"></i>
+          <i class="fas fa-trailer"></i>
           <h4>Перевозка тралами</h4>
           <p>Транспортировка крупногабаритной техники.</p>
         </div>
@@ -48,6 +62,7 @@
     </div>
   </section>
 
+  <!-- Footer -->
   <footer class="footer">
     <div class="container">
       <div class="footer-content">
@@ -66,8 +81,9 @@
         </div>
         <div class="footer-contact">
           <h3>Контакты</h3>
-          <p>Телефон: +7 777 613 3731</p>
-          <p>Email: alijumdd@mail.ru</p>
+          <p><i class="fas fa-phone"></i> <a href="tel:+77776133731">+7 (777) 613-3731</a></p>
+          <p><i class="fas fa-envelope"></i> <a href="mailto:info@chinamotors.kz">info@chinamotors.kz</a></p>
+          <p><i class="fas fa-map-marker-alt"></i> г. Алматы, ул. Санаи 30А, офис 300</p>
           <div class="social-links">
             <a href="https://www.instagram.com/china_motors_ala" target="_blank" class="btn instagram">
               <i class="fab fa-instagram"></i> Instagram
@@ -79,9 +95,22 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2025 China Motors. Все права защищены.</p>
+        <p>© 2025 China Motors. Все права защищены.</p>
+        <p class="last-words">"Сайт в данное время находится в стадии разработки и в дальнейшем будет обновляться"</p>
       </div>
     </div>
   </footer>
+
+  <!-- JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const menuToggle = document.querySelector('.menu-toggle');
+      const navLinks = document.querySelector('.nav-links');
+
+      menuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+      });
+    });
+  </script>
 </body>
 </html>
