@@ -21,8 +21,8 @@
         <div class="menu-toggle">☰</div>
       </div>
       <ul class="nav-links">
-        <li><a href="index.html"><i class="fas fa-home"></i> Главная</a></li>
-        <li><a href="catalog.html" class="active"><i class="fas fa-car"></i> Каталог</a></li>
+        <li><a href="index.html"class="active"><i class="fas fa-home"></i> Главная</a></li>
+        <li><a href="catalog.html" ><i class="fas fa-car"></i> Каталог</a></li>
         <li><a href="services.html"><i class="fas fa-tools"></i> Услуги</a></li>
         <li><a href="contacts.html"><i class="fas fa-envelope"></i> Контакты</a></li>
       </ul>
@@ -206,6 +206,22 @@
 
       menuToggle.addEventListener('click', function() {
         navLinks.classList.toggle('active');
+      });
+    });
+  </script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Останавливаем автозапуск видео
+      const iframes = document.querySelectorAll('iframe');
+      iframes.forEach(iframe => {
+        const src = iframe.src;
+        // Добавляем параметр autoplay=0, если его нет
+        if (src.includes('tiktok.com') || src.includes('instagram.com')) {
+          iframe.src = src; // Перезагружаем src, чтобы сбросить автозапуск
+          iframe.setAttribute('muted', '1'); // Устанавливаем muted
+          iframe.setAttribute('controls', '1'); // Добавляем элементы управления
+        }
       });
     });
   </script>
