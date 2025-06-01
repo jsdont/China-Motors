@@ -93,7 +93,7 @@
           <p><i class="fas fa-dollar-sign"></i> Цена: 44300$</p>
           <p><i class="fas fa-check-circle"></i>В наличии</p>
           <p><i class="fas fa-info-circle"></i> MAN axles, SCR system, 12-month injector warranty</p>
-          <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
+          <a href="contacts.html?vehicle=Шахман X3000 SX32586T384C" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
         </div>
 
         <!-- Item 2: SHACMAN X3000 Dump Truck -->
@@ -638,6 +638,19 @@
         btn.style.width = 'auto';
         btn.style.display = 'inline-block';
         btn.style.margin = '10px auto 0';
+      });
+    });
+  </script>
+<!-- запрос -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('.catalog-item').forEach(item => {
+        const title = item.querySelector('h3')?.innerText?.trim();
+        const btn = item.querySelector('.btn');
+        if (title && btn) {
+          const encodedTitle = encodeURIComponent(title);
+          btn.href = `contacts.html?vehicle=${encodedTitle}`;
+        }
       });
     });
   </script>
