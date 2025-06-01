@@ -134,7 +134,7 @@ body {
 
 /* Section */
 .section {
-  padding: 80px 0;
+  padding: 0px 0;
   text-align: center;
 }
 
@@ -201,12 +201,14 @@ h3 {
   color: #0D3B66;
   margin-bottom: 10px;
 }
-.white-title-h3{
+
+.white-title-h3 {
   font-family: 'Montserrat', sans-serif;
   font-size: 20px;
-  color:rgb(255, 255, 255);
+  color: rgb(255, 255, 255);
   margin-bottom: 10px;
 }
+
 h4 {
   font-family: 'Montserrat', sans-serif;
   font-size: 18px;
@@ -505,12 +507,12 @@ p {
 /* Catalog Grid */
 .catalog-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(4, 280px);
   gap: 20px;
   justify-content: center;
   margin-top: 30px;
+  align-items: start;
 }
-
 
 .catalog-item {
   background: #fff;
@@ -521,8 +523,10 @@ p {
   text-align: center;
   display: flex;
   flex-direction: column;
-  height: 100%;
-  width: 100%; /* добавь это, чтобы они занимали всю ширину ячейки */
+  width: 280px;
+  min-height: 450px;
+  max-height: 450px;
+  padding: 15px;
 }
 
 .catalog-item:hover {
@@ -532,14 +536,8 @@ p {
 
 .catalog-img {
   width: 100%;
-  height: 180px;
+  height: 120px;
   object-fit: cover;
-  border-radius: 12px 12px 0 0;
-  transition: opacity 0.3s ease;
-}
-
-.catalog-item:hover .catalog-img {
-  opacity: 0.9;
 }
 
 .catalog-item h4 {
@@ -567,6 +565,7 @@ p {
   font-weight: 500;
   margin-bottom: 10px;
 }
+
 /* Contact Section */
 #contact {
   background: #f9f9f9;
@@ -673,7 +672,7 @@ p {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   gap: 30px;
 }
 
@@ -779,8 +778,7 @@ a:focus {
     opacity: 1;
   }
 }
-
-/* Responsive Design */
+/* ДЛЯ ТЕЛЕФОНА */
 @media (max-width: 768px) {
   .navbar .container {
     flex-direction: row;
@@ -816,6 +814,16 @@ a:focus {
 
   .navbar .menu-toggle {
     display: block;
+    position: absolute;
+    right: 0; /* Уже установлен вправо */
+    top: 0; /* Перемещаем в верхний край */
+    padding: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    color: #FFFFFF;
+    z-index: 100;
   }
 
   .nav-links .close-btn {
@@ -831,7 +839,7 @@ a:focus {
   }
 
   .nav-links .close-btn::before {
-    content: "←";
+    content: "←"; /* Стрелочка для закрытия */
   }
 
   .hero {
@@ -853,16 +861,17 @@ a:focus {
     grid-template-columns: 1fr;
   }
 
-  /* Catalog Grid for Mobile */
+  /* Responsive Design for Mobile */
   .catalog-grid {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 200px));
     gap: 15px;
     margin-top: 20px;
   }
 
   .catalog-item {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    width: 200px;
+    min-height: 350px;
+    max-height: 350px;
     padding: 10px;
   }
 
@@ -980,9 +989,14 @@ a:focus {
   }
 
   .footer-contact {
-    margin-left: auto;
-    margin-right: 0;
-    text-align: right;
+    width: 100%;
+    text-align: center;
+    align-items: center;
+  }
+  .footer-contact {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
   .footer-logo h2 {
@@ -1010,7 +1024,7 @@ a:focus {
   }
 
   .footer-contact .social-links {
-    justify-content: flex-end;
+    justify-content: center;
     margin-top: 10px;
   }
 
@@ -1053,7 +1067,7 @@ a:focus {
   }
 
   .hero {
-    height: 250px;
+    height: 535px;
     background-size: cover;
     background-position: center;
     background-attachment: scroll;
@@ -1088,14 +1102,16 @@ a:focus {
 
   /* Catalog Grid for Smaller Mobile */
   .catalog-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 180px));
     gap: 10px;
     margin-top: 15px;
   }
 
   .catalog-item {
+    width: 180px;
+    min-height: 320px;
+    max-height: 320px;
     padding: 8px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   }
 
   .catalog-item:hover {
@@ -1125,6 +1141,12 @@ a:focus {
 
   .catalog-img {
     height: 60px;
+  }
+
+  .catalog-item .btn {
+    padding: 8px 12px;
+    font-size: 12px;
+    min-width: 110px;
   }
 
   .filter-container {
