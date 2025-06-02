@@ -126,11 +126,11 @@
       <h2 class="white-title">Отзывы</h2>
       <div class="reviews-grid">
         <div class="review-card">
-          <iframe width="100%" src="images\Видео WhatsApp 2025-05-28 в 17.15.30_4fd623d4.mp4" frameborder="0" allowfullscreen></iframe>
+          <video src="images\Видео WhatsApp 2025-05-28 в 17.15.30_4fd623d4.mp4" controls preload="metadata" muted></video>
           <p class="review-caption">Отзыв клиента о доставке тягача</p>
         </div>
         <div class="review-card">
-          <iframe width="100%" src="images\Видео WhatsApp 2025-05-28 в 17.13.30_54e21849.mp4" frameborder="0" allowfullscreen></iframe>
+          <video src="images\Видео WhatsApp 2025-05-28 в 17.13.30_54e21849.mp4" controls preload="metadata" muted></video>
           <p class="review-caption">Отзыв клиента о доставке тягача</p>
         </div>
         <!-- Image Review Card -->
@@ -209,30 +209,6 @@
       });
     });
   </script>
-  
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const iframes = document.querySelectorAll('iframe');
-
-      iframes.forEach(iframe => {
-        const src = iframe.getAttribute('src');
-
-        // Убираем autoplay=1 и любые варианты с autoplay
-        const cleanSrc = src
-          .replace(/[?&]autoplay=1/, '')
-          .replace(/[?&]autoplay=true/, '')
-          .replace(/[?&]mute=0/, ''); // доп. на всякий случай
-
-        // Клонируем iframe без autoplay
-        const newIframe = iframe.cloneNode(true);
-        newIframe.setAttribute('src', cleanSrc);
-
-        // Заменяем старый iframe
-        iframe.parentNode.replaceChild(newIframe, iframe);
-      });
-    });
-  </script>
-
 
 </body>
 </html>
