@@ -231,8 +231,9 @@ p {
 }
 
 .last-words p {
-  color: rgba(255, 255, 255, 0.14);
-  position: absolute;
+  color: rgba(255, 255, 255, 0.6);
+  font-style: italic;
+  margin-top: 10px;
 }
 
 /* About Section */
@@ -382,6 +383,7 @@ p {
   color: #FFFFFF;
   font-weight: 500;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  transform: translateX(80px);
 }
 
 /* Buttons */
@@ -527,8 +529,8 @@ p {
   min-height: 450px;
   max-height: 450px;
   padding: 15px;
+  justify-content: space-between;
 }
-
 .catalog-item:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
@@ -672,9 +674,12 @@ p {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  align-items: center;
   gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;  /* Центровка */
+  padding: 0 20px;  /* Отступы по бокам */
 }
+
 
 .footer-logo h2 {
   font-family: 'Oswald', sans-serif;
@@ -824,6 +829,7 @@ a:focus {
     font-size: 24px;
     color: #FFFFFF;
     z-index: 100;
+    transform: translateX(-10px);
   }
 
   .nav-links .close-btn {
