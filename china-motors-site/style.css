@@ -1117,7 +1117,7 @@ a:focus {
   }
 
   .catalog-item {
-    width: auto;
+    width: 200px;
     min-height: 320px;
     max-height: max-content;
     padding: 8px;
@@ -1150,6 +1150,8 @@ a:focus {
 
   .catalog-img {
     height: 150px;
+    min-width: 100px;
+    max-width: 200px;
   }
 
   .catalog-item .btn {
