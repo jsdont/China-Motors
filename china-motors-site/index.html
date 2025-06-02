@@ -208,24 +208,25 @@
         navLinks.classList.toggle('active');
       });
     });
-  </script>
-  
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const iframes = document.querySelectorAll('iframe');
 
       iframes.forEach(iframe => {
-        let src = iframe.getAttribute('src');
+        const src = iframe.getAttribute('src');
 
-        // Удаляем autoplay=1 из URL, если он есть
-        if (src.includes('autoplay=1')) {
-          src = src.replace('autoplay=1', 'autoplay=0');
-        }
+        // Убираем autoplay=1 и любые варианты с autoplay
+        const cleanSrc = src
+          .replace(/[?&]autoplay=1/, '')
+          .replace(/[?&]autoplay=true/, '')
+          .replace(/[?&]mute=0/, ''); // доп. на всякий случай
 
-        // Если autoplay вовсе не нужен — просто удалим весь параметр
-        const newSrc = src.replace(/[?&]autoplay=1/, '');
+        // Клонируем iframe без autoplay
+        const newIframe = iframe.cloneNode(true);
+        newIframe.setAttribute('src', cleanSrc);
 
-        iframe.setAttribute('src', newSrc);
+        // Заменяем старый iframe
+        iframe.parentNode.replaceChild(newIframe, iframe);
       });
     });
   </script>
