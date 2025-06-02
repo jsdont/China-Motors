@@ -211,19 +211,24 @@
   </script>
   
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Останавливаем автозапуск видео
+    document.addEventListener('DOMContentLoaded', function () {
       const iframes = document.querySelectorAll('iframe');
+
       iframes.forEach(iframe => {
-        const src = iframe.src;
-        // Добавляем параметр autoplay=0, если его нет
-        if (src.includes('tiktok.com') || src.includes('instagram.com')) {
-          iframe.src = src; // Перезагружаем src, чтобы сбросить автозапуск
-          iframe.setAttribute('muted', '1'); // Устанавливаем muted
-          iframe.setAttribute('controls', '1'); // Добавляем элементы управления
+        let src = iframe.getAttribute('src');
+
+        // Удаляем autoplay=1 из URL, если он есть
+        if (src.includes('autoplay=1')) {
+          src = src.replace('autoplay=1', 'autoplay=0');
         }
+
+        // Если autoplay вовсе не нужен — просто удалим весь параметр
+        const newSrc = src.replace(/[?&]autoplay=1/, '');
+
+        iframe.setAttribute('src', newSrc);
       });
     });
   </script>
+
 </body>
 </html>
