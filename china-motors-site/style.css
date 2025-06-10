@@ -909,7 +909,9 @@ a:focus {
   }
 
   .catalog-img {
-    height: 80px;
+    height: 150px;
+    min-width: 100px;
+    max-width: 200px;
   }
 
   .filter-container {
