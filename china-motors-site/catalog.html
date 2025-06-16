@@ -86,7 +86,7 @@
   <!-- Catalog Section -->
     <div class="catalog-grid" id="catalogGrid">
 
-      <div class="catalog-item" data-category="Самосвал" data-availability="In stock" data-price="43150">
+        <div class="catalog-item" data-category="Самосвал" data-availability="In stock" data-price="43150">
           <img src="images\Изображение WhatsApp 2025-05-27 в 18.33.39_ce6abd1d.jpg" alt="SHACMAN X3000" class="catalog-img">
           <h3>X3000 самосвал 6*4 Евро 5 385л.с.</h3>
           <p><i class="fas fa-truck"></i> DAP Хоргос</p>
@@ -94,7 +94,7 @@
           <p><i class="fas fa-check-circle"></i> В наличии: 11 шт</p>
           <p><i class="fas fa-info-circle"></i> MAN axles, SCR system, 12-month injector warranty</p>
           <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
-      </div>
+        </div>
 
         <div class="catalog-item" data-category="Самосвал" data-availability="In stock" data-price="52140">
           <img src="images\Изображение WhatsApp 2025-05-27 в 18.33.42_b3aedb97.jpg" alt="SHACMAN X3000 40T" class="catalog-img">
@@ -699,9 +699,10 @@
           <p><i class="fas fa-clock"></i>  срок поставки 40-45 дней</p>
           <a href="contacts.html" class="btn"><i class="fas fa-envelope"></i> Запросить</a>
         </div>
-         
+        
   </section>
-
+<!-- Кнопка вверх -->
+  <button id="toTopBtn" title="Наверх">&#8679;</button>
 <!-- Footer -->
   <footer class="footer">
     <div class="container">
@@ -832,5 +833,22 @@
   })();
   </script>
   <!--End of Tawk.to Script-->
+  <script>
+  window.onscroll = function () {
+    const btn = document.getElementById("toTopBtn");
+    if (window.scrollY > 300) {
+      btn.style.display = "block";
+    } else {
+      btn.style.display = "none";
+    }
+  };
+
+  document.getElementById("toTopBtn").onclick = function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };  
+  </script>
+  <!-- Кнопка вверх -->
+  <button id="toTopBtn" title="Наверх">&#8679;</button>
+
 </body>
 </html>
