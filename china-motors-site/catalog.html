@@ -835,19 +835,13 @@
   <!--End of Tawk.to Script-->
 
   <script>
-  window.onscroll = function () {
-    const btn = document.getElementById("toTopBtn");
-    if (window.scrollY > 300) {
-      btn.style.display = "block";
-    } else {
-      btn.style.display = "none";
-    }
-  };
-
-  document.getElementById("toTopBtn").onclick = function () {
+  document.getElementById("toTopBtn").onclick = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
   };
   </script>
+
   <!-- Кнопка вверх -->
   <button id="toTopBtn" title="Наверх">&#8679;</button>
 
