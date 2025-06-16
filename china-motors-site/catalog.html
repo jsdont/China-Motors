@@ -701,8 +701,6 @@
         </div>
         
   </section>
-<!-- Кнопка вверх -->
-  <button id="toTopBtn" title="Наверх">&#8679;</button>
 <!-- Footer -->
   <footer class="footer">
     <div class="container">
@@ -834,16 +832,16 @@
   </script>
   <!--End of Tawk.to Script-->
 
-  <script>
-  document.getElementById("toTopBtn").onclick = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-  };
-  </script>
-
   <!-- Кнопка вверх -->
   <button id="toTopBtn" title="Наверх">&#8679;</button>
+
+  <script>
+    document.getElementById("toTopBtn").onclick = () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    };
+  </script>
 
 </body>
 </html>
