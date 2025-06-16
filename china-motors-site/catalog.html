@@ -835,11 +835,22 @@
   <!-- Кнопка вверх -->
   <button id="toTopBtn" title="Наверх">&#8679;</button>
 
+
   <script>
-    document.getElementById("toTopBtn").onclick = () => {
+    const btn = document.getElementById("toTopBtn");
+
+    window.addEventListener("scroll", () => {
+      btn.style.display = window.scrollY > 300 ? "block" : "none";
+    });
+
+    btn.addEventListener("click", () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
+    });
+  </script>
+  <script>
+    window.onscroll = function () {
+      const btn = document.getElementById("toTopBtn");
+      btn.style.display = window.scrollY > 300 ? "block" : "none";
     };
   </script>
 
