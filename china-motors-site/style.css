@@ -93,7 +93,28 @@ body {
 .nav-links i {
   margin-right: 10px;
 }
-
+#toTopBtn {
+  position: fixed;
+  bottom: 20px; 
+  right: 100px;
+  z-index: 1000;
+  font-size: 37px;
+  background: linear-gradient(90deg, #0D3B66, #1A6B8C);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  line-height: 46px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, .2);
+  transition: background 0.3s, transform 0.3s;
+}
+#toTopBtn:hover {
+  background-color: #c50010;
+  transform: translateY(-2px);
+}
 /* Hero Section */
 .hero {
   position: relative;
@@ -787,6 +808,10 @@ a:focus {
 }
 /* ДЛЯ ТЕЛЕФОНА */
 @media (max-width: 768px) {
+  #toTopBtn {
+    bottom: 85px;
+    right: 10px;
+  }
   .navbar .container {
     flex-direction: row;
     justify-content: space-between;
@@ -1229,5 +1254,9 @@ a:focus {
     align-self: center;
     box-sizing: border-box;
     font-size: 12px;
+  }
+  #toTopBtn {
+    bottom: 85px;
+    right: 26px;
   }
 }
