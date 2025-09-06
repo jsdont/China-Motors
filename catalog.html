@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>China Motors - Каталог</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <!-- Navbar (как на других страницах) -->
+  <header class="navbar">
+    <div class="container">
+      <div class="logo-container">
+        <h1 class="logo"><a href="index.html" style="color:#fff;text-decoration:none">China Motors</a></h1>
+        <div class="menu-toggle">☰</div>
+      </div>
+      <ul class="nav-links">
+        <li><a href="index.html"><i class="fas fa-home"></i> Главная</a></li>
+        <li><a href="catalog.html" class="active"><i class="fas fa-car"></i> Каталог</a></li>
+        <li><a href="services.html"><i class="fas fa-tools"></i> Услуги</a></li>
+        <li><a href="contacts.html"><i class="fas fa-envelope"></i> Контакты</a></li>
+        <li><a href="calculator.html"><i class="fas fa-calculator"></i> Калькулятор</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero section fade-in">
+    <div class="container">
+      <div class="hero-overlay">
+        <h1>Каталог</h1>
+        <p class="White-p">Актуальные предложения из базы</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section fade-in" style="padding-bottom:60px">
+    <div class="container">
+      <!-- Поиск -->
+      <div style="display:flex;gap:12px;align-items:center;margin:20px 0 30px">
+        <input id="q" type="search" placeholder="Поиск по модели, типу, бренду..." style="flex:1;padding:12px 14px;border-radius:10px;border:1px solid #ddd">
+        <button id="btnSearch" class="btn"><i class="fa fa-search"></i> Найти</button>
+      </div>
+
+      <!-- Сетка карточек -->
+      <div id="grid" class="feature-grid"></div>
+
+      <!-- Пагинация (простая) -->
+      <div id="pager" style="margin-top:24px;display:flex;gap:8px;justify-content:center"></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <h2>China Motors</h2>
+          <p>Надежная техника из Китая под заказ и в наличии.</p>
+        </div>
+        <div class="footer-links">
+          <h3 class="white-title-h3">Навигация</h3>
+          <ul>
+            <li><a href="index.html">Главная</a></li>
+            <li><a href="catalog.html">Каталог</a></li>
+            <li><a href="services.html">Услуги</a></li>
+            <li><a href="contacts.html">Контакты</a></li>
+            <li><a href="calculator.html">Калькулятор</a></li>
+          </ul>
+        </div>
+        <div class="footer-contact">
+          <h3 class="white-title-h3">Контакты</h3>
+          <div class="footer-links">
+            <p><i class="fas fa-phone"></i> <a class="contacts-on-contact-page" href="tel:+77776133731">+7 (777) 613-3731</a></p>
+            <p><i class="fas fa-envelope"></i> <a class="contacts-on-contact-page" href="mailto:alijumdd@mail.ru">alijumdd@mail.ru</a></p>
+          </div>
+          <div class="social-links">
+            <a href="https://www.instagram.com/china_motors_ala" target="_blank" rel="noopener noreferrer" class="btn instagram">
+              <i class="fab fa-instagram"></i> Instagram
+            </a>
+            <a href="https://www.tiktok.com/@china.motors_ala" target="_blank" rel="noopener noreferrer" class="btn tiktok">
+              <i class="fab fa-tiktok"></i> TikTok
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 China Motors. Все права защищены.</p>
+        <p class="last-words">"Сайт в данное время находится в стадии разработки и в дальнейшем будет обновляться"</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="catalog.js" defer></script>
+
+</body>
+</html>

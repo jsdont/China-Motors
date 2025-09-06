@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>China Motors - Контакты</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="container">
+      <div class="logo-container">
+        <h1 class="logo">
+          <a href="index.html" style="color: white; text-decoration: none;" onmouseover="this.style.color='#E12821'" onmouseout="this.style.color='white'">
+          China Motors
+          </a>
+        </h1>
+        <div class="menu-toggle">☰</div>
+      </div>
+      <ul class="nav-links">
+        <li><a href="index.html"><i class="fas fa-home"></i> Главная</a></li>
+        <li><a href="catalog.html"><i class="fas fa-car"></i> Каталог</a></li>
+        <li><a href="services.html"><i class="fas fa-tools"></i> Услуги</a></li>
+        <li><a href="contacts.html"class="active"><i class="fas fa-envelope"></i> Контакты</a></li>
+        <li><a href="calculator.html"><i class="fas fa-calculator"></i>Калькулятор</a></li>
+      </ul>
+    </div>
+  </header>
+  <!-- Hero Section -->
+  <section class="hero section fade-in">
+    <div class="container">
+      <div class="hero-overlay">
+        <h1>Свяжитесь с нами</h1>
+        <p class="White-p">Мы готовы помочь вам с выбором техники и ответить на любые вопросы!</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="section fade-in">
+    <div class="container">
+      <h2 class="blue-title">Контакты</h2>
+      <div class="contact-info">
+        <p><i class="fas fa-phone"></i> <a class="contacts-on-contact-page" href="tel:+77776133731">+7 (777) 613-3731 (Жомарт)</a></p>
+        <p><i class="fas fa-envelope"></i> <a class="contacts-on-contact-page" href="mailto:alijumdd@mail.ru">alijumdd@mail.ru</a></p>
+        <p><i class="fab fa-whatsapp"></i> <a class="contacts-on-contact-page" href="https://wa.me/+77776133731" target="_blank">+7 (777) 613-3731</a></p>
+      </div>
+      <h2 class="blue-title">Оставить заявку</h2>
+      <form class="contact-form" id="contactForm">
+        <label for="name">Имя:</label>
+        <input type="text" id="name" name="name" placeholder="Введите ваше имя" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" placeholder="Введите ваш email" required>
+        <label for="phone">Телефон:</label>
+        <input type="tel" id="phone" name="phone" placeholder="Введите ваш номер телефона" required>
+        <label for="message">Сообщение:</label>
+        <textarea id="message" name="message" placeholder="Введите ваше сообщение" required></textarea>
+        <button type="submit" class="btn"><i class="fas fa-paper-plane"></i> Отправить</button>
+        <div id="formStatus" style="margin-top: 10px; color: green;"></div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <h2>China Motors</h2>
+          <p>Надежная техника из Китая под заказ и в наличии.</p>
+        </div>
+        <div class="footer-links">
+          <h3 class="white-title-h3">Навигация</h3>
+          <ul>
+            <li><a href="index.html">Главная</a></li>
+            <li><a href="catalog.html">Каталог</a></li>
+            <li><a href="services.html">Услуги</a></li>
+            <li><a href="contacts.html">Контакты</a></li>
+            <li><a href="calculator.html">Калькулятор</a></li>
+          </ul>
+        </div>
+        <div class="footer-contact">
+          <h3 class="white-title-h3">Контакты</h3>
+          <div class="footer-links">
+            <p><i class="fas fa-phone"></i> <a class="contacts-on-contact-page" href="tel:+77776133731">+7 (777) 613-3731</a></p>
+            <p><i class="fas fa-envelope"></i> <a class="contacts-on-contact-page" href="mailto:alijumdd@mail.ru">alijumdd@mail.ru</a></p>
+          </div>
+          <div class="social-links">
+            <a href="https://www.instagram.com/china_motors_ala" target="_blank" rel="noopener noreferrer" class="btn instagram">
+              <i class="fab fa-instagram"></i> Instagram
+            </a>
+            <a href="https://www.tiktok.com/@china.motors_ala" target="_blank" rel="noopener noreferrer" class="btn tiktok">
+              <i class="fab fa-tiktok"></i> TikTok
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 China Motors. Все права защищены.</p>
+        <p class="last-words">"Сайт в данное время находится в стадии разработки и в дальнейшем будет обновляться"</p>
+      </div>
+    </div>
+  </footer>
+
+<script src="js/common.js" defer></script>
+<script src="js/contacts.js" defer></script>
+
+
+</body>
+</html>
