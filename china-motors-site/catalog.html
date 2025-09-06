@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>China Motors - Каталог</title>
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <style>
+    .filters{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin:18px 0 22px}
+    .filters .f{display:flex;flex-direction:column;gap:6px}
+    .filters .f label{font-size:12px;color:#666}
+    .filters .f select{padding:10px 12px;border:1px solid #e5e7eb;border-radius:10px;background:#fff;min-width:260px}
+
+    .feature-grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+    .feature-card{background:#fff;border-radius:18px;box-shadow:0 6px 22px rgba(0,0,0,.06);overflow:hidden;display:flex;flex-direction:column;transition:transform .15s}
+    .feature-card:hover{transform:translateY(-3px)}
+    .card-image img{width:100%;height:220px;object-fit:cover;display:block;cursor:zoom-in}
+    .card-content{padding:14px 16px 16px}
+    .meta-row{display:flex;gap:8px;align-items:center;color:#374151;margin:4px 0}
+    .meta-row b{font-weight:700}
+    .price{font-weight:700;font-size:18px;margin:8px 0 10px}
+    .card-actions{display:flex;gap:10px;margin-top:auto}
+    .btn-ghost{background:#1f1f1f;border:1px solid #e8eaee}
+
+    /* Галерея */
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:9999}
+    .modal.open{display:flex}
+    .modal-body{width:min(1000px,94vw);background:#111;color:#fff;border-radius:14px;overflow:hidden}
+    .modal-head{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#0b0b0b}
+    .modal-main{position:relative;background:#000}
+    .modal-main img{display:block;width:100%;max-height:70vh;object-fit:contain;background:#000}
+    .navbtn{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:999px;border:none;background:rgba(255,255,255,.14);color:#fff;font-size:18px;cursor:pointer}
+    .navbtn:hover{background:rgba(255,255,255,.22)}
+    .navbtn.prev{left:10px}.navbtn.next{right:10px}
+    .thumbs{display:flex;gap:6px;padding:10px;overflow:auto;background:#0b0b0b}
+    .thumbs img{width:100px;height:64px;object-fit:cover;border-radius:8px;cursor:pointer;opacity:.85}
+    .thumbs img.active{outline:2px solid #e11d48;opacity:1}
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="container">
+      <div class="logo-container">
+        <h1 class="logo"><a href="index.html" style="color:#fff;text-decoration:none">China Motors</a></h1>
+        <div class="menu-toggle">☰</div>
+      </div>
+      <ul class="nav-links">
+        <li><a href="index.html"><i class="fas fa-home"></i> Главная</a></li>
+        <li><a href="catalog.html" class="active"><i class="fas fa-car"></i> Каталог</a></li>
+        <li><a href="services.html"><i class="fas fa-tools"></i> Услуги</a></li>
+        <li><a href="contacts.html"><i class="fas fa-envelope"></i> Контакты</a></li>
+        <li><a href="calculator.html"><i class="fas fa-calculator"></i> Калькулятор</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <section class="hero section fade-in">
+    <div class="container">
+      <div class="hero-overlay">
+        <h1>Актуальные предложения из базы</h1>
+      </div>
+    </div>
+  </section>
+
+  <section class="section fade-in" style="padding-bottom:60px">
+    <div class="container">
+      <div class="filters">
+        <div class="f">
+          <label for="body">Тип транспорта</label>
+          <select id="body">
+            <option value="">Все</option>
+            <option>Прицепы</option>
+            <option>Полуприцепы</option>
+            <option>Самосвал</option>
+            <option>Тягач</option>
+            <option>Спец. техника</option>
+            <option>Кран</option>
+            <option>Манипулятор</option>
+            <option>Миксер</option>
+            <option>Бензовоз</option>
+            <option>Автовышка</option>
+            <option>Ассенизатор</option>
+            <option>Рефрижератор</option>
+            <option>Автофургон</option>
+            <option>Поливомоечная машина</option>
+            <option>Ямобур машины для бурения</option>
+            <option>Молоковоз</option>
+            <option>Топливозаправщик</option>
+          </select>
+        </div>
+        <div class="f">
+          <label for="sort">Сортировка</label>
+          <select id="sort">
+            <option value="">Без сортировки</option>
+            <option value="price_asc">Цена ↑</option>
+            <option value="price_desc">Цена ↓</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="grid" class="feature-grid"></div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <h2>China Motors</h2>
+          <p>Надежная техника из Китая под заказ и в наличии.</p>
+        </div>
+        <div class="footer-links">
+          <h3 class="white-title-h3">Навигация</h3>
+          <ul>
+            <li><a href="index.html">Главная</a></li>
+            <li><a href="catalog.html">Каталог</a></li>
+            <li><a href="services.html">Услуги</a></li>
+            <li><a href="contacts.html">Контакты</a></li>
+            <li><a href="calculator.html">Калькулятор</a></li>
+          </ul>
+        </div>
+        <div class="footer-contact">
+          <h3 class="white-title-h3">Контакты</h3>
+          <div class="footer-links">
+            <p><i class="fas fa-phone"></i> <a class="contacts-on-contact-page" href="tel:+77776133731">+7 (777) 613-3731</a></p>
+            <p><i class="fas fa-envelope"></i> <a class="contacts-on-contact-page" href="mailto:alijumdd@mail.ru">alijumdd@mail.ru</a></p>
+          </div>
+          <div class="social-links">
+            <a href="https://www.instagram.com/china_motors_ala" target="_blank" rel="noopener noreferrer" class="btn instagram"><i class="fab fa-instagram"></i> Instagram</a>
+            <a href="https://www.tiktok.com/@china.motors_ala" target="_blank" rel="noopener noreferrer" class="btn tiktok"><i class="fab fa-tiktok"></i> TikTok</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 China Motors. Все права защищены.</p>
+        <p class="last-words">"Сайт в данное время находится в стадии разработки и в дальнейшем будет обновляться"</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/catalog.js" defer></script>
+
+  <!-- Модалка галереи -->
+  <div id="gallery" class="modal" aria-hidden="true">
+    <div class="modal-body">
+      <div class="modal-head">
+        <div id="gTitle" style="font-weight:700">Фото</div>
+        <button id="gClose" class="btn btn-ghost"><i class="fa fa-times"></i> Закрыть</button>
+      </div>
+      <div class="modal-main">
+        <button class="navbtn prev" id="gPrev" aria-label="Prev">‹</button>
+        <img id="gMain" src="" alt="">
+        <button class="navbtn next" id="gNext" aria-label="Next">›</button>
+      </div>
+      <div class="thumbs" id="gThumbs"></div>
+    </div>
+  </div>
+</body>
+</html>

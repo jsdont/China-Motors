@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>China Motors - Калькулятор</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <style>
+    /* компактные списки-пояснения */
+    .bill {margin-top:10px;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(255,255,255,.02)}
+    .bill h4{margin:0;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.06);font-weight:700}
+    .bill ul{list-style:none;margin:0;padding:6px 14px 12px}
+    .bill li{display:flex;justify-content:space-between;gap:16px;padding:6px 0;border-bottom:1px dashed rgba(255,255,255,.08)}
+    .bill li:last-child{border-bottom:none}
+    .bill .muted{opacity:.85}
+    .bill .sum{font-weight:700}
+    .readonly-note{opacity:.8;font-size:.92rem;margin:6px 0 0}
+    /* убираем инпуты у заблокированных секций */
+    .view-only input, .view-only select, .view-only button {pointer-events:none; opacity:.75}
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="container">
+      <div class="logo-container">
+        <h1 class="logo">
+          <a href="index.html" style="color: white; text-decoration: none;" onmouseover="this.style.color='#E12821'" onmouseout="this.style.color='white'">
+          China Motors
+          </a>
+        </h1>
+        <div class="menu-toggle">☰</div>
+      </div>
+      <ul class="nav-links">
+        <li><a href="index.html"><i class="fas fa-home"></i> Главная</a></li>
+        <li><a href="catalog.html"><i class="fas fa-car"></i> Каталог</a></li>
+        <li><a href="services.html"><i class="fas fa-tools"></i> Услуги</a></li>
+        <li><a href="contacts.html"><i class="fas fa-envelope"></i> Контакты</a></li>
+        <li><a href="calculator.html" class="active"><i class="fas fa-calculator"></i> Калькулятор</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero section fade-in">
+    <div class="container">
+      <div class="hero-overlay">
+        <h1>Калькулятор</h1>
+        <p class="White-p">Прозрачный расчёт: видно «за что платим» без лишних деталей.</p>
+      </div>
+    </div>
+  </section>
+
+<main class="container" style="padding-top:24px;padding-bottom:60px">
+  <h1 class="page-title">Калькулятор стоимости</h1>
+
+  <div id="calcGrid" class="grid-2">
+    <!-- Левая колонка -->
+    <form id="calcForm" class="calc-sections">
+
+      <!-- Входные данные (РАЗРЕШЕНО редактировать) -->
+      <section class="calc-card">
+        <h2 class="calc-card__title">Входные данные</h2>
+
+        <div class="grid-2">
+          <div>
+            <label>Модель / комплектация</label>
+            <input id="vehicleName" type="text" placeholder="Например: Тягач 2022 года"/>
+          </div>
+          <div>
+            <label>Цена авто, $</label>
+            <input id="basePrice" type="number" step="0.01" placeholder="59165"/>
+          </div>
+        </div>
+
+        <div class="grid-2 mt-12">
+          <div>
+            <label>Тип транспорта</label>
+            <select id="type">
+              <option>Прицепы</option>
+              <option>Полуприцепы</option>
+              <option>Самосвал</option>
+              <option>Тягач</option>
+              <option>Спец. техника</option>
+              <option>Кран</option>
+              <option>Манипулятор</option>
+              <option>Миксер</option>
+              <option>Бензовоз</option>
+              <option>Автовышка</option>
+              <option>Ассенизатор</option>
+              <option>Рефрижератор</option>
+              <option>Автофургон</option>
+              <option>Поливомоечная машина</option>
+              <option>Ямобур машины для бурения</option>
+              <option>Молоковоз</option>
+              <option>Топливозаправщик</option>
+            </select>
+          </div>
+          <div>
+            <label>Курс $ → ₸</label>
+            <div style="display:flex;gap:8px;align-items:center">
+              <input id="rate" type="number" step="0.01" value="540"/>
+              <button id="btnRefreshRate" type="button" class="btn btn--ghost" title="Обновить курс">
+                <i class="fa-solid fa-rotate"></i> Обновить курс
+              </button>
+            </div>
+            <small id="rateInfo" style="display:block;margin-top:4px;opacity:.85">Курс НБ РК: —</small>
+          </div>
+        </div>
+      </section>
+
+      <!-- 1) Реальная стоимость (просмотр) -->
+      <section class="calc-card view-only">
+        <h2 class="calc-card__title">1) Реальная стоимость</h2>
+        <p class="calc-hint">Цена авто в тенге = Цена($) × Курс</p>
+        <div class="summary-line">
+          <span>=</span>
+          <strong id="realCostKZT">—</strong>
+        </div>
+      </section>
+
+      <!-- 2) Таможенная стоимость (РАЗРЕШЕНО редактировать) -->
+      <section class="calc-card">
+        <h2 class="calc-card__title">2) Таможенная стоимость</h2>
+
+        <div class="grid-2">
+          <div>
+            <label>Способ расчёта ТС</label>
+            <div class="radio-row" id="tsModes">
+              <label><input type="radio" name="ts_mode" value="byprice" checked> По полной цене</label>
+              <label id="lblGridYear"><input type="radio" name="ts_mode" value="gridYear"> Сетка (год)</label>
+              <label id="lblFixed"><input type="radio" name="ts_mode" value="fixed"> Фиксированная сетка</label>
+            </div>
+          </div>
+          <div id="wrap-ts-manual">
+            <label>ТС, $ (для «Фиксированной сетки»)</label>
+            <input id="tsValueUSD" type="number" step="0.01" value="25500"/>
+          </div>
+        </div>
+
+        <div class="grid-2 mt-12" id="wrap-gridYear" style="display:none">
+          <div>
+            <label>Год (для «Сетка (год)»)</label>
+            <select id="gridYear"></select>
+          </div>
+          <div>
+            <label>Фиксированная сумма ТС, $</label>
+            <input id="gridYearUSD" type="number" value="" readonly>
+          </div>
+        </div>
+
+        <div class="bill">
+          <h4>Таможенные платежи</h4>
+          <ul>
+            <li><span class="muted">ТС в тенге</span><span class="sum" id="tsKZT">—</span></li>
+            <li><span>Пошлина</span><span class="sum" id="dutyOutKZT">—</span></li>
+            <li><span>НДС</span><span class="sum" id="vatOutKZT">—</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 3) Доп. расходы (только просмотр) -->
+      <section class="calc-card view-only">
+        <h2 class="calc-card__title">3) Дополнительные расходы</h2>
+        <p class="readonly-note">Фиксируется по типу транспорта и выбранному режиму ТС.</p>
+        <div class="bill">
+          <h4>За что платим</h4>
+          <ul id="list-mandatory">
+            <!-- строка <li><span>Название</span><span class="sum">123 456</span></li> -->
+          </ul>
+        </div>
+      </section>
+
+      <!-- 4) Доставка (только просмотр) -->
+      <section class="calc-card view-only">
+        <h2 class="calc-card__title">4) Доставка и граница</h2>
+        <div class="bill">
+          <h4>Состав доставки</h4>
+          <ul id="list-delivery"></ul>
+        </div>
+      </section>
+
+      <!-- 5) Утиль/регистрация (только просмотр) -->
+      <section class="calc-card view-only">
+        <h2 class="calc-card__title">5) Утилизационный сбор и регистрация</h2>
+        <div class="bill">
+          <h4>Государственные платежи</h4>
+          <ul id="list-util"></ul>
+        </div>
+      </section>
+    </form>
+
+    <!-- Правая колонка (итоговая карточка) -->
+    <aside class="summary-card summary-card--dark">
+      <h3 class="summary-title">Итоговая стоимость</h3>
+
+      <div class="summary-line"><span>База для расчёта:</span> <strong id="sBase">—</strong></div>
+      <div class="summary-line"><span>Таможенные платежи:</span> <strong id="sCustoms">—</strong></div>
+      <div class="summary-line"><span>Дополнительные расходы:</span> <strong id="sMandatory">—</strong></div>
+      <div class="summary-line"><span>Доставка и граница:</span> <strong id="sBorder">—</strong></div>
+      <div class="summary-line"><span>Утиль/регистрация:</span> <strong id="sUtil">—</strong></div>
+
+      <div class="summary-total">
+        <span>ИТОГО:</span>
+        <strong id="sTotalKZT">—</strong>
+      </div>
+      <div class="summary-sub" id="sTotalUSD">≈ — USD</div>
+
+      <div class="summary-actions">
+        <button id="btnRecalcAside" class="btn" type="button"><i class="fa-solid fa-calculator"></i> Рассчитать</button>
+        <a id="toContactsAside" class="btn btn--primary" href="contacts.html">
+        <i class="fa-solid fa-paper-plane"></i> Оформить заявку</button>
+        </a>
+      </div>
+    </aside>
+  </div>
+</main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <h2>China Motors</h2>
+          <p>Надежная техника из Китая под заказ и в наличии.</p>
+        </div>
+        <div class="footer-links">
+          <h3 class="white-title-h3">Навигация</h3>
+          <ul>
+            <li><a href="index.html">Главная</a></li>
+            <li><a href="catalog.html">Каталог</a></li>
+            <li><a href="services.html">Услуги</a></li>
+            <li><a href="contacts.html">Контакты</a></li>
+            <li><a href="calculator.html">Калькулятор</a></li>
+          </ul>
+        </div>
+        <div class="footer-contact">
+          <h3 class="white-title-h3">Контакты</h3>
+          <div class="footer-links">
+            <p><i class="fas fa-phone"></i> <a class="contacts-on-contact-page" href="tel:+77776133731">+7 (777) 613-3731</a></p>
+            <p><i class="fas fa-envelope"></i> <a class="contacts-on-contact-page" href="mailto:alijumdd@mail.ru">alijumdd@mail.ru</a></p>
+          </div>
+          <div class="social-links">
+            <a href="https://www.instagram.com/china_motors_ala" target="_blank" rel="noopener noreferrer" class="btn instagram">
+              <i class="fab fa-instagram"></i> Instagram
+            </a>
+            <a href="https://www.tiktok.com/@china.motors_ala" target="_blank" rel="noopener noreferrer" class="btn tiktok">
+              <i class="fab fa-tiktok"></i> TikTok
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 China Motors. Все права защищены.</p>
+        <p class="last-words">"Сайт в данное время находится в стадии разработки и в дальнейшем будет обновляться"</p>
+      </div>
+    </div>
+  </footer>
+
+<script src="js/common.js"></script>
+<script src="js/calculator.js"></script>
+<script>
+  document.getElementById('btnRecalcAside')?.addEventListener('click', () => {
+    document.getElementById('calcForm')?.dispatchEvent(new Event('submit', {cancelable:true}));
+  });
+</script>
+</body>
+</html>
