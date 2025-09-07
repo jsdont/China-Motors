@@ -27,8 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const nfRU = new Intl.NumberFormat('ru-RU');
   const fmtPrice = n => (n===0 || n) ? `${nfRU.format(Number(n))}$` : 'Цена по запросу';
-  const escHTML = s => String(s ?? '').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  const escAttr = s => escHTML(s).replace(/"/g,'&quot;');
+  const escapeMap = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+  const escHTML = s => String(s ?? '').replace(/[&<>"']/g,m=>escapeMap[m]);
+  const escAttr = escHTML;
 
   function canonBody(rawTitle, rawBody){
     const s = `${rawTitle} ${rawBody}`.toLowerCase();
