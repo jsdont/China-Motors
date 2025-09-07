@@ -1296,3 +1296,7 @@ p {
 .modal.open{ display:flex; }
 .modal__img{ max-width:min(92vw,1200px); max-height:86vh; border-radius:14px; box-shadow:0 20px 60px rgba(0,0,0,.45); }
 .modal__close{ position:absolute; top:14px; right:16px; border:0; background:#000a; color:#fff; font-size:18px; border-radius:999px; padding:.35rem .6rem; cursor:pointer; }
+.btn-js-open-gallery {
+    background: #1f1f1f;
+    border: 1px solid #e8eaee;
+}
