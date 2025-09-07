@@ -1,13 +1,16 @@
-// Каталог из Django API.
-// Видимая строка "Body type: <как в БД>",
-// фильтр по канонической категории, сортировка по цене,
-// цена "52 250$", модальная галерея,
-// и ПРАВИЛЬНОЕ автозаполнение калькулятора (короткое имя модели).
+// Каталог из Django API + галерея + кнопка "Рассчитать".
+// Главный фикс: чтение <meta name="api-base">, чтобы не ходить на статический домен.
 
 document.addEventListener('DOMContentLoaded', () => {
   const isFile = location.protocol === 'file:';
   const isLocalhost = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
-  const API_BASE = (isFile || isLocalhost) ? 'http://127.0.0.1:8000' : '';
+  const metaBase = document.querySelector('meta[name="api-base"]')?.content?.trim();
+
+  // приоритет: meta -> локалка -> origin (как запасной вариант)
+  let API_BASE = metaBase || (isFile || isLocalhost ? 'http://127.0.0.1:8000' : location.origin);
+  API_BASE = API_BASE.replace(/\/+$/,''); // без хвостового /
+
+  console.debug('[catalog] API_BASE =', API_BASE);
 
   const grid   = document.getElementById('grid');
   const bodyEl = document.getElementById('body');
@@ -27,19 +30,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const escHTML = s => String(s ?? '').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const escAttr = s => escHTML(s).replace(/"/g,'&quot;');
 
-  // Канон-тип для фильтра/калькулятора
   function canonBody(rawTitle, rawBody){
     const s = `${rawTitle} ${rawBody}`.toLowerCase();
-
-    // Разделённые/новые категории
     if (s.includes('рефриж') || s.includes('refriger')) return 'Рефрижератор';
     if (s.includes('фургон') || s.includes('isoterm') || s.includes('изотерм')) return 'Автофургон';
     if (s.includes('ямобур') || s.includes('бкм') || s.includes('бурильн') || s.includes('буровая') || s.includes('бурение')) return 'Ямобур машины для бурения';
     if (s.includes('молоковоз') || s.includes('milk')) return 'Молоковоз';
-    if ((s.includes('топлив') && s.includes('заправ')) || s.includes('автозаправ') || s.includes('топливораздат'))
-      return 'Топливозаправщик';
+    if ((s.includes('топлив') && s.includes('заправ')) || s.includes('автозаправ') || s.includes('топливораздат')) return 'Топливозаправщик';
 
-    // Базовые
     if (s.includes('полуприцеп')) return 'Полуприцепы';
     if (!s.includes('полуприцеп') && s.includes('прицеп')) return 'Прицепы';
     if (s.includes('самосвал')) return 'Самосвал';
@@ -55,7 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return rawBody || 'Спец. техника';
   }
 
-  // «сырое» текстовое поле Body type — показываем
   function pickBodyRaw(v){
     return (
       v.body_type ?? v.bodyType ?? v.body ?? v.body_name ?? v.bodytext ??
@@ -64,14 +61,11 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   }
 
-  // Корректное короткое имя для калькулятора (бренд + модель если есть)
   function makeCalcName(v, fallbackTitle){
     const brand = (v.brand || '').trim();
     const model = (v.model || '').trim();
     if (brand || model) return `${brand} ${model}`.trim();
-    // иначе — обрежем «лишнее» из title
     const t = fallbackTitle.replace(/\s{2,}/g,' ').trim();
-    // уберём распространённые слова конструктивов/комплектаций
     const cleaned = t
       .replace(/самосвал/ig,'')
       .replace(/тягач/ig,'')
@@ -81,7 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
       .replace(/\b\d+\*\d+\b/ig,'')
       .replace(/\s{2,}/g,' ')
       .trim();
-    // оставим первые 4 слова максимум
     return cleaned.split(' ').slice(0,4).join(' ') || t;
   }
 
@@ -103,9 +96,9 @@ document.addEventListener('DOMContentLoaded', () => {
       mainImg, images,
       priceNum: (priceNum || priceNum===0) ? Number(priceNum) : null,
       priceText: fmtPrice(priceNum),
-      bodyTypeRaw: bodyRawText,  // показываем
-      bodyType: bodyCanon,       // фильтр/кальк
-      calcName                   // короткое имя в калькулятор
+      bodyTypeRaw: bodyRawText,
+      bodyType: bodyCanon,
+      calcName
     };
   }
 
@@ -121,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="card-image">
           ${x.mainImg
             ? `<img src="${escAttr(x.mainImg)}" alt="${escAttr(x.title)}" class="js-open-gallery">`
-            : `<div style="height:220px;background:#f3f4f6;display:flex;align-items:center;justify-content:center">Фото позже</div>`}
+            : `<div style="height:240px;background:#f3f4f6;display:flex;align-items:center;justify-content:center">Фото позже</div>`}
         </div>
         <div class="card-content">
           <h3 style="margin:6px 0 8px">${escHTML(x.title)}</h3>
@@ -168,10 +161,10 @@ document.addEventListener('DOMContentLoaded', () => {
     gThumbs.querySelectorAll('img').forEach(img=>img.addEventListener('click',()=>{gIdx=Number(img.dataset.i);drawGallery();}));
   }
   function closeGallery(){ gModal.classList.remove('open'); gModal.setAttribute('aria-hidden','true'); gMain.removeAttribute('src'); }
-  gPrev.addEventListener('click',()=>{ if(!gImgs.length) return; gIdx=(gIdx-1+gImgs.length)%gImgs.length; drawGallery(); });
-  gNext.addEventListener('click',()=>{ if(!gImgs.length) return; gIdx=(gIdx+1)%gImgs.length; drawGallery(); });
-  gClose.addEventListener('click',closeGallery);
-  gModal.addEventListener('click',e=>{ if(e.target===gModal) closeGallery(); });
+  gPrev?.addEventListener('click',()=>{ if(!gImgs.length) return; gIdx=(gIdx-1+gImgs.length)%gImgs.length; drawGallery(); });
+  gNext?.addEventListener('click',()=>{ if(!gImgs.length) return; gIdx=(gIdx+1)%gImgs.length; drawGallery(); });
+  gClose?.addEventListener('click',closeGallery);
+  gModal?.addEventListener('click',e=>{ if(e.target===gModal) closeGallery(); });
   document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeGallery(); });
 
   // Фильтр/сортировка
@@ -193,9 +186,9 @@ document.addEventListener('DOMContentLoaded', () => {
   async function load(){
     try{
       grid.innerHTML = `<div class="loading">Загрузка...</div>`;
-      const url = new URL('/api/vehicles/', API_BASE || location.origin);
-      const r = await fetch(url.toString(), { headers:{'Accept':'application/json'} });
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const url = `${API_BASE}/api/vehicles/`;
+      const r = await fetch(url, { headers:{'Accept':'application/json'} });
+      if (!r.ok) throw new Error(`HTTP ${r.status} at ${url}`);
       const data = await r.json();
       const list = Array.isArray(data) ? data : (Array.isArray(data.results) ? data.results : []);
       all = list.map(normalize);
