@@ -25,6 +25,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const gNext  = document.getElementById('gNext');
   const gClose = document.getElementById('gClose');
 
+  gThumbs.addEventListener('click', e => {
+    const i = e.target.dataset.i;
+    if (i !== undefined) {
+      gIdx = Number(i);
+      drawGallery();
+    }
+  });
+
   const nfRU = new Intl.NumberFormat('ru-RU');
   const fmtPrice = n => (n===0 || n) ? `${nfRU.format(Number(n))}$` : 'Цена по запросу';
   const escHTML = s => String(s ?? '').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -133,14 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function render(list){
     grid.innerHTML = list.map(cardHTML).join('');
-    grid.querySelectorAll('.js-open-gallery').forEach(btn=>{
-      btn.addEventListener('click', e=>{
-        const card = e.currentTarget.closest('.feature-card');
-        const id = card?.getAttribute('data-id');
-        const item = current.find(v => String(v.id)===String(id));
-        if (item) openGallery(item);
-      });
-    });
   }
 
   // Галерея
@@ -158,7 +158,6 @@ document.addEventListener('DOMContentLoaded', () => {
     gMain.src=gImgs[gIdx];
     gMain.alt=`Фото ${gIdx+1} из ${gImgs.length}`;
     gThumbs.innerHTML=gImgs.map((src,i)=>`<img src="${escAttr(src)}" data-i="${i}" class="${i===gIdx?'active':''}">`).join('');
-    gThumbs.querySelectorAll('img').forEach(img=>img.addEventListener('click',()=>{gIdx=Number(img.dataset.i);drawGallery();}));
   }
   function closeGallery(){ gModal.classList.remove('open'); gModal.setAttribute('aria-hidden','true'); gMain.removeAttribute('src'); }
   gPrev?.addEventListener('click',()=>{ if(!gImgs.length) return; gIdx=(gIdx-1+gImgs.length)%gImgs.length; drawGallery(); });
@@ -169,6 +168,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Фильтр/сортировка
   let all=[], current=[];
+
+  grid.addEventListener('click', e => {
+    const btn = e.target.closest('.js-open-gallery');
+    if (!btn) return;
+    const card = btn.closest('.feature-card');
+    const id = card?.getAttribute('data-id');
+    const item = current.find(v => String(v.id)===String(id));
+    if (item) openGallery(item);
+  });
+
   function applyFilters(){
     const b=(bodyEl?.value||'').trim();
     current = all.filter(x => !b || x.bodyType===b);
