@@ -1,180 +1,210 @@
-/* ===== catalog.js v9 ===== */
-console.info('catalog.js v9');
+// Каталог из Django API.
+// Видимая строка "Body type: <как в БД>",
+// фильтр по канонической категории, сортировка по цене,
+// цена "52 250$", модальная галерея,
+// и ПРАВИЛЬНОЕ автозаполнение калькулятора (короткое имя модели).
 
-const FLY_API = 'https://cm-backend-daniyal.fly.dev/api/vehicles/';
-const SAME_ORIGIN_API = new URL('/api/vehicles/', location.origin).toString();
+document.addEventListener('DOMContentLoaded', () => {
+  const isFile = location.protocol === 'file:';
+  const isLocalhost = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  const API_BASE = (isFile || isLocalhost) ? 'http://127.0.0.1:8000' : '';
 
-// куда вести на калькулятор (на проде — /calculator, локально можно calculator.html)
-const CALC_PATH = location.hostname.endsWith('.com.kz') ? '/calculator' : '/calculator.html';
+  const grid   = document.getElementById('grid');
+  const bodyEl = document.getElementById('body');
+  const sortEl = document.getElementById('sort');
 
-const $ = s => document.querySelector(s);
+  // Галерея
+  const gModal = document.getElementById('gallery');
+  const gTitle = document.getElementById('gTitle');
+  const gMain  = document.getElementById('gMain');
+  const gThumbs= document.getElementById('gThumbs');
+  const gPrev  = document.getElementById('gPrev');
+  const gNext  = document.getElementById('gNext');
+  const gClose = document.getElementById('gClose');
 
-// контейнер для карточек
-const grid =
-  $('#catalog-grid') || $('.catalog-grid') || $('[data-catalog-grid]') ||
-  $('#grid') || $('#itemsGrid');
+  const nfRU = new Intl.NumberFormat('ru-RU');
+  const fmtPrice = n => (n===0 || n) ? `${nfRU.format(Number(n))}$` : 'Цена по запросу';
+  const escHTML = s => String(s ?? '').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const escAttr = s => escHTML(s).replace(/"/g,'&quot;');
 
-// фильтры
-const typeSel =
-  $('#typeFilter') || $('[data-filter="type"]') ||
-  $('select[name="type"]') || $('select[data-type]');
+  // Канон-тип для фильтра/калькулятора
+  function canonBody(rawTitle, rawBody){
+    const s = `${rawTitle} ${rawBody}`.toLowerCase();
 
-const sortSel =
-  $('#sortSelect') || $('[data-filter="sort"]') ||
-  $('select[name="sort"]') || $('select[data-sort]');
+    // Разделённые/новые категории
+    if (s.includes('рефриж') || s.includes('refriger')) return 'Рефрижератор';
+    if (s.includes('фургон') || s.includes('isoterm') || s.includes('изотерм')) return 'Автофургон';
+    if (s.includes('ямобур') || s.includes('бкм') || s.includes('бурильн') || s.includes('буровая') || s.includes('бурение')) return 'Ямобур машины для бурения';
+    if (s.includes('молоковоз') || s.includes('milk')) return 'Молоковоз';
+    if ((s.includes('топлив') && s.includes('заправ')) || s.includes('автозаправ') || s.includes('топливораздат'))
+      return 'Топливозаправщик';
 
-let all = [];
-let filtered = [];
-
-// ---------- utils ----------
-function normalize(v) {
-  return {
-    id: v.id,
-    brand: v.brand || '',
-    model: v.model || '',
-    name: v.name || [v.brand, v.model].filter(Boolean).join(' '),
-    body: v.body_type || v.body || '',
-    price_usd: v.price_usd ?? v.price ?? null,
-    image: v.image_url || v.image || '',
-    kind: (v.body_type || v.body || '').toLowerCase(),
-  };
-}
-
-function formatPriceKZT(usd) {
-  if (usd == null) return 'Цена по запросу';
-  const rate = window.KZT_RATE || 505;
-  const kzt = Math.round((usd * rate) / 1000) * 1000;
-  return kzt.toLocaleString('ru-RU') + ' ₸';
-}
-
-function buildCalcUrl(item) {
-  const url = new URL(CALC_PATH, location.origin);
-  const params = new URLSearchParams({
-    name: item.name || `${item.brand} ${item.model}`.trim(),
-    title: [item.brand, item.model, item.body].filter(Boolean).join(' '),
-    price: item.price_usd ?? '',
-    body: item.body || '',
-    body_raw: item.body || ''
-  });
-  url.search = params.toString();
-  return url.toString();
-}
-
-// ---------- render ----------
-function render() {
-  if (!grid) return;
-  if (!filtered.length) {
-    grid.innerHTML = `<div class="muted">Не удалось загрузить каталог</div>`;
-    return;
+    // Базовые
+    if (s.includes('полуприцеп')) return 'Полуприцепы';
+    if (!s.includes('полуприцеп') && s.includes('прицеп')) return 'Прицепы';
+    if (s.includes('самосвал')) return 'Самосвал';
+    if (s.includes('тягач') || s.includes('седельный')) return 'Тягач';
+    if (s.includes('манипулятор')) return 'Манипулятор';
+    if (s.includes('кран')) return 'Кран';
+    if (s.includes('миксер') || s.includes('бетономеш')) return 'Миксер';
+    if (s.includes('бензовоз') || s.includes('топливовоз')) return 'Бензовоз';
+    if (s.includes('автовышк')) return 'Автовышка';
+    if (s.includes('ассенизатор')) return 'Ассенизатор';
+    if (s.includes('поливомо')) return 'Поливомоечная машина';
+    if (s.includes('спец') || s.includes('экскаватор') || s.includes('погрузчик')) return 'Спец. техника';
+    return rawBody || 'Спец. техника';
   }
-  grid.innerHTML = filtered.map(item => {
-    const calcUrl = buildCalcUrl(item);
-    const hasImg = Boolean(item.image);
-    return `
-      <div class="card catalog-card" data-id="${item.id}">
-        <a class="thumb ${hasImg ? 'open-photo' : ''}" ${hasImg ? `data-src="${item.image}"` : ''} href="${hasImg ? item.image : '#'}" ${hasImg ? 'target="_blank"' : 'onclick="return false"'} aria-label="Открыть фото">
-          ${hasImg ? `<img loading="lazy" src="${item.image}" alt="${item.name}">`
-                   : `<div class="no-img">Нет фото</div>`}
-        </a>
-        <div class="info">
-          <div class="title">${item.name}</div>
-          <div class="meta">
-            ${item.brand ? `<span>${item.brand}</span>` : ''}
-            ${item.model ? `<span>${item.model}</span>` : ''}
-            ${item.body ? `<span>${item.body}</span>` : ''}
-          </div>
-          <div class="price">${formatPriceKZT(item.price_usd)}</div>
-        </div>
-        <div class="actions">
-          <button class="btn btn-outline btn-photo" ${hasImg ? `data-src="${item.image}"` : 'disabled'}>Изображение</button>
-          <a class="btn btn-primary" href="${calcUrl}">Рассчитать</a>
-        </div>
+
+  // «сырое» текстовое поле Body type — показываем
+  function pickBodyRaw(v){
+    return (
+      v.body_type ?? v.bodyType ?? v.body ?? v.body_name ?? v.bodytext ??
+      v.configuration ?? v.config ?? v.spec ?? v.specs ?? v.drive ?? v.drive_type ??
+      v.chassis ?? v.type_details ?? v.type_info ?? v.type_extra ?? ''
+    );
+  }
+
+  // Корректное короткое имя для калькулятора (бренд + модель если есть)
+  function makeCalcName(v, fallbackTitle){
+    const brand = (v.brand || '').trim();
+    const model = (v.model || '').trim();
+    if (brand || model) return `${brand} ${model}`.trim();
+    // иначе — обрежем «лишнее» из title
+    const t = fallbackTitle.replace(/\s{2,}/g,' ').trim();
+    // уберём распространённые слова конструктивов/комплектаций
+    const cleaned = t
+      .replace(/самосвал/ig,'')
+      .replace(/тягач/ig,'')
+      .replace(/полуприцеп/ig,'')
+      .replace(/прицеп/ig,'')
+      .replace(/евро\s*\d/ig,'')
+      .replace(/\b\d+\*\d+\b/ig,'')
+      .replace(/\s{2,}/g,' ')
+      .trim();
+    // оставим первые 4 слова максимум
+    return cleaned.split(' ').slice(0,4).join(' ') || t;
+  }
+
+  function normalize(v){
+    const title   = [v.brand, v.model, v.name].filter(Boolean).join(' ').trim() || 'Без названия';
+    const mainImg = v.image_url || (Array.isArray(v.images) && v.images[0]) || v.photo_url || '';
+    const images  = Array.isArray(v.images) && v.images.length ? v.images : (mainImg ? [mainImg] : []);
+    const priceNum= (v.price_usd ?? v.usd_price ?? v.priceUSD ?? null);
+
+    const bodyRawText = String(pickBodyRaw(v) || '').trim();
+    const rawForCanon = bodyRawText || (v.type ?? v.category ?? v.kind ?? '');
+    const bodyCanon   = canonBody(title, String(rawForCanon || ''));
+
+    const calcName    = makeCalcName(v, title);
+
+    return {
+      id: v.id ?? '',
+      title,
+      mainImg, images,
+      priceNum: (priceNum || priceNum===0) ? Number(priceNum) : null,
+      priceText: fmtPrice(priceNum),
+      bodyTypeRaw: bodyRawText,  // показываем
+      bodyType: bodyCanon,       // фильтр/кальк
+      calcName                   // короткое имя в калькулятор
+    };
+  }
+
+  function cardHTML(x){
+    const bodyRow = `
+      <div class="meta-row">
+        <i class="fa-solid fa-car-side"></i>
+        <span>Body type:</span> <b>${escHTML(x.bodyTypeRaw || '—')}</b>
       </div>
     `;
-  }).join('');
-}
-
-function refilter() {
-  const typeVal = (typeSel && typeSel.value || '').toLowerCase();
-  const sortVal = (sortSel && sortSel.value) || '';
-
-  filtered = all.filter(x => {
-    if (!typeVal || ['все','all',''].includes(typeVal)) return true;
-    return x.kind.includes(typeVal);
-  });
-
-  switch (sortVal) {
-    case 'price_asc':
-      filtered.sort((a,b)=>(a.price_usd??Infinity)-(b.price_usd??Infinity)); break;
-    case 'price_desc':
-      filtered.sort((a,b)=>(b.price_usd??-Infinity)-(a.price_usd??-Infinity)); break;
-    case 'name_asc':
-      filtered.sort((a,b)=>(a.name||'').localeCompare(b.name||'')); break;
-    case 'name_desc':
-      filtered.sort((a,b)=>(b.name||'').localeCompare(a.name||'')); break;
+    return `
+      <div class="feature-card" data-id="${x.id}">
+        <div class="card-image">
+          ${x.mainImg
+            ? `<img src="${escAttr(x.mainImg)}" alt="${escAttr(x.title)}" class="js-open-gallery">`
+            : `<div style="height:220px;background:#f3f4f6;display:flex;align-items:center;justify-content:center">Фото позже</div>`}
+        </div>
+        <div class="card-content">
+          <h3 style="margin:6px 0 8px">${escHTML(x.title)}</h3>
+          ${bodyRow}
+          <div class="price">${x.priceText}</div>
+          <div class="card-actions">
+            <button class="btn js-open-gallery"><i class="fa fa-images"></i> Фотографии</button>
+            <a class="btn btn-ghost"
+               href="calculator.html?name=${encodeURIComponent(x.calcName)}&title=${encodeURIComponent(x.title)}&price=${encodeURIComponent(x.priceNum ?? '')}&body=${encodeURIComponent(x.bodyType)}&body_raw=${encodeURIComponent(x.bodyTypeRaw || '')}">
+              <i class="fa fa-calculator"></i> Рассчитать
+            </a>
+          </div>
+        </div>
+      </div>`;
   }
-  render();
-}
 
-// ---------- data ----------
-async function fetchJson(url) {
-  console.info('catalog.js v9 endpoint:', url);
-  const r = await fetch(url, { headers: { Accept: 'application/json' } });
-  if (!r.ok) throw new Error(`HTTP ${r.status}`);
-  return r.json();
-}
-
-async function load() {
-  if (grid) grid.innerHTML = `<div class="loading">Загрузка...</div>`;
-  let data;
-  try {
-    data = await fetchJson(FLY_API);        // сначала Fly
-  } catch (e1) {
-    console.warn('Fly API недоступен, пробуем same-origin', e1);
-    data = await fetchJson(SAME_ORIGIN_API);
+  function render(list){
+    grid.innerHTML = list.map(cardHTML).join('');
+    grid.querySelectorAll('.js-open-gallery').forEach(btn=>{
+      btn.addEventListener('click', e=>{
+        const card = e.currentTarget.closest('.feature-card');
+        const id = card?.getAttribute('data-id');
+        const item = current.find(v => String(v.id)===String(id));
+        if (item) openGallery(item);
+      });
+    });
   }
-  const list = Array.isArray(data) ? data : (data?.results ?? []);
-  all = list.map(normalize);
-  refilter();
-}
 
-// ---------- photo modal ----------
-const photoModal = $('#photoModal');
-const photoImg   = photoModal ? photoModal.querySelector('.modal__img') : null;
-const photoClose = photoModal ? photoModal.querySelector('.modal__close') : null;
-
-function openPhoto(src){
-  if (!photoModal || !photoImg || !src) return;
-  photoImg.src = src;
-  photoModal.classList.add('open');
-  photoModal.setAttribute('aria-hidden','false');
-}
-function closePhoto(){
-  if (!photoModal || !photoImg) return;
-  photoImg.src = '';
-  photoModal.classList.remove('open');
-  photoModal.setAttribute('aria-hidden','true');
-}
-
-document.addEventListener('click', (e) => {
-  const btn = e.target.closest('.btn-photo');
-  const thumb = e.target.closest('.open-photo');
-  if (btn && btn.dataset.src){
-    e.preventDefault();
-    openPhoto(btn.dataset.src);
-  } else if (thumb && thumb.dataset.src){
-    // открываем модалку, а не новую вкладку
-    e.preventDefault();
-    openPhoto(thumb.dataset.src);
-  } else if (e.target === photoModal || e.target === photoClose){
-    closePhoto();
+  // Галерея
+  let gIdx=0,gImgs=[];
+  function openGallery(item){
+    gImgs = Array.isArray(item.images) && item.images.length ? item.images.map(String) : (item.mainImg?[item.mainImg]:[]);
+    if (!gImgs.length) return;
+    gIdx=0;
+    gTitle.textContent=item.title;
+    drawGallery();
+    gModal.classList.add('open');
+    gModal.setAttribute('aria-hidden','false');
   }
+  function drawGallery(){
+    gMain.src=gImgs[gIdx];
+    gMain.alt=`Фото ${gIdx+1} из ${gImgs.length}`;
+    gThumbs.innerHTML=gImgs.map((src,i)=>`<img src="${escAttr(src)}" data-i="${i}" class="${i===gIdx?'active':''}">`).join('');
+    gThumbs.querySelectorAll('img').forEach(img=>img.addEventListener('click',()=>{gIdx=Number(img.dataset.i);drawGallery();}));
+  }
+  function closeGallery(){ gModal.classList.remove('open'); gModal.setAttribute('aria-hidden','true'); gMain.removeAttribute('src'); }
+  gPrev.addEventListener('click',()=>{ if(!gImgs.length) return; gIdx=(gIdx-1+gImgs.length)%gImgs.length; drawGallery(); });
+  gNext.addEventListener('click',()=>{ if(!gImgs.length) return; gIdx=(gIdx+1)%gImgs.length; drawGallery(); });
+  gClose.addEventListener('click',closeGallery);
+  gModal.addEventListener('click',e=>{ if(e.target===gModal) closeGallery(); });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeGallery(); });
+
+  // Фильтр/сортировка
+  let all=[], current=[];
+  function applyFilters(){
+    const b=(bodyEl?.value||'').trim();
+    current = all.filter(x => !b || x.bodyType===b);
+  }
+  function applySort(){
+    const s=sortEl?.value||'';
+    if (s==='price_asc')  current.sort((a,b)=>(a.priceNum??Infinity)-(b.priceNum??Infinity));
+    if (s==='price_desc') current.sort((a,b)=>(b.priceNum??-Infinity)-(a.priceNum??-Infinity));
+  }
+  function refilter(){ applyFilters(); applySort(); render(current); }
+  bodyEl?.addEventListener('change', refilter);
+  sortEl?.addEventListener('change', refilter);
+
+  // Загрузка
+  async function load(){
+    try{
+      grid.innerHTML = `<div class="loading">Загрузка...</div>`;
+      const url = new URL('/api/vehicles/', API_BASE || location.origin);
+      const r = await fetch(url.toString(), { headers:{'Accept':'application/json'} });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const data = await r.json();
+      const list = Array.isArray(data) ? data : (Array.isArray(data.results) ? data.results : []);
+      all = list.map(normalize);
+      refilter();
+    }catch(e){
+      console.error('catalog load failed:', e);
+      grid.innerHTML = `<div class="error">Не удалось загрузить каталог</div>`;
+    }
+  }
+
+  load();
 });
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closePhoto();
-});
-
-// ---------- bindings ----------
-typeSel && typeSel.addEventListener('change', refilter);
-sortSel && sortSel.addEventListener('change', refilter);
-document.addEventListener('DOMContentLoaded', load);
