@@ -160,7 +160,14 @@ document.addEventListener('DOMContentLoaded', () => {
     gThumbs.innerHTML=gImgs.map((src,i)=>`<img src="${escAttr(src)}" data-i="${i}" class="${i===gIdx?'active':''}">`).join('');
     gThumbs.querySelectorAll('img').forEach(img=>img.addEventListener('click',()=>{gIdx=Number(img.dataset.i);drawGallery();}));
   }
-  function closeGallery(){ gModal.classList.remove('open'); gModal.setAttribute('aria-hidden','true'); gMain.removeAttribute('src'); }
+  function closeGallery(){
+    gModal.classList.remove('open');
+    gModal.setAttribute('aria-hidden','true');
+    gMain.removeAttribute('src');
+    gThumbs.innerHTML = '';
+    gImgs = [];
+    gIdx = 0;
+  }
   gPrev?.addEventListener('click',()=>{ if(!gImgs.length) return; gIdx=(gIdx-1+gImgs.length)%gImgs.length; drawGallery(); });
   gNext?.addEventListener('click',()=>{ if(!gImgs.length) return; gIdx=(gIdx+1)%gImgs.length; drawGallery(); });
   gClose?.addEventListener('click',closeGallery);
