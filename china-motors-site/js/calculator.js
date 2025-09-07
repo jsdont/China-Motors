@@ -39,8 +39,7 @@
     'Полуприцепы': [{ year: 2021, usd: 13750 }, { year: 2022, usd: 16000 }],
   };
 
-  const fmt    = (v) => nf.format(Math.round(v || 0));
-  const fmtUsd = (v) => nf.format(Math.round(v || 0));
+  function fmt(v) { return nf.format(Math.round(v || 0)); }
   const num = (sel) => {
     const el = $(sel);
     const n = Number((el?.value ?? '0').toString().replace(/\s/g,'').replace(',','.'));
@@ -326,7 +325,7 @@
     lines.push(`Тип транспорта (селект): ${type}`);
     lines.push(`Способ расчёта ТС: ${tsModeHuman(document.querySelector('input[name="ts_mode"]:checked')?.value || 'byprice')}`);
     lines.push('');
-    lines.push(`Цена авто: $${fmtUsd(priceUSD)} × курс ${fmtUsd(rate)} = ${fmt(realKZT)} ₸`);
+    lines.push(`Цена авто: $${fmt(priceUSD)} × курс ${fmt(rate)} = ${fmt(realKZT)} ₸`);
     lines.push(`Таможенные платежи: ${fmt(customsTotal)} ₸ (Пошлина: ${fmt(dutyKZT)} ₸, НДС: ${fmt(vatKZT)} ₸)`);
     lines.push(`Доп. расходы: ${fmt(mandatoryTotal)} ₸`);
     lines.push(`Доставка и граница: ${fmt(deliveryTotal)} ₸`);
