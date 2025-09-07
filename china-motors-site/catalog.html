@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  <meta name="api-base" content="https://cm-backend-daniyal.fly.dev">
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+
   <title>China Motors - Каталог</title>
 
   <link rel="stylesheet" href="style.css">
@@ -12,6 +15,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
 
   <style>
     .filters{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin:18px 0 22px}
@@ -145,8 +149,14 @@
       </div>
     </div>
   </footer>
+<script>
+// общий fallback, если meta вдруг не прочиталась
+window.CM_API = 'https://cm-backend-daniyal.fly.dev';
+</script>
 
-  <script src="js/catalog.js" defer></script>
+  <script src="/js/catalog.js?v=8" defer></script>
+
+
 
   <!-- Модалка галереи -->
   <div id="gallery" class="modal" aria-hidden="true">
