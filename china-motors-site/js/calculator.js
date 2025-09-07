@@ -161,16 +161,22 @@
       'https://open.er-api.com/v6/latest/USD',
       'https://api.frankfurter.app/latest?from=USD&to=KZT'
     ];
-    for (const url of endpoints){
-      try{
-        const r = await fetch(url,{cache:'no-store'}); if(!r.ok) continue;
-        const d = await r.json();
-        let kzt=null;
-        if (d?.rates?.KZT) kzt=d.rates.KZT;
-        if (!kzt && d?.result==='success' && d?.rates?.KZT) kzt=d.rates.KZT;
-        if (kzt){ input.value=String(kzt.toFixed(2)); info.textContent=`Курс НБ РК: ~ ${kzt.toFixed(2)} ₸`; break; }
-      }catch(_){}
-    }
+    const controllers = endpoints.map(()=>new AbortController());
+    const promises = endpoints.map((url,i)=>
+      fetch(url,{cache:'no-store',signal:controllers[i].signal})
+        .then(r=>{ if(!r.ok) throw new Error('HTTP'); return r.json(); })
+    );
+    try{
+      const d = await Promise.any(promises);
+      controllers.forEach(c=>c.abort());
+      let kzt=null;
+      if (d?.rates?.KZT) kzt=d.rates.KZT;
+      if (!kzt && d?.result==='success' && d?.rates?.KZT) kzt=d.rates.KZT;
+      if (kzt){
+        input.value=String(kzt.toFixed(2));
+        info.textContent=`Курс НБ РК: ~ ${kzt.toFixed(2)} ₸`;
+      }
+    }catch(_){}
     recalc();
   }
   $('#btnRefreshRate')?.addEventListener('click', (e)=>{ e.preventDefault(); refreshRate(); });
