@@ -32,6 +32,15 @@
       s1.setAttribute('crossorigin', '*');
       document.body.appendChild(s1);
     }
+
+    // Ленивая загрузка для всех картинок и видео, если атрибутов нет
+    document.querySelectorAll('img:not([loading])').forEach(img => {
+      img.setAttribute('loading', 'lazy');
+      img.setAttribute('decoding', 'async');
+    });
+    document
+      .querySelectorAll('video[preload="auto"]')
+      .forEach(v => v.setAttribute('preload', 'metadata'));
   };
 
   if (document.readyState === 'loading') {
@@ -39,10 +48,4 @@
   } else {
     onReady();
   }
-      // Ленивая загрузка для всех картинок и видео, если атрибутов нет
-    document.querySelectorAll('img:not([loading])').forEach(img => {
-        img.setAttribute('loading', 'lazy');
-        img.setAttribute('decoding', 'async');
-    });
-    document.querySelectorAll('video[preload="auto"]').forEach(v => v.setAttribute('preload', 'metadata'));
 })();
