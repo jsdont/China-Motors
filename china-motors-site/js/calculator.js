@@ -1,279 +1,412 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Калькулятор стоимости автомобилей и спецтехники из Китая">
-  <meta property="og:title" content="China Motors">
-  <meta property="og:description" content="Спецтехника и авто из Китая">
-  <meta property="og:image" content="/path/to/preview.jpg">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://ваш-домен/">
-  <title>China Motors - Калькулятор</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <style>
-    /* компактные списки-пояснения */
-    .bill {margin-top:10px;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(255,255,255,.02)}
-    .bill h4{margin:0;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.06);font-weight:700}
-    .bill ul{list-style:none;margin:0;padding:6px 14px 12px}
-    .bill li{display:flex;justify-content:space-between;gap:16px;padding:6px 0;border-bottom:1px dashed rgba(255,255,255,.08)}
-    .bill li:last-child{border-bottom:none}
-    .bill .muted{opacity:.85}
-    .bill .sum{font-weight:700}
-    .readonly-note{opacity:.8;font-size:.92rem;margin:6px 0 0}
-    /* убираем инпуты у заблокированных секций */
-    .view-only input, .view-only select, .view-only button {pointer-events:none; opacity:.75}
-  </style>
-</head>
-<body>
-  <!-- Navbar -->
-  <header class="navbar">
-    <div class="container-navbar">
-      <div class="logo-container">
-        <h1 class="logo"><a href="index.html" style="color:#fff;text-decoration:none">China Motors</a></h1>
-        <div class="menu-toggle">☰</div>
-        <button id="themeToggle">🌙</button>
-      </div>
-      <ul class="nav-links">
-        <li><a href="index.html"><i class="fas fa-home"></i> Главная</a></li>
-        <li><a href="catalog.html"><i class="fas fa-car"></i> Каталог</a></li>
-        <li><a href="services.html"><i class="fas fa-tools"></i> Услуги</a></li>
-        <li><a href="contacts.html"><i class="fas fa-envelope"></i> Контакты</a></li>
-        <li><a href="calculator.html" class="active"><i class="fas fa-calculator"></i> Калькулятор</a></li>
-      </ul>
-    </div>
-  </header>
+// Калькулятор (упрощённый UI + авто-сообщение)
+// Обновления:
+// 1) Body type читаем также из ?body_raw (если есть).
+// 2) Утиль/пер.рег.: утиль 4 030 000 и первичная 1 376 000 для всех,
+//    кроме: Спец. техника (0), Тягач (утиль 2 162 600 + госномер), Прицепы/Полуприцепы (только госномер).
 
-  <!-- Hero Section -->
-  <section class="hero section fade-in">
-    <div class="container">
-      <div class="hero-overlay">
-        <h1>Калькулятор</h1>
-        <p class="White-p">Прозрачный расчёт: видно «за что платим» без лишних деталей.</p>
-      </div>
-    </div>
-  </section>
+(function () {
+  const $  = (s, r = document) => r.querySelector(s);
+  const qa = (s, r = document) => Array.from(r.querySelectorAll(s));
+  const nf = new Intl.NumberFormat('ru-RU');
 
-<section id="calculator">
-<main  class="container" style="padding-top:24px;padding-bottom:60px">
-  <h1 class="page-title">Калькулятор стоимости</h1>
+  // === Константы ===
+  const DUTY_RATE  = 0.10;
+  const VAT_RATE   = 0.12;
 
-  <div id="calcGrid" class="grid-2">
-    <!-- Левая колонка -->
-    <form id="calcForm" class="calc-sections">
+  // Гос. сборы
+  const PLATE_FEE        = 16963;     // госномер/техпаспорт
+  const UTIL_TAX_TYAGACH = 2162600;   // утиль для тягачей (как раньше)
+  const UTIL_TAX_STD     = 4030000;   // утиль для большинства типов (новое)
+  const FIRST_REG_STD    = 1376000;   // первичная регистрация (новое)
 
-      <!-- Входные данные (РАЗРЕШЕНО редактировать) -->
-      <section class="calc-card">
-        <h2 class="calc-card__title">Входные данные</h2>
+  // Типы (для распознавания значения ?body как "тип" или "комплектация")
+  const TYPES = [
+    'Прицепы','Полуприцепы','Самосвал','Тягач','Спец. техника','Кран','Манипулятор',
+    'Миксер','Бензовоз','Автовышка','Ассенизатор','Рефрижератор','Автофургон',
+    'Поливомоечная машина','Ямобур машины для бурения','Молоковоз','Топливозаправщик'
+  ];
+  const NO_GRID = new Set(['Кран','Поливомоечная машина','Рефрижератор','Ассенизатор','Автовышка']);
+  const IS_TRAILER = (t) => (t === 'Прицепы' || t === 'Полуприцепы');
 
-        <div class="grid-2">
-          <div>
-            <label>Модель / комплектация</label>
-            <input id="vehicleName" type="text" placeholder="Например: Тягач 2022 года"/>
-          </div>
-          <div>
-            <label>Цена авто, $</label>
-            <input id="basePrice" type="number" step="0.01" placeholder="59165"/>
-          </div>
-        </div>
+  // Сетка (год)
+  const GRID_YEAR_TABLE = {
+    'Тягач':       [{ year: 2021, usd: 22300 }, { year: 2022, usd: 25500 }],
+    'Самосвал':    [{ year: 2022, usd: 27000 }],
+    'Миксер':      [{ year: 2021, usd: 20300 }],
+    'Манипулятор': [{ year: 2022, usd: 28000 }],
+    'Бензовоз':    [{ year: 2022, usd: 28000 }],
+    'Прицепы':     [{ year: 2021, usd: 13750 }, { year: 2022, usd: 16000 }],
+    'Полуприцепы': [{ year: 2021, usd: 13750 }, { year: 2022, usd: 16000 }],
+  };
 
-        <div class="grid-2 mt-12">
-          <div>
-            <label>Тип транспорта</label>
-            <select id="type">
-              <option>Прицепы</option>
-              <option>Полуприцепы</option>
-              <option>Самосвал</option>
-              <option>Тягач</option>
-              <option>Спец. техника</option>
-              <option>Кран</option>
-              <option>Манипулятор</option>
-              <option>Миксер</option>
-              <option>Бензовоз</option>
-              <option>Автовышка</option>
-              <option>Ассенизатор</option>
-              <option>Рефрижератор</option>
-              <option>Автофургон</option>
-              <option>Поливомоечная машина</option>
-              <option>Ямобур машины для бурения</option>
-              <option>Молоковоз</option>
-              <option>Топливозаправщик</option>
-            </select>
-          </div>
-          <div>
-            <label>Курс $ → ₸</label>
-            <div style="display:flex;gap:8px;align-items:center">
-              <input id="rate" type="number" step="0.01" value="540"/>
-              <button id="btnRefreshRate" type="button" class="btn btn--ghost" title="Обновить курс">
-                <i class="fa-solid fa-rotate"></i> Обновить курс
-              </button>
-            </div>
-            <small id="rateInfo" style="display:block;margin-top:4px;opacity:.85">Курс НБ РК: —</small>
-          </div>
-        </div>
-      </section>
+  function fmt(v) { return nf.format(Math.round(v || 0)); }
+  const num = (sel) => {
+    const el = $(sel);
+    const n = Number((el?.value ?? '0').toString().replace(/\s/g,'').replace(',','.'));
+    return Number.isFinite(n) ? n : 0;
+  };
 
-      <!-- 1) Реальная стоимость (просмотр) -->
-      <section class="calc-card view-only">
-        <h2 class="calc-card__title">1) Реальная стоимость</h2>
-        <p class="calc-hint">Цена авто в тенге = Цена($) × Курс</p>
-        <div class="summary-line">
-          <span>=</span>
-          <strong id="realCostKZT">—</strong>
-        </div>
-      </section>
+  // --------- Автозаполнение из URL ---------
+  let qType='', qBrand='', qModel='', qBodyText='', qName='';
+  (function prefill(){
+    const p = new URLSearchParams(location.search);
 
-      <!-- 2) Таможенная стоимость (РАЗРЕШЕНО редактировать) -->
-      <section class="calc-card">
-        <h2 class="calc-card__title">2) Таможенная стоимость</h2>
+    const price = p.get('price') || '';
 
-        <div class="grid-2">
-          <div>
-            <label>Способ расчёта ТС</label>
-            <div class="radio-row" id="tsModes">
-              <label><input type="radio" name="ts_mode" value="byprice" checked> По полной цене</label>
-              <label id="lblGridYear"><input type="radio" name="ts_mode" value="gridYear"> Сетка (год)</label>
-              <label id="lblFixed"><input type="radio" name="ts_mode" value="fixed"> Фиксированная сетка</label>
-            </div>
-          </div>
-          <div id="wrap-ts-manual">
-            <label>ТС, $ (для «Фиксированной сетки»)</label>
-            <input id="tsValueUSD" type="number" step="0.01" value="25500"/>
-          </div>
-        </div>
+    // В некоторых случаях в ?body приходит либо "тип", либо "комплектация".
+    const bodyParam = p.get('body') || '';
+    // Комплектация может приезжать отдельным ключом body_raw.
+    const bodyRaw   = p.get('body_raw') || '';
 
-        <div class="grid-2 mt-12" id="wrap-gridYear" style="display:none">
-          <div>
-            <label>Год (для «Сетка (год)»)</label>
-            <select id="gridYear"></select>
-          </div>
-          <div>
-            <label>Фиксированная сумма ТС, $</label>
-            <input id="gridYearUSD" type="number" value="" readonly>
-          </div>
-        </div>
+    let typeForSelect = bodyParam;
+    let guessedBodyText = '';
 
-        <div class="bill">
-          <h4>Таможенные платежи</h4>
-          <ul>
-            <li><span class="muted">ТС в тенге</span><span class="sum" id="tsKZT">—</span></li>
-            <li><span>Пошлина</span><span class="sum" id="dutyOutKZT">—</span></li>
-            <li><span>НДС</span><span class="sum" id="vatOutKZT">—</span></li>
-          </ul>
-        </div>
-      </section>
+    if (bodyParam) {
+      const isType = TYPES.includes(bodyParam);
+      if (!isType) {
+        // это не тип из списка — считаем это Body type (комплектация)
+        guessedBodyText = bodyParam;
+        typeForSelect = ''; // тип попробуем взять из других ключей ниже
+      }
+    }
+    // если явно передали body_raw — он имеет приоритет как комплектация
+    if (bodyRaw) guessedBodyText = bodyRaw;
 
-      <!-- 3) Доп. расходы (только просмотр) -->
-      <section class="calc-card view-only">
-        <h2 class="calc-card__title">3) Дополнительные расходы</h2>
-        <p class="readonly-note">Фиксируется по типу транспорта и выбранному режиму ТС.</p>
-        <div class="bill">
-          <h4>За что платим</h4>
-          <ul id="list-mandatory">
-            <!-- строка <li><span>Название</span><span class="sum">123 456</span></li> -->
-          </ul>
-        </div>
-      </section>
+    // Тип для селекта — берём из множества ключей
+    typeForSelect =
+      typeForSelect ||
+      p.get('type') || p.get('category') || p.get('vehicle') || p.get('kind') || '';
 
-      <!-- 4) Доставка (только просмотр) -->
-      <section class="calc-card view-only">
-        <h2 class="calc-card__title">4) Доставка и граница</h2>
-        <div class="bill">
-          <h4>Состав доставки</h4>
-          <ul id="list-delivery"></ul>
-        </div>
-      </section>
+    // Поля для шапки
+    qType     = typeForSelect || p.get('type') || p.get('category') || p.get('vehicle') || p.get('kind') || '';
+    qBrand    = p.get('brand') || p.get('make') || '';
+    qModel    = p.get('model') || '';
+    qBodyText = guessedBodyText ||
+                p.get('body_type') || p.get('bodyType') || p.get('bodytext') ||
+                p.get('spec') || p.get('config') || '';
+    qName     = p.get('name') || p.get('title') || '';
 
-      <!-- 5) Утиль/регистрация (только просмотр) -->
-      <section class="calc-card view-only">
-        <h2 class="calc-card__title">5) Утилизационный сбор и регистрация</h2>
-        <div class="bill">
-          <h4>Государственные платежи</h4>
-          <ul id="list-util"></ul>
-        </div>
-      </section>
-    </form>
+    const parts = [];
+    if (qType)     parts.push(`Type: ${qType}`);
+    if (qBrand)    parts.push(`Brand: ${qBrand}`);
+    if (qModel)    parts.push(`Model: ${qModel}`);
+    if (qBodyText) parts.push(`Body: ${qBodyText}`);
+    if (qName)     parts.push(`Name: ${qName}`);
+    const composed = parts.join(' | ');
+    if (composed) $('#vehicleName').value = composed;
 
-    <!-- Правая колонка (итоговая карточка) -->
-    <aside class="summary-card summary-card--dark">
-      <h3 class="summary-title">Итоговая стоимость</h3>
+    if (price && !Number.isNaN(+price)) $('#basePrice').value = String(+price);
+    if (typeForSelect) $('#type').value = typeForSelect;
+  })();
 
-      <div class="summary-line"><span>База для расчёта:</span> <strong id="sBase">—</strong></div>
-      <div class="summary-line"><span>Таможенные платежи:</span> <strong id="sCustoms">—</strong></div>
-      <div class="summary-line"><span>Дополнительные расходы:</span> <strong id="sMandatory">—</strong></div>
-      <div class="summary-line"><span>Доставка и граница:</span> <strong id="sBorder">—</strong></div>
-      <div class="summary-line"><span>Утиль/регистрация:</span> <strong id="sUtil">—</strong></div>
+  // ---- helpers ----
+  function putText(sel, v) { const e = $(sel); if (e) e.textContent = v; }
+  function addRow(listId, name, sum) {
+    const ul = $(listId);
+    if (!ul) return;
+    const li = document.createElement('li');
+    li.innerHTML = `<span>${name}</span><span class="sum">${fmt(sum)}</span>`;
+    ul.appendChild(li);
+  }
+  function clearList(id) { const ul = $(id); if (ul) ul.innerHTML = ''; }
 
-      <div class="summary-total">
-        <span>ИТОГО:</span>
-        <strong id="sTotalKZT">—</strong>
-      </div>
-      <div class="summary-sub" id="sTotalUSD">≈ — USD</div>
+  // UI: режимы ТС
+  function refreshModesByType(){
+    const t = $('#type').value;
+    $('#lblGridYear').style.display = GRID_YEAR_TABLE[t] ? '' : 'none';
+    $('#lblFixed').style.display    = NO_GRID.has(t) ? 'none' : '';
 
-      <div class="summary-actions">
-        <button id="btnRecalcAside" class="btn" type="button"><i class="fa-solid fa-calculator"></i> Рассчитать</button>
-        <a id="toContactsAside" class="btn btn--primary" href="contacts.html">
-        <i class="fa-solid fa-paper-plane"></i> Оформить заявку</button>
-        </a>
-      </div>
-    </aside>
-  </div>
-</main>
-</section>
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container-footer">
-      <div class="footer-content">
-        <div class="footer-logo">
-          <h2>China Motors</h2>
-          <p>Надежная техника из Китая под заказ и в наличии.</p>
-        </div>
-        <div class="footer-links">
-          <h3 class="white-title-h3">Навигация</h3>
-          <ul>
-            <li><a href="index.html">Главная</a></li>
-            <li><a href="catalog.html">Каталог</a></li>
-            <li><a href="services.html">Услуги</a></li>
-            <li><a href="contacts.html">Контакты</a></li>
-            <li><a href="calculator.html">Калькулятор</a></li>
-          </ul>
-        </div>
-        <div class="footer-contact">
-          <h3 class="white-title-h3">Контакты</h3>
-          <div class="footer-links">
-            <p><i class="fas fa-phone"></i> <a class="contacts-on-contact-page" href="tel:+77776133731">+7 (777) 613-3731</a></p>
-            <p><i class="fas fa-envelope"></i> <a class="contacts-on-contact-page" href="mailto:alijumdd@mail.ru">alijumdd@mail.ru</a></p>
-          </div>
-          <div class="social-links">
-            <a href="https://www.instagram.com/china_motors_ala" target="_blank" rel="noopener noreferrer" class="btn instagram">
-              <i class="fab fa-instagram"></i> Instagram
-            </a>
-            <a href="https://www.tiktok.com/@china.motors_ala" target="_blank" rel="noopener noreferrer" class="btn tiktok">
-              <i class="fab fa-tiktok"></i> TikTok
-            </a>
-          </div>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>© 2025 China Motors. Все права защищены.</p>
-        <p class="last-words">"Сайт в данное время находится в стадии разработки и в дальнейшем будет обновляться"</p>
-      </div>
-    </div>
-  </footer>
+    const rBy  = document.querySelector('input[name="ts_mode"][value="byprice"]');
+    const rGY  = document.querySelector('input[name="ts_mode"][value="gridYear"]');
+    const rFix = document.querySelector('input[name="ts_mode"][value="fixed"]');
 
-<script src="js/common.js"></script>
-<script src="js/calculator.js"></script>
-<script>
-  document.getElementById('btnRecalcAside')?.addEventListener('click', () => {
-    document.getElementById('calcForm')?.dispatchEvent(new Event('submit', {cancelable:true}));
-  });
-</script>
-</body>
-</html>
+    if (NO_GRID.has(t)) { rBy.checked = true; rGY.checked = false; rFix.checked = false; }
+    else if (!GRID_YEAR_TABLE[t] && rGY.checked) { rGY.checked = false; rBy.checked = true; }
+
+    buildGridYearOptions();
+    toggleTsInputs();
+  }
+  function buildGridYearOptions(){
+    const t = $('#type').value;
+    const list = GRID_YEAR_TABLE[t] || [];
+    const sel  = $('#gridYear');
+    sel.innerHTML = '';
+    for (const item of list){
+      const opt = document.createElement('option');
+      opt.value = String(item.year);
+      opt.textContent = item.year;
+      opt.dataset.usd = String(item.usd);
+      sel.appendChild(opt);
+    }
+    applyGridYearUSD();
+  }
+  function applyGridYearUSD(){
+    const sel = $('#gridYear');
+    const usd = sel?.selectedOptions?.[0]?.dataset?.usd;
+    $('#gridYearUSD').value = usd ? usd : '';
+  }
+  function toggleTsInputs(){
+    const mode = document.querySelector('input[name="ts_mode"]:checked')?.value || 'byprice';
+    $('#wrap-ts-manual').style.display = (mode === 'fixed') ? '' : 'none';
+    $('#wrap-gridYear').style.display  = (mode === 'gridYear') ? '' : 'none';
+  }
+
+  // Курс
+  async function refreshRate(){
+    const info = $('#rateInfo');
+    const input = $('#rate');
+    const endpoints = [
+      'https://api.exchangerate.host/latest?base=USD&symbols=KZT',
+      'https://open.er-api.com/v6/latest/USD',
+      'https://api.frankfurter.app/latest?from=USD&to=KZT'
+    ];
+    const controllers = endpoints.map(()=>new AbortController());
+    const promises = endpoints.map((url,i)=>
+      fetch(url,{cache:'no-store',signal:controllers[i].signal})
+        .then(r=>{ if(!r.ok) throw new Error('HTTP'); return r.json(); })
+    );
+    try{
+      const d = await Promise.any(promises);
+      controllers.forEach(c=>c.abort());
+      let kzt=null;
+      if (d?.rates?.KZT) kzt=d.rates.KZT;
+      if (!kzt && d?.result==='success' && d?.rates?.KZT) kzt=d.rates.KZT;
+      if (kzt){
+        input.value=String(kzt.toFixed(2));
+        info.textContent=`Курс НБ РК: ~ ${kzt.toFixed(2)} ₸`;
+      }
+    }catch(_){}
+    recalc();
+  }
+  $('#btnRefreshRate')?.addEventListener('click', (e)=>{ e.preventDefault(); refreshRate(); });
+
+  // Доп.расходы (короткий список)
+  function buildMandatory(type, mode, rate){
+    const byprice = (mode === 'byprice');
+    clearList('#list-mandatory');
+
+    const tBlank   = 23592;
+    const brokerSvh= 90000;
+    let total = 0;
+
+    if (type === 'Тягач') {
+      const items = [
+        ['СБКТС', 200000],
+        ['Кнопка SOS', 150000],
+        ['Таможенный сбор', tBlank],
+        ['Услуги брокера на СВХ', brokerSvh],
+        ['СВХ', 80000],
+        ['Брокер на границе ($250)', 250*rate],
+        ['ЭПТС', 50000],
+        ['Солярка + AdBlue пакет', 51480],
+        ['«Красный коридор»', 50000],
+        ['«Спасибо Астане»', byprice ? 0 : 600*rate],
+      ];
+      items.forEach(([name,sum]) => { if (sum>0){ addRow('#list-mandatory', name, sum); total += sum; }});
+      return total;
+    }
+
+    if (IS_TRAILER(type)) {
+      const items = [
+        ['СБКТС', 150000],
+        ['Таможенный сбор', tBlank],
+        ['Услуги брокера на СВХ', brokerSvh],
+        ['СВХ', 70000],
+        ['Брокер на границе ($250)', 250*rate],
+        ['ЭПТС', 50000],
+        ['«Спасибо Астане»', byprice ? 0 : 400*rate],
+      ];
+      items.forEach(([name,sum]) => { if (sum>0){ addRow('#list-mandatory', name, sum); total += sum; }});
+      return total;
+    }
+
+    if (type === 'Спец. техника') {
+      const items = [
+        ['Декларация о соответствии', 80000],
+        ['Таможный брокер', 90000],
+      ];
+      items.forEach(([name,sum]) => { addRow('#list-mandatory', name, sum); total += sum; });
+      return total;
+    }
+
+    const items = [
+      ['СБКТС', 200000],
+      ['Кнопка SOS', 150000],
+      ['Таможенный сбор', tBlank],
+      ['Услуги брокера на СВХ', brokerSvh],
+      ['СВХ', 80000],
+      ['Брокер на границе ($250)', 250*rate],
+      ['ЭПТС', 50000],
+      ['«Спасибо Астане»', byprice ? 0 : 600*rate],
+    ];
+    items.forEach(([name,sum]) => { if (sum>0){ addRow('#list-mandatory', name, sum); total += sum; }});
+    return total;
+  }
+
+  // Доставка
+  function buildDelivery(type, rate){
+    clearList('#list-delivery');
+    let total = 0;
+
+    if (type === 'Тягач') {
+      addRow('#list-delivery', 'Доставка до Алматы/лаборатории/СВХ', 150000);
+      total = 150000;
+      return total;
+    }
+    if (IS_TRAILER(type)) {
+      return 0;
+    }
+    if (type === 'Спец. техника') {
+      addRow('#list-delivery', 'Доставка до Алматы/лаборатории/СВХ', 300000);
+      total = 300000;
+      return total;
+    }
+    const brokerBorder = 250*rate;
+    const driver = 75000, adblue = 8000, toll = 9000;
+    const diesel = 220*324;
+    [['Брокер на границе ($)', brokerBorder],
+     ['Водитель', driver],
+     ['AdBlue', adblue],
+     ['Платная дорога', toll],
+     ['Солярка', diesel]
+    ].forEach(([name,sum])=>{ addRow('#list-delivery', name, sum); total += sum; });
+    return total;
+  }
+
+  // Гос. платежи (новые правила)
+  function buildUtil(type){
+    clearList('#list-util');
+
+    // Спец техника: ничего
+    if (type === 'Спец. техника') {
+      return 0;
+    }
+
+    // Прицепы — только госномер
+    if (IS_TRAILER(type)) {
+      addRow('#list-util', 'Госномер и техпаспорт', PLATE_FEE);
+      return PLATE_FEE;
+    }
+
+    // Тягач — прежний утиль + госномер (без первичной)
+    if (type === 'Тягач') {
+      addRow('#list-util', 'Утилизационный сбор', UTIL_TAX_TYAGACH);
+      addRow('#list-util', 'Госномер и техпаспорт', PLATE_FEE);
+      return UTIL_TAX_TYAGACH + PLATE_FEE;
+    }
+
+    // Остальные типы — новый утиль и первичная + госномер
+    addRow('#list-util', 'Утилизационный сбор', UTIL_TAX_STD);
+    addRow('#list-util', 'Первичная регистрация', FIRST_REG_STD);
+    addRow('#list-util', 'Госномер и техпаспорт', PLATE_FEE);
+    return UTIL_TAX_STD + FIRST_REG_STD + PLATE_FEE;
+  }
+
+  function tsModeHuman(mode) {
+    if (mode === 'gridYear') {
+      const y   = $('#gridYear')?.value || '';
+      const usd = $('#gridYearUSD')?.value || '';
+      return `Сетка (год): ${y}${usd ? `, ТС $${usd}` : ''}`;
+    }
+    if (mode === 'fixed') {
+      const usd = $('#tsValueUSD')?.value || '';
+      return `Фиксированная сетка${usd ? `, ТС $${usd}` : ''}`;
+    }
+    return 'По полной цене';
+  }
+
+  // Сообщение
+  function buildMessage(ctx) {
+    const {
+      type, priceUSD, rate, realKZT, tsKZT, dutyKZT, vatKZT,
+      customsTotal, mandatoryTotal, deliveryTotal, utilTotal, totalKZT
+    } = ctx;
+
+    const head = ($('#vehicleName')?.value || '').trim();
+
+    const lines = [];
+    lines.push('🚘 Запрос через калькулятор China Motors');
+    if (head) lines.push(head);
+
+    lines.push(`Тип транспорта (селект): ${type}`);
+    lines.push(`Способ расчёта ТС: ${tsModeHuman(document.querySelector('input[name="ts_mode"]:checked')?.value || 'byprice')}`);
+    lines.push('');
+    lines.push(`Цена авто: $${fmt(priceUSD)} × курс ${fmt(rate)} = ${fmt(realKZT)} ₸`);
+    lines.push(`Таможенные платежи: ${fmt(customsTotal)} ₸ (Пошлина: ${fmt(dutyKZT)} ₸, НДС: ${fmt(vatKZT)} ₸)`);
+    lines.push(`Доп. расходы: ${fmt(mandatoryTotal)} ₸`);
+    lines.push(`Доставка и граница: ${fmt(deliveryTotal)} ₸`);
+    lines.push(`Утиль/регистрация: ${fmt(utilTotal)} ₸`);
+    lines.push('');
+    lines.push(`ИТОГО: ${fmt(totalKZT)} ₸ (≈ ${fmt(totalKZT / rate)} USD)`);
+
+    return lines.join('\n');
+  }
+
+  function recalc(){
+    const type     = $('#type').value;
+    const priceUSD = num('#basePrice');
+    const rate     = Math.max(num('#rate'), 0) || 540;
+    const mode     = document.querySelector('input[name="ts_mode"]:checked')?.value || 'byprice';
+
+    // Реальная стоимость
+    const realKZT = priceUSD * rate;
+    putText('#realCostKZT', fmt(realKZT));
+
+    // ТС/пошлина/НДС
+    let baseUSD = 0;
+    if (mode === 'byprice') baseUSD = priceUSD;
+    else if (mode === 'gridYear') {
+      const usd = $('#gridYear')?.selectedOptions?.[0]?.dataset?.usd;
+      baseUSD = usd ? Number(usd) : priceUSD;
+    } else { // fixed
+      baseUSD = NO_GRID.has(type) ? priceUSD : (num('#tsValueUSD') || priceUSD);
+    }
+
+    const tsKZT   = baseUSD * rate;
+    const tBlank  = 23592;
+    const dutyKZT = tsKZT * DUTY_RATE;
+    const vatKZT  = (tsKZT + dutyKZT + tBlank) * VAT_RATE;
+    const customsTotal = dutyKZT + vatKZT;
+
+    putText('#tsKZT', fmt(tsKZT));
+    putText('#dutyOutKZT', fmt(dutyKZT));
+    putText('#vatOutKZT', fmt(vatKZT));
+
+    // Доп. расходы
+    const mandatoryTotal = buildMandatory(type, mode, rate);
+    // Доставка
+    const deliveryTotal = buildDelivery(type, rate);
+    // Гос. платежи
+    const utilTotal = buildUtil(type);
+
+    // Правая карточка
+    putText('#sBase', fmt(priceUSD * rate));
+    putText('#sCustoms', fmt(customsTotal));
+    putText('#sMandatory', fmt(mandatoryTotal));
+    putText('#sBorder', fmt(deliveryTotal));
+    putText('#sUtil', fmt(utilTotal));
+
+    const totalKZT = priceUSD * rate + customsTotal + mandatoryTotal + deliveryTotal + utilTotal;
+    putText('#sTotalKZT', `${fmt(totalKZT)} тенге`);
+    putText('#sTotalUSD', `≈ ${fmt(totalKZT / rate)} USD`);
+
+    // Ссылка "Оформить заявку"
+    const msg = buildMessage({
+      type, priceUSD, rate, realKZT, tsKZT, dutyKZT, vatKZT,
+      customsTotal, mandatoryTotal, deliveryTotal, utilTotal, totalKZT
+    });
+    const a = $('#toContactsAside');
+    if (a) a.href = `contacts.html?message=${encodeURIComponent(msg)}`;
+  }
+
+  // Слушатели
+  $('#type')?.addEventListener('change', () => { refreshModesByType(); recalc(); });
+  qa('input[name="ts_mode"]').forEach(r => r.addEventListener('change', () => { toggleTsInputs(); recalc(); }));
+  $('#gridYear')?.addEventListener('change', () => { applyGridYearUSD(); recalc(); });
+  $('#calcForm')?.addEventListener('input', recalc);
+  $('#calcForm')?.addEventListener('submit', (e)=>{ e.preventDefault(); recalc(); });
+
+  // init
+  refreshModesByType();
+  recalc();
+})();
