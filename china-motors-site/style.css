@@ -782,7 +782,9 @@ p {
     transition: right 0.5s ease-in-out;
     z-index: 99;
   }
-
+  html.dark .nav-links{
+    background: #000;
+  }
   .nav-links.active {
     right: 0;
     display: flex;
@@ -1420,7 +1422,7 @@ p {
 @media (max-width: 600px) {
   #themeToggle {
     top: 18px;
-    right: 360px;
+    right: 350px;
   }
 }
 
