@@ -124,11 +124,9 @@ document.addEventListener('DOMContentLoaded', () => {
           ${bodyRow}
           <div class="price">${x.priceText}</div>
           <div class="card-actions">
-            <a class="btn js-open-gallery">
-              <i class="fa fa-images"></i> Фотографии
-            </a>
+            <button class="btn js-open-gallery"><i class="fa fa-images"></i> Фотографии</button>
             <a class="btn btn-ghost"
-              href="calculator.html?name=${encodeURIComponent(x.calcName)}&title=${encodeURIComponent(x.title)}&price=${encodeURIComponent(x.priceNum ?? '')}&body=${encodeURIComponent(x.bodyType)}&body_raw=${encodeURIComponent(x.bodyTypeRaw || '')}">
+               href="calculator.html?name=${encodeURIComponent(x.calcName)}&title=${encodeURIComponent(x.title)}&price=${encodeURIComponent(x.priceNum ?? '')}&body=${encodeURIComponent(x.bodyType)}&body_raw=${encodeURIComponent(x.bodyTypeRaw || '')}">
               <i class="fa fa-calculator"></i> Рассчитать
             </a>
           </div>
