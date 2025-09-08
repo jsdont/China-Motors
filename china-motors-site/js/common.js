@@ -1,6 +1,9 @@
 // /js/common.js
 (() => {
   const onReady = () => {
+    // Регистрация Service Worker для офлайн-режима
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('js/service-worker.js');
+
     // Бургер-меню
     const menuToggle = document.querySelector('.menu-toggle');
     const navLinks = document.querySelector('.nav-links');
