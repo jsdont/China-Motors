@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const bodyRow = `
       <div class="meta-row">
         <i class="fa-solid fa-car-side"></i>
-        <span>Body type:</span> <b>${escHTML(x.bodyTypeRaw || '—')}</b>
+        <span>Конструкция:</span> <b>${escHTML(x.bodyTypeRaw || '—')}</b>
       </div>
     `;
     return `
