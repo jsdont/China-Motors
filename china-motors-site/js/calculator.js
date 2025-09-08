@@ -9,6 +9,28 @@
   const qa = (s, r = document) => Array.from(r.querySelectorAll(s));
   const nf = new Intl.NumberFormat('ru-RU');
 
+  // Cached elements
+  const typeEl           = $('#type');
+  const basePriceEl      = $('#basePrice');
+  const rateEl           = $('#rate');
+  const gridYearEl       = $('#gridYear');
+  const gridYearUsdEl    = $('#gridYearUSD');
+  const tsValueUsdEl     = $('#tsValueUSD');
+  const vehicleNameEl    = $('#vehicleName');
+  const calcFormEl       = $('#calcForm');
+  const toContactsAsideEl= $('#toContactsAside');
+  const lblGridYearEl    = $('#lblGridYear');
+  const lblFixedEl       = $('#lblFixed');
+  const wrapTsManualEl   = $('#wrap-ts-manual');
+  const wrapGridYearEl   = $('#wrap-gridYear');
+  const btnRefreshRateEl = $('#btnRefreshRate');
+  const rateInfoEl       = $('#rateInfo');
+  const tsModeRadios     = qa('input[name="ts_mode"]');
+  const tsModeByRadio    = tsModeRadios.find(r => r.value === 'byprice');
+  const tsModeGridYearRadio = tsModeRadios.find(r => r.value === 'gridYear');
+  const tsModeFixedRadio = tsModeRadios.find(r => r.value === 'fixed');
+  const getTsMode = () => tsModeRadios.find(r => r.checked)?.value || 'byprice';
+
   // === Константы ===
   const DUTY_RATE  = 0.10;
   const VAT_RATE   = 0.12;
@@ -41,8 +63,7 @@
 
   const fmt    = (v) => nf.format(Math.round(v || 0));
   const fmtUsd = (v) => nf.format(Math.round(v || 0));
-  const num = (sel) => {
-    const el = $(sel);
+  const num = (el) => {
     const n = Number((el?.value ?? '0').toString().replace(/\s/g,'').replace(',','.'));
     return Number.isFinite(n) ? n : 0;
   };
@@ -94,10 +115,10 @@
     if (qBodyText) parts.push(`Body: ${qBodyText}`);
     if (qName)     parts.push(`Name: ${qName}`);
     const composed = parts.join(' | ');
-    if (composed) $('#vehicleName').value = composed;
+    if (composed) vehicleNameEl.value = composed;
 
-    if (price && !Number.isNaN(+price)) $('#basePrice').value = String(+price);
-    if (typeForSelect) $('#type').value = typeForSelect;
+    if (price && !Number.isNaN(+price)) basePriceEl.value = String(+price);
+    if (typeForSelect) typeEl.value = typeForSelect;
   })();
 
   // ---- helpers ----
@@ -113,24 +134,20 @@
 
   // UI: режимы ТС
   function refreshModesByType(){
-    const t = $('#type').value;
-    $('#lblGridYear').style.display = GRID_YEAR_TABLE[t] ? '' : 'none';
-    $('#lblFixed').style.display    = NO_GRID.has(t) ? 'none' : '';
+    const t = typeEl.value;
+    lblGridYearEl.style.display = GRID_YEAR_TABLE[t] ? '' : 'none';
+    lblFixedEl.style.display    = NO_GRID.has(t) ? 'none' : '';
 
-    const rBy  = document.querySelector('input[name="ts_mode"][value="byprice"]');
-    const rGY  = document.querySelector('input[name="ts_mode"][value="gridYear"]');
-    const rFix = document.querySelector('input[name="ts_mode"][value="fixed"]');
-
-    if (NO_GRID.has(t)) { rBy.checked = true; rGY.checked = false; rFix.checked = false; }
-    else if (!GRID_YEAR_TABLE[t] && rGY.checked) { rGY.checked = false; rBy.checked = true; }
+    if (NO_GRID.has(t)) { tsModeByRadio.checked = true; tsModeGridYearRadio.checked = false; tsModeFixedRadio.checked = false; }
+    else if (!GRID_YEAR_TABLE[t] && tsModeGridYearRadio.checked) { tsModeGridYearRadio.checked = false; tsModeByRadio.checked = true; }
 
     buildGridYearOptions();
     toggleTsInputs();
   }
   function buildGridYearOptions(){
-    const t = $('#type').value;
+    const t = typeEl.value;
     const list = GRID_YEAR_TABLE[t] || [];
-    const sel  = $('#gridYear');
+    const sel  = gridYearEl;
     sel.innerHTML = '';
     for (const item of list){
       const opt = document.createElement('option');
@@ -142,20 +159,19 @@
     applyGridYearUSD();
   }
   function applyGridYearUSD(){
-    const sel = $('#gridYear');
-    const usd = sel?.selectedOptions?.[0]?.dataset?.usd;
-    $('#gridYearUSD').value = usd ? usd : '';
+    const usd = gridYearEl?.selectedOptions?.[0]?.dataset?.usd;
+    gridYearUsdEl.value = usd ? usd : '';
   }
   function toggleTsInputs(){
-    const mode = document.querySelector('input[name="ts_mode"]:checked')?.value || 'byprice';
-    $('#wrap-ts-manual').style.display = (mode === 'fixed') ? '' : 'none';
-    $('#wrap-gridYear').style.display  = (mode === 'gridYear') ? '' : 'none';
+    const mode = getTsMode();
+    wrapTsManualEl.style.display = (mode === 'fixed') ? '' : 'none';
+    wrapGridYearEl.style.display  = (mode === 'gridYear') ? '' : 'none';
   }
 
   // Курс
   async function refreshRate(){
-    const info = $('#rateInfo');
-    const input = $('#rate');
+    const info = rateInfoEl;
+    const input = rateEl;
     const endpoints = [
       'https://api.exchangerate.host/latest?base=USD&symbols=KZT',
       'https://open.er-api.com/v6/latest/USD',
@@ -173,7 +189,7 @@
     }
     recalc();
   }
-  $('#btnRefreshRate')?.addEventListener('click', (e)=>{ e.preventDefault(); refreshRate(); });
+  btnRefreshRateEl?.addEventListener('click', (e)=>{ e.preventDefault(); refreshRate(); });
 
   // Доп.расходы (короткий список)
   function buildMandatory(type, mode, rate){
@@ -199,81 +215,6 @@
       ];
       items.forEach(([name,sum]) => { if (sum>0){ addRow('#list-mandatory', name, sum); total += sum; }});
       return total;
-    }
-
-    if (IS_TRAILER(type)) {
-      const items = [
-        ['СБКТС', 150000],
-        ['Таможенный сбор', tBlank],
-        ['Услуги брокера на СВХ', brokerSvh],
-        ['СВХ', 70000],
-        ['Брокер на границе ($250)', 250*rate],
-        ['ЭПТС', 50000],
-        ['«Спасибо Астане»', byprice ? 0 : 400*rate],
-      ];
-      items.forEach(([name,sum]) => { if (sum>0){ addRow('#list-mandatory', name, sum); total += sum; }});
-      return total;
-    }
-
-    if (type === 'Спец. техника') {
-      const items = [
-        ['Декларация о соответствии', 80000],
-        ['Таможный брокер', 90000],
-      ];
-      items.forEach(([name,sum]) => { addRow('#list-mandatory', name, sum); total += sum; });
-      return total;
-    }
-
-    const items = [
-      ['СБКТС', 200000],
-      ['Кнопка SOS', 150000],
-      ['Таможенный сбор', tBlank],
-      ['Услуги брокера на СВХ', brokerSvh],
-      ['СВХ', 80000],
-      ['Брокер на границе ($250)', 250*rate],
-      ['ЭПТС', 50000],
-      ['«Спасибо Астане»', byprice ? 0 : 600*rate],
-    ];
-    items.forEach(([name,sum]) => { if (sum>0){ addRow('#list-mandatory', name, sum); total += sum; }});
-    return total;
-  }
-
-  // Доставка
-  function buildDelivery(type, rate){
-    clearList('#list-delivery');
-    let total = 0;
-
-    if (type === 'Тягач') {
-      addRow('#list-delivery', 'Доставка до Алматы/лаборатории/СВХ', 150000);
-      total = 150000;
-      return total;
-    }
-    if (IS_TRAILER(type)) {
-      return 0;
-    }
-    if (type === 'Спец. техника') {
-      addRow('#list-delivery', 'Доставка до Алматы/лаборатории/СВХ', 300000);
-      total = 300000;
-      return total;
-    }
-    const brokerBorder = 250*rate;
-    const driver = 75000, adblue = 8000, toll = 9000;
-    const diesel = 220*324;
-    [['Брокер на границе ($)', brokerBorder],
-     ['Водитель', driver],
-     ['AdBlue', adblue],
-     ['Платная дорога', toll],
-     ['Солярка', diesel]
-    ].forEach(([name,sum])=>{ addRow('#list-delivery', name, sum); total += sum; });
-    return total;
-  }
-
-  // Гос. платежи (новые правила)
-  function buildUtil(type){
-    clearList('#list-util');
-
-    // Спец техника: ничего
-    if (type === 'Спец. техника') {
       return 0;
     }
 
@@ -299,12 +240,12 @@
 
   function tsModeHuman(mode) {
     if (mode === 'gridYear') {
-      const y   = $('#gridYear')?.value || '';
-      const usd = $('#gridYearUSD')?.value || '';
+      const y   = gridYearEl?.value || '';
+      const usd = gridYearUsdEl?.value || '';
       return `Сетка (год): ${y}${usd ? `, ТС $${usd}` : ''}`;
     }
     if (mode === 'fixed') {
-      const usd = $('#tsValueUSD')?.value || '';
+      const usd = tsValueUsdEl?.value || '';
       return `Фиксированная сетка${usd ? `, ТС $${usd}` : ''}`;
     }
     return 'По полной цене';
@@ -317,14 +258,14 @@
       customsTotal, mandatoryTotal, deliveryTotal, utilTotal, totalKZT
     } = ctx;
 
-    const head = ($('#vehicleName')?.value || '').trim();
+    const head = (vehicleNameEl?.value || '').trim();
 
     const lines = [];
     lines.push('🚘 Запрос через калькулятор China Motors');
     if (head) lines.push(head);
 
     lines.push(`Тип транспорта (селект): ${type}`);
-    lines.push(`Способ расчёта ТС: ${tsModeHuman(document.querySelector('input[name="ts_mode"]:checked')?.value || 'byprice')}`);
+    lines.push(`Способ расчёта ТС: ${tsModeHuman(getTsMode())}`);
     lines.push('');
     lines.push(`Цена авто: $${fmtUsd(priceUSD)} × курс ${fmtUsd(rate)} = ${fmt(realKZT)} ₸`);
     lines.push(`Таможенные платежи: ${fmt(customsTotal)} ₸ (Пошлина: ${fmt(dutyKZT)} ₸, НДС: ${fmt(vatKZT)} ₸)`);
@@ -338,10 +279,10 @@
   }
 
   function recalc(){
-    const type     = $('#type').value;
-    const priceUSD = num('#basePrice');
-    const rate     = Math.max(num('#rate'), 0) || 540;
-    const mode     = document.querySelector('input[name="ts_mode"]:checked')?.value || 'byprice';
+    const type     = typeEl.value;
+    const priceUSD = num(basePriceEl);
+    const rate     = Math.max(num(rateEl), 0) || 540;
+    const mode     = getTsMode();
 
     // Реальная стоимость
     const realKZT = priceUSD * rate;
@@ -351,10 +292,10 @@
     let baseUSD = 0;
     if (mode === 'byprice') baseUSD = priceUSD;
     else if (mode === 'gridYear') {
-      const usd = $('#gridYear')?.selectedOptions?.[0]?.dataset?.usd;
+      const usd = gridYearEl?.selectedOptions?.[0]?.dataset?.usd;
       baseUSD = usd ? Number(usd) : priceUSD;
     } else { // fixed
-      baseUSD = NO_GRID.has(type) ? priceUSD : (num('#tsValueUSD') || priceUSD);
+      baseUSD = NO_GRID.has(type) ? priceUSD : (num(tsValueUsdEl) || priceUSD);
     }
 
     const tsKZT   = baseUSD * rate;
@@ -390,16 +331,16 @@
       type, priceUSD, rate, realKZT, tsKZT, dutyKZT, vatKZT,
       customsTotal, mandatoryTotal, deliveryTotal, utilTotal, totalKZT
     });
-    const a = $('#toContactsAside');
+    const a = toContactsAsideEl;
     if (a) a.href = `contacts.html?message=${encodeURIComponent(msg)}`;
   }
 
-  // Слушатели
-  $('#type')?.addEventListener('change', () => { refreshModesByType(); recalc(); });
-  qa('input[name="ts_mode"]').forEach(r => r.addEventListener('change', () => { toggleTsInputs(); recalc(); }));
-  $('#gridYear')?.addEventListener('change', () => { applyGridYearUSD(); recalc(); });
-  $('#calcForm')?.addEventListener('input', recalc);
-  $('#calcForm')?.addEventListener('submit', (e)=>{ e.preventDefault(); recalc(); });
+  // Слушатели␊
+  typeEl?.addEventListener('change', () => { refreshModesByType(); recalc(); });
+  tsModeRadios.forEach(r => r.addEventListener('change', () => { toggleTsInputs(); recalc(); }));
+  gridYearEl?.addEventListener('change', () => { applyGridYearUSD(); recalc(); });
+  calcFormEl?.addEventListener('input', recalc);
+  calcFormEl?.addEventListener('submit', (e)=>{ e.preventDefault(); recalc(); });
 
   // init
   refreshModesByType();
