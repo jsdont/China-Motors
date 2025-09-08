@@ -24,25 +24,54 @@ html.dark {
 }
 
 html.dark body {
-  background-color: #121212;
+  background-color: #000;
   color: #f5f5f5;
 }
 
-html.dark .navbar {
+html.dark .navbar,
+html.dark .footer,
+html.dark #contact,
+html.dark .container-footer,
+html.dark .container-navbar{
   background: #000;
 }
 
-html.dark .nav-links a,
+
 html.dark .logo {
   color: #fff;
 }
 
 html.dark .card,
 html.dark .feature-card,
-html.dark .gallery-card {
+html.dark .gallery-card,
+html.dark .review-card,
+html.dark .calc-card,
+html.dark .contact-form {
   background: #1e1e1e;
   color: #f5f5f5;
 }
+html.dark h3,
+html.dark .card i,
+html.dark h4,
+html.dark .gallery-card p,
+html.dark .card p,
+html.dark .calc-card__title,
+html.dark .calc-card label,
+html.dark .calc-card .summary-line strong,
+html.dark .summary-line,
+html.dark .contact-form label,
+html.dark .review-caption{
+  color: #fff;
+}
+html.dark .calc-card input[type="text"], html.dark .calc-card input[type="number"], html.dark .calc-card select{
+  background: #1f1f1f;
+  color: #fff;
+}
+html.dark .section,
+html.dark .container,
+html.dark .contact-form input, html.dark .contact-form textarea{
+  background-color: #121212;
+} 
 /* Reusable Variables */
 :root {
   --primary-blue: #1F1F1F;
@@ -77,6 +106,7 @@ html.dark .gallery-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: #1f1f1f;
 }
 
 .navbar .menu-toggle {
@@ -566,7 +596,7 @@ p {
   max-width: 600px;
   margin: 20px auto;
   padding: 30px;
-  background: var(--white);
+  background: #fff;
   border-radius: 15px;
   box-shadow: var(--shadow-sm);
   transition: transform 0.3s ease;
@@ -590,6 +620,7 @@ p {
   margin-bottom: 20px;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
   color: #000;
+  background: #ffffffff;
 }
 
 .contact-form input:focus,
@@ -1327,4 +1358,13 @@ p {
 .btn.js-open-gallery{
     background: #1f1f1f;
     border: 1px solid #e8eaee;
+}
+.container-footer {
+  background: #1f1f1f;
+}
+.container-navbar {
+  background: #1f1f1f;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
