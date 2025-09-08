@@ -1,178 +1,219 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <!-- УКАЖИ СЮДА СВОЙ БЭКЕНД (прод): -->
-  <meta name="api-base" content="https://cm-backend-daniyal.fly.dev">
+// Каталог из Django API + галерея + кнопка "Рассчитать".
+// Главный фикс: чтение <meta name="api-base">, чтобы не ходить на статический домен.
 
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Каталог автомобилей и спецтехники China Motors из Китая">
-  <meta property="og:title" content="China Motors">
-  <meta property="og:description" content="Спецтехника и авто из Китая">
-  <meta property="og:image" content="/path/to/preview.jpg">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://chinamotors.com.kz">
-  <title>China Motors - Каталог</title>
+document.addEventListener('DOMContentLoaded', () => {
+  const isFile = location.protocol === 'file:';
+  const isLocalhost = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  const metaBase = document.querySelector('meta[name="api-base"]')?.content?.trim();
 
-  <link rel="stylesheet" href="style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  // приоритет: meta -> локалка -> origin (как запасной вариант)
+  let API_BASE = metaBase || (isFile || isLocalhost ? 'http://127.0.0.1:8000' : location.origin);
+  API_BASE = API_BASE.replace(/\/+$/,''); // без хвостового /
 
-  <style>
-    .filters{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin:18px 0 22px}
-    .filters .f{display:flex;flex-direction:column;gap:6px}
-    .filters .f label{font-size:12px;color:#666}
-    .filters .f select{padding:10px 12px;border:1px solid #e5e7eb;border-radius:10px;background:#fff;min-width:260px}
+  console.debug('[catalog] API_BASE =', API_BASE);
 
-    .feature-grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
-    .feature-card{background:#fff;border-radius:18px;box-shadow:0 6px 22px rgba(0,0,0,.06);overflow:hidden;display:flex;flex-direction:column;transition:transform .15s}
-    .feature-card:hover{transform:translateY(-3px)}
-    .card-image img{width:100%;height:240px;object-fit:cover;display:block;cursor:zoom-in} /* <- размер фото */
-    .card-content{padding:14px 16px 16px}
-    .meta-row{display:flex;gap:8px;align-items:center;color:#374151;margin:4px 0}
-    .meta-row b{font-weight:700}
-    .price{font-weight:700;font-size:18px;margin:8px 0 10px}
-    .card-actions{display:flex;gap:10px;margin-top:auto}
-    .btn-ghost{background:#1f1f1f;border:1px solid #e8eaee}
 
-    /* Галерея */
-    .modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:9999}
-    .modal.open{display:flex}
-    .modal-body{width:min(1000px,94vw);background:#111;color:#fff;border-radius:14px;overflow:hidden}
-    .modal-head{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#0b0b0b}
-    .modal-main{position:relative;background:#000}
-    .modal-main img{display:block;width:100%;max-height:70vh;object-fit:contain;background:#000}
-    .navbtn{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:999px;border:none;background:rgba(255,255,255,.14);color:#fff;font-size:18px;cursor:pointer}
-    .navbtn:hover{background:rgba(255,255,255,.22)}
-    .navbtn.prev{left:10px}.navbtn.next{right:10px}
-    .thumbs{display:flex;gap:6px;padding:10px;overflow:auto;background:#0b0b0b}
-    .thumbs img{width:100px;height:64px;object-fit:cover;border-radius:8px;cursor:pointer;opacity:.85}
-    .thumbs img.active{outline:2px solid #e11d48;opacity:1}
-  </style>
-</head>
-<body>
-  <header class="navbar">
-    <div class="container-navbar">
-      <div class="logo-container">
-        <h1 class="logo"><a href="index.html" style="color:#fff;text-decoration:none">China Motors</a></h1>
-        <div class="menu-toggle">☰</div>
-        <button id="themeToggle">🌙</button>
+  const grid   = document.getElementById('grid');
+  const bodyEl = document.getElementById('body');
+  const sortEl = document.getElementById('sort');
+  const searchEl = document.getElementById('search');
+
+  // Галерея
+  const gModal = document.getElementById('gallery');
+  const gTitle = document.getElementById('gTitle');
+  const gMain  = document.getElementById('gMain');
+  const gThumbs= document.getElementById('gThumbs');
+  const gPrev  = document.getElementById('gPrev');
+  const gNext  = document.getElementById('gNext');
+  const gClose = document.getElementById('gClose');
+
+  const nfRU = new Intl.NumberFormat('ru-RU');
+  const fmtPrice = n => (n===0 || n) ? `${nfRU.format(Number(n))}$` : 'Цена по запросу';
+  const escapeMap = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+  const escHTML = s => String(s ?? '').replace(/[&<>"']/g,m=>escapeMap[m]);
+  const escAttr = escHTML;
+
+  function canonBody(rawTitle, rawBody){
+    const s = `${rawTitle} ${rawBody}`.toLowerCase();
+    if (s.includes('рефриж') || s.includes('refriger')) return 'Рефрижератор';
+    if (s.includes('фургон') || s.includes('isoterm') || s.includes('изотерм')) return 'Автофургон';
+    if (s.includes('ямобур') || s.includes('бкм') || s.includes('бурильн') || s.includes('буровая') || s.includes('бурение')) return 'Ямобур машины для бурения';
+    if (s.includes('молоковоз') || s.includes('milk')) return 'Молоковоз';
+    if ((s.includes('топлив') && s.includes('заправ')) || s.includes('автозаправ') || s.includes('топливораздат')) return 'Топливозаправщик';
+
+    if (s.includes('полуприцеп')) return 'Полуприцепы';
+    if (!s.includes('полуприцеп') && s.includes('прицеп')) return 'Прицепы';
+    if (s.includes('самосвал')) return 'Самосвал';
+    if (s.includes('тягач') || s.includes('седельный')) return 'Тягач';
+    if (s.includes('манипулятор')) return 'Манипулятор';
+    if (s.includes('кран')) return 'Кран';
+    if (s.includes('миксер') || s.includes('бетономеш')) return 'Миксер';
+    if (s.includes('бензовоз') || s.includes('топливовоз')) return 'Бензовоз';
+    if (s.includes('автовышк')) return 'Автовышка';
+    if (s.includes('ассенизатор')) return 'Ассенизатор';
+    if (s.includes('поливомо')) return 'Поливомоечная машина';
+    if (s.includes('спец') || s.includes('экскаватор') || s.includes('погрузчик')) return 'Спец. техника';
+    return rawBody || 'Спец. техника';
+  }
+
+  function pickBodyRaw(v){
+    return (
+      v.body_type ?? v.bodyType ?? v.body ?? v.body_name ?? v.bodytext ??
+      v.configuration ?? v.config ?? v.spec ?? v.specs ?? v.drive ?? v.drive_type ??
+      v.chassis ?? v.type_details ?? v.type_info ?? v.type_extra ?? ''
+    );
+  }
+
+  function makeCalcName(v, fallbackTitle){
+    const brand = (v.brand || '').trim();
+    const model = (v.model || '').trim();
+    if (brand || model) return `${brand} ${model}`.trim();
+    const t = fallbackTitle.replace(/\s{2,}/g,' ').trim();
+    const cleaned = t
+      .replace(/самосвал/ig,'')
+      .replace(/тягач/ig,'')
+      .replace(/полуприцеп/ig,'')
+      .replace(/прицеп/ig,'')
+      .replace(/евро\s*\d/ig,'')
+      .replace(/\b\d+\*\d+\b/ig,'')
+      .replace(/\s{2,}/g,' ')
+      .trim();
+    return cleaned.split(' ').slice(0,4).join(' ') || t;
+  }
+
+  function normalize(v){
+    const title   = [v.brand, v.model, v.name].filter(Boolean).join(' ').trim() || 'Без названия';
+    const mainImg = v.image_url || (Array.isArray(v.images) && v.images[0]) || v.photo_url || '';
+    const images  = Array.isArray(v.images) && v.images.length ? v.images : (mainImg ? [mainImg] : []);
+    const priceNum= (v.price_usd ?? v.usd_price ?? v.priceUSD ?? null);
+
+    const bodyRawText = String(pickBodyRaw(v) || '').trim();
+    const rawForCanon = bodyRawText || (v.type ?? v.category ?? v.kind ?? '');
+    const bodyCanon   = canonBody(title, String(rawForCanon || ''));
+
+    const calcName    = makeCalcName(v, title);
+
+    return {
+      id: v.id ?? '',
+      title,
+      mainImg, images,
+      priceNum: (priceNum || priceNum===0) ? Number(priceNum) : null,
+      priceText: fmtPrice(priceNum),
+      bodyTypeRaw: bodyRawText,
+      bodyType: bodyCanon,
+      calcName
+    };
+  }
+
+  function cardHTML(x){
+    const bodyRow = `
+      <div class="meta-row">
+        <i class="fa-solid fa-car-side"></i>
+        <span>Конструкция:</span> <b>${escHTML(x.bodyTypeRaw || '—')}</b>
       </div>
-      <ul class="nav-links">
-        <li><a href="index.html"><i class="fas fa-home"></i> Главная</a></li>
-        <li><a href="catalog.html" class="active"><i class="fas fa-car"></i> Каталог</a></li>
-        <li><a href="services.html"><i class="fas fa-tools"></i> Услуги</a></li>
-        <li><a href="contacts.html"><i class="fas fa-envelope"></i> Контакты</a></li>
-        <li><a href="calculator.html"><i class="fas fa-calculator"></i> Калькулятор</a></li>
-      </ul>
-    </div>
-  </header>
-
-  <section class="hero section fade-in">
-    <div class="container">
-      <div class="hero-overlay">
-        <h1>Актуальные предложения из базы</h1>
-      </div>
-    </div>
-  </section>
-
-  <section class="section fade-in" style="padding-bottom:60px">
-    <div class="container">
-      <div class="filters">
-        <input id="search" type="text" placeholder="Поиск...">
-        <div class="f">
-          <label for="body">Тип транспорта</label>
-          <select id="body">
-            <option value="">Все</option>
-            <option>Прицепы</option>
-            <option>Полуприцепы</option>
-            <option>Самосвал</option>
-            <option>Тягач</option>
-            <option>Спец. техника</option>
-            <option>Кран</option>
-            <option>Манипулятор</option>
-            <option>Миксер</option>
-            <option>Бензовоз</option>
-            <option>Автовышка</option>
-            <option>Ассенизатор</option>
-            <option>Рефрижератор</option>
-            <option>Автофургон</option>
-            <option>Поливомоечная машина</option>
-            <option>Ямобур машины для бурения</option>
-            <option>Молоковоз</option>
-            <option>Топливозаправщик</option>
-          </select>
+    `;
+    return `
+      <div class="feature-card" data-id="${x.id}">
+        <div class="card-image">
+          ${x.mainImg
+            ? `<img src="${escAttr(x.mainImg)}" alt="${escAttr(x.title)}" class="js-open-gallery">`
+            : `<div style="height:240px;background:#f3f4f6;display:flex;align-items:center;justify-content:center">Фото позже</div>`}
         </div>
-        <div class="f">
-          <label for="sort">Сортировка</label>
-          <select id="sort">
-            <option value="">Без сортировки</option>
-            <option value="price_asc">Цена ↑</option>
-            <option value="price_desc">Цена ↓</option>
-          </select>
-        </div>
-      </div>
-
-      <div id="grid" class="feature-grid"></div>
-    </div>
-  </section>
-
-  <footer class="footer">
-    <div class="container-footer">
-      <div class="footer-content">
-        <div class="footer-logo">
-          <h2>China Motors</h2>
-          <p>Надёжная техника из Китая под заказ и в наличии.</p>
-        </div>
-        <div class="footer-links">
-          <h3 class="white-title-h3">Навигация</h3>
-          <ul>
-            <li><a href="index.html">Главная</a></li>
-            <li><a href="catalog.html">Каталог</a></li>
-            <li><a href="services.html">Услуги</a></li>
-            <li><a href="contacts.html">Контакты</a></li>
-            <li><a href="calculator.html">Калькулятор</a></li>
-          </ul>
-        </div>
-        <div class="footer-contact">
-          <h3 class="white-title-h3">Контакты</h3>
-          <div class="footer-links">
-            <p><i class="fas fa-phone"></i> <a class="contacts-on-contact-page" href="tel:+77776133731">+7 (777) 613-3731</a></p>
-            <p><i class="fas fa-envelope"></i> <a class="contacts-on-contact-page" href="mailto:alijumdd@mail.ru">alijumdd@mail.ru</a></p>
-          </div>
-          <div class="social-links">
-            <a href="https://www.instagram.com/china_motors_ala" target="_blank" rel="noopener noreferrer" class="btn instagram"><i class="fab fa-instagram"></i> Instagram</a>
-            <a href="https://www.tiktok.com/@china.motors_ala" target="_blank" rel="noopener noreferrer" class="btn tiktok"><i class="fab fa-tiktok"></i> TikTok</a>
+        <div class="card-content">
+          <h3 style="margin:6px 0 8px">${escHTML(x.title)}</h3>
+          ${bodyRow}
+          <div class="price">${x.priceText}</div>
+          <div class="card-actions">
+            <button class="btn js-open-gallery"><i class="fa fa-images"></i> Фотографии</button>
+            <a class="btn btn-ghost"
+               href="calculator.html?name=${encodeURIComponent(x.calcName)}&title=${encodeURIComponent(x.title)}&price=${encodeURIComponent(x.priceNum ?? '')}&body=${encodeURIComponent(x.bodyType)}&body_raw=${encodeURIComponent(x.bodyTypeRaw || '')}">
+              <i class="fa fa-calculator"></i> Рассчитать
+            </a>
           </div>
         </div>
-      </div>
-      <div class="footer-bottom">
-        <p>© 2025 China Motors. Все права защищены.</p>
-        <p class="last-words">Сайт в стадии разработки — обновления будут.</p>
-      </div>
-    </div>
-  </footer>
+      </div>`;
+  }
 
-  <!-- скрипты -->
-  <script src="js/common.js"></script>
-  <script src="js/catalog.js"></script>
+  function render(list){
+    grid.innerHTML = list.map(cardHTML).join('');
+    grid.querySelectorAll('.js-open-gallery').forEach(btn=>{
+      btn.addEventListener('click', e=>{
+        const card = e.currentTarget.closest('.feature-card');
+        const id = card?.getAttribute('data-id');
+        const item = current.find(v => String(v.id)===String(id));
+        if (item) openGallery(item);
+      });
+    });
+  }
 
-  <!-- Модалка галереи -->
-  <div id="gallery" class="modal" aria-hidden="true">
-    <div class="modal-body">
-      <div class="modal-head">
-        <div id="gTitle" style="font-weight:700">Фото</div>
-        <button id="gClose" class="btn btn-ghost"><i class="fa fa-times"></i> Закрыть</button>
-      </div>
-      <div class="modal-main">
-        <button class="navbtn prev" id="gPrev" aria-label="Prev">‹</button>
-        <img id="gMain" src="" alt="">
-        <button class="navbtn next" id="gNext" aria-label="Next">›</button>
-      </div>
-      <div class="thumbs" id="gThumbs"></div>
-    </div>
-  </div>
-</body>
-</html>
+  // Галерея
+  let gIdx=0,gImgs=[];
+  function openGallery(item){
+    gImgs = Array.isArray(item.images) && item.images.length ? item.images.map(String) : (item.mainImg?[item.mainImg]:[]);
+    if (!gImgs.length) return;
+    gIdx=0;
+    gTitle.textContent=item.title;
+    drawGallery();
+    gModal.classList.add('open');
+    gModal.setAttribute('aria-hidden','false');
+  }
+  function drawGallery(){
+    gMain.src=gImgs[gIdx];
+    gMain.alt=`Фото ${gIdx+1} из ${gImgs.length}`;
+    gThumbs.innerHTML=gImgs.map((src,i)=>`<img src="${escAttr(src)}" data-i="${i}" class="${i===gIdx?'active':''}">`).join('');
+    gThumbs.querySelectorAll('img').forEach(img=>img.addEventListener('click',()=>{gIdx=Number(img.dataset.i);drawGallery();}));
+  }
+  function closeGallery(){
+    gModal.classList.remove('open');
+    gModal.setAttribute('aria-hidden','true');
+    gMain.removeAttribute('src');
+    gThumbs.innerHTML = '';
+    gImgs = [];
+    gIdx = 0;
+  }
+  gPrev?.addEventListener('click',()=>{ if(!gImgs.length) return; gIdx=(gIdx-1+gImgs.length)%gImgs.length; drawGallery(); });
+  gNext?.addEventListener('click',()=>{ if(!gImgs.length) return; gIdx=(gIdx+1)%gImgs.length; drawGallery(); });
+  gClose?.addEventListener('click',closeGallery);
+  gModal?.addEventListener('click',e=>{ if(e.target===gModal) closeGallery(); });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeGallery(); });
+
+  // Фильтр/сортировка
+  let all=[], current=[];
+  function applyFilters(){
+    const b=(bodyEl?.value||'').trim();
+    const q=(searchEl?.value||'').trim().toLowerCase();
+    current = all.filter(x => {
+      const bodyOk=!b || x.bodyType===b;
+      const searchOk=!q || x.title.toLowerCase().includes(q) || x.bodyType.toLowerCase().includes(q);
+      return bodyOk && searchOk;
+    });
+  }
+  function applySort(){
+    const s=sortEl?.value||'';
+    if (s==='price_asc')  current.sort((a,b)=>(a.priceNum??Infinity)-(b.priceNum??Infinity));
+    if (s==='price_desc') current.sort((a,b)=>(b.priceNum??-Infinity)-(a.priceNum??-Infinity));
+  }
+  function refilter(){ applyFilters(); applySort(); render(current); }
+  bodyEl?.addEventListener('change', refilter);
+  sortEl?.addEventListener('change', refilter);
+  searchEl?.addEventListener('input', refilter);
+
+  // Загрузка
+  async function load(){
+    try{
+      grid.innerHTML = `<div class="loading">Загрузка...</div>`;
+      const url = `${API_BASE}/api/vehicles/`;
+      const r = await fetch(url, { headers:{'Accept':'application/json'} });
+      if (!r.ok) throw new Error(`HTTP ${r.status} at ${url}`);
+      const data = await r.json();
+      const list = Array.isArray(data) ? data : (Array.isArray(data.results) ? data.results : []);
+      all = list.map(normalize);
+      refilter();
+    }catch(e){
+      console.error('catalog load failed:', e);
+      grid.innerHTML = `<div class="error">Не удалось загрузить каталог</div>`;
+    }
+  }
+
+  load();
+});
