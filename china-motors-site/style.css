@@ -651,6 +651,22 @@ p {
   margin-top: 20px;
   font-style: italic;
 }
+
+#formStatus {
+  display: none;
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 6px;
+  color: #fff;
+}
+
+#formStatus.success {
+  background-color: #28a745;
+}
+
+#formStatus.error {
+  background-color: #dc3545;
+}
 .contacts-on-contact-page{
   color: rgb(0, 0, 0);
   text-decoration: none;
