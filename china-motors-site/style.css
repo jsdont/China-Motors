@@ -1448,6 +1448,21 @@ p {
     flex-direction: column;
     align-items: stretch;
   }
+  .page-title{
+    display: flex;
+    justify-content: center;
+  }
+  .calc-card__title {
+    display: flex;
+    justify-content: center;
+  }
+  .summary-card--dark .summary-title {
+    display: flex;
+    justify-content: center;
+  }
+  .filters {
+    justify-content: center;
+  }
 }
 
 /* Dark theme overrides */
