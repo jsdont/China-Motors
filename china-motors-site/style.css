@@ -59,7 +59,8 @@ html.dark .calc-card label,
 html.dark .calc-card .summary-line strong,
 html.dark .summary-line,
 html.dark .contact-form label,
-html.dark .review-caption{
+html.dark .review-caption,
+.contact-form input, .contact-form textarea{
   color: #fff;
 }
 html.dark .calc-card input[type="text"], html.dark .calc-card input[type="number"], html.dark .calc-card select,
