@@ -1430,6 +1430,13 @@ p {
     top: 18px;
     right: 350px;
   }
+  .radio-row {
+  flex-direction: column;
+  }
+  .calc-card label {
+    display: flex;
+    justify-content: center;
+  }
 }
 
 /* Dark theme overrides */
