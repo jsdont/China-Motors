@@ -1317,7 +1317,7 @@ p {
 
 /* Чуть больше "воздуха" перед футером на длинных страницах */
 .section{ padding-bottom: 60px; }
-.footer{ margin-top: 20px; }
+.footer{ margin-top: 0px; }
 /* === Calculator layout polish === */
 #calcGrid { display:grid; grid-template-columns: minmax(0,1fr) 420px; gap:20px; align-items:start; }
 @media (max-width:980px){ #calcGrid{ display:block; } }
