@@ -30,7 +30,6 @@ html.dark body {
 
 html.dark .navbar,
 html.dark .footer,
-html.dark #contact,
 html.dark .container-footer,
 html.dark .container-navbar{
   background: #000;
@@ -70,7 +69,8 @@ html.dark .meta-row{
 }
 html.dark .section,
 html.dark .container,
-html.dark .contact-form input, html.dark .contact-form textarea{
+html.dark .contact-form input, html.dark .contact-form textarea,
+html.dark #contact{
   background-color: #121212;
 } 
 /* Reusable Variables */
