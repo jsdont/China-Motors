@@ -63,7 +63,8 @@ html.dark .contact-form label,
 html.dark .review-caption{
   color: #fff;
 }
-html.dark .calc-card input[type="text"], html.dark .calc-card input[type="number"], html.dark .calc-card select{
+html.dark .calc-card input[type="text"], html.dark .calc-card input[type="number"], html.dark .calc-card select,
+html.dark .meta-row{
   background: #1f1f1f;
   color: #fff;
 }
