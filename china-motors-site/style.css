@@ -1417,6 +1417,13 @@ p {
   z-index: 1000;
 }
 
+@media (max-width: 600px) {
+  #themeToggle {
+    top: 18px;
+    right: 360px;
+  }
+}
+
 /* Dark theme overrides */
 html.dark #search {
   background: #1f1f1f;
