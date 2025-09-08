@@ -33,8 +33,25 @@ document.addEventListener('DOMContentLoaded', () => {
   sendBtn?.addEventListener('click', async (e) => {
     e.preventDefault();
     const name = nameEl?.value?.trim() || '—';
-    const phone = phoneEl?.value?.trim() || '—';
-    const msg = msgEl?.value?.trim() || '—';
+    const phone = phoneEl?.value?.trim() || '';
+    const msg = msgEl?.value?.trim() || '';
+
+    // simple validation
+    let valid = true;
+    phoneEl?.style.removeProperty('border-color');
+    msgEl?.style.removeProperty('border-color');
+    if (!phone || !/^\+?[0-9\s-]{6,}$/.test(phone)) {
+      phoneEl?.style.setProperty('border-color', 'red');
+      valid = false;
+    }
+    if (!msg) {
+      msgEl?.style.setProperty('border-color', 'red');
+      valid = false;
+    }
+    if (!valid) {
+      alert('Пожалуйста, корректно заполните телефон и сообщение');
+      return;
+    }
 
     const text =
       `📩 <b>Новая заявка</b>\n` +
