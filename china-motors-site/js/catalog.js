@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const grid   = document.getElementById('grid');
   const bodyEl = document.getElementById('body');
   const sortEl = document.getElementById('sort');
+  const searchEl = document.getElementById('search');
 
   // Галерея
   const gModal = document.getElementById('gallery');
@@ -40,118 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if ((s.includes('топлив') && s.includes('заправ')) || s.includes('автозаправ') || s.includes('топливораздат')) return 'Топливозаправщик';
 
     if (s.includes('полуприцеп')) return 'Полуприцепы';
-    if (!s.includes('полуприцеп') && s.includes('прицеп')) return 'Прицепы';
-    if (s.includes('самосвал')) return 'Самосвал';
-    if (s.includes('тягач') || s.includes('седельный')) return 'Тягач';
-    if (s.includes('манипулятор')) return 'Манипулятор';
-    if (s.includes('кран')) return 'Кран';
-    if (s.includes('миксер') || s.includes('бетономеш')) return 'Миксер';
-    if (s.includes('бензовоз') || s.includes('топливовоз')) return 'Бензовоз';
-    if (s.includes('автовышк')) return 'Автовышка';
-    if (s.includes('ассенизатор')) return 'Ассенизатор';
-    if (s.includes('поливомо')) return 'Поливомоечная машина';
-    if (s.includes('спец') || s.includes('экскаватор') || s.includes('погрузчик')) return 'Спец. техника';
-    return rawBody || 'Спец. техника';
-  }
 
-  function pickBodyRaw(v){
-    return (
-      v.body_type ?? v.bodyType ?? v.body ?? v.body_name ?? v.bodytext ??
-      v.configuration ?? v.config ?? v.spec ?? v.specs ?? v.drive ?? v.drive_type ??
-      v.chassis ?? v.type_details ?? v.type_info ?? v.type_extra ?? ''
-    );
-  }
-
-  function makeCalcName(v, fallbackTitle){
-    const brand = (v.brand || '').trim();
-    const model = (v.model || '').trim();
-    if (brand || model) return `${brand} ${model}`.trim();
-    const t = fallbackTitle.replace(/\s{2,}/g,' ').trim();
-    const cleaned = t
-      .replace(/самосвал/ig,'')
-      .replace(/тягач/ig,'')
-      .replace(/полуприцеп/ig,'')
-      .replace(/прицеп/ig,'')
-      .replace(/евро\s*\d/ig,'')
-      .replace(/\b\d+\*\d+\b/ig,'')
-      .replace(/\s{2,}/g,' ')
-      .trim();
-    return cleaned.split(' ').slice(0,4).join(' ') || t;
-  }
-
-  function normalize(v){
-    const title   = [v.brand, v.model, v.name].filter(Boolean).join(' ').trim() || 'Без названия';
-    const mainImg = v.image_url || (Array.isArray(v.images) && v.images[0]) || v.photo_url || '';
-    const images  = Array.isArray(v.images) && v.images.length ? v.images : (mainImg ? [mainImg] : []);
-    const priceNum= (v.price_usd ?? v.usd_price ?? v.priceUSD ?? null);
-
-    const bodyRawText = String(pickBodyRaw(v) || '').trim();
-    const rawForCanon = bodyRawText || (v.type ?? v.category ?? v.kind ?? '');
-    const bodyCanon   = canonBody(title, String(rawForCanon || ''));
-
-    const calcName    = makeCalcName(v, title);
-
-    return {
-      id: v.id ?? '',
-      title,
-      mainImg, images,
-      priceNum: (priceNum || priceNum===0) ? Number(priceNum) : null,
-      priceText: fmtPrice(priceNum),
-      bodyTypeRaw: bodyRawText,
-      bodyType: bodyCanon,
-      calcName
-    };
-  }
-
-  function cardHTML(x){
-    const bodyRow = `
-      <div class="meta-row">
-        <i class="fa-solid fa-car-side"></i>
-        <span>Body type:</span> <b>${escHTML(x.bodyTypeRaw || '—')}</b>
-      </div>
-    `;
-    return `
-      <div class="feature-card" data-id="${x.id}">
-        <div class="card-image">
-          ${x.mainImg
-            ? `<img src="${escAttr(x.mainImg)}" alt="${escAttr(x.title)}" class="js-open-gallery">`
-            : `<div style="height:240px;background:#f3f4f6;display:flex;align-items:center;justify-content:center">Фото позже</div>`}
-        </div>
-        <div class="card-content">
-          <h3 style="margin:6px 0 8px">${escHTML(x.title)}</h3>
-          ${bodyRow}
-          <div class="price">${x.priceText}</div>
-          <div class="card-actions">
-            <button class="btn js-open-gallery"><i class="fa fa-images"></i> Фотографии</button>
-            <a class="btn btn-ghost"
-               href="calculator.html?name=${encodeURIComponent(x.calcName)}&title=${encodeURIComponent(x.title)}&price=${encodeURIComponent(x.priceNum ?? '')}&body=${encodeURIComponent(x.bodyType)}&body_raw=${encodeURIComponent(x.bodyTypeRaw || '')}">
-              <i class="fa fa-calculator"></i> Рассчитать
-            </a>
-          </div>
-        </div>
-      </div>`;
-  }
-
-  function render(list){
-    grid.innerHTML = list.map(cardHTML).join('');
-    grid.querySelectorAll('.js-open-gallery').forEach(btn=>{
-      btn.addEventListener('click', e=>{
-        const card = e.currentTarget.closest('.feature-card');
-        const id = card?.getAttribute('data-id');
-        const item = current.find(v => String(v.id)===String(id));
-        if (item) openGallery(item);
-      });
-    });
-  }
-
-  // Галерея
-  let gIdx=0,gImgs=[];
-  function openGallery(item){
-    gImgs = Array.isArray(item.images) && item.images.length ? item.images.map(String) : (item.mainImg?[item.mainImg]:[]);
-    if (!gImgs.length) return;
-    gIdx=0;
-    gTitle.textContent=item.title;
-    drawGallery();
     gModal.classList.add('open');
     gModal.setAttribute('aria-hidden','false');
   }
@@ -179,7 +69,12 @@ document.addEventListener('DOMContentLoaded', () => {
   let all=[], current=[];
   function applyFilters(){
     const b=(bodyEl?.value||'').trim();
-    current = all.filter(x => !b || x.bodyType===b);
+    const q=(searchEl?.value||'').trim().toLowerCase();
+    current = all.filter(x => {
+      const bodyOk=!b || x.bodyType===b;
+      const searchOk=!q || x.title.toLowerCase().includes(q) || x.bodyType.toLowerCase().includes(q);
+      return bodyOk && searchOk;
+    });
   }
   function applySort(){
     const s=sortEl?.value||'';
@@ -189,6 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function refilter(){ applyFilters(); applySort(); render(current); }
   bodyEl?.addEventListener('change', refilter);
   sortEl?.addEventListener('change', refilter);
+  searchEl?.addEventListener('input', refilter);
 
   // Загрузка
   async function load(){
