@@ -8,6 +8,23 @@
       menuToggle.addEventListener('click', () => navLinks.classList.toggle('active'));
     }
 
+    // Переключение темы
+    const themeToggle = document.getElementById('themeToggle');
+    const root = document.documentElement;
+    const applyTheme = isDark => {
+      root.classList.toggle('dark', isDark);
+      if (themeToggle) themeToggle.textContent = isDark ? '☀️' : '🌙';
+    };
+    const savedTheme = localStorage.getItem('theme');
+    applyTheme(savedTheme === 'dark');
+    if (themeToggle) {
+      themeToggle.addEventListener('click', () => {
+        const isDark = !root.classList.contains('dark');
+        applyTheme(isDark);
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      });
+    }
+
     // Кнопка "Наверх"
     const toTopBtn = document.getElementById('toTopBtn');
     const updateToTop = () => {
