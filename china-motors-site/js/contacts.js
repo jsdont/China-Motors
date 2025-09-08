@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const phoneEl = document.getElementById('c-phone');
   const msgEl = document.getElementById('c-message');
   const sendBtn = document.getElementById('c-send');
+  const statusEl = document.getElementById('formStatus');
 
   // 1) автоподстановка текста из калькулятора ?message=...
   const qs = new URLSearchParams(location.search);
@@ -66,12 +67,33 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       await sendToTelegram(text);
       sendBtn.textContent = '✅ Отправлено';
-      alert('Заявка успешно отправлена!');
+      if (statusEl) {
+        statusEl.textContent = 'Заявка успешно отправлена!';
+        statusEl.className = 'success';
+        statusEl.style.display = 'block';
+      }
     } catch (err) {
       console.error(err);
-      alert('❌ Ошибка: ' + err.message);
-      sendBtn.textContent = prev;
-      sendBtn.disabled = false;
+      if (statusEl) {
+        statusEl.textContent = 'Ошибка: ' + err.message;
+        statusEl.className = 'error';
+        statusEl.style.display = 'block';
+      }
     }
+
+    nameEl && (nameEl.value = '');
+    phoneEl && (phoneEl.value = '');
+    msgEl && (msgEl.value = '');
+
+    sendBtn.disabled = false;
+    sendBtn.textContent = prev;
+
+    setTimeout(() => {
+      if (statusEl) {
+        statusEl.style.display = 'none';
+        statusEl.textContent = '';
+        statusEl.className = '';
+      }
+    }, 4000);
   });
 });
