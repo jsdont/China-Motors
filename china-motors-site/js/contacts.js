@@ -1,9 +1,8 @@
-// /js/contacts.js
+// /js/contacts.js␊
 document.addEventListener('DOMContentLoaded', () => {
-  const API_BASE =
-    (location.hostname === '127.0.0.1' || location.hostname === 'localhost')
-      ? 'http://127.0.0.1:8000'
-      : 'https://cm-backend-daniyal.fly.dev';
+  const metaBase = document.querySelector('meta[name="api-base"]')?.content?.trim();
+  const isLocal = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  const API_BASE = (metaBase || (isLocal ? 'http://127.0.0.1:8000' : 'https://cm-backend-daniyal.fly.dev')).replace(/\/+$/, '');
 
   const nameEl = document.getElementById('c-name');
   const phoneEl = document.getElementById('c-phone');
