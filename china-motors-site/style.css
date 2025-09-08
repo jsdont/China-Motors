@@ -1299,7 +1299,7 @@ p {
 .modal__close{ position:absolute; top:14px; right:16px; border:0; background:#000a; color:#fff; font-size:18px; border-radius:999px; padding:.35rem .6rem; cursor:pointer; }
 /* чёрная кнопка для "Фотографии" */
 .feature-card .btn.js-open-gallery{
-  background:#000 !important;
+  background:#000;
   color:#fff !important;
   border:1px solid #000 !important;
 }
