@@ -1414,8 +1414,8 @@ p {
 
 #themeToggle {
   position: fixed;
-  top: 23px;
-  right: 22px;
+  top: 27px;
+  right: 850px;
   margin: 0;
   background: none;
   border: none;
@@ -1478,8 +1478,8 @@ p {
 
 @media (max-width: 600px) {
   #langSwitch {
-    top: 22px;
-    right: 280px;
+    top: 27px;
+    right: 17px;
   }
 }
 
