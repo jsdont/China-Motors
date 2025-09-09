@@ -1463,6 +1463,24 @@ p {
   .filters {
     justify-content: center;
   }
+  .card-actions {
+  justify-content: space-evenly;
+  }
+}
+#langSwitch {
+  position: fixed;
+  top: 23px;
+  right: 70px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  z-index: 1000;
+}
+
+@media (max-width: 600px) {
+  #langSwitch {
+    top: 18px;
+    right: 300px;
+  }
 }
 
 /* Dark theme overrides */
@@ -1474,4 +1492,10 @@ html.dark #search {
 
 html.dark #themeToggle {
   color: #ffd700;
+}
+
+html.dark #langSwitch {
+  background: #1f1f1f;
+  color: #fff;
+  border: 1px solid #333;
 }
