@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <!-- УКАЖИ СЮДА СВОЙ БЭКЕНД (прод): -->
   <meta name="api-base" content="https://cm-backend-daniyal.fly.dev">
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Контактная информация компании China Motors">
@@ -12,111 +10,105 @@
   <meta property="og:image" content="/path/to/preview.jpg">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://chinamotors.com.kz">
-  <title>China Motors - Контакты</title>
+  <title data-i18n="title_contacts">China Motors - Контакты</title>
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
 <body>
-  <!-- Navbar -->
   <header class="navbar">
     <div class="container-navbar">
       <div class="logo-container">
-        <h1 class="logo"><a href="index.html" style="color:#fff;text-decoration:none">China Motors</a></h1>
+        <h1 class="logo"><a href="index.html" style="color:#fff;text-decoration:none" data-i18n="brand_title">China Motors</a></h1>
         <div class="menu-toggle">☰</div>
         <button id="themeToggle">🌙</button>
+        <select id="langSwitch">
+          <option value="ru">RU</option>
+          <option value="kk">KZ</option>
+          <option value="zh">中文</option>
+          <option value="en">EN</option>
+        </select>
       </div>
       <ul class="nav-links">
-        <li><a href="index.html"><i class="fas fa-home"></i> Главная</a></li>
-        <li><a href="catalog.html"><i class="fas fa-car"></i> Каталог</a></li>
-        <li><a href="services.html"><i class="fas fa-tools"></i> Услуги</a></li>
-        <li><a href="contacts.html" class="active"><i class="fas fa-envelope"></i> Контакты</a></li>
-        <li><a href="calculator.html"><i class="fas fa-calculator"></i> Калькулятор</a></li>
+        <li><a href="index.html"><i class="fas fa-home"></i> <span data-i18n="nav_home">Главная</span></a></li>
+        <li><a href="catalog.html"><i class="fas fa-car"></i> <span data-i18n="nav_catalog">Каталог</span></a></li>
+        <li><a href="services.html"><i class="fas fa-tools"></i> <span data-i18n="nav_services">Услуги</span></a></li>
+        <li><a href="contacts.html" class="active"><i class="fas fa-envelope"></i> <span data-i18n="nav_contacts">Контакты</span></a></li>
+        <li><a href="calculator.html"><i class="fas fa-calculator"></i> <span data-i18n="nav_calculator">Калькулятор</span></a></li>
       </ul>
     </div>
   </header>
 
-  <!-- Hero Section -->
   <section class="hero section fade-in">
     <div class="container">
       <div class="hero-overlay">
-        <h1>Контакты</h1>
-        <p class="White-p">Свяжитесь с нами удобным способом</p>
+        <h1 data-i18n="contacts_hero">Контакты</h1>
+        <p class="White-p" data-i18n="contacts_tagline">Свяжитесь с нами удобным способом</p>
       </div>
     </div>
   </section>
 
-  <!-- Contact Section -->
   <section id="contact" class="section fade-in">
     <div class="container">
-      <h2 class="blue-title">Оставьте заявку</h2>
+      <h2 class="blue-title" data-i18n="contact_title">Оставьте заявку</h2>
 
       <div class="contact-form">
-        <label for="c-name">Ваше имя</label>
-        <input type="text" id="c-name" placeholder="Введите имя">
+        <label for="c-name" data-i18n="contact_name_label">Ваше имя</label>
+        <input type="text" id="c-name" data-i18n-placeholder="contact_name_ph" placeholder="Введите имя">
 
-        <label for="c-phone">Телефон</label>
-        <input type="tel" id="c-phone" placeholder="+7 (___) ___-__-__">
+        <label for="c-phone" data-i18n="contact_phone_label">Телефон</label>
+        <input type="tel" id="c-phone" data-i18n-placeholder="contact_phone_ph" placeholder="+7 (___) ___-__-__">
 
-        <label for="c-message">Сообщение</label>
-        <textarea id="c-message" placeholder="Ваше сообщение"></textarea>
+        <label for="c-message" data-i18n="contact_msg_label">Сообщение</label>
+        <textarea id="c-message" data-i18n-placeholder="contact_msg_ph" placeholder="Ваше сообщение"></textarea>
 
-        <button id="c-send" class="btn">
-          <i class="fas fa-paper-plane" style="color:white"></i> Отправить
-        </button>
+        <button id="c-send" class="btn"><i class="fas fa-paper-plane" style="color:white"></i> <span data-i18n="btn_send">Отправить</span></button>
 
-        <p class="form-note">После нажатия «Отправить» заявка сразу попадёт нам в Telegram</p>
+        <p class="form-note" data-i18n="contact_note">После нажатия «Отправить» заявка сразу попадёт нам в Telegram</p>
         <div id="formStatus"></div>
       </div>
     </div>
   </section>
 
-  <!-- Footer -->
   <footer class="footer">
     <div class="container-footer">
       <div class="footer-content">
         <div class="footer-logo">
-          <h2>China Motors</h2>
-          <p>Надежная техника из Китая под заказ и в наличии.</p>
+          <h2 data-i18n="brand_title">China Motors</h2>
+          <p data-i18n="footer_col1_text">Надежная техника из Китая под заказ и в наличии.</p>
         </div>
         <div class="footer-links">
-          <h3 class="white-title-h3">Навигация</h3>
+          <h3 class="white-title-h3" data-i18n="footer_col2_title">Навигация</h3>
           <ul>
-            <li><a href="index.html">Главная</a></li>
-            <li><a href="catalog.html">Каталог</a></li>
-            <li><a href="services.html">Услуги</a></li>
-            <li><a href="contacts.html">Контакты</a></li>
-            <li><a href="calculator.html">Калькулятор</a></li>
+            <li><a href="index.html" data-i18n="nav_home">Главная</a></li>
+            <li><a href="catalog.html" data-i18n="nav_catalog">Каталог</a></li>
+            <li><a href="services.html" data-i18n="nav_services">Услуги</a></li>
+            <li><a href="contacts.html" data-i18n="nav_contacts">Контакты</a></li>
+            <li><a href="calculator.html" data-i18n="nav_calculator">Калькулятор</a></li>
           </ul>
         </div>
         <div class="footer-contact">
-          <h3 class="white-title-h3">Контакты</h3>
+          <h3 class="white-title-h3" data-i18n="footer_col3_title">Контакты</h3>
           <div class="footer-links">
             <p><i class="fas fa-phone"></i> <a class="contacts-on-contact-page" href="tel:+77776133731">+7 (777) 613-3731</a></p>
             <p><i class="fas fa-envelope"></i> <a class="contacts-on-contact-page" href="mailto:alijumdd@mail.ru">alijumdd@mail.ru</a></p>
           </div>
           <div class="social-links">
-            <a href="https://www.instagram.com/china_motors_ala" target="_blank" rel="noopener noreferrer" class="btn instagram">
-              <i class="fab fa-instagram"></i> Instagram
-            </a>
-            <a href="https://www.tiktok.com/@china.motors_ala" target="_blank" rel="noopener noreferrer" class="btn tiktok">
-              <i class="fab fa-tiktok"></i> TikTok
-            </a>
+            <a href="https://www.instagram.com/china_motors_ala" target="_blank" rel="noopener noreferrer" class="btn instagram"><i class="fab fa-instagram"></i> Instagram</a>
+            <a href="https://www.tiktok.com/@china.motors_ala" target="_blank" rel="noopener noreferrer" class="btn tiktok"><i class="fab fa-tiktok"></i> TikTok</a>
           </div>
         </div>
       </div>
       <div class="footer-bottom">
-        <p>© 2025 China Motors. Все права защищены.</p>
-        <p class="last-words">"Сайт в данное время находится в стадии разработки и в дальнейшем будет обновляться"</p>
+        <p data-i18n="footer_copy">© 2025 China Motors. Все права защищены.</p>
+        <p class="last-words" data-i18n="footer_devnote">Сайт в стадии разработки — обновления будут.</p>
       </div>
     </div>
   </footer>
 
-  <script src="js/common.js" defer></script>
-  <script src="js/contacts.js" defer></script>
+  <script src="js/common.js"></script>
+  <script src="js/contacts.js"></script>
 </body>
 </html>
