@@ -9,115 +9,110 @@
   <meta property="og:image" content="/path/to/preview.jpg">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://chinamotors.com.kz">
-  <title>China Motors - Услуги</title>
+  <title data-i18n="title_services">China Motors - Услуги</title>
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
 <body>
-  <!-- Navbar -->
   <header class="navbar">
     <div class="container-navbar">
       <div class="logo-container">
-        <h1 class="logo"><a href="index.html" style="color:#fff;text-decoration:none">China Motors</a></h1>
+        <h1 class="logo"><a href="index.html" style="color:#fff;text-decoration:none" data-i18n="brand_title">China Motors</a></h1>
         <div class="menu-toggle">☰</div>
         <button id="themeToggle">🌙</button>
+        <select id="langSwitch">
+          <option value="ru">RU</option>
+          <option value="kk">KZ</option>
+          <option value="zh">中文</option>
+          <option value="en">EN</option>
+        </select>
       </div>
       <ul class="nav-links">
-        <li><a href="index.html"><i class="fas fa-home"></i> Главная</a></li>
-        <li><a href="catalog.html" ><i class="fas fa-car"></i> Каталог</a></li>
-        <li><a href="services.html"class="active"><i class="fas fa-tools"></i> Услуги</a></li>
-        <li><a href="contacts.html"><i class="fas fa-envelope"></i> Контакты</a></li>
-        <li><a href="calculator.html"><i class="fas fa-calculator"></i>Калькулятор</a></li>
+        <li><a href="index.html"><i class="fas fa-home"></i> <span data-i18n="nav_home">Главная</span></a></li>
+        <li><a href="catalog.html"><i class="fas fa-car"></i> <span data-i18n="nav_catalog">Каталог</span></a></li>
+        <li><a href="services.html" class="active"><i class="fas fa-tools"></i> <span data-i18n="nav_services">Услуги</span></a></li>
+        <li><a href="contacts.html"><i class="fas fa-envelope"></i> <span data-i18n="nav_contacts">Контакты</span></a></li>
+        <li><a href="calculator.html"><i class="fas fa-calculator"></i> <span data-i18n="nav_calculator">Калькулятор</span></a></li>
       </ul>
     </div>
   </header>
 
-  <!-- Hero Section -->
   <section class="hero section fade-in">
     <div class="container">
       <div class="hero-overlay">
-        <h1>Наши услуги</h1>
-        <p class="White-p">Комплексные решения для поставки и обслуживания техники</p>
+        <h1 data-i18n="services_hero">Наши услуги</h1>
+        <p class="White-p" data-i18n="services_tagline">Комплексные решения для поставки и обслуживания техники</p>
       </div>
     </div>
   </section>
 
-  <!-- Services Section -->
   <section id="services" class="section fade-in">
     <div class="container">
-      <h2 class="blue-title">Услуги</h2>
+      <h2 class="blue-title" data-i18n="services_title">Услуги</h2>
       <div class="feature-grid">
         <div class="card">
           <i class="fas fa-truck"></i>
-          <h4>Заказ и поставка</h4>
-          <p>Автомобили и спецтехника из Китая под ваши нужды.</p>
+          <h4 data-i18n="service_1_t">Заказ и поставка</h4>
+          <p data-i18n="service_1_d">Автомобили и спецтехника из Китая под ваши нужды.</p>
         </div>
         <div class="card">
           <i class="fas fa-file-alt"></i>
-          <h4>Таможенное оформление</h4>
-          <p>Помощь с таможенной очисткой.</p>
+          <h4 data-i18n="service_2_t">Таможенное оформление</h4>
+          <p data-i18n="service_2_d">Помощь с таможенной очисткой.</p>
         </div>
         <div class="card">
           <i class="fas fa-shipping-fast"></i>
-          <h4>Доставка</h4>
-          <p>Доставка с Хоргоса в Алматы (Платные водители).</p>
+          <h4 data-i18n="service_3_t">Доставка</h4>
+          <p data-i18n="service_3_d">Доставка с Хоргоса в Алматы (Платные водители).</p>
         </div>
         <div class="card">
-          <i class="fas fa-shipping-fast"></i>
-          <h4>Гос. номер</h4>
-          <p>Помощь с получением Гос. номера.</p>
+          <i class="fas fa-id-card"></i>
+          <h4 data-i18n="service_4_t">Гос. номер</h4>
+          <p data-i18n="service_4_d">Помощь с получением Гос. номера.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Footer -->
   <footer class="footer">
     <div class="container-footer">
       <div class="footer-content">
         <div class="footer-logo">
-          <h2>China Motors</h2>
-          <p>Надежная техника из Китая под заказ и в наличии.</p>
+          <h2 data-i18n="brand_title">China Motors</h2>
+          <p data-i18n="footer_col1_text">Надежная техника из Китая под заказ и в наличии.</p>
         </div>
         <div class="footer-links">
-          <h3 class="white-title-h3">Навигация</h3>
+          <h3 class="white-title-h3" data-i18n="footer_col2_title">Навигация</h3>
           <ul>
-            <li><a href="index.html">Главная</a></li>
-            <li><a href="catalog.html">Каталог</a></li>
-            <li><a href="services.html">Услуги</a></li>
-            <li><a href="contacts.html">Контакты</a></li>
-            <li><a href="calculator.html">Калькулятор</a></li>
+            <li><a href="index.html" data-i18n="nav_home">Главная</a></li>
+            <li><a href="catalog.html" data-i18n="nav_catalog">Каталог</a></li>
+            <li><a href="services.html" data-i18n="nav_services">Услуги</a></li>
+            <li><a href="contacts.html" data-i18n="nav_contacts">Контакты</a></li>
+            <li><a href="calculator.html" data-i18n="nav_calculator">Калькулятор</a></li>
           </ul>
         </div>
         <div class="footer-contact">
-          <h3 class="white-title-h3">Контакты</h3>
+          <h3 class="white-title-h3" data-i18n="footer_col3_title">Контакты</h3>
           <div class="footer-links">
             <p><i class="fas fa-phone"></i> <a class="contacts-on-contact-page" href="tel:+77776133731">+7 (777) 613-3731</a></p>
             <p><i class="fas fa-envelope"></i> <a class="contacts-on-contact-page" href="mailto:alijumdd@mail.ru">alijumdd@mail.ru</a></p>
           </div>
           <div class="social-links">
-            <a href="https://www.instagram.com/china_motors_ala" target="_blank" rel="noopener noreferrer" class="btn instagram">
-              <i class="fab fa-instagram"></i> Instagram
-            </a>
-            <a href="https://www.tiktok.com/@china.motors_ala" target="_blank" rel="noopener noreferrer" class="btn tiktok">
-              <i class="fab fa-tiktok"></i> TikTok
-            </a>
+            <a href="https://www.instagram.com/china_motors_ala" target="_blank" rel="noopener noreferrer" class="btn instagram"><i class="fab fa-instagram"></i> Instagram</a>
+            <a href="https://www.tiktok.com/@china.motors_ala" target="_blank" rel="noopener noreferrer" class="btn tiktok"><i class="fab fa-tiktok"></i> TikTok</a>
           </div>
         </div>
       </div>
       <div class="footer-bottom">
-        <p>© 2025 China Motors. Все права защищены.</p>
-        <p class="last-words">"Сайт в данное время находится в стадии разработки и в дальнейшем будет обновляться"</p>
+        <p data-i18n="footer_copy">© 2025 China Motors. Все права защищены.</p>
+        <p class="last-words" data-i18n="footer_devnote">Сайт в стадии разработки — обновления будут.</p>
       </div>
     </div>
   </footer>
 
-<script src="js/common.js" defer></script>
-
+  <script src="js/common.js"></script>
 </body>
 </html>
