@@ -626,8 +626,9 @@
   function onReady() {
     // Service Worker (офлайн)
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('js/service-worker.js').catch(()=>{});
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
     }
+
 
     // Бургер
     const menuToggle = document.querySelector('.menu-toggle');
