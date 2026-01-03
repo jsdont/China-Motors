@@ -13,11 +13,11 @@
   "backgroundColor": "#0B2B5A",
   "enableNotifications": true,
   "startUrl": "/?source=pwa",
-  "iconUrl": "https://chinamotors.com.kz/icons/icon-512.png",
+  "iconUrl": "https://raw.githubusercontent.com/jsdont/China-Motors/main/china-motors-site/icons/icon-512.png",
   "splashScreenFadeOutDuration": 300,
   "signingKey": {
     "path": "C:\\Users\\Acer\\China-Motors\\china-motors-site\\android.keystore",
-    "alias": "chinamotors"
+    "alias": "android"
   },
   "appVersionName": "1",
   "appVersionCode": 1,
