@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "kz.com.chinamotors.twa",
+      "sha256_cert_fingerprints": [
+        "d0430032a39bf0ba84ba561a9c06f24bf97df6e9d160a3398fac90170ee6d3b8"
+      ]
+    }
+  }
+]
