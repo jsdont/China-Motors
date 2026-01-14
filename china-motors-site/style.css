@@ -287,11 +287,11 @@ p {
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
-  color: var(--white);
+  color: #212121;
 }
 
 .White-p {
-  color: var(--white);
+  color: #ffffff;
 }
 
 .last-words p {
@@ -1499,3 +1499,72 @@ html.dark #langSwitch {
   color: #fff;
   border: 1px solid #333;
 }
+/* =========================
+   Privacy Policy page fix
+   ========================= */
+
+.privacy-page {
+  background: #f9f9f9;
+}
+
+html.dark .privacy-page {
+  background: #121212;
+}
+
+.privacy-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+html.dark .privacy-container {
+  background: #1e1e1e;
+  box-shadow: none;
+}
+
+/* ТЕКСТ */
+.privacy-container h1,
+.privacy-container h3 {
+  color: #1f1f1f;
+}
+
+html.dark .privacy-container h1,
+html.dark .privacy-container h3 {
+  color: #ffffff;
+}
+
+.privacy-container p,
+.privacy-container li {
+  color: #333333;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+html.dark .privacy-container p,
+html.dark .privacy-container li {
+  color: #e0e0e0;
+}
+
+/* Списки */
+.privacy-container ul {
+  padding-left: 20px;
+  margin-bottom: 16px;
+}
+
+.privacy-container li {
+  margin-bottom: 6px;
+}
+
+/* Ссылки */
+.privacy-container a {
+  color: #2f6fed;
+  text-decoration: underline;
+}
+
+html.dark .privacy-container a {
+  color: #8ab4ff;
+}
+
