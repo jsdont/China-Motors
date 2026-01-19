@@ -1,9 +1,10 @@
-// /js/common.js — i18n (RU/KZ/中文/EN) + тема + сервисный код (burger, SW, Tawk.to, lazy)
 (() => {
   const LS_LANG = 'lang';
   const LS_THEME = 'theme';
 
-  // ---------- СЛОВАРИ ----------
+  /* =====================
+     TRANSLATIONS
+     ===================== */
   const translations = {
     ru: {
       // NAV
@@ -548,144 +549,103 @@
     },
   };
 
-  // доступ к словарю из других файлов
-  function getDict(lang) {
-    return translations[lang] || translations.ru;
-  }
   function getLang() {
-    return localStorage.getItem(LS_LANG) || (navigator.language || 'ru').slice(0,2) || 'ru';
-  }
-  function setText(el, text) {
-    if (!el) return;
-    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.value = text;
-    else el.textContent = text;
+    return localStorage.getItem(LS_LANG) || 'ru';
   }
 
-  // ---------- I18N ПРИМЕНЕНИЕ ----------
   function applyLang(lang) {
-    const dict = getDict(lang);
     document.documentElement.lang = lang;
 
-    // обычные тексты
     document.querySelectorAll('[data-i18n]').forEach(el => {
-      const key = el.getAttribute('data-i18n');
-      if (key && dict[key]) setText(el, dict[key]);
+      const key = el.dataset.i18n;
+      const value = translations[lang]?.[key];
+      if (value) el.textContent = value;
     });
-
-    // плейсхолдеры
-    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-      const key = el.getAttribute('data-i18n-placeholder');
-      if (key && dict[key]) el.setAttribute('placeholder', dict[key]);
-    });
-
-    // <title data-i18n="">
-    const titleEl = document.querySelector('title[data-i18n]');
-    if (titleEl) {
-      const key = titleEl.getAttribute('data-i18n');
-      if (key && dict[key]) titleEl.textContent = dict[key];
-    }
-
-    // специфичные элементы
-    const search = document.getElementById('search');
-    if (search && dict.search_placeholder) search.setAttribute('placeholder', dict.search_placeholder);
-
-    const btnRate = document.getElementById('btnRefreshRate');
-    if (btnRate && dict.btn_refresh_rate) btnRate.innerHTML = `<i class="fa-solid fa-rotate"></i> ${dict.btn_refresh_rate}`;
-
-    const btnCalcAside = document.getElementById('btnRecalcAside');
-    if (btnCalcAside && dict.aside_btn_calc) btnCalcAside.innerHTML = `<i class="fa-solid fa-calculator"></i> ${dict.aside_btn_calc}`;
-
-    const toContactsAside = document.getElementById('toContactsAside');
-    if (toContactsAside && dict.aside_btn_apply) toContactsAside.innerHTML = `<i class="fa-solid fa-paper-plane"></i> ${dict.aside_btn_apply}`;
-
-    const langSwitch = document.getElementById('langSwitch');
-    if (langSwitch) langSwitch.value = lang;
 
     localStorage.setItem(LS_LANG, lang);
   }
 
-  // даём глобальный помощник для скриптов
-  window.__t = (key) => {
-    const lang = getLang();
-    const dict = getDict(lang);
-    return dict[key] || translations.ru[key] || key;
-  };
-
-  // ---------- ТЕМА ----------
-  function applyTheme(isDark) {
-    // ВАЖНО: класс ставим на <html>, т.к. в style.css тёмная тема — через html.dark { ... }
-    // (раньше ставили на body, поэтому не работало) :contentReference[oaicite:1]{index=1}
-    const root = document.documentElement;
-    root.classList.toggle('dark', isDark);
-    const btn = document.getElementById('themeToggle');
-    if (btn) btn.textContent = isDark ? '☀️' : '🌙';
-    localStorage.setItem(LS_THEME, isDark ? 'dark' : 'light');
-  }
-
-  // ---------- INIT ----------
-  function onReady() {
-    // Service Worker (офлайн)
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(() => {});
+  /* =====================
+     THEME (ТОЛЬКО CSS)
+     ===================== */
+  function initTheme() {
+    const saved = localStorage.getItem(LS_THEME);
+    if (saved === 'dark') {
+      document.documentElement.classList.add('dark');
     }
 
+    const themeBtn = document.getElementById('themeToggle');
+    themeBtn?.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      localStorage.setItem(
+        LS_THEME,
+        document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+      );
+    });
+  }
 
-    // Бургер
-    const menuToggle = document.querySelector('.menu-toggle');
+  /* =====================
+     LANGUAGE BUTTON
+     ===================== */
+  function initLang() {
+    const langBtn = document.getElementById('langToggle');
+    if (!langBtn) return;
+
+    const order = ['ru', 'kk', 'en', 'zh'];
+    let current = getLang();
+
+    applyLang(current);
+    langBtn.textContent = current.toUpperCase();
+
+    langBtn.addEventListener('click', () => {
+      current = order[(order.indexOf(current) + 1) % order.length];
+      langBtn.textContent = current.toUpperCase();
+      applyLang(current);
+    });
+  }
+  function initBurger() {
+    const burger = document.querySelector('.menu-toggle');
     const navLinks = document.querySelector('.nav-links');
-    if (menuToggle && navLinks) {
-      menuToggle.addEventListener('click', () => navLinks.classList.toggle('active'));
-    }
 
-    // Тема
-    const savedTheme = localStorage.getItem(LS_THEME);
-    applyTheme(savedTheme ? savedTheme === 'dark' : false);
-    const themeToggle = document.getElementById('themeToggle');
-    themeToggle?.addEventListener('click', () => {
-      const nowDark = !document.documentElement.classList.contains('dark');
-      applyTheme(nowDark);
+    if (!burger || !navLinks) return;
+
+    burger.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
     });
 
-    // Язык
-    const savedLang = localStorage.getItem(LS_LANG) || (['ru','kk','zh','en'].includes((navigator.language||'ru').slice(0,2)) ? (navigator.language||'ru').slice(0,2) : 'ru');
-    applyLang(savedLang);
-    const langSwitch = document.getElementById('langSwitch');
-    langSwitch?.addEventListener('change', () => applyLang(langSwitch.value));
-
-    // Кнопка "Наверх"
-    const toTopBtn = document.getElementById('toTopBtn');
-    const updateToTop = () => {
-      if (!toTopBtn) return;
-      toTopBtn.style.display = window.scrollY > 300 ? 'block' : 'none';
-    };
-    if (toTopBtn) {
-      window.addEventListener('scroll', updateToTop, { passive: true });
-      toTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-      updateToTop();
-    }
-
-    // Tawk.to — единая инициализация на всех страницах
-    if (!document.getElementById('tawk_script')) {
-      const s1 = document.createElement('script');
-      s1.id = 'tawk_script';
-      s1.async = true;
-      s1.src = 'https://embed.tawk.to/68480dddb0d263190ae16f29/1itcncalg';
-      s1.charset = 'UTF-8';
-      s1.setAttribute('crossorigin', '*');
-      document.body.appendChild(s1);
-    }
-
-    // Lazy для картинок/видео
-    document.querySelectorAll('img:not([loading])').forEach(img => {
-      img.setAttribute('loading', 'lazy');
-      img.setAttribute('decoding', 'async');
+    // закрытие меню при клике на пункт
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('active');
+      });
     });
-    document.querySelectorAll('video[preload="auto"]').forEach(v => v.setAttribute('preload', 'metadata'));
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', onReady);
-  } else {
-    onReady();
+  /* =====================
+     PARTIAL LOADER
+     ===================== */
+  async function loadPartial(targetId, url, callback) {
+    const target = document.getElementById(targetId);
+    if (!target) return;
+
+    const res = await fetch(url);
+    target.innerHTML = await res.text();
+    if (callback) callback();
   }
+
+  /* =====================
+     INIT
+     ===================== */
+  document.addEventListener('DOMContentLoaded', () => {
+
+    loadPartial('siteHeader', './partials/navbar.html', () => {
+    initTheme();
+    initLang();
+    initBurger(); // ← ВОТ ОН
+  });
+
+
+    loadPartial('siteFooter', './partials/footer.html');
+  });
+
 })();
