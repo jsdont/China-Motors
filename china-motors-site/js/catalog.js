@@ -130,46 +130,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ================= RENDER =================
 
-  function cardHTML(x) {
-    return `
-      <div class="feature-card" data-id="${x.id}">
-        <div class="card-image">
-          ${x.mainImg
-            ? `<a href="product.html?id=${x.id}">
-                <img src="${escAttr(x.mainImg)}"
-                     alt="${escAttr(x.title)}"
-                     class="js-open-gallery">
-              </a>`
-            : `<div style="height:240px;background:#eee;display:flex;align-items:center;justify-content:center">
-                Фото позже
-              </div>`
-          }
-        </div>
-
-        <a href="product.html?id=${x.id}">
-          <h3>${escHTML(x.title)}</h3>
-        </a>
-
-        <div class="meta-row">
-          <span>Конструкция:</span> <b>${escHTML(x.bodyTypeRaw || '—')}</b>
-        </div>
-
-        <div class="price">${x.priceText}</div>
-
-        <div class="card-actions">
-          <button class="btn js-open-gallery">Фотографии</button>
-          <a class="btn btn-ghost"
-            href="calculator.html
-              ?name=${encodeURIComponent(x.calcName)}
-              &title=${encodeURIComponent(x.title)}
-              &price=${encodeURIComponent(x.priceNum ?? '')}
-              &body=${encodeURIComponent(x.bodyType)}">
-            Рассчитать
-          </a>
-        </div>
+function cardHTML(x) {
+  return `
+    <div class="feature-card" data-id="${x.id}">
+      <div class="card-image">
+        ${x.mainImg
+          ? `<a href="product.html?id=${x.id}">
+              <img src="${escAttr(x.mainImg)}"
+                   alt="${escAttr(x.title)}">
+            </a>`
+          : `<div style="height:240px;background:#eee;display:flex;align-items:center;justify-content:center">
+              Фото позже
+            </div>`
+        }
       </div>
-    `;
-  }
+
+      <a href="product.html?id=${x.id}">
+        <h3>${escHTML(x.title)}</h3>
+      </a>
+
+      <div class="meta-row">
+        <span>Конструкция:</span> <b>${escHTML(x.bodyTypeRaw || '—')}</b>
+      </div>
+
+      <div class="price">${x.priceText}</div>
+
+      <div class="card-actions">
+        <button class="btn js-open-gallery">Фотографии</button>
+
+        <a class="btn btn-ghost"
+          href="calculator.html
+            ?name=${encodeURIComponent(x.calcName)}
+            &title=${encodeURIComponent(x.title)}
+            &price=${encodeURIComponent(x.priceNum ?? '')}
+            &body=${encodeURIComponent(x.bodyType)}">
+          Рассчитать
+        </a>
+      </div>
+    </div>
+  `;
+}
+
 
   function render(list) {
     grid.innerHTML = list.map(cardHTML).join('');
