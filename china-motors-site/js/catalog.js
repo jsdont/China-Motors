@@ -171,7 +171,6 @@ function cardHTML(x) {
   `;
 }
 
-
   function render(list) {
     grid.innerHTML = list.map(cardHTML).join('');
     grid.querySelectorAll('.js-open-gallery').forEach(btn => {
