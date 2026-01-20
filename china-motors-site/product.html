@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta name="api-base" content="https://cm-backend-daniyal.fly.dev">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO (потом улучшим, сейчас базово) -->
+  <title id="seoTitle">China Motors — Техника</title>
+  <meta name="description" id="seoDescription" content="Карточка техники China Motors">
+
+  <meta name="theme-color" content="#0b2b5a">
+  <link rel="icon" href="/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    .product-page { padding: 40px 0 80px; }
+    .product-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 32px;
+    }
+    @media (max-width: 900px) {
+      .product-grid { grid-template-columns: 1fr; }
+    }
+
+    .product-gallery img {
+      width: 100%;
+      max-height: 520px;
+      object-fit: contain;
+      background: #111;
+      border-radius: 16px;
+    }
+
+    .thumbs {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      overflow-x: auto;
+    }
+    .thumbs img {
+      width: 90px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 8px;
+      cursor: pointer;
+      opacity: .75;
+    }
+    .thumbs img.active { opacity: 1; outline: 2px solid #e11d48; }
+
+    .product-title { font-size: 28px; font-weight: 700; margin-bottom: 10px; }
+    .product-price { font-size: 22px; font-weight: 700; margin: 16px 0; }
+
+    table.specs {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    table.specs td {
+      padding: 10px 8px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    table.specs td:first-child { opacity: .75; width: 45%; }
+
+    .product-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="siteHeader"></div>
+
+<section class="product-page section fade-in">
+  <div class="container">
+    <div class="product-grid">
+
+      <!-- ЛЕВО: ГАЛЕРЕЯ -->
+      <div class="product-gallery">
+        <img id="mainImage" src="" alt="">
+        <div class="thumbs" id="thumbs"></div>
+      </div>
+
+      <!-- ПРАВО: ИНФО -->
+      <div>
+        <h1 class="product-title" id="productTitle">—</h1>
+
+        <div class="product-price" id="productPrice">—</div>
+
+        <table class="specs" id="specsTable"></table>
+
+        <div class="product-actions">
+          <a id="btnCalc" class="btn btn--primary">
+            <i class="fa fa-calculator"></i> Рассчитать стоимость
+          </a>
+          <a id="btnRequest" class="btn btn--ghost">
+            <i class="fa fa-paper-plane"></i> Оставить заявку
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div id="siteFooter"></div>
+
+<!-- scripts -->
+<script src="js/common.js"></script>
+<script src="js/product.js"></script>
+
+</body>
+</html>

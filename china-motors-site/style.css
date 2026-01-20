@@ -753,6 +753,9 @@ p {
 .footer-contact .social-links a:nth-child(3) {
   background: linear-gradient(90deg, #FF0033, #f32750);
 }
+.footer-contact .social-links a:nth-child(4) {
+  background: linear-gradient(90deg, #0CC143, #22c753);
+}
 
 .footer-bottom {
   margin-top: 30px;
@@ -1110,10 +1113,6 @@ p {
   .footer-contact {
     margin-right: 0;
     text-align: center;
-  }
-
-  .footer-contact .social-links {
-    justify-content: flex-end;
   }
 
   .footer-contact .social-links a {
@@ -1760,4 +1759,71 @@ html.dark .privacy-container a {
   .privacy-container h3 {
     font-size: 18px;
   }
+}
+/* =========================
+   WHY US
+========================= */
+.why-us {
+  background: #f9f9f9;
+}
+
+html.dark .why-us {
+  background: #121212;
+}
+
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  margin-top: 30px;
+}
+
+.why-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px 20px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  transition: transform .2s ease, box-shadow .2s ease;
+  text-align: center;
+}
+
+.why-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.15);
+}
+
+.why-card i {
+  font-size: 36px;
+  color: #E12821;
+  margin-bottom: 14px;
+}
+
+.why-card h4 {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.why-card p {
+  font-size: 14px;
+  color: #333;
+}
+
+html.dark .why-card {
+  background: #1e1e1e;
+}
+
+html.dark .why-card p {
+  color: #e0e0e0;
+}
+/* Calculator disclaimer */
+.calc-disclaimer {
+  max-width: 900px;
+  margin: 20px auto 0;
+  font-size: 13px;
+  color: #666;
+  text-align: center;
+}
+
+html.dark .calc-disclaimer {
+  color: #aaa;
 }

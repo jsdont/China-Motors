@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta name="api-base" content="https://cm-backend-daniyal.fly.dev">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO -->
+  <title>Самосвалы из Китая — купить с доставкой в Казахстан | China Motors</title>
+  <meta name="description"
+        content="Самосвалы из Китая под заказ и в наличии. Прозрачный расчёт, доставка, таможня и регистрация. China Motors.">
+
+  <meta name="theme-color" content="#0b2b5a">
+  <link rel="icon" href="/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+<div id="siteHeader"></div>
+
+<!-- HERO -->
+<section class="hero section fade-in">
+  <div class="container">
+    <div class="hero-overlay">
+      <h1>Самосвалы из Китая</h1>
+      <p class="White-p">
+        Надёжные самосвалы под строительство, карьеры и дороги.
+        Прямые поставки, прозрачный расчёт.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- TEXT BLOCK -->
+<section class="section fade-in">
+  <div class="container" style="max-width:900px">
+    <h2 class="blue-title">Продажа самосвалов из Китая</h2>
+
+    <p>
+      Компания <strong>China Motors</strong> поставляет самосвалы из Китая под заказ и в наличии.
+      Мы работаем напрямую с поставщиками и сопровождаем сделку от подбора техники
+      до постановки на учёт в Казахстане.
+    </p>
+
+    <p>
+      Вы можете рассчитать стоимость самосвала заранее с помощью калькулятора —
+      без скрытых платежей и неожиданностей.
+    </p>
+  </div>
+</section>
+
+<!-- CATALOG (тот же самый) -->
+<section class="section fade-in" style="padding-bottom:60px">
+  <div class="container">
+    <h2 class="blue-title">Доступные самосвалы</h2>
+
+    <!-- ВАЖНО: body фиксирован -->
+    <div class="filters" style="display:none">
+      <select id="body">
+        <option selected>Самосвал</option>
+      </select>
+    </div>
+
+    <div id="grid" class="feature-grid"></div>
+  </div>
+</section>
+
+<div id="siteFooter"></div>
+
+<!-- Scripts -->
+<script src="js/common.js"></script>
+<script src="js/catalog.js"></script>
+
+</body>
+</html>
