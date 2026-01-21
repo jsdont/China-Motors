@@ -146,6 +146,40 @@
       js_form_sending: 'Отправляем...',
       js_form_sent_ok: 'Заявка отправлена! Свяжемся с вами.',
       js_form_sent_fail: 'Ошибка отправки. Попробуйте позже.',
+      why_title : 'Почему China Motors',
+      why_card1_t : 'Работа по договору',
+      why_card1_d : 'Все поставки оформляются официально. Прозрачные условия без скрытых платежей.',
+      why_card2_t : 'Реальные поставки',
+      why_card2_d : 'Работаем с реальной техникой. Фото и видео с погрузки, склада и доставки.',
+      why_card3_t : 'Прозрачный расчёт',
+      why_card3_d : 'Калькулятор показывает, за что вы платите. Без «потом доплатите ещё».',
+      why_card4_t : 'Подбор под бюджет',
+      why_card4_d : 'Подбираем технику под задачу и бюджет, а не продаём «что есть».',
+      why_card5_t : 'Сопровождение до регистрации',
+      why_card5_d : 'Помогаем с документами, таможней и постановкой на учёт.',
+      footer_terms: 'Пользовательское соглашение',
+      footer_privacy: 'Политика конфиденциальности',
+      loading: 'Загрузка...',
+      loading_error: 'Ошибка загрузки каталога',
+      body_all: 'Все типы',
+      body_trailer: 'Прицеп',
+      body_semitrailer: 'Полуприцеп',
+      body_dumptruck: 'Самосвал',
+      body_tugboat: 'Тягач',
+      body_specialequipment: 'Спец. техника',
+      body_crane: 'Кран',
+      body_manipulator: 'Манипулятор',
+      body_mixer: 'Миксер',
+      body_fuel_tank: 'Бензовоз',
+      body_aerial_ladder: 'Автовышка',
+      body_sewer_cleaner: 'Ассенизатор',
+      body_refrigerator: 'Рефрижератор',
+      body_van: 'Автофургон',
+      body_sprinkler: 'Поливомоечная машина',
+      body_drilling_rig: 'Ямобур машины для бурения',
+      body_milk_truck: 'Молоковоз',
+      body_fuel_truck: 'Топливозаправщик',
+
     },
 
     kk: {
@@ -279,6 +313,39 @@
       js_form_sending: 'Жіберілуде...',
       js_form_sent_ok: 'Өтінім жіберілді! Байланысамыз.',
       js_form_sent_fail: 'Жіберу қатесі. Кейінірек көріңіз.',
+      why_title : 'Неліктен China Motors',
+      why_card1_t : 'Келісімшарт бойынша жұмыс',
+      why_card1_d : 'Барлық жеткізілімдер ресми рәсімделеді. Жасырын төлемсіз мөлдір шарттар.',
+      why_card2_t : 'Нақты жеткізілімдер',  
+      why_card2_d : 'Біз нақты техникалармен жұмыс жасаймыз. Жүктеу, қойма және жеткізу фотосуреттері мен бейнелері.',
+      why_card3_t : 'Мөлдір есептеу',
+      why_card3_d : 'Калькулятор сіз төлейтін төлемдерді көрсетеді. «Кейінірек қосымша төлемдер» жоқ.',
+      why_card4_t : 'Бюджетке сай таңдау',
+      why_card4_d : 'Біз «бар нәрсені» сатпай, тапсырма мен бюджетке сай техниканы таңдаймыз.',
+      why_card5_t : 'Тіркеуге дейінгі қолдау',
+      why_card5_d : 'Құжаттармен, кеденмен және тіркеумен көмек көрсетеміз.',
+      footer_terms: 'Пайдаланушы келісімі',
+      footer_privacy: 'Құпиялылық саясаты',
+      loading: 'Жүктелуде...',
+      loading_error: 'Каталогты жүктеу қатесі',
+      body_all: 'Все типы',
+      body_trailer: 'Прицеп',
+      body_semitrailer: 'Полуприцеп',
+      body_dumptruck: 'Самосвал',
+      body_tugboat: 'Тягач',
+      body_specialequipment: 'Арнайы техника',
+      body_crane: 'Кран',
+      body_manipulator: 'Манипулятор',
+      body_mixer: 'Миксер',
+      body_fuel_tank: 'Бензовоз',
+      body_aerial_ladder: 'Автовышка',
+      body_sewer_cleaner: 'Ассенизатор',
+      body_refrigerator: 'Рефрижератор',
+      body_van: 'Автофургон',
+      body_sprinkler: 'Поливомоечная машина',
+      body_drilling_rig: 'Ямобур машины для бурения',
+      body_milk_truck: 'Молоковоз',
+      body_fuel_truck: 'Топливозаправщик',
     },
 
     zh: {
@@ -412,6 +479,39 @@
       js_form_sending: '发送中...',
       js_form_sent_ok: '已发送！我们会联系您。',
       js_form_sent_fail: '发送失败，请稍后再试。',
+      why_title : '为什么选择 China Motors',
+      why_card1_t : '合同合作',
+      why_card1_d : '所有供应均正式办理。透明条款，无隐藏费用。',
+      why_card2_t : '实际供应',
+      why_card2_d : '我们处理实际设备。装载、仓库和交付的照片和视频。',
+      why_card3_t : '透明计算',
+      why_card3_d : '计算器显示您支付的费用。没有“之后再付钱”。',
+      why_card4_t : '根据预算选择',
+      why_card4_d : '根据任务和预算选择设备，而不是出售“现有”设备。',
+      why_card5_t : '注册支持',
+      why_card5_d : '我们协助处理文件、海关和注册。',
+      footer_terms: '用户协议',
+      footer_privacy: '隐私政策',
+      loading: '加载中...',
+      loading_error: '目录加载错误',
+      body_all: '所有类型',
+      body_trailer: '挂车',
+      body_semitrailer: '半挂车',
+      body_dumptruck: '自卸车',
+      body_tugboat: '牵引车',
+      body_specialequipment: '专用设备',
+      body_crane: '起重机',
+      body_manipulator: '操作器',       
+      body_mixer: '搅拌机',
+      body_fuel_tank: '油罐车',
+      body_aerial_ladder: '高空作业车',
+      body_sewer_cleaner: '清污车',
+      body_refrigerator: '冷藏车',
+      body_van: '厢式货车',
+      body_sprinkler: '洒水车',
+      body_drilling_rig: '钻机',
+      body_milk_truck: '运奶车',
+      body_fuel_truck: '加油车',
     },
 
     en: {
@@ -546,6 +646,39 @@
       js_form_sending: 'Sending...',
       js_form_sent_ok: 'Request sent! We will contact you.',
       js_form_sent_fail: 'Sending failed. Try again later.',
+      why_title : 'Why choose China Motors',
+      why_card1_t : 'Contract cooperation',
+      why_card1_d : 'All supplies are formally processed. Transparent terms, no hidden fees.',
+      why_card2_t : 'Actual supply',
+      why_card2_d : 'We handle actual equipment. Photos and videos of loading, warehousing, and delivery.',
+      why_card3_t : 'Transparent calculation',
+      why_card3_d : 'The calculator shows what you pay for. No "pay later".',
+      why_card4_t : 'Choose by budget',
+      why_card4_d : 'Select equipment based on task and budget, not selling "available" equipment.',
+      why_card5_t : 'Registration support',
+      why_card5_d : 'We assist with paperwork, customs, and registration.',
+      footer_terms: 'User Agreement',
+      footer_privacy: 'Privacy Policy',
+      loading: 'Loading...',
+      loading_error: 'Catalog loading error',
+      body_trailer: 'Trailer',
+      body_semitrailer: 'Semi-trailer',
+      body_dumptruck: 'Dump truck',
+      body_tugboat: 'Tractor',
+      body_specialequipment: 'Special equipment',
+      body_crane: 'Crane',
+      body_manipulator: 'Manipulator',
+      body_mixer: 'Concrete mixer',
+      body_fuel_tank: 'Fuel tanker',
+      body_aerial_ladder: 'Aerial ladder',
+      body_sewer_cleaner: 'Sewer cleaner',
+      body_refrigerator: 'Refrigerated truck',
+      body_van: 'Van',
+      body_sprinkler: 'Sprinkler truck',
+      body_drilling_rig: 'Drilling rig',
+      body_milk_truck: 'Milk truck',
+      body_fuel_truck: 'Fuel truck',
+      body_all: 'All types',
     },
   };
 
@@ -556,14 +689,23 @@
   function applyLang(lang) {
     document.documentElement.lang = lang;
 
+    // обычный текст
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.dataset.i18n;
       const value = translations[lang]?.[key];
       if (value) el.textContent = value;
     });
 
-    localStorage.setItem(LS_LANG, lang);
+    // placeholder
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      const key = el.dataset.i18nPlaceholder;
+      const value = translations[lang]?.[key];
+      if (value) el.placeholder = value;
+    });
+
+    localStorage.setItem('lang', lang);
   }
+
 
   /* =====================
      THEME (ТОЛЬКО CSS)

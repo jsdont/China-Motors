@@ -262,7 +262,7 @@ function cardHTML(x) {
 
   async function load() {
     try {
-      grid.innerHTML = '<div class="loading">Загрузка...</div>';
+      grid.innerHTML = '<div data-i18n="loading" class="loading">Загрузка...</div>';
       const r = await fetch(`${API_BASE}/api/vehicles/`);
       if (!r.ok) throw new Error(r.status);
       const data = await r.json();
@@ -281,7 +281,7 @@ function cardHTML(x) {
 
     } catch (e) {
       console.error(e);
-      grid.innerHTML = '<div class="error">Ошибка загрузки каталога</div>';
+      grid.innerHTML = '<div data-i18n="loading_error" class="error">Ошибка загрузки каталога</div>';
     }
   }
 
