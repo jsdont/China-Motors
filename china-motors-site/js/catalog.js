@@ -75,20 +75,90 @@ document.addEventListener('DOMContentLoaded', () => {
   function canonBody(rawTitle, rawBody) {
     const s = `${rawTitle} ${rawBody}`.toLowerCase();
 
-    if (s.includes('рефриж') || s.includes('refriger')) return 'Рефрижератор';
-    if (s.includes('фургон') || s.includes('isoterm') || s.includes('изотерм')) return 'Автофургон';
-    if (s.includes('ямобур') || s.includes('бкм') || s.includes('бур')) return 'Ямобур машины для бурения';
-    if (s.includes('молоковоз')) return 'Молоковоз';
-    if (s.includes('топлив') && s.includes('заправ')) return 'Топливозаправщик';
+    // --- узкоспециализированные типы ---
 
-    if (s.includes('полуприцеп')) return BODY_TYPES.SEMI;
-    if (!s.includes('полуприцеп') && s.includes('прицеп')) return BODY_TYPES.TRAILER;
-    if (s.includes('самосвал')) return BODY_TYPES.DUMP;
-    if (s.includes('тягач') || s.includes('седельный')) return BODY_TYPES.TRACTOR;
-    if (s.includes('кран')) return BODY_TYPES.CRANE;
-    if (s.includes('спец') || s.includes('экскаватор') || s.includes('погрузчик')) return BODY_TYPES.SPECIAL;
+    if (s.includes('рефриж') || s.includes('refriger'))
+      return 'Рефрижератор';
+
+    if (
+      s.includes('фургон') ||
+      s.includes('isoterm') ||
+      s.includes('изотерм') ||
+      s.includes('van')
+    )
+      return 'Автофургон';
+
+    if (
+      s.includes('ямобур') ||
+      s.includes('бкм') ||
+      s.includes('бур') ||
+      s.includes('drill')
+    )
+      return 'Ямобур машины для бурения';
+
+    if (s.includes('молоковоз') || s.includes('milk'))
+      return 'Молоковоз';
+
+    if (
+      s.includes('топлив') ||
+      s.includes('fuel') ||
+      s.includes('заправ')
+    )
+      return 'Топливозаправщик';
+
+    // --- спецтехника (подтипы) ---
+
+    if (s.includes('манипулятор') || s.includes('manipulator'))
+      return BODY_TYPES.SPECIAL;
+
+    if (s.includes('миксер') || s.includes('concrete'))
+      return BODY_TYPES.SPECIAL;
+
+    if (s.includes('автовышка') || s.includes('aerial') || s.includes('lift'))
+      return BODY_TYPES.SPECIAL;
+
+    if (s.includes('ассенизатор') || s.includes('sewer'))
+      return BODY_TYPES.SPECIAL;
+
+    if (s.includes('полив') || s.includes('sprinkler') || s.includes('washer'))
+      return BODY_TYPES.SPECIAL;
+
+    if (
+      s.includes('экскаватор') ||
+      s.includes('погрузчик') ||
+      s.includes('loader') ||
+      s.includes('excavator')
+    )
+      return BODY_TYPES.SPECIAL;
+
+    // --- базовые категории (обязательно ниже спец-проверок) ---
+
+    if (s.includes('полуприцеп') || s.includes('semi'))
+      return BODY_TYPES.SEMI;
+
+    if (
+      !s.includes('полуприцеп') &&
+      (s.includes('прицеп') || s.includes('trailer'))
+    )
+      return BODY_TYPES.TRAILER;
+
+    if (s.includes('самосвал') || s.includes('dump'))
+      return BODY_TYPES.DUMP;
+
+    if (
+      s.includes('тягач') ||
+      s.includes('седельный') ||
+      s.includes('tractor')
+    )
+      return BODY_TYPES.TRACTOR;
+
+    if (s.includes('кран') || s.includes('crane'))
+      return BODY_TYPES.CRANE;
+
+    // --- дефолт ---
 
     return BODY_TYPES.SPECIAL;
+
 
   }
 
