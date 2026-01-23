@@ -7,7 +7,10 @@
 (function () {
   const $  = (s, r = document) => r.querySelector(s);
   const qa = (s, r = document) => Array.from(r.querySelectorAll(s));
-  const nf = new Intl.NumberFormat('ru-RU');
+  const nf = new Intl.NumberFormat(
+    localStorage.getItem('lang') === 'en' ? 'en-US' : 'ru-RU'
+  );
+
 
   // === Константы ===
   const DUTY_RATE  = 0.10;
@@ -101,13 +104,22 @@
 
   // ---- helpers ----
   function putText(sel, v) { const e = $(sel); if (e) e.textContent = v; }
-  function addRow(listId, name, sum) {
-    const ul = $(listId);
+  function addRow(listId, key, sum) {
+    const ul = document.querySelector(listId);
     if (!ul) return;
+
+    const lang = localStorage.getItem('lang') || 'ru';
+    const text =
+      window.translations?.[lang]?.[key] || key;
+
     const li = document.createElement('li');
-    li.innerHTML = `<span>${name}</span><span class="sum">${fmt(sum)}</span>`;
+    li.innerHTML = `
+      <span data-i18n="${key}">${text}</span>
+      <span class="sum">${fmt(sum)}</span>
+    `;
     ul.appendChild(li);
   }
+
   function clearList(id) { const ul = $(id); if (ul) ul.innerHTML = ''; }
 
   // UI: режимы ТС
@@ -191,16 +203,16 @@
 
     if (type === 'Тягач') {
       const items = [
-        ['СБКТС', 200000],
-        ['Кнопка SOS', 150000],
-        ['Таможенный сбор', tBlank],
-        ['Услуги брокера на СВХ', brokerSvh],
-        ['СВХ', 80000],
-        ['Брокер на границе ($250)', 250*rate],
-        ['ЭПТС', 50000],
-        ['Солярка + AdBlue пакет', 51480],
-        ['«Красный коридор»', 50000],
-        ['«Спасибо Астане»', byprice ? 0 : 600*rate],
+        ['calc_item_sbkts', 200000],
+        ['calc_item_sos', 150000],
+        ['calc_item_customs_fee', tBlank],
+        ['calc_item_broker_svh', brokerSvh],
+        ['calc_item_svh', 80000],
+        ['calc_item_border_broker', 250*rate],
+        ['calc_item_epts', 50000],
+        ['calc_item_diesel_pack', 51480],
+        ['calc_item_red_corridor', 50000],
+        ['calc_item_thanks_astana', byprice ? 0 : 600*rate],
       ];
       items.forEach(([name,sum]) => { if (sum>0){ addRow('#list-mandatory', name, sum); total += sum; }});
       return total;
@@ -208,13 +220,13 @@
 
     if (IS_TRAILER(type)) {
       const items = [
-        ['СБКТС', 150000],
-        ['Таможенный сбор', tBlank],
-        ['Услуги брокера на СВХ', brokerSvh],
-        ['СВХ', 70000],
-        ['Брокер на границе ($250)', 250*rate],
-        ['ЭПТС', 50000],
-        ['«Спасибо Астане»', byprice ? 0 : 400*rate],
+        ['calc_item_sbkts', 150000],
+        ['calc_item_customs_fee', tBlank],
+        ['calc_item_broker_svh', brokerSvh],
+        ['calc_item_svh', 70000],
+        ['calc_item_border_broker', 250*rate],
+        ['calc_item_epts', 50000],
+        ['calc_item_thanks_astana', byprice ? 0 : 400*rate],
       ];
       items.forEach(([name,sum]) => { if (sum>0){ addRow('#list-mandatory', name, sum); total += sum; }});
       return total;
@@ -222,22 +234,22 @@
 
     if (type === 'Спец. техника') {
       const items = [
-        ['Декларация о соответствии', 80000],
-        ['Таможный брокер', 90000],
+        ['calc_item_declaration', 80000],
+        ['calc_item_customs_broker', 90000],
       ];
       items.forEach(([name,sum]) => { addRow('#list-mandatory', name, sum); total += sum; });
       return total;
     }
 
     const items = [
-      ['СБКТС', 200000],
-      ['Кнопка SOS', 150000],
-      ['Таможенный сбор', tBlank],
-      ['Услуги брокера на СВХ', brokerSvh],
-      ['СВХ', 80000],
-      ['Брокер на границе ($250)', 250*rate],
-      ['ЭПТС', 50000],
-      ['«Спасибо Астане»', byprice ? 0 : 600*rate],
+      ['calc_item_sbkts', 200000],
+      ['calc_item_sos', 150000],
+      ['calc_item_customs_fee', tBlank],
+      ['calc_item_broker_svh', brokerSvh],
+      ['calc_item_svh', 80000],
+      ['calc_item_border_broker', 250*rate],
+      ['calc_item_epts', 50000],
+      ['calc_item_thanks_astana', byprice ? 0 : 600*rate],
     ];
     items.forEach(([name,sum]) => { if (sum>0){ addRow('#list-mandatory', name, sum); total += sum; }});
     return total;
@@ -249,29 +261,35 @@
     let total = 0;
 
     if (type === 'Тягач') {
-      addRow('#list-delivery', 'Доставка до Алматы/лаборатории/СВХ', 150000);
-      total = 150000;
-      return total;
+      addRow('#list-delivery', 'calc_item_delivery_city', 150000);
+      return 150000;
     }
+
     if (IS_TRAILER(type)) {
       return 0;
     }
+
     if (type === 'Спец. техника') {
-      addRow('#list-delivery', 'Доставка до Алматы/лаборатории/СВХ', 300000);
-      total = 300000;
-      return total;
+      addRow('#list-delivery', 'calc_item_delivery_city', 300000);
+      return 300000;
     }
-    const brokerBorder = 250*rate;
-    const driver = 75000, adblue = 8000, toll = 9000;
-    const diesel = 220*324;
-    [['Брокер на границе ($)', brokerBorder],
-     ['Водитель', driver],
-     ['AdBlue', adblue],
-     ['Платная дорога', toll],
-     ['Солярка', diesel]
-    ].forEach(([name,sum])=>{ addRow('#list-delivery', name, sum); total += sum; });
+
+    const items = [
+      ['calc_item_border_broker', 250 * rate],
+      ['calc_item_driver', 75000],
+      ['calc_item_adblue', 8000],
+      ['calc_item_toll_road', 9000],
+      ['calc_item_diesel', 220 * 324],
+    ];
+
+    items.forEach(([key, sum]) => {
+      addRow('#list-delivery', key, sum);
+      total += sum;
+    });
+
     return total;
   }
+
 
   // Гос. платежи (новые правила)
   function buildUtil(type){
@@ -284,21 +302,21 @@
 
     // Прицепы — только госномер
     if (IS_TRAILER(type)) {
-      addRow('#list-util', 'Госномер и техпаспорт', PLATE_FEE);
+      addRow('#list-util', 'calc_item_plate', PLATE_FEE);
       return PLATE_FEE;
     }
 
     // Тягач — прежний утиль + госномер (без первичной)
     if (type === 'Тягач') {
-      addRow('#list-util', 'Утилизационный сбор', UTIL_TAX_TYAGACH);
-      addRow('#list-util', 'Госномер и техпаспорт', PLATE_FEE);
+      addRow('#list-util', 'calc_item_util_tax', UTIL_TAX_TYAGACH);
+      addRow('#list-util', 'calc_item_plate', PLATE_FEE);
       return UTIL_TAX_TYAGACH + PLATE_FEE;
     }
 
     // Остальные типы — новый утиль и первичная + госномер
-    addRow('#list-util', 'Утилизационный сбор', UTIL_TAX_STD);
-    addRow('#list-util', 'Первичная регистрация', FIRST_REG_STD);
-    addRow('#list-util', 'Госномер и техпаспорт', PLATE_FEE);
+    addRow('#list-util', 'calc_item_util_tax', UTIL_TAX_STD);
+    addRow('#list-util', 'calc_item_first_reg', FIRST_REG_STD);
+    addRow('#list-util', 'calc_item_plate', PLATE_FEE);
     return UTIL_TAX_STD + FIRST_REG_STD + PLATE_FEE;
   }
 

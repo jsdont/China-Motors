@@ -179,6 +179,27 @@
       body_drilling_rig: 'Ямобур машины для бурения',
       body_milk_truck: 'Молоковоз',
       body_fuel_truck: 'Топливозаправщик',
+      calc_item_sbkts: 'СБКТС',
+      calc_item_sos: 'Кнопка SOS',
+      calc_item_customs_fee: 'Таможенный сбор',
+      calc_item_broker_svh: 'Услуги брокера на СВХ',
+      calc_item_svh: 'СВХ',
+      calc_item_border_broker: 'Брокер на границе ($250)',
+      calc_item_epts: 'ЭПТС',
+      calc_item_diesel_pack: 'Солярка + AdBlue пакет',
+      calc_item_red_corridor: '«Красный коридор»',
+      calc_item_thanks_astana: '«Спасибо Астане»',
+
+      calc_item_declaration: 'Декларация о соответствии',
+      calc_item_customs_broker: 'Таможенный брокер',
+      calc_item_delivery_city: 'Доставка до Алматы/лаборатории/СВХ',
+      calc_item_driver: 'Водитель',
+      calc_item_adblue: 'AdBlue',
+      calc_item_toll_road: 'Платная дорога',
+      calc_item_diesel: 'Солярка',
+      calc_item_plate: 'Госномер и техпаспорт',
+      calc_item_util_tax: 'Утилизационный сбор',
+      calc_item_first_reg: 'Первичная регистрация',
 
     },
 
@@ -346,6 +367,27 @@
       body_drilling_rig: 'Ямобур машины для бурения',
       body_milk_truck: 'Молоковоз',
       body_fuel_truck: 'Топливозаправщик',
+      calc_item_sbkts: 'СБКТС',
+      calc_item_sos: 'SOS түймесі',
+      calc_item_customs_fee: 'Кедендік алым',
+      calc_item_broker_svh: 'СВХ-тағы брокер қызметі',
+      calc_item_svh: 'СВХ',
+      calc_item_border_broker: 'Шекарадағы брокер ($250)',
+      calc_item_epts: 'ЭПТС',
+      calc_item_diesel_pack: 'Дизель + AdBlue пакеті',
+      calc_item_red_corridor: '«Қызыл дәліз»',
+      calc_item_thanks_astana: '«Астанаға рахмет»',
+
+      calc_item_declaration: 'Сәйкестік декларациясы',
+      calc_item_customs_broker: 'Кедендік брокер',
+      calc_item_delivery_city: 'Алматы/лаборатория/СВХ-ға жеткізу',
+      calc_item_driver: 'Жүргізуші',
+      calc_item_adblue: 'AdBlue',
+      calc_item_toll_road: 'Ақылы жол',
+      calc_item_diesel: 'Дизель',
+      calc_item_plate: 'Мемлекеттік нөмір және техникалық төлқұжат',
+      calc_item_util_tax: 'Утилизациялық алым',
+      calc_item_first_reg: 'Бастапқы тіркеу',
     },
 
     zh: {
@@ -512,6 +554,27 @@
       body_drilling_rig: '钻机',
       body_milk_truck: '运奶车',
       body_fuel_truck: '加油车',
+      calc_item_sbkts: 'SBKTS 证书',
+      calc_item_sos: 'SOS 按钮',
+      calc_item_customs_fee: '海关费用',
+      calc_item_broker_svh: '仓储区经纪服务',
+      calc_item_svh: '仓储区',
+      calc_item_border_broker: '边境代理 ($250)',
+      calc_item_epts: '电子车辆护照',
+      calc_item_diesel_pack: '柴油 + AdBlue 套餐',
+      calc_item_red_corridor: '红色通道',
+      calc_item_thanks_astana: '“感谢阿斯塔纳”',
+
+      calc_item_declaration: '符合性声明',
+      calc_item_customs_broker: '海关代理',
+      calc_item_delivery_city: '送货至阿拉木图/实验室/仓储区',
+      calc_item_driver: '司机',
+      calc_item_adblue: 'AdBlue',
+      calc_item_toll_road: '收费公路',
+      calc_item_diesel: '柴油',
+      calc_item_plate: '车牌和技术护照',
+      calc_item_util_tax: '回收费',
+      calc_item_first_reg: '首次注册',
     },
 
     en: {
@@ -679,6 +742,27 @@
       body_milk_truck: 'Milk truck',
       body_fuel_truck: 'Fuel truck',
       body_all: 'All types',
+      calc_item_sbkts: 'SBKTS certificate',
+      calc_item_sos: 'SOS button',
+      calc_item_customs_fee: 'Customs fee',
+      calc_item_broker_svh: 'SVH broker services',
+      calc_item_svh: 'SVH',
+      calc_item_border_broker: 'Border broker ($250)',
+      calc_item_epts: 'EPTS',
+      calc_item_diesel_pack: 'Diesel + AdBlue package',
+      calc_item_red_corridor: 'Red corridor',
+      calc_item_thanks_astana: '“Thanks to Astana”',
+
+      calc_item_declaration: 'Declaration of conformity',
+      calc_item_customs_broker: 'Customs broker',
+      calc_item_delivery_city: 'Delivery to Almaty/lab/SVH',
+      calc_item_driver: 'Driver',
+      calc_item_adblue: 'AdBlue',
+      calc_item_toll_road: 'Toll road',
+      calc_item_diesel: 'Diesel',
+      calc_item_plate: 'License plate and technical passport',
+      calc_item_util_tax: 'Recycling fee',
+      calc_item_first_reg: 'Initial registration',
     },
   };
 
@@ -744,6 +828,10 @@
       langBtn.textContent = current.toUpperCase();
       applyLang(current);
     });
+    if (typeof recalc === 'function') {
+      recalc();
+    }
+
   }
   function initBurger() {
     const burger = document.querySelector('.menu-toggle');
@@ -783,11 +871,14 @@
     loadPartial('siteHeader', './partials/navbar.html', () => {
     initTheme();
     initLang();
-    initBurger(); // ← ВОТ ОН
+    initBurger();
   });
 
 
-    loadPartial('siteFooter', './partials/footer.html');
+    loadPartial('siteFooter', './partials/footer.html', () => {
+      applyLang(getLang());
+    });
+
   });
 
 })();
