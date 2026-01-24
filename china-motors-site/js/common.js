@@ -17,7 +17,7 @@
       // COMMON
       brand_title: 'China Motors',
       hero_title_main: 'China Motors',
-      hero_tagline: 'Спецтехника и авто из Китая — надежность и качество',
+      hero_tagline: 'Спецтехника из Китая — надежность и качество',
       footer_col1_text: 'Надежная техника из Китая под заказ и в наличии.',
       footer_col2_title: 'Навигация',
       footer_col3_title: 'Контакты',
@@ -34,7 +34,7 @@
       about_p1: 'China Motors — ваш надежный партнер в поставке автомобилей и спецтехники из Китая города Хоргос. С 2024 года мы предлагаем качественные машины и профессиональные услуги по доставке и таможенному оформлению.',
       about_p2: 'Наша миссия — обеспечить клиентов современной техникой по доступным ценам с гарантией качества.',
       about_card1_t: 'Широкий выбор техники',
-      about_card1_d: 'От легковых авто до тяжелой спецтехники.',
+      about_card1_d: 'Много различных моделей спецтехники.',
       about_card2_t: 'Индивидуальный подход',
       about_card2_d: 'Учитываем все пожелания клиентов.',
       about_card3_t: 'Надежная доставка',
@@ -84,7 +84,7 @@
       // CALCULATOR
       title_calculator: 'China Motors - Калькулятор',
       calculator_hero: 'Калькулятор',
-      calculator_tagline: 'Прозрачный расчёт: видно «за что платим» без лишних деталей.',
+      calculator_tagline: 'Подбор, доставка и оформление под ключ — рассчитайте стоимость за 2 минуты',
       calc_page_title: 'Калькулятор стоимости',
       calc_in_title: 'Входные данные',
       calc_in_name_label: 'Модель / комплектация',
@@ -215,7 +215,7 @@
 
       brand_title: 'China Motors',
       hero_title_main: 'China Motors',
-      hero_tagline: 'Қытайдан арнайы техника мен автомобильдер — сенімділік пен сапа',
+      hero_tagline: 'Қытайдан арнайы техника — сенімділік пен сапа',
       footer_col1_text: 'Қытайдан тапсырыспен және қолжетімді техника.',
       footer_col2_title: 'Навигация',
       footer_col3_title: 'Байланыс',
@@ -231,7 +231,7 @@
       about_p1: 'China Motors — Қорғас қаласынан Қытай техникасын жеткізетін сенімді серіктес. 2024 жылдан бері сапалы көліктер мен кедендік рәсімдеуге көмектесеміз.',
       about_p2: 'Миссиямыз — клиенттерді қолжетімді бағамен сапалы техникамен қамтамасыз ету.',
       about_card1_t: 'Кең таңдау',
-      about_card1_d: 'Жеңіл автодан ауыр техникаға дейін.',
+      about_card1_d: 'Әртүрлі арнайы техника модельдері.',
       about_card2_t: 'Жеке тәсіл',
       about_card2_d: 'Клиент қалауы ескеріледі.',
       about_card3_t: 'Сенімді жеткізу',
@@ -274,7 +274,7 @@
 
       title_calculator: 'China Motors - Калькулятор',
       calculator_hero: 'Калькулятор',
-      calculator_tagline: 'Артық мәліметсіз төлем құрамы көрінеді.',
+      calculator_tagline: 'Тапсырыс беру, жеткізу және рәсімдеу — 2 минутта құнын есептеңіз',
       calc_page_title: 'Құн калькуляторы',
       calc_in_title: 'Енгізу деректері',
       calc_in_name_label: 'Модель / жабдықталымы',
@@ -402,7 +402,7 @@
 
       brand_title: 'China Motors',
       hero_title_main: 'China Motors',
-      hero_tagline: '来自中国的专用设备和汽车——可靠与质量',
+      hero_tagline: '来自中国的专用设备——可靠性与质量',
       footer_col1_text: '来自中国的可靠设备，可现货或订购。',
       footer_col2_title: '导航',
       footer_col3_title: '联系方式',
@@ -418,7 +418,7 @@
       about_p1: 'China Motors——来自中国霍尔果斯的车辆与专用设备供应商。自2024年起，我们提供高质量车辆并协助清关与运输。',
       about_p2: '我们的使命是以合理价格为客户提供高品质设备并保证质量。',
       about_card1_t: '选择丰富',
-      about_card1_d: '从乘用车到重型设备。',
+      about_card1_d: '多种专用设备型号。',
       about_card2_t: '个性化服务',
       about_card2_d: '充分考虑客户需求。',
       about_card3_t: '可靠运输',
@@ -461,7 +461,7 @@
 
       title_calculator: 'China Motors - 计算器',
       calculator_hero: '计算器',
-      calculator_tagline: '透明计算：清晰展示费用结构。',
+      calculator_tagline: '一站式选购、运输与办理——2分钟内计算费用',
       calc_page_title: '成本计算器',
       calc_in_title: '输入数据',
       calc_in_name_label: '车型 / 配置',
@@ -589,7 +589,7 @@
 
       brand_title: 'China Motors',
       hero_title_main: 'China Motors',
-      hero_tagline: 'Equipment and cars from China — reliable and high-quality',
+      hero_tagline: 'Special equipment from China — reliability and quality',
       footer_col1_text: 'Reliable vehicles from China — in stock and on order.',
       footer_col2_title: 'Navigation',
       footer_col3_title: 'Contacts',
@@ -605,7 +605,7 @@
       about_p1: 'China Motors is your reliable partner for sourcing cars and special equipment from Khorgos, China. Since 2024 we provide quality vehicles and professional logistics & customs support.',
       about_p2: 'Our mission is to deliver modern equipment at fair prices with guaranteed quality.',
       about_card1_t: 'Wide selection',
-      about_card1_d: 'From passenger cars to heavy equipment.',
+      about_card1_d: 'Various models of special equipment.',
       about_card2_t: 'Personal approach',
       about_card2_d: 'We consider all client requirements.',
       about_card3_t: 'Reliable delivery',
@@ -649,7 +649,7 @@
 
       title_calculator: 'China Motors - Calculator',
       calculator_hero: 'Calculator',
-      calculator_tagline: 'Transparent breakdown: see what you pay for.',
+      calculator_tagline: 'One-stop cost calculation for ordering, delivery, and paperwork — in 2 minutes',
       calc_page_title: 'Cost calculator',
       calc_in_title: 'Input data',
       calc_in_name_label: 'Model / configuration',
@@ -765,7 +765,7 @@
       calc_item_first_reg: 'Initial registration',
     },
   };
-
+  window.translations = translations;
   function getLang() {
     return localStorage.getItem(LS_LANG) || 'ru';
   }

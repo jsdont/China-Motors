@@ -1832,3 +1832,10 @@ html.dark .calc-disclaimer {
   transform: translateY(-3px);
   box-shadow: 0 4px 15px rgba(249, 87, 56, 0.4);
 }
+.cta-text {
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #ffffff;
+  margin-top: 50px;
+}
