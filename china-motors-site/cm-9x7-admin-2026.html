@@ -1,0 +1,150 @@
+<script>
+(function () {
+  const PASS = 'Jumart1981'; // ← поменяй пароль
+  const entered = prompt('Введите пароль:');
+  if (entered !== PASS) {
+    document.body.innerHTML = '';
+    alert('Доступ запрещён');
+  }
+})();
+</script>
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>China Motors — Админ калькулятора</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background:#0B0F17;
+      color:#EAEAF0;
+      padding:24px;
+      max-width:720px;
+      margin:auto;
+    }
+    h1 { margin-bottom:16px; }
+    section {
+      background:#111827;
+      border-radius:12px;
+      padding:16px;
+      margin-bottom:16px;
+    }
+    label { display:block; margin-top:10px; }
+    input {
+      width:100%;
+      padding:8px;
+      margin-top:4px;
+      border-radius:8px;
+      border:1px solid #2A2F45;
+      background:#0B0F17;
+      color:#EAEAF0;
+    }
+    button {
+      margin-top:16px;
+      padding:12px;
+      width:100%;
+      border-radius:10px;
+      border:none;
+      background:#2563EB;
+      color:white;
+      font-size:16px;
+      cursor:pointer;
+    }
+    .hint {
+      font-size:13px;
+      opacity:0.7;
+      margin-top:6px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Админ-панель калькулятора</h1>
+
+<section>
+  <h2>Курс и топливо</h2>
+
+  <label>
+    Курс USD → KZT
+    <input type="number" id="usd" />
+  </label>
+
+  <label>
+    Солярка (₸ / литр)
+    <input type="number" id="diesel" />
+  </label>
+</section>
+
+<section>
+  <h2>МРП по годам</h2>
+
+  <label>2024
+    <input type="number" id="mrp2024" />
+  </label>
+
+  <label>2025
+    <input type="number" id="mrp2025" />
+  </label>
+
+  <label>2026
+    <input type="number" id="mrp2026" />
+  </label>
+</section>
+
+<button id="save">Сохранить конфиг</button>
+<div class="hint">
+  Файл <b>kz_calc_config.json</b> будет скачан.  
+  Загрузите его в корень сайта, чтобы калькулятор обновился.
+</div>
+
+<script>
+async function loadConfig() {
+  try {
+    const res = await fetch('/kz_calc_config.json', { cache: 'no-store' });
+    const cfg = await res.json();
+
+    document.getElementById('usd').value = cfg.currency.usd_kzt;
+    document.getElementById('diesel').value = cfg.diesel.price_kzt_per_l;
+
+    document.getElementById('mrp2024').value = cfg.mrp_by_year['2024'];
+    document.getElementById('mrp2025').value = cfg.mrp_by_year['2025'];
+    document.getElementById('mrp2026').value = cfg.mrp_by_year['2026'];
+  } catch (e) {
+    alert('Не удалось загрузить текущий конфиг');
+  }
+}
+
+document.getElementById('save').addEventListener('click', () => {
+  const cfg = {
+    version: '2026.01',
+    currency: {
+      usd_kzt: Number(document.getElementById('usd').value)
+    },
+    diesel: {
+      price_kzt_per_l: Number(document.getElementById('diesel').value)
+    },
+    mrp_by_year: {
+      2024: Number(document.getElementById('mrp2024').value),
+      2025: Number(document.getElementById('mrp2025').value),
+      2026: Number(document.getElementById('mrp2026').value)
+    }
+  };
+
+  const blob = new Blob(
+    [JSON.stringify(cfg, null, 2)],
+    { type: 'application/json' }
+  );
+
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'kz_calc_config.json';
+  a.click();
+});
+
+loadConfig();
+</script>
+
+</body>
+</html>

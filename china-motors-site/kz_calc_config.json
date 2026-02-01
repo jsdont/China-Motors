@@ -1,0 +1,26 @@
+{
+  "version": "2026.01",
+  "currency": {
+    "usd_kzt": 502.72
+  },
+  "diesel": {
+    "price_kzt_per_l": 360
+  },
+  "mrp_by_year": {
+    "2024": 3692,
+    "2025": 3932,
+    "2026": 4325
+  },
+  "taxes": {
+    "vat": 0.16,
+    "duty": 0.10
+  },
+  "fees": {
+    "plate": 16963,
+    "first_registration": 1376000
+  },
+  "util_2026": {
+    "TRACTOR_N3": 2162600,
+    "DEFAULT": 4030000
+  }
+}

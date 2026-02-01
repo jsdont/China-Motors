@@ -1,430 +1,401 @@
-// Калькулятор (упрощённый UI + авто-сообщение)
-// Обновления:
-// 1) Body type читаем также из ?body_raw (если есть).
-// 2) Утиль/пер.рег.: утиль 4 030 000 и первичная 1 376 000 для всех,
-//    кроме: Спец. техника (0), Тягач (утиль 2 162 600 + госномер), Прицепы/Полуприцепы (только госномер).
+// ==========================================================
+// China Motors — Calculator (clean & stable)
+// Architecture: URL → PROFILE → CONFIG → CALC
+// ==========================================================
 
 (function () {
+  /* =========================================================
+   MRP BY YEAR (as in Excel)
+   ========================================================= */
+
+  function getMRPByYear(year) {
+    const map = CALC_CONFIG.mrp_by_year;
+    if (!year || !map || !map[year]) {
+      return map?.[2026] || 4325;
+    }
+    return map[year];
+  }
+
+  /* =========================================================
+     CONFIG (fallback)
+     ========================================================= */
+  const CALC_DEFAULT_CONFIG = {
+    currency: { usd_kzt: 540 },
+    taxes: { vat: 0.12, duty: 0.10 },
+    fees: {
+      plate: 16963,
+      first_registration: 1376000
+    },
+    util_2026: {
+      TRACTOR_N3: 2162600,
+      DEFAULT: 4030000
+    }
+  };
+
+  let CALC_CONFIG = structuredClone(CALC_DEFAULT_CONFIG);
+
+  async function loadCalcConfig() {
+    try {
+      const res = await fetch('/kz_calc_config.json', { cache: 'no-store' });
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+
+      CALC_CONFIG = {
+        ...CALC_DEFAULT_CONFIG,
+        ...data,
+        currency: { ...CALC_DEFAULT_CONFIG.currency, ...data.currency },
+        taxes: { ...CALC_DEFAULT_CONFIG.taxes, ...data.taxes },
+        fees: { ...CALC_DEFAULT_CONFIG.fees, ...data.fees },
+        util_2026: { ...CALC_DEFAULT_CONFIG.util_2026, ...data.util_2026 }
+      };
+
+      console.log('[CALC] config loaded');
+    } catch {
+      console.warn('[CALC] using default config');
+    }
+  }
+
+  /* =========================================================
+     HELPERS
+     ========================================================= */
   const $  = (s, r = document) => r.querySelector(s);
-  const qa = (s, r = document) => Array.from(r.querySelectorAll(s));
   const nf = new Intl.NumberFormat(
     localStorage.getItem('lang') === 'en' ? 'en-US' : 'ru-RU'
   );
 
-
-  // === Константы ===
-  const DUTY_RATE  = 0.10;
-  const VAT_RATE   = 0.12;
-
-  // Гос. сборы
-  const PLATE_FEE        = 16963;     // госномер/техпаспорт
-  const UTIL_TAX_TYAGACH = 2162600;   // утиль для тягачей (как раньше)
-  const UTIL_TAX_STD     = 4030000;   // утиль для большинства типов (новое)
-  const FIRST_REG_STD    = 1376000;   // первичная регистрация (новое)
-
-  // Типы (для распознавания значения ?body как "тип" или "комплектация")
-  const TYPES = [
-    'Прицепы','Полуприцепы','Самосвал','Тягач','Спец. техника','Кран','Манипулятор',
-    'Миксер','Бензовоз','Автовышка','Ассенизатор','Рефрижератор','Автофургон',
-    'Поливомоечная машина','Ямобур машины для бурения','Молоковоз','Топливозаправщик'
-  ];
-  const NO_GRID = new Set(['Кран','Поливомоечная машина','Рефрижератор','Ассенизатор','Автовышка']);
-  const IS_TRAILER = (t) => (t === 'Прицепы' || t === 'Полуприцепы');
-
-  // Сетка (год)
-  const GRID_YEAR_TABLE = {
-    'Тягач':       [{ year: 2021, usd: 22300 }, { year: 2022, usd: 25500 }],
-    'Самосвал':    [{ year: 2022, usd: 27000 }],
-    'Миксер':      [{ year: 2021, usd: 20300 }],
-    'Манипулятор': [{ year: 2022, usd: 28000 }],
-    'Бензовоз':    [{ year: 2022, usd: 28000 }],
-    'Прицепы':     [{ year: 2021, usd: 13750 }, { year: 2022, usd: 16000 }],
-    'Полуприцепы': [{ year: 2021, usd: 13750 }, { year: 2022, usd: 16000 }],
-  };
-
-  function fmt(v) { return nf.format(Math.round(v || 0)); }
+  const fmt = (v) => nf.format(Math.round(v || 0));
   const num = (sel) => {
     const el = $(sel);
     const n = Number((el?.value ?? '0').toString().replace(/\s/g,'').replace(',','.'));
     return Number.isFinite(n) ? n : 0;
   };
 
-  // --------- Автозаполнение из URL ---------
-  let qType='', qBrand='', qModel='', qBodyText='', qName='';
-  (function prefill(){
+  /* =========================================================
+     STEP 1 — URL PARAMS
+     ========================================================= */
+  const URL_PARAMS = (() => {
     const p = new URLSearchParams(location.search);
-
-    const price = p.get('price') || '';
-
-    // В некоторых случаях в ?body приходит либо "тип", либо "комплектация".
-    const bodyParam = p.get('body') || '';
-    // Комплектация может приезжать отдельным ключом body_raw.
-    const bodyRaw   = p.get('body_raw') || '';
-
-    let typeForSelect = bodyParam;
-    let guessedBodyText = '';
-
-    if (bodyParam) {
-      const isType = TYPES.includes(bodyParam);
-      if (!isType) {
-        // это не тип из списка — считаем это Body type (комплектация)
-        guessedBodyText = bodyParam;
-        typeForSelect = ''; // тип попробуем взять из других ключей ниже
-      }
-    }
-    // если явно передали body_raw — он имеет приоритет как комплектация
-    if (bodyRaw) guessedBodyText = bodyRaw;
-
-    // Тип для селекта — берём из множества ключей
-    typeForSelect =
-      typeForSelect ||
-      p.get('type') || p.get('category') || p.get('vehicle') || p.get('kind') || '';
-
-    // Поля для шапки
-    qType     = typeForSelect || p.get('type') || p.get('category') || p.get('vehicle') || p.get('kind') || '';
-    qBrand    = p.get('brand') || p.get('make') || '';
-    qModel    = p.get('model') || '';
-    qBodyText = guessedBodyText ||
-                p.get('body_type') || p.get('bodyType') || p.get('bodytext') ||
-                p.get('spec') || p.get('config') || '';
-    qName     = p.get('name') || p.get('title') || '';
-
-    const parts = [];
-    if (qType)     parts.push(`Type: ${qType}`);
-    if (qBrand)    parts.push(`Brand: ${qBrand}`);
-    if (qModel)    parts.push(`Model: ${qModel}`);
-    if (qBodyText) parts.push(`Body: ${qBodyText}`);
-    if (qName)     parts.push(`Name: ${qName}`);
-    const composed = parts.join(' | ');
-    if (composed) $('#vehicleName').value = composed;
-
-    if (price && !Number.isNaN(+price)) $('#basePrice').value = String(+price);
-    if (typeForSelect) $('#type').value = typeForSelect;
+    return {
+      title: p.get('title') || p.get('name') || '',
+      price: p.get('price') ? Number(p.get('price')) : null,
+      body: p.get('body') || '',
+      bodyRaw: p.get('body_raw') || '',
+      profile: p.get('profile') || '',
+      intl: p.get('intl') === '1',
+      year: p.get('year') ? Number(p.get('year')) : null
+    };
   })();
 
-  // ---- helpers ----
-  function putText(sel, v) { const e = $(sel); if (e) e.textContent = v; }
-  function addRow(listId, key, sum) {
-    const ul = document.querySelector(listId);
-    if (!ul) return;
-
-    const lang = localStorage.getItem('lang') || 'ru';
-    const text =
-      window.translations?.[lang]?.[key] || key;
-
-    const li = document.createElement('li');
-    li.innerHTML = `
-      <span data-i18n="${key}">${text}</span>
-      <span class="sum">${fmt(sum)}</span>
-    `;
-    ul.appendChild(li);
-  }
-
-  function clearList(id) { const ul = $(id); if (ul) ul.innerHTML = ''; }
-
-  // UI: режимы ТС
-  function refreshModesByType(){
-    const t = $('#type').value;
-    $('#lblGridYear').style.display = GRID_YEAR_TABLE[t] ? '' : 'none';
-    $('#lblFixed').style.display    = NO_GRID.has(t) ? 'none' : '';
-
-    const rBy  = document.querySelector('input[name="ts_mode"][value="byprice"]');
-    const rGY  = document.querySelector('input[name="ts_mode"][value="gridYear"]');
-    const rFix = document.querySelector('input[name="ts_mode"][value="fixed"]');
-
-    if (NO_GRID.has(t)) { rBy.checked = true; rGY.checked = false; rFix.checked = false; }
-    else if (!GRID_YEAR_TABLE[t] && rGY.checked) { rGY.checked = false; rBy.checked = true; }
-
-    buildGridYearOptions();
-    toggleTsInputs();
-  }
-  function buildGridYearOptions(){
-    const t = $('#type').value;
-    const list = GRID_YEAR_TABLE[t] || [];
-    const sel  = $('#gridYear');
-    sel.innerHTML = '';
-    for (const item of list){
-      const opt = document.createElement('option');
-      opt.value = String(item.year);
-      opt.textContent = item.year;
-      opt.dataset.usd = String(item.usd);
-      sel.appendChild(opt);
+  function prefillFromURL() {
+    if (URL_PARAMS.title && $('#vehicleName')) $('#vehicleName').value = URL_PARAMS.title;
+    if (URL_PARAMS.price && $('#basePrice'))  $('#basePrice').value = URL_PARAMS.price;
+    if (URL_PARAMS.body  && $('#type'))       $('#type').value = URL_PARAMS.body;
+    if (URL_PARAMS.year && $('#year')) {
+      $('#year').value = URL_PARAMS.year;
     }
-    applyGridYearUSD();
-  }
-  function applyGridYearUSD(){
-    const sel = $('#gridYear');
-    const usd = sel?.selectedOptions?.[0]?.dataset?.usd;
-    $('#gridYearUSD').value = usd ? usd : '';
-  }
-  function toggleTsInputs(){
-    const mode = document.querySelector('input[name="ts_mode"]:checked')?.value || 'byprice';
-    $('#wrap-ts-manual').style.display = (mode === 'fixed') ? '' : 'none';
-    $('#wrap-gridYear').style.display  = (mode === 'gridYear') ? '' : 'none';
+
   }
 
-  // Курс
-  async function refreshRate(){
-    const info = $('#rateInfo');
-    const input = $('#rate');
-    const endpoints = [
-      'https://api.exchangerate.host/latest?base=USD&symbols=KZT',
-      'https://open.er-api.com/v6/latest/USD',
-      'https://api.frankfurter.app/latest?from=USD&to=KZT'
-    ];
-    const controllers = endpoints.map(()=>new AbortController());
-    const promises = endpoints.map((url,i)=>
-      fetch(url,{cache:'no-store',signal:controllers[i].signal})
-        .then(r=>{ if(!r.ok) throw new Error('HTTP'); return r.json(); })
-    );
-    try{
-      const d = await Promise.any(promises);
-      controllers.forEach(c=>c.abort());
-      let kzt=null;
-      if (d?.rates?.KZT) kzt=d.rates.KZT;
-      if (!kzt && d?.result==='success' && d?.rates?.KZT) kzt=d.rates.KZT;
-      if (kzt){
-        input.value=String(kzt.toFixed(2));
-        info.textContent=`Курс НБ РК: ~ ${kzt.toFixed(2)} ₸`;
-      }
-    }catch(_){}
-    recalc();
+  /* =========================================================
+     STEP 2 — VEHICLE PROFILE
+     ========================================================= */
+  function detectVehicleProfile(type, bodyRaw) {
+    if (URL_PARAMS.profile) return URL_PARAMS.profile;
+
+    const t = (type || '').toLowerCase();
+    const b = (bodyRaw || '').toLowerCase();
+
+    if (t.includes('прицеп')) return 'TRAILER';
+    if (t.includes('тягач') || t.includes('седель')) return 'TRACTOR_N3';
+    if (t.includes('самосвал') || t.includes('груз')) return 'TRUCK';
+    if (
+      t.includes('спец') || t.includes('кран') || t.includes('манип') ||
+      t.includes('миксер') || t.includes('вышка') || t.includes('ассен') ||
+      t.includes('ямобур')
+    ) return 'SPECIAL';
+
+    return 'TRUCK';
   }
-  $('#btnRefreshRate')?.addEventListener('click', (e)=>{ e.preventDefault(); refreshRate(); });
 
-  // Доп.расходы (короткий список)
-  function buildMandatory(type, mode, rate){
-    const byprice = (mode === 'byprice');
-    clearList('#list-mandatory');
+  let CURRENT_VEHICLE_PROFILE = 'TRUCK';
 
-    const tBlank   = 23592;
-    const brokerSvh= 90000;
+  function updateVehicleProfile() {
+    const typeEl = $('#type');
+    if (!typeEl) return;
+    CURRENT_VEHICLE_PROFILE = detectVehicleProfile(typeEl.value, URL_PARAMS.bodyRaw);
+  }
+
+  /* =========================================================
+   YEAR → AGE → FIRST REGISTRATION RATE
+   ========================================================= */
+
+  function getVehicleAge(year) {
+    const currentYear = new Date().getFullYear();
+    if (!year || isNaN(year)) return 0;
+    return Math.max(0, currentYear - Number(year));
+  }
+
+  function getFirstRegRateByAge(age) {
+    // Логика как у папы
+    // До 2 лет, включая год выпуска
+    if (age <= 2) return 0.25;
+
+    // Заготовка на будущее (можно расширить)
+    // if (age <= 5) return 0.5;
+    // if (age <= 10) return 1.0;
+
+    return 0.25; // пока оставляем так же
+  }
+
+  /* =========================================================
+     STEP 3 — UTIL & REGISTRATION (2026)
+     ========================================================= */
+  function calcUtilAndRegistration(profile, vehicleAge, firstRegRate, mrp) {
+    const items = [];
     let total = 0;
 
-    if (type === 'Тягач') {
-      const items = [
-        ['calc_item_sbkts', 200000],
-        ['calc_item_sos', 150000],
-        ['calc_item_customs_fee', tBlank],
-        ['calc_item_broker_svh', brokerSvh],
-        ['calc_item_svh', 80000],
-        ['calc_item_border_broker', 250*rate],
-        ['calc_item_epts', 50000],
-        ['calc_item_diesel_pack', 51480],
-        ['calc_item_red_corridor', 50000],
-        ['calc_item_thanks_astana', byprice ? 0 : 600*rate],
-      ];
-      items.forEach(([name,sum]) => { if (sum>0){ addRow('#list-mandatory', name, sum); total += sum; }});
-      return total;
+    const plate = CALC_CONFIG.fees.plate;
+
+    // TRACTOR_N3 — нет первичной регистрации
+    if (profile === 'TRACTOR_N3') {
+      firstRegRate = 0;
     }
 
-    if (IS_TRAILER(type)) {
-      const items = [
-        ['calc_item_sbkts', 150000],
-        ['calc_item_customs_fee', tBlank],
-        ['calc_item_broker_svh', brokerSvh],
-        ['calc_item_svh', 70000],
-        ['calc_item_border_broker', 250*rate],
-        ['calc_item_epts', 50000],
-        ['calc_item_thanks_astana', byprice ? 0 : 400*rate],
-      ];
-      items.forEach(([name,sum]) => { if (sum>0){ addRow('#list-mandatory', name, sum); total += sum; }});
-      return total;
+    // SPECIAL — ничего
+    if (profile === 'SPECIAL') {
+      return { total: 0, items };
     }
 
-    if (type === 'Спец. техника') {
-      const items = [
-        ['calc_item_declaration', 80000],
-        ['calc_item_customs_broker', 90000],
-      ];
-      items.forEach(([name,sum]) => { addRow('#list-mandatory', name, sum); total += sum; });
-      return total;
+    // TRAILER — только номер
+    if (profile === 'TRAILER') {
+      items.push(['Госномер и техпаспорт', plate]);
+      total += plate;
+      return { total, items };
     }
 
-    const items = [
-      ['calc_item_sbkts', 200000],
-      ['calc_item_sos', 150000],
-      ['calc_item_customs_fee', tBlank],
-      ['calc_item_broker_svh', brokerSvh],
-      ['calc_item_svh', 80000],
-      ['calc_item_border_broker', 250*rate],
-      ['calc_item_epts', 50000],
-      ['calc_item_thanks_astana', byprice ? 0 : 600*rate],
-    ];
-    items.forEach(([name,sum]) => { if (sum>0){ addRow('#list-mandatory', name, sum); total += sum; }});
-    return total;
+    // TRACTOR
+    if (profile === 'TRACTOR_N3') {
+      items.push(['Утилизационный сбор', CALC_CONFIG.util_2026.TRACTOR_N3]);
+      total += CALC_CONFIG.util_2026.TRACTOR_N3;
+
+      items.push(['Госномер и техпаспорт', plate]);
+      total += plate;
+      return { total, items };
+    }
+
+    // TRUCK (default)
+    items.push(['Утилизационный сбор', CALC_CONFIG.util_2026.DEFAULT]);
+    total += CALC_CONFIG.util_2026.DEFAULT;
+
+    // Первичная регистрация — зависит от возраста
+    const firstRegSum = firstRegRate * mrp;
+
+    items.push([
+      `Первичная регистрация (${firstRegRate} МРП, возраст: ${vehicleAge} г.)`,
+      Math.round(firstRegSum)
+    ]);
+    total += firstRegSum;
+
+
+    items.push(['Госномер и техпаспорт', plate]);
+    total += plate;
+
+    return { total, items };
   }
 
-  // Доставка
-  function buildDelivery(type, rate){
-    clearList('#list-delivery');
-    let total = 0;
+  /* =========================================================
+   PACKAGES (as in Excel)
+   ========================================================= */
 
-    if (type === 'Тягач') {
-      addRow('#list-delivery', 'calc_item_delivery_city', 150000);
-      return 150000;
+  function getExpensePackage(profile, excelMax, rate) {
+    // Пока делаем для грузовых / тягачей
+    if (!excelMax) {
+      return {
+        mandatory: [
+          ['Таможенный сбор', 23592],
+          ['Услуги брокера на СВХ', 90000]
+        ],
+        delivery: [
+          ['Доставка до Алматы / СВХ', 150000]
+        ]
+      };
     }
 
-    if (IS_TRAILER(type)) {
-      return 0;
-    }
-
-    if (type === 'Спец. техника') {
-      addRow('#list-delivery', 'calc_item_delivery_city', 300000);
-      return 300000;
-    }
-
-    const items = [
-      ['calc_item_border_broker', 250 * rate],
-      ['calc_item_driver', 75000],
-      ['calc_item_adblue', 8000],
-      ['calc_item_toll_road', 9000],
-      ['calc_item_diesel', 220 * 324],
-    ];
-
-    items.forEach(([key, sum]) => {
-      addRow('#list-delivery', key, sum);
-      total += sum;
-    });
-
-    return total;
+    // Excel / максимум
+    return {
+      mandatory: [
+        ['СБКТС', 200000],
+        ['Кнопка SOS', 150000],
+        ['Таможенный сбор', 23592],
+        ['Услуги брокера на СВХ', 90000],
+        ['СВХ', 80000],
+        ['Брокер на границе ($250)', 250 * rate],
+        ['ЭПТС', 50000],
+        ['Солярка + AdBlue пакет', 51480],
+        ['Красный коридор', 50000]
+      ],
+      delivery: [
+        ['Доставка до Алматы / СВХ', 150000]
+      ]
+    };
   }
 
+  /* =========================================================
+     MAIN CALC
+     ========================================================= */
+  function recalc() {
+    updateVehicleProfile();
 
-  // Гос. платежи (новые правила)
-  function buildUtil(type){
-    clearList('#list-util');
-
-    // Спец техника: ничего
-    if (type === 'Спец. техника') {
-      return 0;
-    }
-
-    // Прицепы — только госномер
-    if (IS_TRAILER(type)) {
-      addRow('#list-util', 'calc_item_plate', PLATE_FEE);
-      return PLATE_FEE;
-    }
-
-    // Тягач — прежний утиль + госномер (без первичной)
-    if (type === 'Тягач') {
-      addRow('#list-util', 'calc_item_util_tax', UTIL_TAX_TYAGACH);
-      addRow('#list-util', 'calc_item_plate', PLATE_FEE);
-      return UTIL_TAX_TYAGACH + PLATE_FEE;
-    }
-
-    // Остальные типы — новый утиль и первичная + госномер
-    addRow('#list-util', 'calc_item_util_tax', UTIL_TAX_STD);
-    addRow('#list-util', 'calc_item_first_reg', FIRST_REG_STD);
-    addRow('#list-util', 'calc_item_plate', PLATE_FEE);
-    return UTIL_TAX_STD + FIRST_REG_STD + PLATE_FEE;
-  }
-
-  function tsModeHuman(mode) {
-    if (mode === 'gridYear') {
-      const y   = $('#gridYear')?.value || '';
-      const usd = $('#gridYearUSD')?.value || '';
-      return `Сетка (год): ${y}${usd ? `, ТС $${usd}` : ''}`;
-    }
-    if (mode === 'fixed') {
-      const usd = $('#tsValueUSD')?.value || '';
-      return `Фиксированная сетка${usd ? `, ТС $${usd}` : ''}`;
-    }
-    return 'По полной цене';
-  }
-
-  // Сообщение
-  function buildMessage(ctx) {
-    const {
-      type, priceUSD, rate, realKZT, tsKZT, dutyKZT, vatKZT,
-      customsTotal, mandatoryTotal, deliveryTotal, utilTotal, totalKZT
-    } = ctx;
-
-    const head = ($('#vehicleName')?.value || '').trim();
-
-    const lines = [];
-    lines.push('🚘 Запрос через калькулятор China Motors');
-    if (head) lines.push(head);
-
-    lines.push(`Тип транспорта (селект): ${type}`);
-    lines.push(`Способ расчёта ТС: ${tsModeHuman(document.querySelector('input[name="ts_mode"]:checked')?.value || 'byprice')}`);
-    lines.push('');
-    lines.push(`Цена авто: $${fmt(priceUSD)} × курс ${fmt(rate)} = ${fmt(realKZT)} ₸`);
-    lines.push(`Таможенные платежи: ${fmt(customsTotal)} ₸ (Пошлина: ${fmt(dutyKZT)} ₸, НДС: ${fmt(vatKZT)} ₸)`);
-    lines.push(`Доп. расходы: ${fmt(mandatoryTotal)} ₸`);
-    lines.push(`Доставка и граница: ${fmt(deliveryTotal)} ₸`);
-    lines.push(`Утиль/регистрация: ${fmt(utilTotal)} ₸`);
-    lines.push('');
-    lines.push(`ИТОГО: ${fmt(totalKZT)} ₸ (≈ ${fmt(totalKZT / rate)} USD)`);
-
-    return lines.join('\n');
-  }
-
-  function recalc(){
-    const type     = $('#type').value;
     const priceUSD = num('#basePrice');
-    const rate     = Math.max(num('#rate'), 0) || 540;
-    const mode     = document.querySelector('input[name="ts_mode"]:checked')?.value || 'byprice';
+    const rate = Math.max(num('#rate'), 0) || CALC_CONFIG.currency.usd_kzt;
 
-    // Реальная стоимость
-    const realKZT = priceUSD * rate;
-    putText('#realCostKZT', fmt(realKZT));
 
-    // ТС/пошлина/НДС
-    let baseUSD = 0;
-    if (mode === 'byprice') baseUSD = priceUSD;
-    else if (mode === 'gridYear') {
-      const usd = $('#gridYear')?.selectedOptions?.[0]?.dataset?.usd;
-      baseUSD = usd ? Number(usd) : priceUSD;
-    } else { // fixed
-      baseUSD = NO_GRID.has(type) ? priceUSD : (num('#tsValueUSD') || priceUSD);
+    const VAT  = CALC_CONFIG.taxes.vat;
+    const DUTY = CALC_CONFIG.taxes.duty;
+
+    const yearEl = document.getElementById('year');
+    const vehicleYear = yearEl ? Number(yearEl.value) : null;
+
+    const vehicleAge = getVehicleAge(vehicleYear);
+    const firstRegRate = getFirstRegRateByAge(vehicleAge);
+    const mrp = getMRPByYear(vehicleYear);
+
+
+    const baseKZT = priceUSD * rate;
+    const dutyKZT = baseKZT * DUTY;
+    const vatKZT  = (baseKZT + dutyKZT) * VAT;
+    const customsTotal = dutyKZT + vatKZT;
+    // === 2) Таможенная стоимость — вывод в UI ===
+    document.getElementById('tsKZT') &&
+      (document.getElementById('tsKZT').textContent = fmt(baseKZT) + ' ₸');
+
+    document.getElementById('dutyOutKZT') &&
+      (document.getElementById('dutyOutKZT').textContent = fmt(dutyKZT) + ' ₸');
+
+    document.getElementById('vatOutKZT') &&
+      (document.getElementById('vatOutKZT').textContent = fmt(vatKZT) + ' ₸');
+
+    const excelMax = document.getElementById('flagExcelMax')?.checked;
+
+    const pkg = getExpensePackage(
+      CURRENT_VEHICLE_PROFILE,
+      excelMax,
+      rate
+    );
+
+    // --- 3) Дополнительные расходы ---
+    const mandatoryList = document.getElementById('list-mandatory');
+    let mandatoryTotal = 0;
+
+    if (mandatoryList) {
+      mandatoryList.innerHTML = '';
+
+      pkg.mandatory.forEach(([label, sum]) => {
+        mandatoryTotal += sum;
+
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <span>${label}</span>
+          <span class="sum">${fmt(sum)} ₸</span>
+        `;
+        mandatoryList.appendChild(li);
+      });
     }
 
-    const tsKZT   = baseUSD * rate;
-    const tBlank  = 23592;
-    const dutyKZT = tsKZT * DUTY_RATE;
-    const vatKZT  = (tsKZT + dutyKZT + tBlank) * VAT_RATE;
-    const customsTotal = dutyKZT + vatKZT;
+    // --- 4) Доставка ---
+    const deliveryList = document.getElementById('list-delivery');
+    let deliveryTotal = 0;
 
-    putText('#tsKZT', fmt(tsKZT));
-    putText('#dutyOutKZT', fmt(dutyKZT));
-    putText('#vatOutKZT', fmt(vatKZT));
+    if (deliveryList) {
+      deliveryList.innerHTML = '';
 
-    // Доп. расходы
-    const mandatoryTotal = buildMandatory(type, mode, rate);
-    // Доставка
-    const deliveryTotal = buildDelivery(type, rate);
-    // Гос. платежи
-    const utilTotal = buildUtil(type);
+      pkg.delivery.forEach(([label, sum]) => {
+        deliveryTotal += sum;
 
-    // Правая карточка
-    putText('#sBase', fmt(priceUSD * rate));
-    putText('#sCustoms', fmt(customsTotal));
-    putText('#sMandatory', fmt(mandatoryTotal));
-    putText('#sBorder', fmt(deliveryTotal));
-    putText('#sUtil', fmt(utilTotal));
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <span>${label}</span>
+          <span class="sum">${fmt(sum)} ₸</span>
+        `;
+        deliveryList.appendChild(li);
+      });
+    }
 
-    const totalKZT = priceUSD * rate + customsTotal + mandatoryTotal + deliveryTotal + utilTotal;
-    putText('#sTotalKZT', `${fmt(totalKZT)} тенге`);
-    putText('#sTotalUSD', `≈ ${fmt(totalKZT / rate)} USD`);
 
-    // Ссылка "Оформить заявку"
-    const msg = buildMessage({
-      type, priceUSD, rate, realKZT, tsKZT, dutyKZT, vatKZT,
-      customsTotal, mandatoryTotal, deliveryTotal, utilTotal, totalKZT
-    });
-    const a = $('#toContactsAside');
-    if (a) a.href = `contacts.html?message=${encodeURIComponent(msg)}`;
+
+    const util = calcUtilAndRegistration(
+      CURRENT_VEHICLE_PROFILE,
+      vehicleAge,
+      firstRegRate,
+      mrp
+    );
+
+
+    // UI
+    $('#sBase') && ($('#sBase').textContent = fmt(baseKZT));
+    $('#realCostKZT') && ($('#realCostKZT').textContent = fmt(baseKZT) + ' ₸');
+    $('#sCustoms') && ($('#sCustoms').textContent = fmt(customsTotal));
+    $('#sUtil') && ($('#sUtil').textContent = fmt(util.total));
+    // --- Детализация: Утиль / регистрация ---
+    const utilList = document.getElementById('list-util');
+    if (utilList) {
+      utilList.innerHTML = '';
+
+      util.items.forEach(([label, sum]) => {
+        if (!sum) return;
+
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <span>${label}</span>
+          <span class="sum">${fmt(sum)} ₸</span>
+        `;
+        utilList.appendChild(li);
+      });
+    }
+
+
+    let totalKZT =
+      customsTotal +
+      mandatoryTotal +
+      deliveryTotal +
+      util.total;
+    // Excel-режим: добавляем цену авто в итог (как у папы)
+    if (excelMax) {
+      totalKZT += baseKZT;
+    }
+
+
+    // === FINAL TOTAL FIX (Excel = full price like Excel) ===
+    if (excelMax) {
+      totalKZT += baseKZT;
+    }
+
+    $('#sTotalKZT') && ($('#sTotalKZT').textContent = fmt(totalKZT) + ' ₸');
+    $('#sTotalUSD') && ($('#sTotalUSD').textContent = '≈ ' + fmt(totalKZT / rate) + ' USD');
+    $('#mandatoryTotal') && ($('#mandatoryTotal').textContent = fmt(mandatoryTotal));
+    $('#deliveryTotal') && ($('#deliveryTotal').textContent = fmt(deliveryTotal));
+    console.log('EXCEL MODE CHECK:', excelMax);
+    console.log('BASE KZT:', baseKZT);
+
+
   }
 
-  // Слушатели
-  $('#type')?.addEventListener('change', () => { refreshModesByType(); recalc(); });
-  qa('input[name="ts_mode"]').forEach(r => r.addEventListener('change', () => { toggleTsInputs(); recalc(); }));
-  $('#gridYear')?.addEventListener('change', () => { applyGridYearUSD(); recalc(); });
-  $('#calcForm')?.addEventListener('input', recalc);
-  $('#calcForm')?.addEventListener('submit', (e)=>{ e.preventDefault(); recalc(); });
+  /* =========================================================
+     INIT
+     ========================================================= */
+  async function init() {
+    await loadCalcConfig();
+    prefillFromURL();
+    updateVehicleProfile();
+    recalc();
 
-  // init
-  refreshModesByType();
-  recalc();
+    $('#year')?.addEventListener('input', recalc);
+    
+    $('#type')?.addEventListener('change', recalc);
+    $('#calcForm')?.addEventListener('input', recalc);
+  }
+  document.getElementById('flagExcelMax')?.addEventListener('change', recalc);
+
+  init();
+
 })();

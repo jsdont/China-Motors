@@ -75,6 +75,17 @@
 
           <div class="grid-2 mt-12">
             <div>
+              <label>Год выпуска</label>
+              <input
+                id="year"
+                type="number"
+                min="2000"
+                max="2026"
+                placeholder="2023"
+              />
+            </div>
+
+            <div>
               <label data-i18n="calc_in_type_label">Тип транспорта</label>
               <select id="type">
                 <option data-i18n="body_trailer">Прицепы</option>
@@ -110,7 +121,7 @@
         </section>
 
         <!-- 2. Реальная стоимость -->
-        <section class="calc-card view-only">
+        <section class="calc-card">
           <h2 class="calc-card__title" data-i18n="calc_real_title">1) Реальная стоимость</h2>
           <p class="calc-hint" data-i18n="calc_real_hint">Цена авто в тенге = Цена($) × Курс</p>
           <div class="summary-line"><span>=</span><strong id="realCostKZT">—</strong></div>
@@ -120,7 +131,7 @@
         <section class="calc-card">
           <h2 class="calc-card__title" data-i18n="calc_ts_title">2) Таможенная стоимость</h2>
 
-          <div class="grid-2">
+          <!--<div class="grid-2">
             <div>
               <label data-i18n="calc_ts_mode">Способ расчёта ТС</label>
               <div class="radio-row" id="tsModes">
@@ -145,7 +156,7 @@
               <label data-i18n="calc_ts_year_usd">Фиксированная сумма ТС, $</label>
               <input id="gridYearUSD" type="number" value="" readonly>
             </div>
-          </div>
+          </div>-->
 
           <div class="bill">
             <h4 data-i18n="calc_ts_bill_title">Таможенные платежи</h4>
@@ -158,7 +169,7 @@
         </section>
 
         <!-- 4. Дополнительные расходы -->
-        <section class="calc-card view-only">
+        <section class="calc-card">
           <h2 class="calc-card__title" data-i18n="calc_mand_title">3) Дополнительные расходы</h2>
           <p class="readonly-note" data-i18n="calc_mand_note">Фиксируется по типу транспорта и выбранному режиму ТС.</p>
           <div class="bill">
@@ -168,7 +179,7 @@
         </section>
 
         <!-- 5. Доставка -->
-        <section class="calc-card view-only">
+        <section class="calc-card">
           <h2 class="calc-card__title" data-i18n="calc_ship_title">4) Доставка и граница</h2>
           <div class="bill">
             <h4 data-i18n="calc_ship_list_title">Состав доставки</h4>
@@ -177,11 +188,19 @@
         </section>
 
         <!-- 6. Утиль и регистрация -->
-        <section class="calc-card view-only">
+        <section class="calc-card">
           <h2 class="calc-card__title" data-i18n="calc_util_title">5) Утилизационный сбор и регистрация</h2>
           <div class="bill">
             <h4 data-i18n="calc_util_list_title">Государственные платежи</h4>
+            
+            <div class="calc-flags" style="margin-bottom:12px">
+              <label style="display:flex;gap:8px;align-items:center;cursor:pointer;font-weight:600">
+                <input type="checkbox" id="flagExcelMax">
+                <span>Режим Excel / максимум</span>
+              </label>
+            </div>
             <ul id="list-util"></ul>
+
           </div>
         </section>
       </form>
@@ -191,8 +210,8 @@
         <h3 class="summary-title" data-i18n="aside_title">Итоговая стоимость</h3>
         <div class="summary-line"><span data-i18n="aside_base">База для расчёта:</span> <strong id="sBase">—</strong></div>
         <div class="summary-line"><span data-i18n="aside_customs">Таможенные платежи:</span> <strong id="sCustoms">—</strong></div>
-        <div class="summary-line"><span data-i18n="aside_mand">Дополнительные расходы:</span> <strong id="sMandatory">—</strong></div>
-        <div class="summary-line"><span data-i18n="aside_border">Доставка и граница:</span> <strong id="sBorder">—</strong></div>
+        <div class="summary-line"><span data-i18n="aside_mand">Дополнительные расходы:</span> <strong id="mandatoryTotal">—</strong></div>
+        <div class="summary-line"><span data-i18n="aside_border">Доставка и граница:</span> <strong id="deliveryTotal">—</strong></div>
         <div class="summary-line"><span data-i18n="aside_util">Утиль/регистрация:</span> <strong id="sUtil">—</strong></div>
         <div class="summary-total"><span data-i18n="aside_total">ИТОГО:</span><strong id="sTotalKZT">—</strong></div>
         <div class="summary-sub" id="sTotalUSD" data-i18n="aside_usd">≈ — USD</div>
@@ -214,7 +233,8 @@
 
   <!-- Scripts -->
   <script src="js/common.js"></script>
-  <script src="js/calculator.js"></script>
+  <script src="js/calculator.js?v=2026-02-01"></script>
+
   <script>
     // Пересчёт из боковой кнопки
     document.getElementById('btnRecalcAside')?.addEventListener('click', () => {
