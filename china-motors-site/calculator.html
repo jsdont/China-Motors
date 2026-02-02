@@ -75,7 +75,7 @@
 
           <div class="grid-2 mt-12">
             <div>
-              <label>Год выпуска</label>
+              <label data-i18n="calc_year_label">Год выпуска</label>
               <input
                 id="year"
                 type="number"
@@ -196,8 +196,13 @@
             <div class="calc-flags" style="margin-bottom:12px">
               <label style="display:flex;gap:8px;align-items:center;cursor:pointer;font-weight:600">
                 <input type="checkbox" id="flagExcelMax">
-                <span>Режим Excel / максимум</span>
+                <span data-i18n="calc_flag_excel_max">Режим Excel / максимум</span>
               </label>
+              <label style="display:flex;gap:8px;align-items:center">
+                <input type="checkbox" id="flagExcludeBase">
+                <span data-i18n="calc_flag_exclude_base">Цена авто уже оплачена</span>
+              </label>
+
             </div>
             <ul id="list-util"></ul>
 
@@ -222,7 +227,7 @@
       </aside>
     </div>
   </main>
-  <p class="calc-disclaimer">
+  <p data-i18n="calc_disclaimer" class="calc-disclaimer">
     ⚠️ Расчёт является предварительным и не является публичной офертой.
     Итоговая стоимость зависит от курса валют, таможенных платежей
     и условий поставки. Подробности уточняйте у менеджера.
@@ -234,12 +239,5 @@
   <!-- Scripts -->
   <script src="js/common.js"></script>
   <script src="js/calculator.js?v=2026-02-01"></script>
-
-  <script>
-    // Пересчёт из боковой кнопки
-    document.getElementById('btnRecalcAside')?.addEventListener('click', () => {
-      document.getElementById('calcForm')?.dispatchEvent(new Event('submit', {cancelable:true}));
-    });
-  </script>
 </body>
 </html>

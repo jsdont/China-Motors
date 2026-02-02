@@ -200,7 +200,23 @@
       calc_item_plate: 'Госномер и техпаспорт',
       calc_item_util_tax: 'Утилизационный сбор',
       calc_item_first_reg: 'Первичная регистрация',
+      // CALC MODES / FLAGS
+      calc_mode_title: 'Режим расчёта',
+      calc_mode_turnkey: 'Под ключ',
+      calc_mode_clearance_only: 'Только оформление',
+      calc_mode_commercial: 'Коммерческий расчёт',
+      calc_mode_service: 'Служебный режим',
 
+      calc_flag_exclude_base: 'Цена авто уже оплачена',
+      calc_flag_excel_max: 'Расширенные расходы (служебно)',
+
+      // TOTAL LABELS
+      calc_total_vehicle: 'Стоимость авто',
+      calc_total_clearance: 'Стоимость оформления',
+      calc_total_turnkey: 'Итого под ключ',
+      calc_year_label: 'Год выпуска',
+      calc_item_broker_service: 'Брокерское обслуживание',
+      calc_disclaimer: '⚠️ Расчёт является предварительным и не является публичной офертой. Итоговая стоимость зависит от курса валют, таможенных платежей и условий поставки. Подробности уточняйте у менеджера.',
     },
 
     kk: {
@@ -388,6 +404,23 @@
       calc_item_plate: 'Мемлекеттік нөмір және техникалық төлқұжат',
       calc_item_util_tax: 'Утилизациялық алым',
       calc_item_first_reg: 'Бастапқы тіркеу',
+      // CALC MODES / FLAGS
+      calc_mode_title: 'Есептеу режимі',
+      calc_mode_turnkey: 'Толық рәсімдеу',
+      calc_mode_clearance_only: 'Тек рәсімдеу',
+      calc_mode_commercial: 'Коммерциялық есептеу',
+      calc_mode_service: 'Қызметтік режим',
+
+      calc_flag_exclude_base: 'Көлік бағасы төленген',
+      calc_flag_excel_max: 'Кеңейтілген шығындар (қызметтік)',
+
+      // TOTAL LABELS
+      calc_total_vehicle: 'Көлік құны',
+      calc_total_clearance: 'Рәсімдеу құны',
+      calc_total_turnkey: 'Толық құны',
+      calc_year_label: 'Жылы',
+      calc_item_broker_service: 'Брокерлік қызмет көрсету',
+      calc_disclaimer: '⚠️ Есептеу алдын ала болып табылады және ашық ұсыныс емес. Соңғы құн валюта бағамдарына, кедендік төлемдерге және жеткізу шарттарына байланысты. Толығырақ менеджерден біліңіз.',
     },
 
     zh: {
@@ -575,6 +608,23 @@
       calc_item_plate: '车牌和技术护照',
       calc_item_util_tax: '回收费',
       calc_item_first_reg: '首次注册',
+      // CALC MODES / FLAGS
+      calc_mode_title: '计算模式',
+      calc_mode_turnkey: '交钥匙',
+      calc_mode_clearance_only: '仅清关',
+      calc_mode_commercial: '商业计算',
+      calc_mode_service: '内部模式',
+
+      calc_flag_exclude_base: '车辆价格已支付',
+      calc_flag_excel_max: '扩展费用（内部）',
+
+      // TOTAL LABELS
+      calc_total_vehicle: '车辆价格',
+      calc_total_clearance: '清关费用',
+      calc_total_turnkey: '交钥匙总价',
+      calc_year_label: '出厂年份',
+      calc_item_broker_service: '经纪服务',
+      calc_disclaimer: '⚠️ 计算结果为预估值，非公开报价。最终价格取决于汇率、关税和供应条件。详情请咨询经理。',
     },
 
     en: {
@@ -763,6 +813,23 @@
       calc_item_plate: 'License plate and technical passport',
       calc_item_util_tax: 'Recycling fee',
       calc_item_first_reg: 'Initial registration',
+      // CALC MODES / FLAGS
+      calc_mode_title: 'Calculation mode',
+      calc_mode_turnkey: 'Turnkey',
+      calc_mode_clearance_only: 'Clearance only',
+      calc_mode_commercial: 'Commercial calculation',
+      calc_mode_service: 'Service mode',
+
+      calc_flag_exclude_base: 'Vehicle price already paid',
+      calc_flag_excel_max: 'Extended expenses (internal)',
+
+      // TOTAL LABELS
+      calc_total_vehicle: 'Vehicle price',
+      calc_total_clearance: 'Clearance cost',
+      calc_total_turnkey: 'Turnkey total',
+      calc_year_label: 'Year',
+      calc_item_broker_service: 'Brokerage service',
+      calc_disclaimer: '⚠️ Calculation is preliminary and not a public offer. Final cost depends on exchange rates, customs duties, and delivery terms. Consult the manager for details.',
     },
   };
   window.translations = translations;
@@ -822,15 +889,18 @@
 
     applyLang(current);
     langBtn.textContent = current.toUpperCase();
-
+    
     langBtn.addEventListener('click', () => {
       current = order[(order.indexOf(current) + 1) % order.length];
       langBtn.textContent = current.toUpperCase();
       applyLang(current);
+
+      // 🔥 ВАЖНО: пересобираем калькулятор
+      if (typeof window.recalc === 'function') {
+        window.recalc();
+      }
     });
-    if (typeof recalc === 'function') {
-      recalc();
-    }
+
 
   }
   function initBurger() {
@@ -880,5 +950,9 @@
     });
 
   });
+  window.t = function (key) {
+    const lang = localStorage.getItem('lang') || 'ru';
+    return window.translations?.[lang]?.[key] || key;
+  };
 
 })();

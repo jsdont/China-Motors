@@ -7,6 +7,66 @@
   /* =========================================================
    MRP BY YEAR (as in Excel)
    ========================================================= */
+  const PLATE_FEE = () => CALC_CONFIG.fees.plate;
+
+  const p = new URLSearchParams(location.search);
+  const weight = Number(p.get('weight')) || 0;
+  function clearList(selector) {
+    const el = document.querySelector(selector);
+    if (el) el.innerHTML = '';
+  }
+
+  function addRow(selector, labelKey, value) {
+    const el = document.querySelector(selector);
+    if (!el) return;
+
+    const li = document.createElement('li');
+    li.innerHTML = `
+      <span>${t(labelKey)}</span>
+      <span class="sum">${fmt(value)} ₸</span>
+    `;
+    el.appendChild(li);
+  }
+
+
+  function buildUtil(type, weight) {
+    clearList('#list-util');
+
+    const MRP = 4325;
+    const BASE = 50 * MRP;
+    let coef = 0;
+
+    if (type === 'Спец. техника') return 0;
+
+    if (
+      type === 'Прицеп' ||
+      type === 'Прицепы' ||
+      type === 'Полуприцеп' ||
+      type === 'Полуприцепы')
+    {
+      addRow('#list-util', 'calc_item_plate', PLATE_FEE());
+      return PLATE_FEE();
+
+    }
+
+    if (type === 'Тягач') {
+      coef = (weight > 20) ? 11.0 : 10.5;
+    } else {
+      if (weight <= 2.5) coef = 3.5;
+      else if (weight <= 3.5) coef = 7.5;
+      else if (weight <= 5) coef = 7.5;
+      else if (weight <= 8) coef = 8.0;
+      else if (weight <= 12) coef = 9.5;
+      else if (weight <= 20) coef = 10.5;
+      else coef = 20.5;
+    }
+
+    const util = BASE * coef;
+    addRow('#list-util', 'calc_item_util_tax', util);
+    addRow('#list-util', 'calc_item_plate', PLATE_FEE());
+
+    return util + PLATE_FEE();
+  }
 
   function getMRPByYear(year) {
     const map = CALC_CONFIG.mrp_by_year;
@@ -15,7 +75,7 @@
     }
     return map[year];
   }
-
+  
   /* =========================================================
      CONFIG (fallback)
      ========================================================= */
@@ -107,11 +167,11 @@
 
     if (t.includes('прицеп')) return 'TRAILER';
     if (t.includes('тягач') || t.includes('седель')) return 'TRACTOR_N3';
-    if (t.includes('самосвал') || t.includes('груз')) return 'TRUCK';
+    if (t.includes('Самосвал') || t.includes('груз')) return 'TRUCK';
     if (
-      t.includes('спец') || t.includes('кран') || t.includes('манип') ||
-      t.includes('миксер') || t.includes('вышка') || t.includes('ассен') ||
-      t.includes('ямобур')
+      t.includes('Спец') || t.includes('кран') || t.includes('манип') ||
+      t.includes('Миксер') || t.includes('вышка') || t.includes('ассен') ||
+      t.includes('Ямобур')
     ) return 'SPECIAL';
 
     return 'TRUCK';
@@ -168,36 +228,30 @@
 
     // TRAILER — только номер
     if (profile === 'TRAILER') {
-      items.push(['Госномер и техпаспорт', plate]);
+      items.push(['calc_item_plate', plate]);
       total += plate;
       return { total, items };
     }
 
     // TRACTOR
     if (profile === 'TRACTOR_N3') {
-      items.push(['Утилизационный сбор', CALC_CONFIG.util_2026.TRACTOR_N3]);
-      total += CALC_CONFIG.util_2026.TRACTOR_N3;
 
-      items.push(['Госномер и техпаспорт', plate]);
+      items.push(['calc_item_plate', plate]);
       total += plate;
       return { total, items };
     }
-
-    // TRUCK (default)
-    items.push(['Утилизационный сбор', CALC_CONFIG.util_2026.DEFAULT]);
-    total += CALC_CONFIG.util_2026.DEFAULT;
 
     // Первичная регистрация — зависит от возраста
     const firstRegSum = firstRegRate * mrp;
 
     items.push([
-      `Первичная регистрация (${firstRegRate} МРП, возраст: ${vehicleAge} г.)`,
+      `calc_item_first_reg`,
       Math.round(firstRegSum)
     ]);
     total += firstRegSum;
 
 
-    items.push(['Госномер и техпаспорт', plate]);
+    items.push(['calc_item_plate', plate]);
     total += plate;
 
     return { total, items };
@@ -212,11 +266,11 @@
     if (!excelMax) {
       return {
         mandatory: [
-          ['Таможенный сбор', 23592],
-          ['Услуги брокера на СВХ', 90000]
+          ['calc_item_util_tax', 23592],
+          ['calc_item_broker_service', 90000]
         ],
         delivery: [
-          ['Доставка до Алматы / СВХ', 150000]
+          ['calc_item_delivery_city', 150000]
         ]
       };
     }
@@ -224,18 +278,18 @@
     // Excel / максимум
     return {
       mandatory: [
-        ['СБКТС', 200000],
-        ['Кнопка SOS', 150000],
-        ['Таможенный сбор', 23592],
-        ['Услуги брокера на СВХ', 90000],
-        ['СВХ', 80000],
-        ['Брокер на границе ($250)', 250 * rate],
-        ['ЭПТС', 50000],
-        ['Солярка + AdBlue пакет', 51480],
-        ['Красный коридор', 50000]
+        ['calc_item_sbkts', 200000],
+        ['calc_item_sos', 150000],
+        ['calc_item_util_tax', 23592],
+        ['calc_item_broker_service', 90000],
+        ['calc_item_svh', 80000],
+        ['calc_item_broker_svh', 250 * rate],
+        ['calc_item_svh', 50000],
+        ['calc_item_diesel_pack', 51480],
+        ['calc_item_red_corridor', 50000]
       ],
       delivery: [
-        ['Доставка до Алматы / СВХ', 150000]
+        ['calc_item_delivery_city', 150000]
       ]
     };
   }
@@ -247,7 +301,7 @@
     updateVehicleProfile();
 
     const priceUSD = num('#basePrice');
-    const rate = Math.max(num('#rate'), 0) || CALC_CONFIG.currency.usd_kzt;
+    const rate = num('#rate') || CALC_CONFIG.currency.usd_kzt;
 
 
     const VAT  = CALC_CONFIG.taxes.vat;
@@ -295,7 +349,7 @@
 
         const li = document.createElement('li');
         li.innerHTML = `
-          <span>${label}</span>
+          <span>${t(label)}</span>
           <span class="sum">${fmt(sum)} ₸</span>
         `;
         mandatoryList.appendChild(li);
@@ -314,7 +368,7 @@
 
         const li = document.createElement('li');
         li.innerHTML = `
-          <span>${label}</span>
+          <span>${t(label)}</span>
           <span class="sum">${fmt(sum)} ₸</span>
         `;
         deliveryList.appendChild(li);
@@ -323,30 +377,44 @@
 
 
 
-    const util = calcUtilAndRegistration(
+    const utilByWeight = buildUtil(
+      document.getElementById('type')?.value,
+      weight
+    );
+
+    const reg = calcUtilAndRegistration(
       CURRENT_VEHICLE_PROFILE,
       vehicleAge,
       firstRegRate,
       mrp
     );
 
+    const utilTotal = utilByWeight + reg.total;
+
 
     // UI
     $('#sBase') && ($('#sBase').textContent = fmt(baseKZT));
     $('#realCostKZT') && ($('#realCostKZT').textContent = fmt(baseKZT) + ' ₸');
     $('#sCustoms') && ($('#sCustoms').textContent = fmt(customsTotal));
-    $('#sUtil') && ($('#sUtil').textContent = fmt(util.total));
+    $('#sUtil').textContent = fmt(utilTotal);
+
     // --- Детализация: Утиль / регистрация ---
     const utilList = document.getElementById('list-util');
     if (utilList) {
       utilList.innerHTML = '';
 
-      util.items.forEach(([label, sum]) => {
-        if (!sum) return;
+      /* утиль по массе */
+      buildUtil(
+        document.getElementById('type')?.value,
+        weight
+      );
 
+      /* регистрация */
+      reg.items.forEach(([label, sum]) => {
+        if (!sum) return;
         const li = document.createElement('li');
         li.innerHTML = `
-          <span>${label}</span>
+          <span>${t(label)}</span>
           <span class="sum">${fmt(sum)} ₸</span>
         `;
         utilList.appendChild(li);
@@ -354,21 +422,16 @@
     }
 
 
+
     let totalKZT =
-      customsTotal +
-      mandatoryTotal +
-      deliveryTotal +
-      util.total;
-    // Excel-режим: добавляем цену авто в итог (как у папы)
-    if (excelMax) {
-      totalKZT += baseKZT;
-    }
+      customsTotal 
+      mandatoryTotal 
+      deliveryTotal 
+      utilTotal;
 
-
-    // === FINAL TOTAL FIX (Excel = full price like Excel) ===
-    if (excelMax) {
-      totalKZT += baseKZT;
-    }
+      if (!document.getElementById('flagExcludeBase')?.checked) {
+        totalKZT += baseKZT;
+      }
 
     $('#sTotalKZT') && ($('#sTotalKZT').textContent = fmt(totalKZT) + ' ₸');
     $('#sTotalUSD') && ($('#sTotalUSD').textContent = '≈ ' + fmt(totalKZT / rate) + ' USD');
@@ -378,6 +441,20 @@
     console.log('BASE KZT:', baseKZT);
 
 
+  }
+  async function fetchNBKRate() {
+    try {
+      const res = await fetch('https://nationalbank.kz/rss/get_rates.cfm?fdate=');
+      const text = await res.text();
+
+      const match = text.match(/<title>USD<\/title>[\\s\\S]*?<description>([0-9.]+)<\/description>/);
+      if (!match) throw new Error('USD rate not found');
+
+      return Number(match[1]);
+    } catch (e) {
+      console.warn('NBK rate error, using default');
+      return CALC_CONFIG.currency.usd_kzt;
+    }
   }
 
   /* =========================================================
@@ -395,7 +472,18 @@
     $('#calcForm')?.addEventListener('input', recalc);
   }
   document.getElementById('flagExcelMax')?.addEventListener('change', recalc);
+  document.getElementById('btnRefreshRate')
+    ?.addEventListener('click', async () => {
+      const rate = await fetchNBKRate();
+      const rateInput = document.getElementById('rate');
+      if (rateInput) rateInput.value = rate;
+      recalc();
+    });
 
+  document.getElementById('btnRecalcAside')
+    ?.addEventListener('click', recalc);
+  window.recalc = recalc;
   init();
+  
 
 })();

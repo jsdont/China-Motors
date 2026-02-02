@@ -194,8 +194,10 @@ document.addEventListener('DOMContentLoaded', () => {
       priceText: fmtPrice(priceNum),
       bodyTypeRaw: bodyRaw,
       bodyType: bodyCanon,
-      calcName: makeCalcName(v, title)
+      calcName: makeCalcName(v, title),
+      weight_t: v.weight_t   // ← ВАЖНО
     };
+
   }
 
   // ================= RENDER =================
@@ -233,7 +235,10 @@ function cardHTML(x) {
             ?name=${encodeURIComponent(x.calcName)}
             &title=${encodeURIComponent(x.title)}
             &price=${encodeURIComponent(x.priceNum ?? '')}
-            &body=${encodeURIComponent(x.bodyType)}">
+            &body=${encodeURIComponent(x.bodyType)}
+            &weight=${encodeURIComponent(x.weight_t)}"
+
+
           Рассчитать
         </a>
       </div>
