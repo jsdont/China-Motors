@@ -1866,7 +1866,9 @@ html.dark .calc-disclaimer {
 .product-body {
   padding: 20px 22px 22px;
 }
-
+html.dark .product-title {
+  color: #ffffff;
+}
 .product-title {
   font-size: 22px;
   font-weight: 700;
