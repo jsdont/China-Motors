@@ -59,41 +59,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function cardHTML(item) {
     return `
-      <a class="product-card" href="product.html?id=123">
-        <div class="product-image">
-          <img src="IMAGE_URL" alt="Shacman X6000">
+      <a class="cm-card" href="product.html?id=${item.id}">
+        <div class="cm-card__image">
+          <img src="${item.image}" alt="${item.title}">
         </div>
 
-        <div class="product-body">
-          <h3 class="product-title">Shacman X6000, 2023</h3>
+        <div class="cm-card__body">
+          <h3 class="cm-card__title">
+            ${item.title}${item.year ? `, ${item.year}` : ''}
+          </h3>
 
-          <div class="product-specs">
+          <div class="cm-card__specs">
             <div class="spec">
-              <span>Колесная формула</span>
-              <strong>4×2</strong>
+              <span>Тип транспорта</span>
+              <strong>${item.bodyType}</strong>
             </div>
+            ${item.raw?.wheel_formula ? `
             <div class="spec">
-              <span>Мощность в л.с</span>
-              <strong>—</strong>
-            </div>
+              <span>Колёсная формула</span>
+              <strong>${item.raw.wheel_formula}</strong>
+            </div>` : ''}
+            ${item.raw?.gearbox ? `
             <div class="spec">
-              <span>Коробка передач</span>
-              <strong>Автомат</strong>
-            </div>
-            <div class="spec">
-              <span>Тип кабины</span>
-              <strong>2-х местная с 1 спальным</strong>
-            </div>
+              <span>КПП</span>
+              <strong>${item.raw.gearbox}</strong>
+            </div>` : ''}
           </div>
 
-          <div class="product-footer">
-            <div class="price">7 490 000 ₽</div>
-            <span class="btn-outline">Оставить заявку</span>
+          <div class="cm-card__footer">
+            <div class="price">
+              ${item.price ? `${item.price.toLocaleString('ru-RU')} $` : 'Цена по запросу'}
+            </div>
+            <span class="btn-outline">О технике</span>
           </div>
         </div>
       </a>
     `;
   }
+
 
   /* ================= RENDER ================= */
 
