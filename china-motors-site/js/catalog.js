@@ -178,13 +178,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function normalize(v) {
     const title = [v.brand, v.model, v.name].filter(Boolean).join(' ');
+    const bodyRaw = pickBodyRaw(v);
+
     const mainImg =
       v.image_url ||
       v.photo_url ||
       (Array.isArray(v.images) && v.images[0]) ||
       null;
 
-    // ❗ КЛЮЧЕВОЕ
     if (!mainImg) return null;
 
     return {
@@ -192,7 +193,11 @@ document.addEventListener('DOMContentLoaded', () => {
       title,
       mainImg,
       priceNum: v.price_usd ?? null,
-      bodyType: canonBody(title, pickBodyRaw(v)),
+
+      // 👇 ВАЖНО
+      bodyType: canonBody(title, bodyRaw), // Тягач / Самосвал
+      bodyRaw,                             // 6*4 Евро 5 ...
+
       calcName: makeCalcName(v, title),
       weight_t: v.weight_t ?? null
     };
@@ -205,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return `
       <div class="feature-card" data-id="${x.id}">
         
-        <a href="vehicle.html?id=${x.id}" class="card-link">
+        <a href="product.html?id=${x.id}" class="card-link">
           <div class="card-image">
             <img src="${x.mainImg}" alt="${x.title}">
           </div>
@@ -215,8 +220,9 @@ document.addEventListener('DOMContentLoaded', () => {
           <h3>${x.title}</h3>
 
           <div class="meta-row">
-            <span><b>Конструкция:</b> ${x.bodyType || '—'}</span>
+            <span><b>Конструкция:</b> ${x.bodyRaw || '—'}</span>
           </div>
+
 
           <div class="price">
             ${x.priceNum ? `${x.priceNum}$` : 'Цена по запросу'}
@@ -225,11 +231,11 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="card-actions">
             <button class="btn js-open-gallery">Фотографии</button>
             <a class="btn btn-ghost"
-              href="calculator.html?name=${encodeURIComponent(x.calcName)}
+              href="calculator.html
+              ?name=${encodeURIComponent(x.calcName)}
               &price=${x.priceNum ?? ''}
               &body=${encodeURIComponent(x.bodyType)}
-              &weight=${x.weight_t ?? ''}">
-              Рассчитать
+              &weight=${x.weight_t ?? ''}"
             </a>
           </div>
         </div>
