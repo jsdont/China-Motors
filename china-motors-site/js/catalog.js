@@ -347,7 +347,8 @@ document.addEventListener('DOMContentLoaded', () => {
         ? data
         : Array.isArray(data.results) ? data.results : [];
 
-      all = list.map(normalize);
+      all = list.map(normalize).filter(Boolean);
+
       refilter();
 
       if (pageTypeKey && !pageFixedBody) {
