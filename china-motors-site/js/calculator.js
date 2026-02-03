@@ -28,44 +28,6 @@
     el.appendChild(li);
   }
 
-
-  function buildUtil(type, weight) {
-      clearList('#list-util');
-
-      const MRP = 4325;
-      const BASE = 50 * MRP;
-      let coef = 0;
-
-      if (type === 'Спец. техника') return 0;
-
-      if (type === 'Прицеп' || type === 'Прицепы' || 
-          type === 'Полуприцеп' || type === 'Полуприцепы') {
-          addRow('#list-util', 'calc_item_plate', PLATE_FEE());
-          return PLATE_FEE();
-      }
-
-      // ──────────────── утиль ────────────────
-      if (type === 'Тягач') {
-          coef = (weight > 20) ? 11.0 : 10.5;
-      } else {
-          if      (weight <= 2.5) coef = 3.5;
-          else if (weight <= 3.5) coef = 7.5;
-          else if (weight <= 5)   coef = 7.5;
-          else if (weight <= 8)   coef = 8.0;
-          else if (weight <= 12)  coef = 9.5;
-          else if (weight <= 20)  coef = 10.5;
-          else                    coef = 20.5;
-      }
-
-      const util = BASE * coef;
-      addRow('#list-util', 'calc_item_util_tax', util);
-
-      // Госномер — только один раз, здесь
-      addRow('#list-util', 'calc_item_plate', PLATE_FEE());
-
-      return util + PLATE_FEE();
-  }
-
   function getMRPByYear(year) {
     const map = CALC_CONFIG.mrp_by_year;
     if (!year || !map || !map[year]) {
@@ -208,52 +170,43 @@
   /* =========================================================
      STEP 3 — UTIL & REGISTRATION (2026)
      ========================================================= */
-  function calcUtilAndRegistration(profile, vehicleAge, firstRegRate, mrp) {
-    const items = [];
-    let total = 0;
+function calcUtilAndRegistration(profile, vehicleAge, firstRegRate, mrp) {
+  const items = [];
+  let total = 0;
 
-    const plate = CALC_CONFIG.fees.plate;
+  const plate = CALC_CONFIG.fees.plate;
 
-    // TRACTOR_N3 — нет первичной регистрации
-    if (profile === 'TRACTOR_N3') {
-      firstRegRate = 0;
-    }
-
-    // SPECIAL — ничего
-    if (profile === 'SPECIAL') {
-      return { total: 0, items };
-    }
-
-    // TRAILER — только номер
-    if (profile === 'TRAILER') {
-      items.push(['calc_item_plate', plate]);
-      total += plate;
-      return { total, items };
-    }
-
-    // TRACTOR
-    if (profile === 'TRACTOR_N3') {
-
-      items.push(['calc_item_plate', plate]);
-      total += plate;
-      return { total, items };
-    }
-
-    // Первичная регистрация — зависит от возраста
-    const firstRegSum = firstRegRate * mrp;
-
-    items.push([
-      `calc_item_first_reg`,
-      Math.round(firstRegSum)
-    ]);
-    total += firstRegSum;
-
-
-    items.push(['calc_item_plate', plate]);
-    total += plate;
-
+  // SPECIAL — вообще ничего
+  if (profile === 'SPECIAL') {
     return { total, items };
   }
+
+  // Госномер — ОДИН РАЗ для всех, кроме SPECIAL
+  items.push(['calc_item_plate', plate]);
+  total += plate;
+
+  // TRACTOR_N3 — нет первичной регистрации
+  if (profile === 'TRACTOR_N3') {
+    return { total, items };
+  }
+
+  // TRAILER — только номер
+  if (profile === 'TRAILER') {
+    return { total, items };
+  }
+
+  // Остальные — первичная регистрация
+  const firstRegSum = firstRegRate * mrp;
+
+  items.push([
+    'calc_item_first_reg',
+    Math.round(firstRegSum)
+  ]);
+  total += firstRegSum;
+
+  return { total, items };
+}
+
 
   /* =========================================================
    PACKAGES (as in Excel)
@@ -296,6 +249,7 @@
      MAIN CALC
      ========================================================= */
   function recalc() {
+    clearList('#list-util');
     updateVehicleProfile();
 
     const priceUSD = num('#basePrice');
@@ -375,10 +329,6 @@
 
 
 
-    const utilByWeight = buildUtil(
-      document.getElementById('type')?.value,
-      weight
-    );
 
     const reg = calcUtilAndRegistration(
       CURRENT_VEHICLE_PROFILE,
@@ -386,8 +336,8 @@
       firstRegRate,
       mrp
     );
+    const utilTotal = reg.total;
 
-    const utilTotal = utilByWeight + reg.total;
 
 
     // UI
@@ -400,12 +350,6 @@
     const utilList = document.getElementById('list-util');
     if (utilList) {
       utilList.innerHTML = '';
-
-      /* утиль по массе */
-      buildUtil(
-        document.getElementById('type')?.value,
-        weight
-      );
 
       /* регистрация */
       reg.items.forEach(([label, sum]) => {
@@ -454,6 +398,29 @@
       return CALC_CONFIG.currency.usd_kzt;
     }
   }
+  async function updateNBKRate({ updateInput = false, doRecalc = false } = {}) {
+    const rateInfoEl = document.getElementById('rateInfo');
+    const rateInput  = document.getElementById('rate');
+
+    const rate = await fetchNBKRate();
+
+    if (rateInfoEl) {
+      rateInfoEl.textContent = `Курс НБ РК: ${rate.toFixed(2)} ₸`;
+    }
+
+    if (updateInput && rateInput) {
+      rateInput.value = rate.toFixed(2);
+    }
+
+    if (doRecalc) {
+      recalc();
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    updateNBKRate(false); // только показать, НЕ менять input
+  });
+
 
   /* =========================================================
      INIT
@@ -471,12 +438,10 @@
   }
   document.getElementById('flagExcelMax')?.addEventListener('change', recalc);
   document.getElementById('btnRefreshRate')
-    ?.addEventListener('click', async () => {
-      const rate = await fetchNBKRate();
-      const rateInput = document.getElementById('rate');
-      if (rateInput) rateInput.value = rate;
-      recalc();
+    ?.addEventListener('click', () => {
+      updateNBKRate({ updateInput: true, doRecalc: true });
     });
+
 
   document.getElementById('btnRecalcAside')
     ?.addEventListener('click', recalc);
