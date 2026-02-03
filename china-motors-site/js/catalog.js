@@ -247,17 +247,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   function render(list) {
-    grid.innerHTML = list.map(cardHTML).join('');
+    grid.innerHTML = list
+      .filter(x => x && x.id && x.mainImg) // ⬅️ КРИТИЧНО
+      .map(cardHTML)
+      .join('');
+
     grid.querySelectorAll('.js-open-gallery').forEach(btn => {
       btn.addEventListener('click', e => {
-        e.preventDefault(); // ТОЛЬКО для кнопки "Фотографии"
-
+        e.preventDefault();
         const card = e.currentTarget.closest('.feature-card');
         const item = current.find(v => String(v.id) === card.dataset.id);
         if (item) openGallery(item);
       });
     });
   }
+
 
   // ================= GALLERY LOGIC =================
 
@@ -311,11 +315,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const b = pageFixedBody || (bodyEl?.value || '').trim();
     const q = (searchEl?.value || '').toLowerCase();
 
-    current = all.filter(x => {
-      const bodyOk = !b || x.bodyType === b;
-      const searchOk = !q || x.title.toLowerCase().includes(q);
-      return bodyOk && searchOk;
-    });
+    current = all
+      .filter(x => x && x.id && x.bodyType) // ⬅️
+      .filter(x => {
+        const bodyOk = !b || x.bodyType === b;
+        const searchOk = !q || x.title.toLowerCase().includes(q);
+        return bodyOk && searchOk;
+      });
+
+
   }
 
   function applySort() {
@@ -348,7 +356,6 @@ document.addEventListener('DOMContentLoaded', () => {
         : Array.isArray(data.results) ? data.results : [];
 
       all = list.map(normalize).filter(Boolean);
-
       refilter();
 
       if (pageTypeKey && !pageFixedBody) {
