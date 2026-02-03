@@ -207,6 +207,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // ================= RENDER =================
 
   function cardHTML(x) {
+    if (!x || !x.id || !x.mainImg) return '';
+
     return `
       <div class="feature-card" data-id="${x.id}">
         

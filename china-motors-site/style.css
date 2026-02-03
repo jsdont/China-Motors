@@ -1839,3 +1839,6 @@ html.dark .calc-disclaimer {
   color: #ffffff;
   margin-top: 50px;
 }
+#grid > a {
+  display: none !important;
+}
