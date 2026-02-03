@@ -135,29 +135,32 @@
     }
   }
 
-
-  }
-
   /* =========================================================
      STEP 2 — VEHICLE PROFILE
      ========================================================= */
-  function detectVehicleProfile(type, bodyRaw) {
-    if (URL_PARAMS.profile) return URL_PARAMS.profile;
+function detectVehicleProfile(type, bodyRaw) {
+  if (URL_PARAMS.profile) return URL_PARAMS.profile;
 
-    const t = (type || '').toLowerCase();
-    const b = (bodyRaw || '').toLowerCase();
+  const t = (type || '').toLowerCase();
+  const b = (bodyRaw || '').toLowerCase();
 
-    if (t.includes('прицеп')) return 'TRAILER';
-    if (t.includes('тягач') || t.includes('седель')) return 'TRACTOR_N3';
-    if (t.includes('Самосвал') || t.includes('груз')) return 'TRUCK';
-    if (
-      t.includes('Спец') || t.includes('кран') || t.includes('манип') ||
-      t.includes('Миксер') || t.includes('вышка') || t.includes('ассен') ||
-      t.includes('Ямобур')
-    ) return 'SPECIAL';
+  if (t.includes('прицеп')) return 'TRAILER';
+  if (t.includes('тягач') || t.includes('седель')) return 'TRACTOR_N3';
+  if (t.includes('самосвал') || t.includes('груз')) return 'TRUCK';
 
-    return 'TRUCK';
-  }
+  if (
+    t.includes('спец') ||
+    t.includes('кран') ||
+    t.includes('манип') ||
+    t.includes('миксер') ||
+    t.includes('вышка') ||
+    t.includes('ассен') ||
+    t.includes('ямобур')
+  ) return 'SPECIAL';
+
+  return 'TRUCK';
+}
+
 
   let CURRENT_VEHICLE_PROFILE = 'TRUCK';
 
