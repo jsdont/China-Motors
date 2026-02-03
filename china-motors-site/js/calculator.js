@@ -30,42 +30,40 @@
 
 
   function buildUtil(type, weight) {
-    clearList('#list-util');
+      clearList('#list-util');
 
-    const MRP = 4325;
-    const BASE = 50 * MRP;
-    let coef = 0;
+      const MRP = 4325;
+      const BASE = 50 * MRP;
+      let coef = 0;
 
-    if (type === 'Спец. техника') return 0;
+      if (type === 'Спец. техника') return 0;
 
-    if (
-      type === 'Прицеп' ||
-      type === 'Прицепы' ||
-      type === 'Полуприцеп' ||
-      type === 'Полуприцепы')
-    {
+      if (type === 'Прицеп' || type === 'Прицепы' || 
+          type === 'Полуприцеп' || type === 'Полуприцепы') {
+          addRow('#list-util', 'calc_item_plate', PLATE_FEE());
+          return PLATE_FEE();
+      }
+
+      // ──────────────── утиль ────────────────
+      if (type === 'Тягач') {
+          coef = (weight > 20) ? 11.0 : 10.5;
+      } else {
+          if      (weight <= 2.5) coef = 3.5;
+          else if (weight <= 3.5) coef = 7.5;
+          else if (weight <= 5)   coef = 7.5;
+          else if (weight <= 8)   coef = 8.0;
+          else if (weight <= 12)  coef = 9.5;
+          else if (weight <= 20)  coef = 10.5;
+          else                    coef = 20.5;
+      }
+
+      const util = BASE * coef;
+      addRow('#list-util', 'calc_item_util_tax', util);
+
+      // Госномер — только один раз, здесь
       addRow('#list-util', 'calc_item_plate', PLATE_FEE());
-      return PLATE_FEE();
 
-    }
-
-    if (type === 'Тягач') {
-      coef = (weight > 20) ? 11.0 : 10.5;
-    } else {
-      if (weight <= 2.5) coef = 3.5;
-      else if (weight <= 3.5) coef = 7.5;
-      else if (weight <= 5) coef = 7.5;
-      else if (weight <= 8) coef = 8.0;
-      else if (weight <= 12) coef = 9.5;
-      else if (weight <= 20) coef = 10.5;
-      else coef = 20.5;
-    }
-
-    const util = BASE * coef;
-    addRow('#list-util', 'calc_item_util_tax', util);
-    addRow('#list-util', 'calc_item_plate', PLATE_FEE());
-
-    return util + PLATE_FEE();
+      return util + PLATE_FEE();
   }
 
   function getMRPByYear(year) {

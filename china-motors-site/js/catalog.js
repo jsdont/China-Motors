@@ -230,18 +230,14 @@ function cardHTML(x) {
       <div class="card-actions">
         <button class="btn js-open-gallery">Фотографии</button>
 
-        <a class="btn btn-ghost"
-          href="calculator.html
-            ?name=${encodeURIComponent(x.calcName)}
-            &title=${encodeURIComponent(x.title)}
-            &price=${encodeURIComponent(x.priceNum ?? '')}
-            &body=${encodeURIComponent(x.bodyType)}
-            &weight=${encodeURIComponent(x.weight_t)}"
-
-
+        <a
+          class="btn btn-ghost"
+          href="calculator.html?name=${encodeURIComponent(x.calcName)}&title=${encodeURIComponent(x.title)}&price=${encodeURIComponent(x.priceNum ?? '')}&body=${encodeURIComponent(x.bodyType)}&weight=${encodeURIComponent(x.weight_t ?? '')}"
+        >
           Рассчитать
         </a>
       </div>
+
     </div>
   `;
 }
