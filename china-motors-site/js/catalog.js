@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
       bodyRaw,                             // 6*4 Евро 5 ...
 
       calcName: makeCalcName(v, title),
-      weight_t: v.weight_t ?? null,
+      weight_t: v.weight_t ?? null
       year: v.year ?? ''
     };
   }
@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
               ?name=${encodeURIComponent(x.calcName)}
               &price=${encodeURIComponent(x.priceNum ?? '')}
               &body=${encodeURIComponent(x.bodyType)}
-              &weight=${encodeURIComponent(x.weight_t || 0)}">
+              &weight=${encodeURIComponent(x.weight_t || 0)}
               &year=${encodeURIComponent(x.year || '')}">
               Рассчитать
             </a>
