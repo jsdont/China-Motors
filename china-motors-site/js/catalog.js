@@ -177,70 +177,55 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function normalize(v) {
-    const title = [v.brand, v.model, v.name].filter(Boolean).join(' ') || 'Без названия';
-    const mainImg = v.image_url || v.photo_url || (Array.isArray(v.images) && v.images[0]) || '';
-    const images = Array.isArray(v.images) && v.images.length ? v.images : (mainImg ? [mainImg] : []);
-    const priceNum = v.price_usd ?? v.usd_price ?? v.priceUSD ?? null;
+    const title = [v.brand, v.model, v.name].filter(Boolean).join(' ');
+    const mainImg =
+      v.image_url ||
+      v.photo_url ||
+      (Array.isArray(v.images) && v.images[0]) ||
+      null;
 
-    const bodyRaw = String(pickBodyRaw(v) || '').trim();
-    const bodyCanon = canonBody(title, bodyRaw);
+    // ❗ КЛЮЧЕВОЕ
+    if (!mainImg) return null;
 
     return {
       id: v.id,
       title,
       mainImg,
-      images,
-      priceNum: priceNum !== null ? Number(priceNum) : null,
-      priceText: fmtPrice(priceNum),
-      bodyTypeRaw: bodyRaw,
-      bodyType: bodyCanon,
+      priceNum: v.price_usd ?? null,
+      bodyType: canonBody(title, pickBodyRaw(v)),
       calcName: makeCalcName(v, title),
-      weight_t: v.weight_t   // ← ВАЖНО
+      weight_t: v.weight_t ?? null
     };
-
   }
+  items = data.map(normalize).filter(Boolean);
 
   // ================= RENDER =================
 
 function cardHTML(x) {
   return `
-    <div class="feature-card" data-id="${x.id}">
+    <div class="feature-card">
       <div class="card-image">
-        ${x.mainImg
-          ? `<a href="product.html?id=${x.id}">
-              <img src="${escAttr(x.mainImg)}"
-                   alt="${escAttr(x.title)}">
-            </a>`
-          : `<div style="height:240px;background:#eee;display:flex;align-items:center;justify-content:center">
-              Фото позже
-            </div>`
-        }
+        <img src="${x.mainImg}" alt="${x.title}">
       </div>
 
-      <a href="product.html?id=${x.id}">
-        <h3>${escHTML(x.title)}</h3>
-      </a>
+      <div class="card-content">
+        <h3>${x.title}</h3>
+        <div class="price">
+          ${x.priceNum ? `${x.priceNum}$` : 'Цена по запросу'}
+        </div>
 
-      <div class="meta-row">
-        <span>Конструкция:</span> <b>${escHTML(x.bodyTypeRaw || '—')}</b>
+        <div class="card-actions">
+          <button class="btn js-open-gallery">Фотографии</button>
+          <a class="btn btn-ghost"
+             href="calculator.html?name=${encodeURIComponent(x.calcName)}&price=${x.priceNum ?? ''}&body=${encodeURIComponent(x.bodyType)}">
+            Рассчитать
+          </a>
+        </div>
       </div>
-
-      <div class="price">${x.priceText}</div>
-
-      <div class="card-actions">
-        <button class="btn js-open-gallery">Фотографии</button>
-
-        <a
-          class="btn btn-ghost"
-          href="calculator.html?name=${encodeURIComponent(x.calcName)}&title=${encodeURIComponent(x.title)}&price=${encodeURIComponent(x.priceNum ?? '')}&body=${encodeURIComponent(x.bodyType)}&weight=${encodeURIComponent(x.weight_t ?? '')}"
-        >
-          Рассчитать
-        </a>
-      </div>
-
     </div>
   `;
 }
+
 
   function render(list) {
     grid.innerHTML = list.map(cardHTML).join('');
