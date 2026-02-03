@@ -197,13 +197,13 @@ document.addEventListener('DOMContentLoaded', () => {
       weight_t: v.weight_t ?? null
     };
   }
-  items = data.map(normalize).filter(Boolean);
+
 
   // ================= RENDER =================
 
 function cardHTML(x) {
   return `
-    <div class="feature-card">
+    <div class="feature-card" data-id="${x.id}">
       <div class="card-image">
         <img src="${x.mainImg}" alt="${x.title}">
       </div>
