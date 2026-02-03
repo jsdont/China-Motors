@@ -201,33 +201,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ================= RENDER =================
 
-function cardHTML(x) {
-  return `
-    <div class="feature-card" data-id="${x.id}">
-      
-      <a href="vehicle.html?id=${x.id}" class="card-link">
-        <div class="card-image">
-          <img src="${x.mainImg}" alt="${x.title}">
-        </div>
-        <h3>${x.title}</h3>
-      </a>
+  function cardHTML(x) {
+    return `
+      <div class="feature-card" data-id="${x.id}">
+        
+        <a href="vehicle.html?id=${x.id}" class="card-link">
+          <div class="card-image">
+            <img src="${x.mainImg}" alt="${x.title}">
+          </div>
+        </a>
 
-      <div class="card-content">
-        <div class="price">
-          ${x.priceNum ? `${x.priceNum}$` : 'Цена по запросу'}
-        </div>
+        <div class="card-content">
+          <h3>${x.title}</h3>
 
-        <div class="card-actions">
-          <button class="btn js-open-gallery">Фотографии</button>
-          <a class="btn btn-ghost"
-             href="calculator.html?name=${encodeURIComponent(x.calcName)}&price=${x.priceNum ?? ''}&body=${encodeURIComponent(x.bodyType)}">
-            Рассчитать
-          </a>
+          <div class="meta-row">
+            <span><b>Конструкция:</b> ${x.bodyType || '—'}</span>
+          </div>
+
+          <div class="price">
+            ${x.priceNum ? `${x.priceNum}$` : 'Цена по запросу'}
+          </div>
+
+          <div class="card-actions">
+            <button class="btn js-open-gallery">Фотографии</button>
+            <a class="btn btn-ghost"
+              href="calculator.html?name=${encodeURIComponent(x.calcName)}
+              &price=${x.priceNum ?? ''}
+              &body=${encodeURIComponent(x.bodyType)}
+              &weight=${x.weight_t ?? ''}">
+              Рассчитать
+            </a>
+          </div>
         </div>
       </div>
-    </div>
-  `;
-}
+    `;
+  }
+
 
 
 

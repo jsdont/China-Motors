@@ -70,25 +70,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function buildSpecsTable(v) {
     specsEl.innerHTML = '';
-    const map = {
-      'Бренд': v.brand,
-      'Модель': v.model,
-      'Год': v.year,
-      'Конструкция': pickBodyRaw(v),
-      'Тип транспорта': canonBody(v.name || '', pickBodyRaw(v)),
-      'Двигатель': v.engine,
-      'Коробка': v.transmission,
-      'Привод': v.drive,
-      'Пробег': v.mileage,
-    };
 
-    Object.entries(map).forEach(([label, value]) => {
-      if (!value) return;
+    const rows = [
+      ['Бренд', v.brand],
+      ['Модель', v.model],
+      ['Год выпуска', v.year],
+      ['Конструкция', v.body_type],
+      ['Цена', v.price_usd ? `${v.price_usd}$` : null],
+      ['Масса, т', v.weight_t],
+      ['Пробег, км', v.mileage_km],
+    ];
+
+    rows.forEach(([label, value]) => {
+      if (value === null || value === undefined || value === '') return;
       const tr = document.createElement('tr');
       tr.innerHTML = `<td>${label}</td><td><strong>${value}</strong></td>`;
       specsEl.appendChild(tr);
     });
   }
+
 
   function buildGallery(images) {
     if (!images.length) return;
