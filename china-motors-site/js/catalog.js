@@ -207,43 +207,42 @@ document.addEventListener('DOMContentLoaded', () => {
   // ================= RENDER =================
 
   function cardHTML(x) {
-    if (!x || !x.id || !x.mainImg) return '';
-
     return `
       <div class="feature-card" data-id="${x.id}">
-        
-        <a href="product.html?id=${x.id}" class="card-link">
-          <div class="card-image">
-            <img src="${x.mainImg}" alt="${x.title}">
-          </div>
-        </a>
+        <div class="card-image">
+          <img src="${x.mainImg}" alt="${x.title}">
+        </div>
 
         <div class="card-content">
           <h3>${x.title}</h3>
 
-          <div class="meta-row">
-            <span><b>Конструкция:</b> ${x.bodyRaw || '—'}</span>
-          </div>
-
-
-          <div class="price">
-            ${x.priceNum ? `${x.priceNum}$` : 'Цена по запросу'}
+          <div class="card-meta">
+            <div class="card-body">
+              Конструкция: ${x.bodyRaw || x.bodyType}
+            </div>
+            <div class="card-price">
+              ${x.priceNum ? `${x.priceNum}$` : 'Цена по запросу'}
+            </div>
           </div>
 
           <div class="card-actions">
-            <button class="btn js-open-gallery">Фотографии</button>
-            <a class="btn btn-ghost"
-              href="calculator.html
-              ?name=${encodeURIComponent(x.calcName)}
-              &price=${x.priceNum ?? ''}
+            <button type="button" class="btn btn-outline js-open-gallery">
+              Фотографии
+            </button>
+
+            <a class="btn btn-primary"
+              href="calculator.html?name=${encodeURIComponent(x.calcName)}
+              &price=${encodeURIComponent(x.priceNum ?? '')}
               &body=${encodeURIComponent(x.bodyType)}
-              &weight=${x.weight_t ?? ''}"
+              &weight=${encodeURIComponent(x.weight_t ?? '')}">
+              Рассчитать
             </a>
           </div>
         </div>
       </div>
     `;
   }
+
 
 
 
