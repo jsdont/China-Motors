@@ -59,26 +59,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function cardHTML(item) {
     return `
-      <a class="feature-card"
-         href="product.html?id=${item.id}"
-         aria-label="О технике ${item.title}">
-
-        <img src="${item.image}" alt="${item.title}">
-
-        <h3>${item.title}</h3>
-
-        <p class="muted">
-          ${item.bodyRaw || item.bodyType}
-        </p>
-
-        <div class="price">
-          ${fmtPrice(item.price)}
+      <a class="product-card" href="product.html?id=123">
+        <div class="product-image">
+          <img src="IMAGE_URL" alt="Shacman X6000">
         </div>
 
-        <div class="card-footer">
-          <span class="btn btn--primary">
-            О технике
-          </span>
+        <div class="product-body">
+          <h3 class="product-title">Shacman X6000, 2023</h3>
+
+          <div class="product-specs">
+            <div class="spec">
+              <span>Колесная формула</span>
+              <strong>4×2</strong>
+            </div>
+            <div class="spec">
+              <span>Мощность в л.с</span>
+              <strong>—</strong>
+            </div>
+            <div class="spec">
+              <span>Коробка передач</span>
+              <strong>Автомат</strong>
+            </div>
+            <div class="spec">
+              <span>Тип кабины</span>
+              <strong>2-х местная с 1 спальным</strong>
+            </div>
+          </div>
+
+          <div class="product-footer">
+            <div class="price">7 490 000 ₽</div>
+            <span class="btn-outline">Оставить заявку</span>
+          </div>
         </div>
       </a>
     `;
