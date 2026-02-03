@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
       bodyRaw,                             // 6*4 Евро 5 ...
 
       calcName: makeCalcName(v, title),
-      weight_t: v.weight_t ?? null
+      weight_t: v.weight_t ?? null,
       year: v.year ?? ''
     };
   }
