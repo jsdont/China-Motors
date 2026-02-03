@@ -107,12 +107,34 @@
   })();
 
   function prefillFromURL() {
-    if (URL_PARAMS.title && $('#vehicleName')) $('#vehicleName').value = URL_PARAMS.title;
-    if (URL_PARAMS.price && $('#basePrice'))  $('#basePrice').value = URL_PARAMS.price;
-    if (URL_PARAMS.body  && $('#type'))       $('#type').value = URL_PARAMS.body;
+    if (URL_PARAMS.title && $('#vehicleName')) {
+      $('#vehicleName').value = URL_PARAMS.title;
+    }
+
+    if (URL_PARAMS.price && $('#basePrice')) {
+      $('#basePrice').value = URL_PARAMS.price;
+    }
+
     if (URL_PARAMS.year && $('#year')) {
       $('#year').value = URL_PARAMS.year;
     }
+
+    // 🔴 ВАЖНО: тип транспорта
+    if (URL_PARAMS.body && $('#type')) {
+      const typeSelect = $('#type');
+      const body = URL_PARAMS.body;
+
+      // пытаемся найти option по value или по text
+      const option = [...typeSelect.options].find(
+        o => o.value === body || o.textContent.trim() === body
+      );
+
+      if (option) {
+        typeSelect.value = option.value;
+      }
+    }
+  }
+
 
   }
 
@@ -142,7 +164,17 @@
   function updateVehicleProfile() {
     const typeEl = $('#type');
     if (!typeEl) return;
-    CURRENT_VEHICLE_PROFILE = detectVehicleProfile(typeEl.value, URL_PARAMS.bodyRaw);
+
+    CURRENT_VEHICLE_PROFILE = detectVehicleProfile(
+      typeEl.value,
+      URL_PARAMS.bodyRaw
+    );
+
+    console.log('[PROFILE]', {
+      type: typeEl.value,
+      bodyRaw: URL_PARAMS.bodyRaw,
+      profile: CURRENT_VEHICLE_PROFILE
+    });
   }
 
   /* =========================================================
