@@ -204,12 +204,15 @@ document.addEventListener('DOMContentLoaded', () => {
 function cardHTML(x) {
   return `
     <div class="feature-card" data-id="${x.id}">
-      <div class="card-image">
-        <img src="${x.mainImg}" alt="${x.title}">
-      </div>
+      
+      <a href="vehicle.html?id=${x.id}" class="card-link">
+        <div class="card-image">
+          <img src="${x.mainImg}" alt="${x.title}">
+        </div>
+        <h3>${x.title}</h3>
+      </a>
 
       <div class="card-content">
-        <h3>${x.title}</h3>
         <div class="price">
           ${x.priceNum ? `${x.priceNum}$` : 'Цена по запросу'}
         </div>
@@ -227,11 +230,13 @@ function cardHTML(x) {
 }
 
 
+
   function render(list) {
     grid.innerHTML = list.map(cardHTML).join('');
     grid.querySelectorAll('.js-open-gallery').forEach(btn => {
       btn.addEventListener('click', e => {
-        e.preventDefault(); // важно: не уходим на product.html
+        e.preventDefault(); // ТОЛЬКО для кнопки "Фотографии"
+
         const card = e.currentTarget.closest('.feature-card');
         const item = current.find(v => String(v.id) === card.dataset.id);
         if (item) openGallery(item);
