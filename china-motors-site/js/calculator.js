@@ -625,11 +625,7 @@
       totalKZT += baseKZT;
     }
 
-    const totalEl = document.getElementById("sTotalKZT");
-    if (totalEl) {
-      totalEl.innerHTML = fmt(totalKZT) + " ₸";
-    }
-
+    $('#sTotalKZT') && ($('#sTotalKZT').textContent = fmt(totalKZT) + ' ₸');
     $('#sTotalUSD') && ($('#sTotalUSD').textContent = '≈ ' + fmt(totalKZT / rate) + ' USD');
     $('#mandatoryTotal') && ($('#mandatoryTotal').textContent = fmt(mandatoryTotal));
     $('#deliveryTotal') && ($('#deliveryTotal').textContent = fmt(deliveryTotal));
@@ -714,9 +710,9 @@
     // ✅ Автопересчет всех полей
     document.querySelectorAll('#calcForm input, #calcForm select')
       .forEach(el => {
+        el.addEventListener('input', recalc);
         el.addEventListener('change', recalc);
       });
-
 
     document.getElementById("flagHybridWTO")?.addEventListener("change", () => {
       const box = document.getElementById("hybridFields");
