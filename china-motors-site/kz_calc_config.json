@@ -22,5 +22,12 @@
   "util_2026": {
     "TRACTOR_N3": 2162600,
     "DEFAULT": 4030000
+  },
+  "duty_rules": {
+    "SPECIAL": 0,
+    "CRANE": 0.08,
+    "TRAL": 0.09,
+    "DEFAULT": 0.10
   }
+
 }

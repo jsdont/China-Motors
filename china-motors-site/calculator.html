@@ -131,33 +131,6 @@
         <section class="calc-card">
           <h2 class="calc-card__title" data-i18n="calc_ts_title">2) Таможенная стоимость</h2>
 
-          <!--<div class="grid-2">
-            <div>
-              <label data-i18n="calc_ts_mode">Способ расчёта ТС</label>
-              <div class="radio-row" id="tsModes">
-                <label><input type="radio" name="ts_mode" value="byprice" checked> <span data-i18n="calc_mode_byprice">По полной цене</span></label>
-                <label id="lblGridYear"><input type="radio" name="ts_mode" value="gridYear"> <span data-i18n="calc_mode_grid">Сетка (год)</span></label>
-                <label id="lblFixed"><input type="radio" name="ts_mode" value="fixed"> <span data-i18n="calc_mode_fixed">Фиксированная сетка</span></label>
-              </div>
-            </div>
-
-            <div id="wrap-ts-manual">
-              <label data-i18n="calc_ts_usd_manual">ТС, $ (для «Фиксированной сетки»)</label>
-              <input id="tsValueUSD" type="number" step="0.01" value="25500"/>
-            </div>
-          </div>
-
-          <div class="grid-2 mt-12" id="wrap-gridYear" style="display:none">
-            <div>
-              <label data-i18n="calc_ts_year_label">Год (для «Сетка (год)»)</label>
-              <select id="gridYear"></select>
-            </div>
-            <div>
-              <label data-i18n="calc_ts_year_usd">Фиксированная сумма ТС, $</label>
-              <input id="gridYearUSD" type="number" value="" readonly>
-            </div>
-          </div>-->
-
           <div class="bill">
             <h4 data-i18n="calc_ts_bill_title">Таможенные платежи</h4>
             <ul>
@@ -235,6 +208,7 @@
 
   <!-- Footer -->
   <div id="siteFooter"></div>
+  <script type="module" src="js/calc.engine.js"></script>
 
   <!-- Scripts -->
   <script src="js/common.js"></script>

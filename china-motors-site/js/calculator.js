@@ -190,65 +190,34 @@ function detectVehicleProfile(type, bodyRaw) {
     return Math.max(0, currentYear - Number(year));
   }
 
-  function getFirstRegRateByAge(age) {
-    // Логика как у папы
-    // До 2 лет, включая год выпуска
+  function getFirstRegRateByAge(age, profile, intl) {
+
+    // 🚛 Тягач международник — первичка 0
+    if (profile === "TRACTOR_N3" && intl) return 0;
+
+    // 🚚 Грузовые 3–5 лет = 350 МРП
+    if (age >= 3 && age <= 5) return 350;
+
+    // До 2 лет
     if (age <= 2) return 0.25;
 
-    // Заготовка на будущее (можно расширить)
-    // if (age <= 5) return 0.5;
-    // if (age <= 10) return 1.0;
-
-    return 0.25; // пока оставляем так же
+    // Старше 5 лет
+    return 2500;
   }
 
-  /* =========================================================
-     STEP 3 — UTIL & REGISTRATION (2026)
-     ========================================================= */
-  function calcUtilAndRegistration(profile, vehicleAge, firstRegRate, mrp) {
-    const items = [];
-    let total = 0;
 
-    const plate = CALC_CONFIG.fees.plate;
-
-    // SPECIAL — вообще ничего
-    if (profile === 'SPECIAL') {
-      return { total, items };
-    }
-
-    // Госномер — ОДИН РАЗ для всех, кроме SPECIAL
-    items.push(['calc_item_plate', plate]);
-    total += plate;
-
-    // TRACTOR_N3 — нет первичной регистрации
-    if (profile === 'TRACTOR_N3') {
-      return { total, items };
-    }
-
-    // TRAILER — только номер
-    if (profile === 'TRAILER') {
-      return { total, items };
-    }
-
-    // Остальные — первичная регистрация
-    const firstRegSum = firstRegRate * mrp;
-
-    items.push([
-      'calc_item_first_reg',
-      Math.round(firstRegSum)
-    ]);
-    total += firstRegSum;
-
-    return { total, items };
-  }
-
-  /* =========================================================
-    OFFICIAL UTIL 2026 — BY WEIGHT (TONS)
-    ========================================================= */
-
-  function getUtilByWeight2026(weight) {
+  function getUtilByWeight2026(weight, profile) {
     if (!weight) return 0;
 
+    // ✅ Берём утиль из конфига
+    if (profile === "TRACTOR_N3") {
+      return CALC_CONFIG.util_2026.TRACTOR_N3;
+    }
+
+    // Для остальных грузовых
+    return getUtilByWeightTable(weight);
+  }
+  function getUtilByWeightTable(weight) {
     if (weight <= 2.5) return 756875;
     if (weight <= 3.5) return 1621875;
     if (weight <= 5)   return 1621875;
@@ -256,15 +225,58 @@ function detectVehicleProfile(type, bodyRaw) {
     if (weight <= 12)  return 2054375;
     if (weight <= 20)  return 2270625;
     if (weight <= 50)  return 4433125;
-
     return 0;
   }
+  // ===============================
+  // ✅ Пошлина по профилю техники
+  // ===============================
+  function getDutyRate(profile, typeText) {
+
+    const t = (typeText || "").toLowerCase();
+
+    // Спецтехника = 0%
+    if (profile === "SPECIAL") return 0;
+
+    // Автокран = 8%
+    if (t.includes("кран")) return 0.08;
+
+    // Трал = 9%
+    if (t.includes("трал")) return 0.09;
+
+    // Прицепы = 10%
+    if (profile === "TRAILER") return 0.10;
+
+    // Самосвал и тягач = 10%
+    return 0.10;
+  }
+
 
   /* =========================================================
    PACKAGES (as in Excel)
    ========================================================= */
 
   function getExpensePackage(profile, excelMax, rate) {
+    // дизель: 220 литров × цена из конфига
+    const dieselLiters = 220;
+    const dieselPrice = CALC_CONFIG.diesel?.price_kzt_per_l || 360;
+    const dieselSum = dieselLiters * dieselPrice;
+    // ✅ Декларант на границе: 250$ × курс
+    const declarantUSD = 250;
+    const declarantSum = declarantUSD * rate;
+    // ===============================
+    // ✅ СВХ формула как в Excel
+    // ===============================
+
+    let svhSum = 0;
+
+    if (profile === "TRACTOR_N3") {
+      // 🚛 Тягач: 2500 × 18 + 27000
+      svhSum = 2500 * 18 + 27000;
+    } else {
+      // 🚚 Самосвал/грузовой: 3500 × 16 + 35000
+      svhSum = 3500 * 16 + 35000;
+    }
+
     // Пока делаем для грузовых / тягачей
     if (!excelMax) {
       return {
@@ -285,10 +297,16 @@ function detectVehicleProfile(type, bodyRaw) {
         ['calc_item_sos', 150000],
         ['calc_item_customs_fee', 29592],
         ['calc_item_broker_service', 90000],
-        ['calc_item_svh', 80000],
-        ['calc_item_broker_svh', 250 * rate],
-        ['calc_item_svh', 50000],
-        ['calc_item_diesel_pack', 51480],
+
+        // ✅ СВХ по формуле
+        ['calc_item_svh', svhSum],
+
+        // ✅ Декларант на границе
+        ['calc_item_border_broker', declarantSum],
+
+        // ✅ Дизель: 220л × цена
+        ['calc_item_diesel_pack', dieselSum],
+
         ['calc_item_red_corridor', 50000]
       ],
       delivery: [
@@ -309,19 +327,39 @@ function detectVehicleProfile(type, bodyRaw) {
 
 
     const VAT  = CALC_CONFIG.taxes.vat;
-    const DUTY = CALC_CONFIG.taxes.duty;
+    const DUTY = getDutyRate(
+      CURRENT_VEHICLE_PROFILE,
+      document.getElementById("type")?.value
+    );
+
+
 
     const yearEl = document.getElementById('year');
     const vehicleYear = yearEl ? Number(yearEl.value) : null;
 
     const vehicleAge = getVehicleAge(vehicleYear);
-    const firstRegRate = getFirstRegRateByAge(vehicleAge);
     const mrp = getMRPByYear(vehicleYear);
+
+    // ✅ правильная ставка первички
+    const firstRegRate = getFirstRegRateByAge(
+      vehicleAge,
+      CURRENT_VEHICLE_PROFILE,
+      URL_PARAMS.intl
+    );
+
+
+    // сумма первички
+    const firstRegSum = firstRegRate * mrp;
+
 
 
     const baseKZT = priceUSD * rate;
     const dutyKZT = baseKZT * DUTY;
-    const vatKZT  = (baseKZT + dutyKZT) * VAT;
+    const customsFee = 29592;
+
+    const vatBase = baseKZT + dutyKZT + customsFee;
+    const vatKZT  = vatBase * VAT;
+
     const customsTotal = dutyKZT + vatKZT;
     // === 2) Таможенная стоимость — вывод в UI ===
     document.getElementById('tsKZT') &&
@@ -329,6 +367,10 @@ function detectVehicleProfile(type, bodyRaw) {
 
     document.getElementById('dutyOutKZT') &&
       (document.getElementById('dutyOutKZT').textContent = fmt(dutyKZT) + ' ₸');
+      document.getElementById("dutyPercent") &&
+        (document.getElementById("dutyPercent").textContent =
+          "Пошлина: " + (DUTY * 100) + "%");
+
 
     document.getElementById('vatOutKZT') &&
       (document.getElementById('vatOutKZT').textContent = fmt(vatKZT) + ' ₸');
@@ -382,14 +424,28 @@ function detectVehicleProfile(type, bodyRaw) {
 
 
 
-    const reg = calcUtilAndRegistration(
-      CURRENT_VEHICLE_PROFILE,
-      vehicleAge,
-      firstRegRate,
-      mrp
+    // ✅ Утиль
+    const utilByWeight = getUtilByWeight2026(
+      weight,
+      CURRENT_VEHICLE_PROFILE
     );
-    const utilByWeight = getUtilByWeight2026(weight);
-    const utilTotal = reg.total + utilByWeight;
+
+    // ✅ Первичка (если ставка не 0)
+    let regSum = 0;
+    if (firstRegRate > 0) {
+      regSum = Math.round(firstRegSum);
+
+    }
+
+    // ✅ Госномер всегда кроме спецтехники
+    let plateSum = 0;
+    if (CURRENT_VEHICLE_PROFILE !== "SPECIAL") {
+      plateSum = CALC_CONFIG.fees.plate;
+    }
+
+    // Итог утиль+регистрация
+    const utilTotal = utilByWeight + regSum + plateSum;
+
 
 
 
@@ -405,15 +461,17 @@ function detectVehicleProfile(type, bodyRaw) {
       utilList.innerHTML = '';
 
       /* регистрация */
-      reg.items.forEach(([label, sum]) => {
-        if (!sum) return;
-        const li = document.createElement('li');
-        li.innerHTML = `
-          <span>${t(label)}</span>
-          <span class="sum">${fmt(sum)} ₸</span>
-        `;
-        utilList.appendChild(li);
-      });
+      // Госномер
+      if (plateSum > 0) {
+        addRow("#list-util", "calc_item_plate", plateSum);
+      }
+
+      // Первичка
+      if (regSum > 0) {
+        addRow("#list-util", "calc_item_first_reg", regSum);
+      }
+
+      // Утиль
       if (utilByWeight > 0) {
         const li = document.createElement('li');
         li.innerHTML = `
@@ -422,6 +480,7 @@ function detectVehicleProfile(type, bodyRaw) {
         `;
         utilList.appendChild(li);
       }
+
  
     }
 
