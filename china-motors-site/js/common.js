@@ -184,7 +184,7 @@
       body_fuel_truck: "Топливозаправщик",
 
       body_car: "Легковой автомобиль",
-
+      calc_item_sbkts: 'СБКТС',
       calc_item_sos: 'Кнопка SOS',
       calc_item_customs_fee: 'Таможенный сбор',
       calc_item_broker_svh: 'Услуги брокера на СВХ',

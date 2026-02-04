@@ -9,7 +9,10 @@
    ========================================================= */
 
   const p = new URLSearchParams(location.search);
-  const weight = Number(p.get('weight')) || 0;
+  function getWeight() {
+    return Number(document.getElementById("weightInput")?.value || p.get("weight") || 0);
+  }
+
   function clearList(selector) {
     const el = document.querySelector(selector);
     if (el) el.innerHTML = '';
@@ -271,7 +274,7 @@
     }
 
     // ✅ Всё остальное грузовое = 10%
-    return 0.10;
+    return CALC_CONFIG.duty_rules?.DEFAULT || 0.10;
   }
 
 
@@ -416,8 +419,11 @@
 
 
     // сумма первички
-    const firstRegSum = firstRegRate * mrp;
-
+    if (firstRegRate < 1) {
+      firstRegSum = firstRegRate * mrp;
+    } else {
+      firstRegSum = firstRegRate * mrp;
+    }
 
 
     const baseKZT = priceUSD * rate;
@@ -512,7 +518,7 @@
 
 
     // ✅ Утиль
-    let utilByWeight = getUtilByWeight2026(weight, CURRENT_VEHICLE_PROFILE);
+    let utilByWeight = getUtilByWeight2026(getWeight(), CURRENT_VEHICLE_PROFILE);
 
     if (CURRENT_VEHICLE_PROFILE === "CAR") {
       const cc = Number(document.getElementById("engineCC")?.value || 0);
@@ -667,6 +673,9 @@
     recalc();
     // ✅ показать hybridBlock сразу при загрузке
     const isCar = document.getElementById("type").value === "CAR";
+    document.getElementById("carTitle").style.display =
+      isCar ? "block" : "none";
+
 
     const carBox = document.getElementById("carFields");
     if (carBox) {
@@ -693,6 +702,9 @@
       recalc();
     });
     document.getElementById("type")?.addEventListener("change", () => {
+      document.getElementById("carTitle").style.display =
+        isCar ? "block" : "none";
+
 
       const isCar = document.getElementById("type").value === "CAR";
 

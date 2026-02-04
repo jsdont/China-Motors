@@ -126,6 +126,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const images = pickImages(v);
       const bodyRaw = pickBodyRaw(v);
       const bodyCanon = canonBody(title, bodyRaw);
+      const weight = v.weight_t ?? '';
+
 
       // === fill page ===
       titleEl.textContent = title;
@@ -142,7 +144,9 @@ document.addEventListener('DOMContentLoaded', () => {
         `name=${encodeURIComponent(title)}` +
         `&price=${encodeURIComponent(priceNum ?? '')}` +
         `&body=${encodeURIComponent(bodyCanon)}` +
-        `&body_raw=${encodeURIComponent(bodyRaw || '')}`;
+        `&body_raw=${encodeURIComponent(bodyRaw || '')}` +
+        `&weight=${encodeURIComponent(weight)}`;
+
 
       btnReq.href =
         `contacts.html?message=${encodeURIComponent(
