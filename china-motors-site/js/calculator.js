@@ -109,6 +109,11 @@
   })();
 
   function prefillFromURL() {
+    // ✅ Вес из URL
+    if (p.get("weight") && document.getElementById("weightInput")) {
+      document.getElementById("weightInput").value = p.get("weight");
+    }
+
     if (URL_PARAMS.title && $('#vehicleName')) {
       $('#vehicleName').value = URL_PARAMS.title;
     }
@@ -117,9 +122,10 @@
       $('#basePrice').value = URL_PARAMS.price;
     }
 
-    if (URL_PARAMS.year && $('#year')) {
-      $('#year').value = URL_PARAMS.year;
+    if ($('#year')) {
+      $('#year').value = URL_PARAMS.year || '';
     }
+
 
     // 🔴 ВАЖНО: тип транспорта
     if (URL_PARAMS.body && $('#type')) {
@@ -258,15 +264,14 @@
       return 0;
     }
 
-    // ✅ Автокран = 8%
     if (t.includes("кран")) {
-      return 0.08;
+      return CALC_CONFIG.duty_rules?.CRANE || 0.08;
     }
 
-    // ✅ Трал = 9%
     if (t.includes("трал")) {
-      return 0.09;
+      return CALC_CONFIG.duty_rules?.TRAL || 0.09;
     }
+
 
     // ✅ Прицепы = 10%
     if (profile === "TRAILER") {
@@ -668,7 +673,7 @@
     await loadCalcConfig();
     prefillFromURL();
     updateVehicleProfile();
-    recalc();
+    recalc(); // уже пересчитает с новым годом и весом
     // ✅ показать hybridBlock сразу при загрузке
     const isCar = document.getElementById("type").value === "CAR";
 

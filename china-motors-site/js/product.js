@@ -146,6 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `&body=${encodeURIComponent(bodyCanon)}` +
         `&body_raw=${encodeURIComponent(bodyRaw || '')}` +
         `&weight=${encodeURIComponent(v.weight_t ?? '')}`;
+        `&year=${encodeURIComponent(v.year ?? '')}`;
 
 
       btnReq.href =
