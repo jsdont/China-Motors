@@ -693,7 +693,12 @@
 
     $('#year')?.addEventListener('input', recalc);
     
-    $('#calcForm')?.addEventListener('input', recalc);
+    // ✅ Автопересчет всех полей
+    document.querySelectorAll('#calcForm input, #calcForm select')
+      .forEach(el => {
+        el.addEventListener('input', recalc);
+        el.addEventListener('change', recalc);
+      });
 
     document.getElementById("flagHybridWTO")?.addEventListener("change", () => {
       const box = document.getElementById("hybridFields");
