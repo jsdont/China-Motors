@@ -17,10 +17,11 @@
   },
   "fees": {
     "plate": 16963,
-    "first_registration": 1376000
+    "first_registration": 1376000,
+    "srtc": 17516
   },
   "util_2026": {
-    "TRACTOR_N3": 2162600,
+    "TRACTOR_N3": 2378750,
     "DEFAULT": 4030000
   },
   "duty_rules": {
@@ -28,6 +29,6 @@
     "CRANE": 0.08,
     "TRAL": 0.09,
     "DEFAULT": 0.10
-  }
-
+  },
+  "current_year": 2026
 }

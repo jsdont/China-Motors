@@ -83,30 +83,146 @@
                 max="2026"
                 placeholder="2023"
               />
+
+
             </div>
 
             <div>
               <label data-i18n="calc_in_type_label">Тип транспорта</label>
               <select id="type">
-                <option data-i18n="body_trailer">Прицепы</option>
-                <option data-i18n="body_semitrailer">Полуприцепы</option>
-                <option data-i18n="body_dumptruck">Самосвал</option>
-                <option data-i18n="body_tugboat">Тягач</option>
-                <option data-i18n="body_specialequipment">Спец. техника</option>
-                <option data-i18n="body_crane">Кран</option>
-                <option data-i18n="body_manipulator">Манипулятор</option>
-                <option data-i18n="body_mixer">Миксер</option>
-                <option data-i18n="body_fuel_tank">Бензовоз</option>
-                <option data-i18n="body_aerial_ladder">Автовышка</option>
-                <option data-i18n="body_sewer_cleaner">Ассенизатор</option>
-                <option data-i18n="body_refrigerator">Рефрижератор</option>
-                <option data-i18n="body_van">Автофургон</option>
-                <option data-i18n="body_sprinkler">Поливомоечная машина</option>
-                <option data-i18n="body_drilling_rig">Ямобур машины для бурения</option>
-                <option data-i18n="body_milk_truck">Молоковоз</option>
-                <option data-i18n="body_fuel_truck">Топливозаправщик</option>
+                
+                <!-- Прицепы -->
+                <option value="TRAILER" data-i18n="body_trailer">
+                  Прицепы
+                </option>
+
+                <option value="SEMITRAILER">Полуприцепы</option>
+
+
+                <!-- Грузовые -->
+                <option value="TRUCK" data-i18n="body_dumptruck">
+                  Самосвал
+                </option>
+
+                <option value="TRACTOR_N3" data-i18n="body_tugboat">
+                  Тягач
+                </option>
+
+                <!-- Спецтехника -->
+                <option value="SPECIAL" data-i18n="body_specialequipment">
+                  Спец. техника
+                </option>
+
+                <option value="SPECIAL" data-i18n="body_crane">
+                  Кран
+                </option>
+
+                <option value="SPECIAL" data-i18n="body_manipulator">
+                  Манипулятор
+                </option>
+
+                <option value="SPECIAL" data-i18n="body_mixer">
+                  Миксер
+                </option>
+
+                <option value="SPECIAL" data-i18n="body_fuel_tank">
+                  Бензовоз
+                </option>
+
+                <option value="SPECIAL" data-i18n="body_aerial_ladder">
+                  Автовышка
+                </option>
+
+                <option value="SPECIAL" data-i18n="body_sewer_cleaner">
+                  Ассенизатор
+                </option>
+
+                <!-- Грузовые -->
+                <option value="TRUCK" data-i18n="body_refrigerator">
+                  Рефрижератор
+                </option>
+
+                <option value="TRUCK" data-i18n="body_van">
+                  Автофургон
+                </option>
+
+                <option value="TRUCK" data-i18n="body_sprinkler">
+                  Поливомоечная машина
+                </option>
+
+                <!-- Спец -->
+                <option value="SPECIAL" data-i18n="body_drilling_rig">
+                  Ямобур машины для бурения
+                </option>
+
+                <option value="SPECIAL" data-i18n="body_milk_truck">
+                  Молоковоз
+                </option>
+
+                <option value="SPECIAL" data-i18n="body_fuel_truck">
+                  Топливозаправщик
+                </option>
+
+                <!-- Легковые -->
+                <option value="CAR" data-i18n="body_car">
+                  Легковой автомобиль
+                </option>
+
               </select>
             </div>
+            <hr />
+
+            <!-- ✅ Hybrid block (только для легковых) -->
+            <div id="hybridBlock" style="display:none;">
+
+              <h3>Гибрид (ВТО)</h3>
+
+              <label>
+                <input type="checkbox" id="flagHybridWTO" />
+                Гибрид по правилам ВТО (пошлина 0%)
+              </label>
+
+              <div id="hybridFields" style="margin-top:10px; display:none;">
+
+                <label>
+                  Мощность ДВС (кВт):
+                  <input type="number" id="engineKW" value="0" />
+                </label>
+
+                <label>
+                  Мощность электромотора (30 мин, кВт):
+                  <input type="number" id="motorKW" value="0" />
+                </label>
+
+              </div>
+
+            </div>
+            <!-- ✅ конец hybridBlock -->
+
+            <hr />
+
+            <h3>Легковые параметры</h3>
+
+            <div id="carFields" style="margin-top:10px; display:none;">
+
+              <label>
+                Объём двигателя (см³):
+                <input type="number" id="engineCC" value="2000" />
+              </label>
+
+              <label>
+                Тип топлива:
+                <select id="fuelType">
+                  <option value="petrol">Бензин</option>
+                  <option value="diesel">Дизель</option>
+                  <option value="hybrid">Гибрид</option>
+                  <option value="electric">Электро</option>
+                </select>
+              </label>
+
+            </div>
+
+
             <div>
               <label data-i18n="calc_in_rate_label">Курс $ → ₸</label>
               <div style="display:flex;gap:8px;align-items:center">
@@ -135,7 +251,16 @@
             <h4 data-i18n="calc_ts_bill_title">Таможенные платежи</h4>
             <ul>
               <li><span class="muted" data-i18n="calc_ts_bill_ts">ТС в тенге</span><span class="sum" id="tsKZT">—</span></li>
-              <li><span data-i18n="calc_ts_bill_duty">Пошлина</span><span class="sum" id="dutyOutKZT">—</span></li>
+              <li>
+                <span data-i18n="calc_ts_bill_duty">Пошлина</span>
+                <span class="sum" id="dutyOutKZT">—</span>
+              </li>
+
+              <li>
+                <span>Ставка пошлины</span>
+                <span class="sum" id="dutyPercent">—</span>
+              </li>
+
               <li><span data-i18n="calc_ts_bill_vat">НДС</span><span class="sum" id="vatOutKZT">—</span></li>
             </ul>
           </div>
@@ -208,10 +333,9 @@
 
   <!-- Footer -->
   <div id="siteFooter"></div>
-  <script type="module" src="js/calc.engine.js"></script>
 
-  <!-- Scripts -->
   <script src="js/common.js"></script>
   <script src="js/calculator.js?v=2026-02-01"></script>
+
 </body>
 </html>

@@ -7,7 +7,6 @@
   /* =========================================================
    MRP BY YEAR (as in Excel)
    ========================================================= */
-  const PLATE_FEE = () => CALC_CONFIG.fees.plate;
 
   const p = new URLSearchParams(location.search);
   const weight = Number(p.get('weight')) || 0;
@@ -135,31 +134,16 @@
     }
   }
 
-  /* =========================================================
-     STEP 2 — VEHICLE PROFILE
-     ========================================================= */
-function detectVehicleProfile(type, bodyRaw) {
-  if (URL_PARAMS.profile) return URL_PARAMS.profile;
+  function detectVehicleProfile(type) {
 
-  const t = (type || '').toLowerCase();
-  const b = (bodyRaw || '').toLowerCase();
+    // ✅ теперь type = value из select
+    if (type === "CAR") return "CAR";
+    if (type === "SEMITRAILER") return "TRAILER";
+    if (type === "TRACTOR_N3") return "TRACTOR_N3";
+    if (type === "SPECIAL") return "SPECIAL";
 
-  if (t.includes('прицеп')) return 'TRAILER';
-  if (t.includes('тягач') || t.includes('седель')) return 'TRACTOR_N3';
-  if (t.includes('самосвал') || t.includes('груз')) return 'TRUCK';
-
-  if (
-    t.includes('спец') ||
-    t.includes('кран') ||
-    t.includes('манип') ||
-    t.includes('миксер') ||
-    t.includes('вышка') ||
-    t.includes('ассен') ||
-    t.includes('ямобур')
-  ) return 'SPECIAL';
-
-  return 'TRUCK';
-}
+    return "TRUCK";
+  }
 
 
   let CURRENT_VEHICLE_PROFILE = 'TRUCK';
@@ -168,10 +152,7 @@ function detectVehicleProfile(type, bodyRaw) {
     const typeEl = $('#type');
     if (!typeEl) return;
 
-    CURRENT_VEHICLE_PROFILE = detectVehicleProfile(
-      typeEl.value,
-      URL_PARAMS.bodyRaw
-    );
+    CURRENT_VEHICLE_PROFILE = detectVehicleProfile(typeEl.value);
 
     console.log('[PROFILE]', {
       type: typeEl.value,
@@ -185,29 +166,48 @@ function detectVehicleProfile(type, bodyRaw) {
    ========================================================= */
 
   function getVehicleAge(year) {
-    const currentYear = new Date().getFullYear();
+    const currentYear =
+      CALC_CONFIG.current_year || new Date().getFullYear();
+
     if (!year || isNaN(year)) return 0;
     return Math.max(0, currentYear - Number(year));
   }
 
   function getFirstRegRateByAge(age, profile, intl) {
+    // ✅ Спецтехника не платит первичную регистрацию
+    if (profile === "SPECIAL") return 0;
 
-    // 🚛 Тягач международник — первичка 0
-    if (profile === "TRACTOR_N3" && intl) return 0;
+    // ✅ Прицепы не платят первичную регистрацию
+    if (profile === "TRAILER") return 0;
 
-    // 🚚 Грузовые 3–5 лет = 350 МРП
-    if (age >= 3 && age <= 5) return 350;
+    // 🚛 Международник (N3) до 7 лет — первичка 0
+    if (profile === "TRACTOR_N3" && intl && age <= 7) return 0;
 
     // До 2 лет
     if (age <= 2) return 0.25;
+
+    // От 2 до 3 лет
+    if (age > 2 && age <= 3) return 240;
+
+    // От 3 до 5 лет
+    if (age > 3 && age <= 5) return 350;
 
     // Старше 5 лет
     return 2500;
   }
 
 
+
   function getUtilByWeight2026(weight, profile) {
     if (!weight) return 0;
+    // ✅ Прицепы и полуприцепы — утильсбор не применяется
+    if (profile === "TRAILER") {
+      return 0;
+    }
+    // ✅ Спецтехника — утильсбор не применяется
+    if (profile === "SPECIAL") {
+      return 0;
+    }
 
     // ✅ Берём утиль из конфига
     if (profile === "TRACTOR_N3") {
@@ -230,25 +230,50 @@ function detectVehicleProfile(type, bodyRaw) {
   // ===============================
   // ✅ Пошлина по профилю техники
   // ===============================
-  function getDutyRate(profile, typeText) {
+  function getCarDuty(engineCC) {
+    if (engineCC <= 1000) return 0.15;
+    if (engineCC <= 1500) return 0.17;
+    if (engineCC <= 3000) return 0.20;
+    return 0.25;
+  }
 
+  function getDutyRate(profile, typeText) {
     const t = (typeText || "").toLowerCase();
 
-    // Спецтехника = 0%
-    if (profile === "SPECIAL") return 0;
+    // ✅ Экскаватор гусеничный = 0%
+    if (t.includes("экскаватор") && t.includes("гусен")) {
+      return 0;
+    }
 
-    // Автокран = 8%
-    if (t.includes("кран")) return 0.08;
+    // ✅ Фронтальный погрузчик = 0%
+    if (t.includes("погрузчик") && t.includes("фронт")) {
+      return 0;
+    }
 
-    // Трал = 9%
-    if (t.includes("трал")) return 0.09;
+    // ✅ Спецтехника (вышка, манипулятор, миксер и т.д.) = 0%
+    if (profile === "SPECIAL") {
+      return 0;
+    }
 
-    // Прицепы = 10%
-    if (profile === "TRAILER") return 0.10;
+    // ✅ Автокран = 8%
+    if (t.includes("кран")) {
+      return 0.08;
+    }
 
-    // Самосвал и тягач = 10%
+    // ✅ Трал = 9%
+    if (t.includes("трал")) {
+      return 0.09;
+    }
+
+    // ✅ Прицепы = 10%
+    if (profile === "TRAILER") {
+      return 0.10;
+    }
+
+    // ✅ Всё остальное грузовое = 10%
     return 0.10;
   }
+
 
 
   /* =========================================================
@@ -272,10 +297,15 @@ function detectVehicleProfile(type, bodyRaw) {
     if (profile === "TRACTOR_N3") {
       // 🚛 Тягач: 2500 × 18 + 27000
       svhSum = 2500 * 18 + 27000;
+
+    } else if (profile === "TRAILER") {
+      // Прицепы: СВХ не считаем пока (нужна формула из Excel)
+      svhSum = 0;
     } else {
       // 🚚 Самосвал/грузовой: 3500 × 16 + 35000
       svhSum = 3500 * 16 + 35000;
     }
+
 
     // Пока делаем для грузовых / тягачей
     if (!excelMax) {
@@ -314,10 +344,36 @@ function detectVehicleProfile(type, bodyRaw) {
       ]
     };
   }
+  function getCarUtil(engineCC) {
+    if (engineCC <= 1000) return 300000;
+    if (engineCC <= 2000) return 600000;
+    if (engineCC <= 3000) return 1000000;
+    return 2000000;
+  }
 
   /* =========================================================
      MAIN CALC
      ========================================================= */
+  function isHybridWTO() {
+
+    // ✅ только для легковых
+    if (CURRENT_VEHICLE_PROFILE !== "CAR") return false;
+
+    const flag = document.getElementById("flagHybridWTO")?.checked;
+    if (!flag) return false;
+
+    const engineKW = Number(document.getElementById("engineKW")?.value || 0);
+    const motorKW  = Number(document.getElementById("motorKW")?.value || 0);
+
+    return motorKW > engineKW;
+  }
+
+  function getExcise(engineCC) {
+    if (engineCC <= 2000) return 0;
+    if (engineCC <= 3000) return 100000;
+    return 300000;
+  }
+ 
   function recalc() {
     clearList('#list-util');
     updateVehicleProfile();
@@ -327,10 +383,21 @@ function detectVehicleProfile(type, bodyRaw) {
 
 
     const VAT  = CALC_CONFIG.taxes.vat;
-    const DUTY = getDutyRate(
+    let DUTY = getDutyRate(
       CURRENT_VEHICLE_PROFILE,
-      document.getElementById("type")?.value
+      document.getElementById("type")?.selectedOptions[0]?.textContent
+
     );
+    // ✅ Легковые авто — отдельная пошлина
+    if (CURRENT_VEHICLE_PROFILE === "CAR") {
+      const cc = Number(document.getElementById("engineCC")?.value || 0);
+      DUTY = getCarDuty(cc);
+    }
+
+    // ✅ Гибрид ВТО (только легковые)
+    if (isHybridWTO()) {
+      DUTY = 0;
+    }
 
 
 
@@ -356,8 +423,15 @@ function detectVehicleProfile(type, bodyRaw) {
     const baseKZT = priceUSD * rate;
     const dutyKZT = baseKZT * DUTY;
     const customsFee = 29592;
+    // ✅ Акциз (только легковые)
+    let exciseKZT = 0;
+    if (CURRENT_VEHICLE_PROFILE === "CAR") {
+      const cc = Number(document.getElementById("engineCC")?.value || 0);
+      exciseKZT = getExcise(cc);
+    }
 
-    const vatBase = baseKZT + dutyKZT + customsFee;
+    const vatBase = baseKZT + dutyKZT + customsFee + exciseKZT;
+
     const vatKZT  = vatBase * VAT;
 
     const customsTotal = dutyKZT + vatKZT;
@@ -369,7 +443,8 @@ function detectVehicleProfile(type, bodyRaw) {
       (document.getElementById('dutyOutKZT').textContent = fmt(dutyKZT) + ' ₸');
       document.getElementById("dutyPercent") &&
         (document.getElementById("dutyPercent").textContent =
-          "Пошлина: " + (DUTY * 100) + "%");
+          (DUTY * 100) + "%");
+
 
 
     document.getElementById('vatOutKZT') &&
@@ -400,6 +475,18 @@ function detectVehicleProfile(type, bodyRaw) {
         `;
         mandatoryList.appendChild(li);
       });
+      // ✅ Акциз отдельно (легковые)
+      if (exciseKZT > 0) {
+        mandatoryTotal += exciseKZT;
+
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <span>Акциз</span>
+          <span class="sum">${fmt(exciseKZT)} ₸</span>
+        `;
+        mandatoryList.appendChild(li);
+      }
+
     }
 
     // --- 4) Доставка ---
@@ -425,10 +512,13 @@ function detectVehicleProfile(type, bodyRaw) {
 
 
     // ✅ Утиль
-    const utilByWeight = getUtilByWeight2026(
-      weight,
-      CURRENT_VEHICLE_PROFILE
-    );
+    let utilByWeight = getUtilByWeight2026(weight, CURRENT_VEHICLE_PROFILE);
+
+    if (CURRENT_VEHICLE_PROFILE === "CAR") {
+      const cc = Number(document.getElementById("engineCC")?.value || 0);
+      utilByWeight = getCarUtil(cc);
+    }
+
 
     // ✅ Первичка (если ставка не 0)
     let regSum = 0;
@@ -437,14 +527,27 @@ function detectVehicleProfile(type, bodyRaw) {
 
     }
 
-    // ✅ Госномер всегда кроме спецтехники
+    // ✅ Госномер: только грузовые и тягачи
     let plateSum = 0;
-    if (CURRENT_VEHICLE_PROFILE !== "SPECIAL") {
+    if (
+      CURRENT_VEHICLE_PROFILE !== "SPECIAL" &&
+      CURRENT_VEHICLE_PROFILE !== "TRAILER"
+    ) {
       plateSum = CALC_CONFIG.fees.plate;
     }
 
+    // ✅ СРТС: только грузовые и тягачи
+    let srtcSum = 0;
+    if (
+      CURRENT_VEHICLE_PROFILE !== "SPECIAL" &&
+      CURRENT_VEHICLE_PROFILE !== "TRAILER"
+    ) {
+      srtcSum = CALC_CONFIG.fees.srtc || 0;
+    }
+
+
     // Итог утиль+регистрация
-    const utilTotal = utilByWeight + regSum + plateSum;
+    const utilTotal = utilByWeight + regSum + plateSum + srtcSum;
 
 
 
@@ -465,6 +568,10 @@ function detectVehicleProfile(type, bodyRaw) {
       if (plateSum > 0) {
         addRow("#list-util", "calc_item_plate", plateSum);
       }
+      // СРТС
+      if (srtcSum > 0) {
+        addRow("#list-util", "Техпаспорт (СРТС)", srtcSum);
+      }
 
       // Первичка
       if (regSum > 0) {
@@ -475,7 +582,14 @@ function detectVehicleProfile(type, bodyRaw) {
       if (utilByWeight > 0) {
         const li = document.createElement('li');
         li.innerHTML = `
-          <span>Утилизационный сбор (${weight} т)</span>
+          <span>
+            Утилизационный сбор ${
+              CURRENT_VEHICLE_PROFILE === "CAR"
+                ? "(по объёму двигателя)"
+                : `(${weight} т)`
+            }
+          </span>
+
           <span class="sum">${fmt(utilByWeight)} ₸</span>
         `;
         utilList.appendChild(li);
@@ -551,12 +665,60 @@ function detectVehicleProfile(type, bodyRaw) {
     prefillFromURL();
     updateVehicleProfile();
     recalc();
+    // ✅ показать hybridBlock сразу при загрузке
+    const isCar = document.getElementById("type").value === "CAR";
+
+    const carBox = document.getElementById("carFields");
+    if (carBox) {
+      carBox.style.display = isCar ? "block" : "none";
+    }
+
+    const hybridBox = document.getElementById("hybridBlock");
+    if (hybridBox) {
+      hybridBox.style.display = isCar ? "block" : "none";
+    }
+
 
     $('#year')?.addEventListener('input', recalc);
     
-    $('#type')?.addEventListener('change', recalc);
     $('#calcForm')?.addEventListener('input', recalc);
+
+    document.getElementById("flagHybridWTO")?.addEventListener("change", () => {
+      const box = document.getElementById("hybridFields");
+      if (box) box.style.display =
+        document.getElementById("flagHybridWTO").checked
+          ? "block"
+          : "none";
+
+      recalc();
+    });
+    document.getElementById("type")?.addEventListener("change", () => {
+
+      const isCar = document.getElementById("type").value === "CAR";
+
+      // Легковые параметры
+      const carBox = document.getElementById("carFields");
+      if (carBox) {
+        carBox.style.display = isCar ? "block" : "none";
+      }
+
+      // ✅ Hybrid block полностью
+      const hybridBlock = document.getElementById("hybridBlock");
+      if (hybridBlock) {
+        hybridBlock.style.display = isCar ? "block" : "none";
+      }
+
+      // ✅ если не легковая — сбрасываем гибрид
+      if (!isCar) {
+        document.getElementById("flagHybridWTO").checked = false;
+        document.getElementById("hybridFields").style.display = "none";
+      }
+
+      recalc();
+    });
+
   }
+
   document.getElementById('flagExcelMax')?.addEventListener('change', recalc);
   document.getElementById('btnRefreshRate')
     ?.addEventListener('click', () => {
