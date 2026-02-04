@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `&price=${encodeURIComponent(priceNum ?? '')}` +
         `&body=${encodeURIComponent(bodyCanon)}` +
         `&body_raw=${encodeURIComponent(bodyRaw || '')}` +
-        `&weight=${encodeURIComponent(weight)}`;
+        `&weight=${encodeURIComponent(v.weight_t ?? '')}`;
 
 
       btnReq.href =

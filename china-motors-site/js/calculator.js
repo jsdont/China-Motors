@@ -418,12 +418,9 @@
     );
 
 
-    // сумма первички
-    if (firstRegRate < 1) {
-      firstRegSum = firstRegRate * mrp;
-    } else {
-      firstRegSum = firstRegRate * mrp;
-    }
+    // сумма первичной регистрации
+    const firstRegSum = firstRegRate * mrp;
+
 
 
     const baseKZT = priceUSD * rate;
@@ -592,7 +589,8 @@
             Утилизационный сбор ${
               CURRENT_VEHICLE_PROFILE === "CAR"
                 ? "(по объёму двигателя)"
-                : `(${weight} т)`
+                : `(${getWeight()} т)`
+
             }
           </span>
 
@@ -673,9 +671,9 @@
     recalc();
     // ✅ показать hybridBlock сразу при загрузке
     const isCar = document.getElementById("type").value === "CAR";
+
     document.getElementById("carTitle").style.display =
       isCar ? "block" : "none";
-
 
     const carBox = document.getElementById("carFields");
     if (carBox) {
@@ -701,26 +699,24 @@
 
       recalc();
     });
-    document.getElementById("type")?.addEventListener("change", () => {
-      document.getElementById("carTitle").style.display =
-        isCar ? "block" : "none";
 
+    document.getElementById("type")?.addEventListener("change", () => {
 
       const isCar = document.getElementById("type").value === "CAR";
 
-      // Легковые параметры
+      document.getElementById("carTitle").style.display =
+        isCar ? "block" : "none";
+
       const carBox = document.getElementById("carFields");
       if (carBox) {
         carBox.style.display = isCar ? "block" : "none";
       }
 
-      // ✅ Hybrid block полностью
       const hybridBlock = document.getElementById("hybridBlock");
       if (hybridBlock) {
         hybridBlock.style.display = isCar ? "block" : "none";
       }
 
-      // ✅ если не легковая — сбрасываем гибрид
       if (!isCar) {
         document.getElementById("flagHybridWTO").checked = false;
         document.getElementById("hybridFields").style.display = "none";
@@ -728,6 +724,7 @@
 
       recalc();
     });
+
 
   }
 
