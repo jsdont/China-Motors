@@ -205,43 +205,60 @@ function detectVehicleProfile(type, bodyRaw) {
   /* =========================================================
      STEP 3 — UTIL & REGISTRATION (2026)
      ========================================================= */
-function calcUtilAndRegistration(profile, vehicleAge, firstRegRate, mrp) {
-  const items = [];
-  let total = 0;
+  function calcUtilAndRegistration(profile, vehicleAge, firstRegRate, mrp) {
+    const items = [];
+    let total = 0;
 
-  const plate = CALC_CONFIG.fees.plate;
+    const plate = CALC_CONFIG.fees.plate;
 
-  // SPECIAL — вообще ничего
-  if (profile === 'SPECIAL') {
+    // SPECIAL — вообще ничего
+    if (profile === 'SPECIAL') {
+      return { total, items };
+    }
+
+    // Госномер — ОДИН РАЗ для всех, кроме SPECIAL
+    items.push(['calc_item_plate', plate]);
+    total += plate;
+
+    // TRACTOR_N3 — нет первичной регистрации
+    if (profile === 'TRACTOR_N3') {
+      return { total, items };
+    }
+
+    // TRAILER — только номер
+    if (profile === 'TRAILER') {
+      return { total, items };
+    }
+
+    // Остальные — первичная регистрация
+    const firstRegSum = firstRegRate * mrp;
+
+    items.push([
+      'calc_item_first_reg',
+      Math.round(firstRegSum)
+    ]);
+    total += firstRegSum;
+
     return { total, items };
   }
 
-  // Госномер — ОДИН РАЗ для всех, кроме SPECIAL
-  items.push(['calc_item_plate', plate]);
-  total += plate;
+  /* =========================================================
+    OFFICIAL UTIL 2026 — BY WEIGHT (TONS)
+    ========================================================= */
 
-  // TRACTOR_N3 — нет первичной регистрации
-  if (profile === 'TRACTOR_N3') {
-    return { total, items };
+  function getUtilByWeight2026(weight) {
+    if (!weight) return 0;
+
+    if (weight <= 2.5) return 756875;
+    if (weight <= 3.5) return 1621875;
+    if (weight <= 5)   return 1621875;
+    if (weight <= 8)   return 1730000;
+    if (weight <= 12)  return 2054375;
+    if (weight <= 20)  return 2270625;
+    if (weight <= 50)  return 4433125;
+
+    return 0;
   }
-
-  // TRAILER — только номер
-  if (profile === 'TRAILER') {
-    return { total, items };
-  }
-
-  // Остальные — первичная регистрация
-  const firstRegSum = firstRegRate * mrp;
-
-  items.push([
-    'calc_item_first_reg',
-    Math.round(firstRegSum)
-  ]);
-  total += firstRegSum;
-
-  return { total, items };
-}
-
 
   /* =========================================================
    PACKAGES (as in Excel)
@@ -252,7 +269,7 @@ function calcUtilAndRegistration(profile, vehicleAge, firstRegRate, mrp) {
     if (!excelMax) {
       return {
         mandatory: [
-          ['calc_item_util_tax', 23592],
+          ['calc_item_customs_fee', 29592],
           ['calc_item_broker_service', 90000]
         ],
         delivery: [
@@ -266,7 +283,7 @@ function calcUtilAndRegistration(profile, vehicleAge, firstRegRate, mrp) {
       mandatory: [
         ['calc_item_sbkts', 200000],
         ['calc_item_sos', 150000],
-        ['calc_item_util_tax', 23592],
+        ['calc_item_customs_fee', 29592],
         ['calc_item_broker_service', 90000],
         ['calc_item_svh', 80000],
         ['calc_item_broker_svh', 250 * rate],
@@ -371,7 +388,8 @@ function calcUtilAndRegistration(profile, vehicleAge, firstRegRate, mrp) {
       firstRegRate,
       mrp
     );
-    const utilTotal = reg.total;
+    const utilByWeight = getUtilByWeight2026(weight);
+    const utilTotal = reg.total + utilByWeight;
 
 
 
@@ -396,6 +414,15 @@ function calcUtilAndRegistration(profile, vehicleAge, firstRegRate, mrp) {
         `;
         utilList.appendChild(li);
       });
+      if (utilByWeight > 0) {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <span>Утилизационный сбор (${weight} т)</span>
+          <span class="sum">${fmt(utilByWeight)} ₸</span>
+        `;
+        utilList.appendChild(li);
+      }
+ 
     }
 
 
