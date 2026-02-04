@@ -10,7 +10,12 @@
 
   const p = new URLSearchParams(location.search);
   function getWeight() {
-    return Number(document.getElementById("weightInput")?.value || p.get("weight") || 0);
+    const raw =
+      document.getElementById("weightInput")?.value ||
+      p.get("weight") ||
+      "0";
+
+    return Number(raw.toString().replace(",", "."));
   }
 
   function clearList(selector) {
