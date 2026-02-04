@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `&price=${encodeURIComponent(priceNum ?? '')}` +
         `&body=${encodeURIComponent(bodyCanon)}` +
         `&body_raw=${encodeURIComponent(bodyRaw || '')}` +
-        `&weight=${encodeURIComponent(v.weight_t ?? '')}`;
+        `&weight=${encodeURIComponent(v.weight_t ?? '')}` +
         `&year=${encodeURIComponent(v.year ?? '')}`;
 
 
