@@ -621,9 +621,9 @@
       deliveryTotal 
       utilTotal;
 
-      if (!document.getElementById('flagExcludeBase')?.checked) {
-        totalKZT += baseKZT;
-      }
+    if (!document.getElementById('flagExcludeBase')?.checked) {
+      totalKZT += baseKZT;
+    }
 
     $('#sTotalKZT') && ($('#sTotalKZT').textContent = fmt(totalKZT) + ' ₸');
     $('#sTotalUSD') && ($('#sTotalUSD').textContent = '≈ ' + fmt(totalKZT / rate) + ' USD');
@@ -631,6 +631,14 @@
     $('#deliveryTotal') && ($('#deliveryTotal').textContent = fmt(deliveryTotal));
     console.log('EXCEL MODE CHECK:', excelMax);
     console.log('BASE KZT:', baseKZT);
+    console.log("TOTAL =", totalKZT);
+
+    const out = document.getElementById("sTotalKZT");
+    console.log("ELEMENT =", out);
+
+    if (out) {
+      out.textContent = fmt(totalKZT) + " ₸";
+    }
 
 
   }
