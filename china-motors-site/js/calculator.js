@@ -225,8 +225,9 @@
 
     // ✅ Берём утиль из конфига
     if (profile === "TRACTOR_N3") {
-      return CALC_CONFIG.util_2026.TRACTOR_N3;
+      return getUtilByWeightTable(weight);
     }
+
 
     // Для остальных грузовых
     return getUtilByWeightTable(weight);
