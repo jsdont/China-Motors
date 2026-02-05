@@ -584,7 +584,7 @@
       }
       // СРТС
       if (srtcSum > 0) {
-        addRow("#list-util", "Техпаспорт (СРТС)", srtcSum);
+        addRow("#list-util", "calc_item_srtc", srtcSum);
       }
 
       // Первичка
@@ -615,19 +615,21 @@
 
 
 
+    // === FINAL TOTAL (ПОСЛЕ ВСЕХ РАСЧЁТОВ) ===
     let totalKZT =
+      baseKZT +
       customsTotal +
       mandatoryTotal +
       deliveryTotal +
       utilTotal;
 
-
-    if (!document.getElementById('flagExcludeBase')?.checked) {
-      totalKZT += baseKZT;
+    if (document.getElementById('flagExcludeBase')?.checked) {
+      totalKZT -= baseKZT;
     }
 
-    $('#sTotalKZT') && ($('#sTotalKZT').textContent = fmt(totalKZT) + ' ₸');
-    $('#sTotalUSD') && ($('#sTotalUSD').textContent = '≈ ' + fmt(totalKZT / rate) + ' USD');
+    $('#sTotalKZT').textContent = fmt(totalKZT) + ' ₸';
+    $('#sTotalUSD').textContent = '≈ ' + fmt(totalKZT / rate) + ' USD';
+
     $('#mandatoryTotal') && ($('#mandatoryTotal').textContent = fmt(mandatoryTotal));
     $('#deliveryTotal') && ($('#deliveryTotal').textContent = fmt(deliveryTotal));
     console.log('EXCEL MODE CHECK:', excelMax);
@@ -636,10 +638,6 @@
 
     const out = document.getElementById("sTotalKZT");
     console.log("ELEMENT =", out);
-
-    if (out) {
-      out.textContent = fmt(totalKZT) + " ₸";
-    }
 
 
   }
@@ -680,6 +678,7 @@
     updateNBKRate(false); // только показать, НЕ менять input
   });
 
+  document.addEventListener('langchange', recalc);
 
   /* =========================================================
      INIT

@@ -161,6 +161,7 @@
       footer_privacy: 'Политика конфиденциальности',
       loading: 'Загрузка...',
       loading_error: 'Ошибка загрузки каталога',
+
       body_all: 'Все типы',
       body_trailer: "Прицепы",
       body_semitrailer: "Полуприцепы",
@@ -183,7 +184,6 @@
       body_milk_truck: "Молоковоз",
       body_fuel_truck: "Топливозаправщик",
 
-      body_car: "Легковой автомобиль",
       calc_item_sbkts: 'СБКТС',
       calc_item_sos: 'Кнопка SOS',
       calc_item_customs_fee: 'Таможенный сбор',
@@ -205,12 +205,7 @@
       calc_item_plate: 'Госномер и техпаспорт',
       calc_item_util_tax: 'Утилизационный сбор',
       calc_item_first_reg: 'Первичная регистрация',
-      // CALC MODES / FLAGS
-      calc_mode_title: 'Режим расчёта',
-      calc_mode_turnkey: 'Под ключ',
-      calc_mode_clearance_only: 'Только оформление',
-      calc_mode_commercial: 'Коммерческий расчёт',
-      calc_mode_service: 'Служебный режим',
+      calc_item_srtc: 'Техпаспорт (СРТС)',
 
       calc_flag_exclude_base: 'Цена авто уже оплачена',
       calc_flag_excel_max: 'Расширенные расходы (служебно)',
@@ -223,6 +218,7 @@
       calc_item_broker_service: 'Брокерское обслуживание',
       calc_disclaimer: '⚠️ Расчёт является предварительным и не является публичной офертой. Итоговая стоимость зависит от курса валют, таможенных платежей и условий поставки. Подробности уточняйте у менеджера.',
       body_car: 'Легковой автомобиль',
+      calc_ts_bill_duty_percent: 'Ставка пошлины',
     },
 
     kk: {
@@ -393,8 +389,6 @@
       body_milk_truck: 'Сүт таситын машина',
       body_fuel_truck: 'Жанармай құю станциясы',
 
-      body_car:   'Жеңіл көлік',
-
       calc_item_sbkts: 'СБКТС',
       calc_item_sos: 'SOS түймесі',
       calc_item_customs_fee: 'Кедендік алым',
@@ -416,13 +410,7 @@
       calc_item_plate: 'Мемлекеттік нөмір және техникалық төлқұжат',
       calc_item_util_tax: 'Утилизациялық алым',
       calc_item_first_reg: 'Бастапқы тіркеу',
-      // CALC MODES / FLAGS
-      calc_mode_title: 'Есептеу режимі',
-      calc_mode_turnkey: 'Толық рәсімдеу',
-      calc_mode_clearance_only: 'Тек рәсімдеу',
-      calc_mode_commercial: 'Коммерциялық есептеу',
-      calc_mode_service: 'Қызметтік режим',
-
+      calc_item_srtc: 'Техникалық төлқұжат (СРТС)',
       calc_flag_exclude_base: 'Көлік бағасы төленген',
       calc_flag_excel_max: 'Кеңейтілген шығындар (қызметтік)',
 
@@ -434,6 +422,7 @@
       calc_item_broker_service: 'Брокерлік қызмет көрсету',
       calc_disclaimer: '⚠️ Есептеу алдын ала болып табылады және ашық ұсыныс емес. Соңғы құн валюта бағамдарына, кедендік төлемдерге және жеткізу шарттарына байланысты. Толығырақ менеджерден біліңіз.',
       body_car: 'Жеңіл көлік',
+      calc_ts_bill_duty_percent: 'Баж ставкасы',
     },
 
     zh: {
@@ -604,8 +593,6 @@
       body_milk_truck: '运奶车',
       body_fuel_truck: '加油车',
 
-      body_car: '乘用车',
-
       calc_item_sbkts: 'SBKTS 证书',
       calc_item_sos: 'SOS 按钮',
       calc_item_customs_fee: '海关费用',
@@ -627,13 +614,7 @@
       calc_item_plate: '车牌和技术护照',
       calc_item_util_tax: '回收费',
       calc_item_first_reg: '首次注册',
-      // CALC MODES / FLAGS
-      calc_mode_title: '计算模式',
-      calc_mode_turnkey: '交钥匙',
-      calc_mode_clearance_only: '仅清关',
-      calc_mode_commercial: '商业计算',
-      calc_mode_service: '内部模式',
-
+      calc_item_srtc: '技术护照（SRTC）',
       calc_flag_exclude_base: '车辆价格已支付',
       calc_flag_excel_max: '扩展费用（内部）',
 
@@ -645,6 +626,7 @@
       calc_item_broker_service: '经纪服务',
       calc_disclaimer: '⚠️ 计算结果为预估值，非公开报价。最终价格取决于汇率、关税和供应条件。详情请咨询经理。',
       body_car: '乘用车',
+      calc_ts_bill_duty_percent: '关税税率',
     },
 
     en: {
@@ -816,8 +798,6 @@
       body_milk_truck: "Milk Tank Truck",
       body_fuel_truck: "Fuel Refuel Truck",
 
-      body_car: "Passenger Car",
-
       body_all: 'All types',
       calc_item_sbkts: 'SBKTS certificate',
       calc_item_sos: 'SOS button',
@@ -840,13 +820,7 @@
       calc_item_plate: 'License plate and technical passport',
       calc_item_util_tax: 'Recycling fee',
       calc_item_first_reg: 'Initial registration',
-      // CALC MODES / FLAGS
-      calc_mode_title: 'Calculation mode',
-      calc_mode_turnkey: 'Turnkey',
-      calc_mode_clearance_only: 'Clearance only',
-      calc_mode_commercial: 'Commercial calculation',
-      calc_mode_service: 'Service mode',
-
+      calc_item_srtc: 'Technical passport (SRTC)',
       calc_flag_exclude_base: 'Vehicle price already paid',
       calc_flag_excel_max: 'Extended expenses (internal)',
 
@@ -858,6 +832,7 @@
       calc_item_broker_service: 'Brokerage service',
       calc_disclaimer: '⚠️ Calculation is preliminary and not a public offer. Final cost depends on exchange rates, customs duties, and delivery terms. Consult the manager for details.',
       body_car: 'Car',
+      calc_ts_bill_duty_percent: 'Duty rate',
     },
   };
   window.translations = translations;
@@ -923,10 +898,10 @@
       langBtn.textContent = current.toUpperCase();
       applyLang(current);
 
-      // 🔥 ВАЖНО: пересобираем калькулятор
       if (typeof window.recalc === 'function') {
         window.recalc();
       }
+
     });
 
 
@@ -982,5 +957,9 @@
     const lang = localStorage.getItem('lang') || 'ru';
     return window.translations?.[lang]?.[key] || key;
   };
+  function getLang() {
+    const l = localStorage.getItem(LS_LANG);
+    return translations[l] ? l : 'ru';
+  }
 
 })();
