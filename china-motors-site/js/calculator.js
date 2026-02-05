@@ -616,10 +616,11 @@
 
 
     let totalKZT =
-      customsTotal 
-      mandatoryTotal 
-      deliveryTotal 
+      customsTotal +
+      mandatoryTotal +
+      deliveryTotal +
       utilTotal;
+
 
     if (!document.getElementById('flagExcludeBase')?.checked) {
       totalKZT += baseKZT;
