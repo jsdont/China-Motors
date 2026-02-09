@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ================= HELPERS ================= */
 
   const nf = new Intl.NumberFormat('ru-RU');
-  const fmtPrice = v => v ? `${nf.format(v)}$` : 'Цена по запросу';
+  const fmtPrice = v => v ? `${nf.format(v)}$` : 'Цена уточняется';
 
   function canonBody(title = '', raw = '') {
     const s = `${title} ${raw}`.toLowerCase();
@@ -71,26 +71,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <div class="cm-card__specs">
             <div class="spec">
-              <span>Тип транспорта</span>
+              <span data-i18n="card_body_label">Тип транспорта</span>
               <strong>${item.bodyType}</strong>
             </div>
             ${item.raw?.wheel_formula ? `
             <div class="spec">
-              <span>Колёсная формула</span>
+              <span data-i18n="card_wheel_formula_label">Колёсная формула</span>
               <strong>${item.raw.wheel_formula}</strong>
             </div>` : ''}
             ${item.raw?.gearbox ? `
             <div class="spec">
-              <span>КПП</span>
+              <span data-i18n="card_gearbox_label">КПП</span>
               <strong>${item.raw.gearbox}</strong>
             </div>` : ''}
           </div>
 
           <div class="cm-card__footer">
             <div class="price">
-              ${item.price ? `${item.price.toLocaleString('ru-RU')} $` : 'Цена по запросу'}
+              ${item.price ? `${item.price.toLocaleString('ru-RU')} $` : 'Цена уточняется'}
             </div>
-            <span class="btn-outline">О технике</span>
+            <span data-i18n="btn_calculate_catalog" class="btn-outline">Подробнее и расчёт</span>
           </div>
         </div>
       </a>
@@ -152,6 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (e) {
       console.error(e);
       grid.innerHTML = 'Ошибка загрузки каталога';
+      
     }
   }
 

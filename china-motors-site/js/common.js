@@ -21,8 +21,8 @@
       footer_col1_text: 'Надежная техника из Китая под заказ и в наличии.',
       footer_col2_title: 'Навигация',
       footer_col3_title: 'Контакты',
-      footer_copy: '© 2025 China Motors. Все права защищены.',
-      footer_devnote: 'Сайт в стадии разработки — обновления будут.',
+      footer_copy: '© 2026 China Motors. Все права защищены.',
+      footer_devnote: 'Информация на сайте носит справочный характер и не является публичной офертой',
       btn_photos: 'Фотографии',
       btn_calculate: 'Рассчитать',
       btn_send: 'Отправить',
@@ -64,8 +64,10 @@
       sort_none: 'Без сортировки',
       sort_price_asc: 'Цена ↑',
       sort_price_desc: 'Цена ↓',
-      card_body_label: 'Конструкция:',
-      price_on_request: 'Цена по запросу',
+      card_body_label: 'Тип транспорта:',
+      card_wheel_formula_label: 'Колёсная формула:',
+      card_gearbox_label: 'КПП:',
+      price_on_request: 'Цена уточняется',
 
       // SERVICES
       title_services: 'China Motors - Услуги',
@@ -146,7 +148,7 @@
       js_form_sending: 'Отправляем...',
       js_form_sent_ok: 'Заявка отправлена! Свяжемся с вами.',
       js_form_sent_fail: 'Ошибка отправки. Попробуйте позже.',
-      why_title : 'Почему China Motors',
+      why_title : 'Почему нам доверяют',
       why_card1_t : 'Работа по договору',
       why_card1_d : 'Все поставки оформляются официально. Прозрачные условия без скрытых платежей.',
       why_card2_t : 'Реальные поставки',
@@ -219,6 +221,11 @@
       calc_disclaimer: '⚠️ Расчёт является предварительным и не является публичной офертой. Итоговая стоимость зависит от курса валют, таможенных платежей и условий поставки. Подробности уточняйте у менеджера.',
       body_car: 'Легковой автомобиль',
       calc_ts_bill_duty_percent: 'Ставка пошлины',
+      why_card1_y: '✔ Работа по договору',
+      why_card2_y: '✔ Фото и видео с погрузки и доставки',
+      why_card3_y: '✔ Прозрачный расчёт без «вдруг доплатите»',
+      why_card4_y: '✔ Помощь с таможней и регистрацией',
+      btn_calculate_catalog: 'Подробнее и расчёт',
     },
 
     kk: {
@@ -237,8 +244,8 @@
       footer_col1_text: 'Қытайдан тапсырыспен және қолжетімді техника.',
       footer_col2_title: 'Навигация',
       footer_col3_title: 'Байланыс',
-      footer_copy: '© 2025 China Motors. Барлық құқықтар қорғалған.',
-      footer_devnote: 'Сайт әзірлену үстінде — жаңартулар болады.',
+      footer_copy: '© 2026 China Motors. Барлық құқықтар қорғалған.',
+      footer_devnote: 'Сайттағы ақпарат анықтамалық сипатта болып табылады және ашық ұсыныс емес',
       btn_photos: 'Фотосуреттер',
       btn_calculate: 'Есептеу',
       btn_send: 'Жіберу',
@@ -274,7 +281,9 @@
       sort_none: 'Сұрыптаусыз',
       sort_price_asc: 'Баға ↑',
       sort_price_desc: 'Баға ↓',
-      card_body_label: 'Құрылымы:',
+      card_body_label: 'Көлік түрі:',
+      card_wheel_formula_label: 'Дөңгелек формуласы:',
+      card_gearbox_label: 'Қорап:',
       price_on_request: 'Баға сұраныс бойынша',
 
       title_services: 'China Motors - Қызметтер',
@@ -352,7 +361,7 @@
       js_form_sending: 'Жіберілуде...',
       js_form_sent_ok: 'Өтінім жіберілді! Байланысамыз.',
       js_form_sent_fail: 'Жіберу қатесі. Кейінірек көріңіз.',
-      why_title : 'Неліктен China Motors',
+      why_title : 'Неліктен бізге сенеді',
       why_card1_t : 'Келісімшарт бойынша жұмыс',
       why_card1_d : 'Барлық жеткізілімдер ресми рәсімделеді. Жасырын төлемсіз мөлдір шарттар.',
       why_card2_t : 'Нақты жеткізілімдер',  
@@ -423,6 +432,11 @@
       calc_disclaimer: '⚠️ Есептеу алдын ала болып табылады және ашық ұсыныс емес. Соңғы құн валюта бағамдарына, кедендік төлемдерге және жеткізу шарттарына байланысты. Толығырақ менеджерден біліңіз.',
       body_car: 'Жеңіл көлік',
       calc_ts_bill_duty_percent: 'Баж ставкасы',
+      why_card1_y: '✔ Келісімшарт бойынша жұмыс',
+      why_card2_y: '✔ Жүктеу және жеткізу фотосуреттері мен бейнелері',
+      why_card3_y: '✔ «Кейінірек қосымша төлемдер» жоқ мөлдір есептеу',
+      why_card4_y: '✔ Кеден және тіркеуге көмек',
+      btn_calculate_catalog: 'Толығырақ және есептеу',
     },
 
     zh: {
@@ -441,8 +455,8 @@
       footer_col1_text: '来自中国的可靠设备，可现货或订购。',
       footer_col2_title: '导航',
       footer_col3_title: '联系方式',
-      footer_copy: '© 2025 China Motors. 保留所有权利。',
-      footer_devnote: '网站建设中——将持续更新。',
+      footer_copy: '© 2026 China Motors. 保留所有权利。',
+      footer_devnote: '网站上的信息仅供参考，不构成公开报价',
       btn_photos: '照片',
       btn_calculate: '计算',
       btn_send: '发送',
@@ -478,7 +492,9 @@
       sort_none: '无排序',
       sort_price_asc: '价格 ↑',
       sort_price_desc: '价格 ↓',
-      card_body_label: '车身：',
+      card_body_label: '车型:',
+      card_wheel_formula_label: '轮轴配置:',
+      card_gearbox_label: '变速箱:',
       price_on_request: '价格面议',
 
       title_services: 'China Motors - 服务',
@@ -556,7 +572,7 @@
       js_form_sending: '发送中...',
       js_form_sent_ok: '已发送！我们会联系您。',
       js_form_sent_fail: '发送失败，请稍后再试。',
-      why_title : '为什么选择 China Motors',
+      why_title : '为什么选择我们',
       why_card1_t : '合同合作',
       why_card1_d : '所有供应均正式办理。透明条款，无隐藏费用。',
       why_card2_t : '实际供应',
@@ -627,6 +643,11 @@
       calc_disclaimer: '⚠️ 计算结果为预估值，非公开报价。最终价格取决于汇率、关税和供应条件。详情请咨询经理。',
       body_car: '乘用车',
       calc_ts_bill_duty_percent: '关税税率',
+      why_card1_y: '✔ 合同合作',
+      why_card2_y: '✔ 装载和交付的照片与视频',
+      why_card3_y: '✔ 没有“之后再付钱”的透明计算',
+      why_card4_y: '✔ 协助海关和注册',
+      btn_calculate_catalog: '详情与计算',
     },
 
     en: {
@@ -645,8 +666,8 @@
       footer_col1_text: 'Reliable vehicles from China — in stock and on order.',
       footer_col2_title: 'Navigation',
       footer_col3_title: 'Contacts',
-      footer_copy: '© 2025 China Motors. All rights reserved.',
-      footer_devnote: 'Website under development — updates coming.',
+      footer_copy: '© 2026 China Motors. All rights reserved.',
+      footer_devnote: 'Information on the site is for reference only and does not constitute a public offer',
       btn_photos: 'Photos',
       btn_calculate: 'Calculate',
       btn_send: 'Send',
@@ -683,7 +704,9 @@
       sort_none: 'No sorting',
       sort_price_asc: 'Price ↑',
       sort_price_desc: 'Price ↓',
-      card_body_label: 'Body:',
+      card_body_label: 'Vehicle type:',
+      card_wheel_formula_label: 'Wheel formula:',
+      card_gearbox_label: 'Gearbox:',
       price_on_request: 'Price on request',
 
       title_services: 'China Motors - Services',
@@ -761,7 +784,7 @@
       js_form_sending: 'Sending...',
       js_form_sent_ok: 'Request sent! We will contact you.',
       js_form_sent_fail: 'Sending failed. Try again later.',
-      why_title : 'Why choose China Motors',
+      why_title : 'Why choose us',
       why_card1_t : 'Contract cooperation',
       why_card1_d : 'All supplies are formally processed. Transparent terms, no hidden fees.',
       why_card2_t : 'Actual supply',
@@ -833,6 +856,11 @@
       calc_disclaimer: '⚠️ Calculation is preliminary and not a public offer. Final cost depends on exchange rates, customs duties, and delivery terms. Consult the manager for details.',
       body_car: 'Car',
       calc_ts_bill_duty_percent: 'Duty rate',
+      why_card1_y: '✔ Contract cooperation',
+      why_card2_y: '✔ Photos and videos of loading and delivery',
+      why_card3_y: '✔ Transparent calculation with no "pay later"',
+      why_card4_y: '✔ Assistance with customs and registration',
+      btn_calculate_catalog: 'Details and calculation',
     },
   };
   window.translations = translations;
@@ -961,5 +989,15 @@
     const l = localStorage.getItem(LS_LANG);
     return translations[l] ? l : 'ru';
   }
+  
+  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+  (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/68480dddb0d263190ae16f29/1itcncalg';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+  })();
 
 })();
