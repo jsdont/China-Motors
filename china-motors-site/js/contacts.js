@@ -18,18 +18,24 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 2) отправка в Telegram через backend
-  async function sendToTelegram(text) {
-    const resp = await fetch(`${API_BASE}/api/telegram`, {
+  async function sendToBackend(name, phone, message) {
+    const resp = await fetch(`${API_BASE}/api/contacts/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text }),
+      body: JSON.stringify({
+        name,
+        phone,
+        message,
+      }),
     });
+
     const data = await resp.json().catch(() => ({}));
-    if (!resp.ok || data.ok === false) {
-      throw new Error(data.description || data.error || `HTTP ${resp.status}`);
+    if (!resp.ok || data.status !== 'ok') {
+      throw new Error(data.error || `HTTP ${resp.status}`);
     }
     return true;
   }
+
 
   sendBtn?.addEventListener('click', async (e) => {
     e.preventDefault();
@@ -54,18 +60,12 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const text =
-      `📩 <b>Новая заявка</b>\n` +
-      `Имя: ${name}\n` +
-      `Телефон: ${phone}\n\n` +
-      msg;
-
     sendBtn.disabled = true;
     const prev = sendBtn.textContent;
     sendBtn.textContent = 'Отправка...';
 
     try {
-      await sendToTelegram(text);
+      await sendToBackend(name, phone, msg);
       sendBtn.textContent = '✅ Отправлено';
       if (statusEl) {
         statusEl.textContent = 'Заявка успешно отправлена!';
