@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // === LOAD DATA ===
   async function load() {
     try {
-      const res = await fetch(`${API_BASE}/api/cars/${id}/`, {
+      const res = await fetch(`${API_BASE}/api/vehicles/${id}`, {
         headers: { 'Accept': 'application/json' }
       });
       if (!res.ok) throw new Error('HTTP ' + res.status);
