@@ -2005,3 +2005,6 @@ html.dark .price {
   font-size: 14px;
   font-weight: 600;
 }
+html.dark p {
+  color: #e0e0e0;
+}

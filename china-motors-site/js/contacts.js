@@ -26,7 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
         name,
         phone,
         message,
+        page: window.location.href,
       }),
+
     });
 
     const data = await resp.json().catch(() => ({}));

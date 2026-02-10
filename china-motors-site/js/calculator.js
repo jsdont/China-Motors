@@ -680,6 +680,45 @@
 
   document.addEventListener('langchange', recalc);
 
+  function generateCalcId() {
+    const d = new Date();
+    const date =
+      d.getFullYear().toString() +
+      String(d.getMonth() + 1).padStart(2, '0') +
+      String(d.getDate()).padStart(2, '0');
+
+    const rnd = Math.floor(1000 + Math.random() * 9000);
+    return `CM-${date}-${rnd}`;
+  }
+
+  let CURRENT_CALC_ID = generateCalcId();
+
+  function buildContactsMessage() {
+    const name = document.getElementById('vehicleName')?.value || '';
+    const year = document.getElementById('year')?.value || '';
+    const price = document.getElementById('basePrice')?.value || '';
+    const total = document.getElementById('sTotalKZT')?.textContent || '';
+
+    return `
+  🧮 Запрос с калькулятора China Motors
+  ID расчёта: ${CURRENT_CALC_ID}
+
+  Техника: ${name}
+  Год: ${year}
+  Цена в Китае: ${price} $
+  Итоговая стоимость: ${total}
+  `.trim();
+
+  }
+
+  document.getElementById('toContactsAside')?.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    const msg = buildContactsMessage();
+    const url = `/contacts.html?message=${encodeURIComponent(msg)}`;
+    window.location.href = url;
+  });
+
   /* =========================================================
      INIT
      ========================================================= */
@@ -763,6 +802,5 @@
     ?.addEventListener('click', recalc);
   window.recalc = recalc;
   init();
-  
 
 })();
