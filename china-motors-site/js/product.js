@@ -139,20 +139,24 @@ document.addEventListener('DOMContentLoaded', () => {
       buildSpecsTable(v);
 
       // === buttons ===
-      btnCalc.href =
-        `calculator.html?` +
-        `title=${encodeURIComponent(title)}` +
-        `&price=${encodeURIComponent(priceNum ?? '')}` +
-        `&body=${encodeURIComponent(bodyCanon)}` +
-        `&body_raw=${encodeURIComponent(bodyRaw || '')}` +
-        `&weight=${encodeURIComponent(v.weight_t ?? '')}` +
-        `&year=${encodeURIComponent(v.year ?? '')}`;
+      if (btnCalc) {
+        btnCalc.href =
+          `calculator.html?` +
+          `title=${encodeURIComponent(title)}` +
+          `&price=${encodeURIComponent(priceNum ?? '')}` +
+          `&body=${encodeURIComponent(bodyCanon)}` +
+          `&body_raw=${encodeURIComponent(bodyRaw || '')}` +
+          `&weight=${encodeURIComponent(v.weight_t ?? '')}` +
+          `&year=${encodeURIComponent(v.year ?? '')}`;
+      }
 
+      if (btnReq) {
+        btnReq.href =
+          `contacts.html?message=${encodeURIComponent(
+            `Запрос по технике:\n${title}\nЦена: ${fmtPrice(priceNum)}`
+          )}`;
+      }
 
-      btnReq.href =
-        `contacts.html?message=${encodeURIComponent(
-          `Запрос по технике:\n${title}\nЦена: ${fmtPrice(priceNum)}`
-        )}`;
 
     } catch (e) {
       console.error(e);
