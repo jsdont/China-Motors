@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 2) отправка в Telegram через backend
-  async function sendToBackend(name, phone, message) {
+  async function sendToBackend(name, phone, message, productId) {
     const resp = await fetch(`${API_BASE}/api/contacts/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -27,7 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
         phone,
         message,
         page: window.location.href,
+        product_id: productId || null,
       }),
+
 
     });
 
@@ -66,8 +68,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const prev = sendBtn.textContent;
     sendBtn.textContent = 'Отправка...';
 
+    const productId = qs.get('product_id');
+
     try {
-      await sendToBackend(name, phone, msg);
+      await sendToBackend(name, phone, msg, productId);
       sendBtn.textContent = '✅ Отправлено';
       if (statusEl) {
         statusEl.textContent = 'Заявка успешно отправлена!';
