@@ -1,0 +1,11 @@
+# Android/Gradle build output and IDE state
+.gradle/
+.idea/
+build/
+app/build/
+local.properties
+*.apk
+*.apk.idsig
+
+# Signing key — never commit
+android.keystore

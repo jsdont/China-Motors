@@ -1,0 +1,21 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  syntax-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check JS syntax
+        run: |
+          for f in china-motors-site/js/*.js china-motors-site/api/*.js; do
+            echo "Checking $f"
+            node --check "$f"
+          done
