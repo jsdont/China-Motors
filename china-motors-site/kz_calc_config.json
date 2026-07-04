@@ -1,7 +1,8 @@
 {
   "version": "2026.01",
   "currency": {
-    "usd_kzt": 493.11
+    "usd_kzt": 493.11,
+    "cny_kzt": 68.5
   },
   "diesel": {
     "price_kzt_per_l": 360
