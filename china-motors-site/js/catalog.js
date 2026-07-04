@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ================= HELPERS ================= */
 
   const nf = new Intl.NumberFormat('ru-RU');
-  const fmtPrice = v => v ? `${nf.format(v)}$` : 'Цена уточняется';
+  const fmtPrice = v => v ? `${nf.format(v)}¥` : 'Цена уточняется';
 
   function canonBody(title = '', raw = '') {
     const s = `${title} ${raw}`.toLowerCase();
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return {
       id: v.id,
       title,
-      price: Number(v.price_usd) || null,
+      price: Number(v.price_cny) || null,
       year: v.year || null,
       bodyType: canonBody(title, bodyRaw),
       bodyRaw,
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <div class="cm-card__footer">
             <div class="price">
-              ${item.price ? `${item.price.toLocaleString('ru-RU')} $` : 'Цена уточняется'}
+              ${item.price ? `${item.price.toLocaleString('ru-RU')} ¥` : 'Цена уточняется'}
             </div>
             <span data-i18n="btn_calculate_catalog" class="btn-outline">Подробнее и расчёт</span>
           </div>

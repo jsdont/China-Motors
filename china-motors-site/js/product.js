@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // === helpers (вынесено из catalog.js логики) ===
   const nf = new Intl.NumberFormat('ru-RU');
-  const fmtPrice = n => (n === 0 || n) ? `${nf.format(Number(n))}$` : 'Цена по запросу';
+  const fmtPrice = n => (n === 0 || n) ? `${nf.format(Number(n))}¥` : 'Цена по запросу';
 
   function pickImages(v) {
     if (Array.isArray(v.images) && v.images.length) return v.images;
@@ -36,6 +36,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function pickPrice(v) {
+    return v.price_cny ?? v.priceCNY ?? null;
+  }
+
+  // Только для автоподстановки в калькулятор (тот считает в USD).
+  function pickPriceUsd(v) {
     return v.price_usd ?? v.usd_price ?? v.priceUSD ?? null;
   }
 
@@ -76,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ['Модель', v.model],
       ['Год выпуска', v.year],
       ['Конструкция', v.body_type],
-      ['Цена', v.price_usd ? `${v.price_usd}$` : null],
+      ['Цена', v.price_cny ? `${v.price_cny}¥` : null],
       ['Масса, т', v.weight_t],
       ['Пробег, км', v.mileage_km],
     ];
@@ -123,6 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
         [v.brand, v.model, v.name].filter(Boolean).join(' ').trim() || 'Без названия';
 
       const priceNum = pickPrice(v);
+      const priceUsdForCalc = pickPriceUsd(v);
       const images = pickImages(v);
       const bodyRaw = pickBodyRaw(v);
       const bodyCanon = canonBody(title, bodyRaw);
@@ -143,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btnCalc.href =
           `calculator.html?` +
           `title=${encodeURIComponent(title)}` +
-          `&price=${encodeURIComponent(priceNum ?? '')}` +
+          `&price=${encodeURIComponent(priceUsdForCalc ?? '')}` +
           `&body=${encodeURIComponent(bodyCanon)}` +
           `&body_raw=${encodeURIComponent(bodyRaw || '')}` +
           `&weight=${encodeURIComponent(v.weight_t ?? '')}` +
