@@ -47,7 +47,7 @@
      CONFIG (fallback)
      ========================================================= */
   const CALC_DEFAULT_CONFIG = {
-    currency: { usd_kzt: 540 },
+    currency: { usd_kzt: 540, cny_kzt: 68.5 },
     taxes: { vat: 0.12, duty: 0.10 },
     fees: {
       plate: 16963,
@@ -105,6 +105,7 @@
     return {
       title: p.get('title') || p.get('name') || '',
       price: p.get('price') ? Number(p.get('price')) : null,
+      priceCny: p.get('price_cny') ? Number(p.get('price_cny')) : null,
       body: p.get('body') || '',
       bodyRaw: p.get('body_raw') || '',
       profile: p.get('profile') || '',
@@ -123,7 +124,12 @@
       $('#vehicleName').value = URL_PARAMS.title;
     }
 
-    if (URL_PARAMS.price && $('#basePrice')) {
+    if (URL_PARAMS.priceCny && $('#basePrice')) {
+      // Живой курс уже подтянут к этому моменту (см. init()) — переводим
+      // цену техники из юаней в доллары по курсу НБ РК минус запас.
+      const cnyUsdRate = getCnyUsdRate(LIVE_USD_KZT_RATE, LIVE_CNY_KZT_RATE);
+      $('#basePrice').value = (URL_PARAMS.priceCny / cnyUsdRate).toFixed(2);
+    } else if (URL_PARAMS.price && $('#basePrice')) {
       $('#basePrice').value = URL_PARAMS.price;
     }
 
@@ -629,6 +635,9 @@
 
     $('#sTotalKZT').textContent = fmt(totalKZT) + ' ₸';
     $('#sTotalUSD').textContent = '≈ ' + fmt(totalKZT / rate) + ' USD';
+    if ($('#sTotalCNY')) {
+      $('#sTotalCNY').textContent = '≈ ' + fmt(totalKZT / LIVE_CNY_KZT_RATE) + ' ¥';
+    }
 
     $('#mandatoryTotal') && ($('#mandatoryTotal').textContent = fmt(mandatoryTotal));
     $('#deliveryTotal') && ($('#deliveryTotal').textContent = fmt(deliveryTotal));
@@ -655,14 +664,45 @@
       return CALC_CONFIG.currency.usd_kzt;
     }
   }
+
+  async function fetchNBKCNYRate() {
+    try {
+      const res = await fetch('https://nationalbank.kz/rss/get_rates.cfm?fdate=');
+      const text = await res.text();
+
+      const match = text.match(/<title>CNY<\/title>[\\s\\S]*?<description>([0-9.]+)<\/description>/);
+      if (!match) throw new Error('CNY rate not found');
+
+      return Number(match[1]);
+    } catch (e) {
+      console.warn('NBK CNY rate error, using default');
+      return CALC_CONFIG.currency.cny_kzt;
+    }
+  }
+
+  // Курс живёт здесь, чтобы recalc() и переводы цены из юаней могли им пользоваться
+  // без повторного похода в сеть.
+  let LIVE_CNY_KZT_RATE = CALC_DEFAULT_CONFIG.currency.cny_kzt;
+  let LIVE_USD_KZT_RATE = CALC_DEFAULT_CONFIG.currency.usd_kzt;
+
+  // Кросс-курс юань→доллар из двух официальных курсов НБ РК (к тенге), минус
+  // небольшой запас на колебания курса при подтверждении цены.
+  const CNY_USD_MARGIN = 0.02;
+  function getCnyUsdRate(usdKztRate, cnyKztRate) {
+    return (usdKztRate / cnyKztRate) - CNY_USD_MARGIN;
+  }
+
   async function updateNBKRate({ updateInput = false, doRecalc = false } = {}) {
     const rateInfoEl = document.getElementById('rateInfo');
     const rateInput  = document.getElementById('rate');
 
-    const rate = await fetchNBKRate();
+    const [rate, cnyRate] = await Promise.all([fetchNBKRate(), fetchNBKCNYRate()]);
+    LIVE_CNY_KZT_RATE = cnyRate;
+    LIVE_USD_KZT_RATE = rate;
 
     if (rateInfoEl) {
-      rateInfoEl.textContent = `Курс НБ РК: ${rate.toFixed(2)} ₸`;
+      rateInfoEl.textContent =
+        `Курс НБ РК: ${rate.toFixed(2)} ₸ за $, ${cnyRate.toFixed(2)} ₸ за ¥`;
     }
 
     if (updateInput && rateInput) {
@@ -724,6 +764,9 @@
      ========================================================= */
   async function init() {
     await loadCalcConfig();
+    // Живые курсы нужны до prefillFromURL(), иначе перевод цены из юаней
+    // в доллары (если товар пришёл с CNY-ценой) отработает на дефолтном курсе.
+    await updateNBKRate();
     prefillFromURL();
     updateVehicleProfile();
     recalc(); // уже пересчитает с новым годом и весом

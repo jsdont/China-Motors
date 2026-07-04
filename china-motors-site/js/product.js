@@ -150,6 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
           `calculator.html?` +
           `title=${encodeURIComponent(title)}` +
           `&price=${encodeURIComponent(priceUsdForCalc ?? '')}` +
+          `&price_cny=${encodeURIComponent(priceNum ?? '')}` +
           `&body=${encodeURIComponent(bodyCanon)}` +
           `&body_raw=${encodeURIComponent(bodyRaw || '')}` +
           `&weight=${encodeURIComponent(v.weight_t ?? '')}` +
