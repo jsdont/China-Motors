@@ -1,4 +1,6 @@
-const CACHE_VERSION = 'v1.0.0';
+// Bump this on every deploy that changes a file listed in STATIC_ASSETS below —
+// cacheFirst() means old visitors never see updated JS/CSS until this changes.
+const CACHE_VERSION = 'v1.0.1';
 const STATIC_CACHE = `cm-static-${CACHE_VERSION}`;
 const PAGES_CACHE = `cm-pages-${CACHE_VERSION}`;
 
