@@ -9,6 +9,12 @@
    ========================================================= */
 
   const p = new URLSearchParams(location.search);
+
+  const metaBase = document.querySelector('meta[name="api-base"]')?.content?.trim();
+  const isLocal = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  const API_BASE = (metaBase || (isLocal ? 'http://127.0.0.1:8000' : 'https://cm-backend-daniyal.fly.dev'))
+    .replace(/\/+$/, '');
+
   function getWeight() {
     const raw =
       document.getElementById("weightInput")?.value ||
@@ -650,33 +656,26 @@
 
 
   }
-  async function fetchNBKRate() {
+  // nationalbank.kz не отдаёт CORS-заголовки, поэтому браузер не может
+  // сходить туда напрямую — курсы берём через бэкенд, который проксирует
+  // тот же фид сервер-к-серверу (там же и небольшой кэш на 10 минут).
+  async function fetchNBKRates() {
     try {
-      const res = await fetch('https://nationalbank.kz/rss/get_rates.cfm?fdate=');
-      const text = await res.text();
+      const res = await fetch(`${API_BASE}/api/rates/`);
+      const data = await res.json();
 
-      const match = text.match(/<title>USD<\/title>[\\s\\S]*?<description>([0-9.]+)<\/description>/);
-      if (!match) throw new Error('USD rate not found');
+      const usd = Number(data.usd_kzt);
+      const cny = Number(data.cny_kzt);
 
-      return Number(match[1]);
+      if (!usd || !cny) throw new Error('rates missing in response');
+
+      return { usd, cny };
     } catch (e) {
-      console.warn('NBK rate error, using default');
-      return CALC_CONFIG.currency.usd_kzt;
-    }
-  }
-
-  async function fetchNBKCNYRate() {
-    try {
-      const res = await fetch('https://nationalbank.kz/rss/get_rates.cfm?fdate=');
-      const text = await res.text();
-
-      const match = text.match(/<title>CNY<\/title>[\\s\\S]*?<description>([0-9.]+)<\/description>/);
-      if (!match) throw new Error('CNY rate not found');
-
-      return Number(match[1]);
-    } catch (e) {
-      console.warn('NBK CNY rate error, using default');
-      return CALC_CONFIG.currency.cny_kzt;
+      console.warn('Rates fetch error, using defaults', e);
+      return {
+        usd: CALC_CONFIG.currency.usd_kzt,
+        cny: CALC_CONFIG.currency.cny_kzt
+      };
     }
   }
 
@@ -696,7 +695,7 @@
     const rateInfoEl = document.getElementById('rateInfo');
     const rateInput  = document.getElementById('rate');
 
-    const [rate, cnyRate] = await Promise.all([fetchNBKRate(), fetchNBKCNYRate()]);
+    const { usd: rate, cny: cnyRate } = await fetchNBKRates();
     LIVE_CNY_KZT_RATE = cnyRate;
     LIVE_USD_KZT_RATE = rate;
 
