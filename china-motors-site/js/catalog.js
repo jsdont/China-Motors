@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const bodyEl   = document.getElementById('body');
   const sortEl   = document.getElementById('sort');
   const searchEl = document.getElementById('search');
+  const brandEl  = document.getElementById('brand');
+  const wheelEl  = document.getElementById('wheelFormula');
 
   /* ================= HELPERS ================= */
 
@@ -28,6 +30,17 @@ document.addEventListener('DOMContentLoaded', () => {
     out_of_stock: 'Нет в наличии',
     on_order: 'На заказ'
   };
+
+  // Приводим "6×4", "6X4", "6х4" (кириллица) к одному виду "6x4",
+  // чтобы поиск/фильтр не зависели от того, каким символом набрана "х".
+  function normText(s) {
+    return (s || '').toLowerCase().replace(/[×х]/g, 'x');
+  }
+
+  function extractWheelFormula(text) {
+    const m = normText(text).match(/(\d)\s*x\s*(\d)/);
+    return m ? `${m[1]}x${m[2]}` : '';
+  }
 
   function canonBody(title = '', raw = '') {
     const s = `${title} ${raw}`.toLowerCase();
@@ -57,6 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
       year: v.year || null,
       bodyType: canonBody(title, bodyRaw),
       bodyRaw,
+      brand: v.brand || '',
+      wheelFormula: extractWheelFormula(`${title} ${bodyRaw}`),
       image: v.image_url || '/img/no-photo.png',
       availability: v.availability || 'in_stock'
     };
@@ -117,14 +132,42 @@ document.addEventListener('DOMContentLoaded', () => {
   let all = [];
   let current = [];
 
+  function populateSelect(selectEl, values) {
+    if (!selectEl) return;
+    const current = selectEl.value;
+    const placeholder = selectEl.querySelector('option[value=""]');
+    selectEl.innerHTML = '';
+    if (placeholder) selectEl.appendChild(placeholder);
+    values.forEach(v => {
+      const opt = document.createElement('option');
+      opt.value = v;
+      opt.textContent = v;
+      selectEl.appendChild(opt);
+    });
+    if (values.includes(current)) selectEl.value = current;
+  }
+
+  function populateQuickFilters() {
+    const brands = [...new Set(all.map(x => x.brand).filter(Boolean))].sort();
+    const wheels = [...new Set(all.map(x => x.wheelFormula).filter(Boolean))].sort();
+    populateSelect(brandEl, brands);
+    populateSelect(wheelEl, wheels);
+  }
+
   function applyFilters() {
     const b = bodyEl?.value || '';
-    const q = (searchEl?.value || '').toLowerCase();
+    const brand = brandEl?.value || '';
+    const wheel = wheelEl?.value || '';
+    const q = normText(searchEl?.value || '');
 
     current = all.filter(x => {
       const bodyOk = !b || x.bodyType === b;
-      const searchOk = !q || x.title.toLowerCase().includes(q);
-      return bodyOk && searchOk;
+      const brandOk = !brand || x.brand === brand;
+      const wheelOk = !wheel || x.wheelFormula === wheel;
+      const searchOk = !q ||
+        normText(x.title).includes(q) ||
+        normText(x.bodyRaw).includes(q);
+      return bodyOk && brandOk && wheelOk && searchOk;
     });
   }
 
@@ -143,6 +186,8 @@ document.addEventListener('DOMContentLoaded', () => {
   bodyEl?.addEventListener('change', refilter);
   sortEl?.addEventListener('change', refilter);
   searchEl?.addEventListener('input', refilter);
+  brandEl?.addEventListener('change', refilter);
+  wheelEl?.addEventListener('change', refilter);
 
   /* ================= LOAD ================= */
 
@@ -155,6 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const list = Array.isArray(data) ? data : data.results || [];
 
       all = list.map(normalize).filter(Boolean);
+      populateQuickFilters();
       refilter();
 
     } catch (e) {

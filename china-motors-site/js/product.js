@@ -23,6 +23,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const btnCalc = document.getElementById('btnCalc');
   const btnReq  = document.getElementById('btnRequest');
+  const extraEl = document.getElementById('extraInfo');
+
+  // === LIGHTBOX ===
+  const lightbox     = document.getElementById('lightbox');
+  const lightboxImg  = document.getElementById('lightboxImg');
+  const lightboxPrev = document.getElementById('lightboxPrev');
+  const lightboxNext = document.getElementById('lightboxNext');
+  const lightboxClose = document.getElementById('lightboxClose');
+
+  let galleryImages = [];
+  let lightboxIndex = 0;
+
+  function showLightboxImage(i) {
+    if (!galleryImages.length) return;
+    lightboxIndex = (i + galleryImages.length) % galleryImages.length;
+    lightboxImg.src = galleryImages[lightboxIndex];
+  }
+
+  function openLightbox(i) {
+    if (!galleryImages.length) return;
+    showLightboxImage(i);
+    lightbox.classList.add('open');
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+  }
+
+  lightboxClose?.addEventListener('click', closeLightbox);
+  lightboxPrev?.addEventListener('click', () => showLightboxImage(lightboxIndex - 1));
+  lightboxNext?.addEventListener('click', () => showLightboxImage(lightboxIndex + 1));
+  lightboxImg?.addEventListener('click', closeLightbox);
+  lightbox?.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') showLightboxImage(lightboxIndex - 1);
+    if (e.key === 'ArrowRight') showLightboxImage(lightboxIndex + 1);
+  });
 
   // === helpers (вынесено из catalog.js логики) ===
   const nf = new Intl.NumberFormat('ru-RU');
@@ -104,9 +145,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function buildGallery(images) {
     if (!images.length) return;
+    galleryImages = images;
 
     mainImg.src = images[0];
     mainImg.alt = titleEl.textContent;
+    mainImg.addEventListener('click', () => {
+      const activeIdx = Math.max(0, [...thumbsEl.querySelectorAll('img')].findIndex(t => t.classList.contains('active')));
+      openLightbox(activeIdx);
+    });
 
     thumbsEl.innerHTML = '';
     images.forEach((src, i) => {
@@ -150,6 +196,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       buildGallery(images);
       buildSpecsTable(v);
+
+      if (v.extra_info && extraEl) {
+        extraEl.textContent = v.extra_info;
+        extraEl.style.display = '';
+      }
 
       // === buttons ===
       if (btnCalc) {
