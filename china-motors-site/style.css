@@ -1939,10 +1939,39 @@ html.dark .cm-card {
 }
 
 /* IMAGE */
+.cm-card__image {
+  position: relative;
+}
+
 .cm-card__image img {
   width: 100%;
   height: 220px;
   object-fit: cover;
+}
+
+/* AVAILABILITY BADGE */
+.cm-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,.25);
+}
+
+.cm-badge--in_stock {
+  background: #2ecc71;
+}
+
+.cm-badge--out_of_stock {
+  background: #e74c3c;
+}
+
+.cm-badge--on_order {
+  background: #f39c12;
 }
 
 /* BODY */
