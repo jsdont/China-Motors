@@ -23,6 +23,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const nf = new Intl.NumberFormat('ru-RU');
   const fmtPrice = v => v ? `${nf.format(v)}¥` : 'Цена уточняется';
 
+  const AVAIL_LABELS = {
+    in_stock: 'В наличии',
+    out_of_stock: 'Нет в наличии',
+    on_order: 'На заказ'
+  };
+
   function canonBody(title = '', raw = '') {
     const s = `${title} ${raw}`.toLowerCase();
 
@@ -51,7 +57,8 @@ document.addEventListener('DOMContentLoaded', () => {
       year: v.year || null,
       bodyType: canonBody(title, bodyRaw),
       bodyRaw,
-      image: v.image_url || '/img/no-photo.png'
+      image: v.image_url || '/img/no-photo.png',
+      availability: v.availability || 'in_stock'
     };
   }
 
@@ -62,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <a class="cm-card" href="product.html?id=${item.id}">
         <div class="cm-card__image">
           <img src="${item.image}" alt="${item.title}">
+          <span class="cm-badge cm-badge--${item.availability}">${AVAIL_LABELS[item.availability] || ''}</span>
         </div>
 
         <div class="cm-card__body">

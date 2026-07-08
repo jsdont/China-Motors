@@ -39,6 +39,12 @@ document.addEventListener('DOMContentLoaded', () => {
     return v.price_cny ?? v.priceCNY ?? null;
   }
 
+  const AVAIL_LABELS = {
+    in_stock: 'В наличии',
+    out_of_stock: 'Нет в наличии',
+    on_order: 'На заказ'
+  };
+
   // Только для автоподстановки в калькулятор (тот считает в USD).
   function pickPriceUsd(v) {
     return v.price_usd ?? v.usd_price ?? v.priceUSD ?? null;
@@ -82,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ['Год выпуска', v.year],
       ['Конструкция', v.body_type],
       ['Цена', v.price_cny ? `${v.price_cny}¥` : null],
+      ['Наличие', AVAIL_LABELS[v.availability] || null],
       ['Масса, т', v.weight_t],
       ['Пробег, км', v.mileage_km],
     ];
