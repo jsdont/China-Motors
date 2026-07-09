@@ -24,6 +24,33 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnCalc = document.getElementById('btnCalc');
   const btnReq  = document.getElementById('btnRequest');
   const extraEl = document.getElementById('extraInfo');
+  const videoEl = document.getElementById('videoReview');
+
+  function buildTikTokEmbed(url) {
+    if (!videoEl || !url) return;
+
+    const idMatch = url.match(/\/video\/(\d+)/);
+    const videoId = idMatch ? idMatch[1] : '';
+
+    videoEl.innerHTML = `
+      <blockquote class="tiktok-embed" cite="${url}"${videoId ? ` data-video-id="${videoId}"` : ''} style="max-width:605px;min-width:325px;">
+        <section></section>
+      </blockquote>
+    `;
+    videoEl.style.display = '';
+
+    // embed.js сам находит все .tiktok-embed на странице и рендерит их —
+    // достаточно подключить один раз.
+    if (!document.getElementById('tiktokEmbedScript')) {
+      const script = document.createElement('script');
+      script.id = 'tiktokEmbedScript';
+      script.async = true;
+      script.src = 'https://www.tiktok.com/embed.js';
+      document.body.appendChild(script);
+    } else if (window.tiktokEmbed?.lib?.render) {
+      window.tiktokEmbed.lib.render([videoEl.querySelector('.tiktok-embed')]);
+    }
+  }
 
   // === LIGHTBOX ===
   const lightbox     = document.getElementById('lightbox');
@@ -196,6 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       buildGallery(images);
       buildSpecsTable(v);
+      buildTikTokEmbed(v.tiktok_url);
 
       if (v.extra_info && extraEl) {
         extraEl.textContent = v.extra_info;
