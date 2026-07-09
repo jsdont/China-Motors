@@ -55,15 +55,6 @@
     }
     .thumbs img.active { opacity: 1; outline: 2px solid #e11d48; }
 
-    .product-video {
-      margin-top: 16px;
-      display: flex;
-      justify-content: center;
-    }
-    .product-video blockquote.tiktok-embed {
-      margin: 0 !important;
-    }
-
     /* LIGHTBOX */
     .pg-lightbox {
       position: fixed;
@@ -153,14 +144,44 @@
 
     table.specs {
       width: 100%;
-      border-collapse: collapse;
+      border-collapse: separate;
+      border-spacing: 0 6px;
       margin-top: 20px;
     }
-    table.specs td {
-      padding: 10px 8px;
-      border-bottom: 1px solid rgba(255,255,255,.08);
+    table.specs tr {
+      background: rgba(255,255,255,.04);
     }
-    table.specs td:first-child { opacity: .75; width: 45%; }
+    table.specs td {
+      padding: 12px 16px;
+      border: none;
+    }
+    table.specs td:first-child {
+      opacity: .7;
+      font-size: 13px;
+      width: 50%;
+      border-radius: 10px 0 0 10px;
+    }
+    table.specs td:last-child {
+      text-align: right;
+      font-weight: 600;
+      border-radius: 0 10px 10px 0;
+    }
+    table.specs td i {
+      width: 16px;
+      margin-right: 8px;
+      color: #ff3b30;
+    }
+
+    /* FULL-WIDTH VIDEO SECTION */
+    .product-video-section {
+      margin-top: 40px;
+      display: flex;
+      justify-content: center;
+    }
+    .product-video-section blockquote.tiktok-embed {
+      margin: 0 !important;
+      max-width: 100% !important;
+    }
 
     .product-actions {
       display: flex;
@@ -184,7 +205,6 @@
       <div class="product-gallery">
         <img id="mainImage" src="" alt="">
         <div class="thumbs" id="thumbs"></div>
-        <div class="product-video" id="videoReview" style="display:none"></div>
       </div>
 
       <!-- ПРАВО: ИНФО -->
@@ -212,6 +232,8 @@
       </div>
 
     </div>
+
+    <div class="product-video-section" id="videoReview" style="display:none"></div>
   </div>
 </section>
 

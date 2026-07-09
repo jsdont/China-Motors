@@ -71,9 +71,10 @@ document.addEventListener('DOMContentLoaded', () => {
       bodyType: canonBody(title, bodyRaw),
       bodyRaw,
       brand: v.brand || '',
-      wheelFormula: extractWheelFormula(`${title} ${bodyRaw}`),
+      wheelFormula: normText(v.wheel_formula || '') || extractWheelFormula(`${title} ${bodyRaw}`),
       image: v.image_url || '/img/no-photo.png',
-      availability: v.availability || 'in_stock'
+      availability: v.availability || 'in_stock',
+      raw: v
     };
   }
 
@@ -148,8 +149,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function populateQuickFilters() {
+    const bodies = [...new Set(all.map(x => x.bodyType).filter(Boolean))].sort();
     const brands = [...new Set(all.map(x => x.brand).filter(Boolean))].sort();
     const wheels = [...new Set(all.map(x => x.wheelFormula).filter(Boolean))].sort();
+    populateSelect(bodyEl, bodies);
     populateSelect(brandEl, brands);
     populateSelect(wheelEl, wheels);
   }
