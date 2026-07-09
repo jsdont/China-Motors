@@ -151,20 +151,25 @@ document.addEventListener('DOMContentLoaded', () => {
     specsEl.innerHTML = '';
 
     const rows = [
-      ['Бренд', v.brand],
-      ['Модель', v.model],
-      ['Год выпуска', v.year],
-      ['Конструкция', v.body_type],
-      ['Цена', v.price_cny ? `${v.price_cny}¥` : null],
-      ['Наличие', AVAIL_LABELS[v.availability] || null],
-      ['Масса, т', v.weight_t],
-      ['Пробег, км', v.mileage_km],
+      ['fa-industry', 'Бренд', v.brand],
+      ['fa-hashtag', 'Модель', v.model],
+      ['fa-calendar', 'Год выпуска', v.year],
+      ['fa-truck', 'Конструкция', v.body_type],
+      ['fa-road', 'Колёсная формула', v.wheel_formula],
+      ['fa-gears', 'КПП', v.gearbox],
+      ['fa-bolt', 'Мощность двигателя', v.engine_power_hp ? `${v.engine_power_hp} л.с.` : null],
+      ['fa-weight-hanging', 'Грузоподъёмность', v.load_capacity_t ? `${v.load_capacity_t} т` : null],
+      ['fa-gauge-high', 'Макс. скорость', v.max_speed_kmh ? `${v.max_speed_kmh} км/ч` : null],
+      ['fa-tag', 'Цена', v.price_cny ? `${v.price_cny}¥` : null],
+      ['fa-circle-check', 'Наличие', AVAIL_LABELS[v.availability] || null],
+      ['fa-weight', 'Масса, т', v.weight_t],
+      ['fa-road-circle-check', 'Пробег, км', v.mileage_km],
     ];
 
-    rows.forEach(([label, value]) => {
+    rows.forEach(([icon, label, value]) => {
       if (value === null || value === undefined || value === '') return;
       const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${label}</td><td><strong>${value}</strong></td>`;
+      tr.innerHTML = `<td><i class="fa-solid ${icon}"></i>${label}</td><td>${value}</td>`;
       specsEl.appendChild(tr);
     });
   }
