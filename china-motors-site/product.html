@@ -55,6 +55,15 @@
     }
     .thumbs img.active { opacity: 1; outline: 2px solid #e11d48; }
 
+    .product-video {
+      margin-top: 16px;
+      display: flex;
+      justify-content: center;
+    }
+    .product-video blockquote.tiktok-embed {
+      margin: 0 !important;
+    }
+
     /* LIGHTBOX */
     .pg-lightbox {
       position: fixed;
@@ -175,6 +184,7 @@
       <div class="product-gallery">
         <img id="mainImage" src="" alt="">
         <div class="thumbs" id="thumbs"></div>
+        <div class="product-video" id="videoReview" style="display:none"></div>
       </div>
 
       <!-- ПРАВО: ИНФО -->
