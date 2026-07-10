@@ -212,8 +212,6 @@
       calc_item_first_reg: 'Первичная регистрация',
       calc_item_srtc: 'Техпаспорт (СРТС)',
 
-      calc_flag_exclude_base: 'Цена авто уже оплачена',
-      calc_flag_excel_max: 'Расширенные расходы (служебно)',
 
       // TOTAL LABELS
       calc_total_vehicle: 'Стоимость авто',
@@ -426,8 +424,6 @@
       calc_item_util_tax: 'Утилизациялық алым',
       calc_item_first_reg: 'Бастапқы тіркеу',
       calc_item_srtc: 'Техникалық төлқұжат (СРТС)',
-      calc_flag_exclude_base: 'Көлік бағасы төленген',
-      calc_flag_excel_max: 'Кеңейтілген шығындар (қызметтік)',
 
       // TOTAL LABELS
       calc_total_vehicle: 'Көлік құны',
@@ -640,8 +636,6 @@
       calc_item_util_tax: '回收费',
       calc_item_first_reg: '首次注册',
       calc_item_srtc: '技术护照（SRTC）',
-      calc_flag_exclude_base: '车辆价格已支付',
-      calc_flag_excel_max: '扩展费用（内部）',
 
       // TOTAL LABELS
       calc_total_vehicle: '车辆价格',
@@ -856,8 +850,6 @@
       calc_item_util_tax: 'Recycling fee',
       calc_item_first_reg: 'Initial registration',
       calc_item_srtc: 'Technical passport (SRTC)',
-      calc_flag_exclude_base: 'Vehicle price already paid',
-      calc_flag_excel_max: 'Extended expenses (internal)',
 
       // TOTAL LABELS
       calc_total_vehicle: 'Vehicle price',
