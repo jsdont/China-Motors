@@ -202,7 +202,6 @@
 
       calc_item_declaration: 'Декларация о соответствии',
       calc_item_customs_broker: 'Таможенный брокер',
-      calc_item_delivery_city: 'Доставка до Алматы/лаборатории/СВХ',
       calc_item_driver: 'Водитель',
       calc_item_adblue: 'AdBlue',
       calc_item_toll_road: 'Платная дорога',
@@ -415,7 +414,6 @@
 
       calc_item_declaration: 'Сәйкестік декларациясы',
       calc_item_customs_broker: 'Кедендік брокер',
-      calc_item_delivery_city: 'Алматы/лаборатория/СВХ-ға жеткізу',
       calc_item_driver: 'Жүргізуші',
       calc_item_adblue: 'AdBlue',
       calc_item_toll_road: 'Ақылы жол',
@@ -627,7 +625,6 @@
 
       calc_item_declaration: '符合性声明',
       calc_item_customs_broker: '海关代理',
-      calc_item_delivery_city: '送货至阿拉木图/实验室/仓储区',
       calc_item_driver: '司机',
       calc_item_adblue: 'AdBlue',
       calc_item_toll_road: '收费公路',
@@ -841,7 +838,6 @@
 
       calc_item_declaration: 'Declaration of conformity',
       calc_item_customs_broker: 'Customs broker',
-      calc_item_delivery_city: 'Delivery to Almaty/lab/SVH',
       calc_item_driver: 'Driver',
       calc_item_adblue: 'AdBlue',
       calc_item_toll_road: 'Toll road',
