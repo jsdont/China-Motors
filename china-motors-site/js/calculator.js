@@ -54,10 +54,22 @@
      ========================================================= */
   const CALC_DEFAULT_CONFIG = {
     currency: { usd_kzt: 540, cny_kzt: 68.5 },
+    diesel: { price_kzt_per_l: 335, liters: 200 },
     taxes: { vat: 0.12, duty: 0.10 },
     fees: {
       plate: 16963,
-      first_registration: 1376000
+      first_registration: 1376000,
+      srtc: 17516,
+      eptc: 50000,
+      sbkts: 150000,
+      sos: 200000,
+      customs_fee: 25950,
+      broker_service: 90000,
+      red_corridor: 450000,
+      adblue: 13500,
+      driver: 65000,
+      insurance: 5000,
+      toll_road: 9000
     },
     util_2026: {
       TRACTOR_N3: 2162600,
@@ -77,6 +89,7 @@
         ...CALC_DEFAULT_CONFIG,
         ...data,
         currency: { ...CALC_DEFAULT_CONFIG.currency, ...data.currency },
+        diesel: { ...CALC_DEFAULT_CONFIG.diesel, ...data.diesel },
         taxes: { ...CALC_DEFAULT_CONFIG.taxes, ...data.taxes },
         fees: { ...CALC_DEFAULT_CONFIG.fees, ...data.fees },
         util_2026: { ...CALC_DEFAULT_CONFIG.util_2026, ...data.util_2026 }
@@ -307,10 +320,13 @@
    ========================================================= */
 
   function getExpensePackage(profile, excelMax, rate) {
-    // дизель: 220 литров × цена из конфига
-    const dieselLiters = 220;
-    const dieselPrice = CALC_CONFIG.diesel?.price_kzt_per_l || 360;
-    const dieselSum = dieselLiters * dieselPrice;
+    const fees = CALC_CONFIG.fees;
+
+    // Дизель + AdBlue одним пакетом (см. calc_item_diesel_pack)
+    const dieselLiters = CALC_CONFIG.diesel?.liters || 200;
+    const dieselPrice = CALC_CONFIG.diesel?.price_kzt_per_l || 335;
+    const dieselSum = dieselLiters * dieselPrice + (fees.adblue || 0);
+
     // ✅ Декларант на границе: 250$ × курс
     const declarantUSD = 250;
     const declarantSum = declarantUSD * rate;
@@ -337,8 +353,8 @@
     if (!excelMax) {
       return {
         mandatory: [
-          ['calc_item_customs_fee', 29592],
-          ['calc_item_broker_service', 90000]
+          ['calc_item_customs_fee', fees.customs_fee],
+          ['calc_item_broker_service', fees.broker_service]
         ],
         delivery: [
           ['calc_item_delivery_city', 150000]
@@ -349,10 +365,11 @@
     // Excel / максимум
     return {
       mandatory: [
-        ['calc_item_sbkts', 200000],
-        ['calc_item_sos', 150000],
-        ['calc_item_customs_fee', 29592],
-        ['calc_item_broker_service', 90000],
+        ['calc_item_epts', fees.eptc],
+        ['calc_item_sbkts', fees.sbkts],
+        ['calc_item_sos', fees.sos],
+        ['calc_item_customs_fee', fees.customs_fee],
+        ['calc_item_broker_service', fees.broker_service],
 
         // ✅ СВХ по формуле
         ['calc_item_svh', svhSum],
@@ -360,10 +377,14 @@
         // ✅ Декларант на границе
         ['calc_item_border_broker', declarantSum],
 
-        // ✅ Дизель: 220л × цена
+        // ✅ Дизель + AdBlue
         ['calc_item_diesel_pack', dieselSum],
 
-        ['calc_item_red_corridor', 50000]
+        ['calc_item_red_corridor', fees.red_corridor],
+
+        ['calc_item_driver', fees.driver],
+        ['calc_item_insurance', fees.insurance],
+        ['calc_item_toll_road', fees.toll_road]
       ],
       delivery: [
         ['calc_item_delivery_city', 150000]
@@ -448,7 +469,7 @@
 
     const baseKZT = priceUSD * rate;
     const dutyKZT = baseKZT * DUTY;
-    const customsFee = 29592;
+    const customsFee = CALC_CONFIG.fees?.customs_fee || 25950;
     // ✅ Акциз (только легковые)
     let exciseKZT = 0;
     if (CURRENT_VEHICLE_PROFILE === "CAR") {

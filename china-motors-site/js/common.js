@@ -196,6 +196,9 @@
       calc_item_diesel_pack: 'Солярка + AdBlue пакет',
       calc_item_red_corridor: '«Красный коридор»',
       calc_item_thanks_astana: '«Спасибо Астане»',
+      calc_item_driver: 'Водитель',
+      calc_item_insurance: 'Страховка',
+      calc_item_toll_road: 'Платная дорога',
 
       calc_item_declaration: 'Декларация о соответствии',
       calc_item_customs_broker: 'Таможенный брокер',
@@ -408,6 +411,9 @@
       calc_item_diesel_pack: 'Дизель + AdBlue пакеті',
       calc_item_red_corridor: '«Қызыл дәліз»',
       calc_item_thanks_astana: '«Астанаға рахмет»',
+      calc_item_driver: 'Жүргізуші',
+      calc_item_insurance: 'Сақтандыру',
+      calc_item_toll_road: 'Ақылы жол',
 
       calc_item_declaration: 'Сәйкестік декларациясы',
       calc_item_customs_broker: 'Кедендік брокер',
@@ -619,6 +625,9 @@
       calc_item_diesel_pack: '柴油 + AdBlue 套餐',
       calc_item_red_corridor: '红色通道',
       calc_item_thanks_astana: '“感谢阿斯塔纳”',
+      calc_item_driver: '司机',
+      calc_item_insurance: '保险',
+      calc_item_toll_road: '收费公路',
 
       calc_item_declaration: '符合性声明',
       calc_item_customs_broker: '海关代理',
@@ -832,6 +841,9 @@
       calc_item_diesel_pack: 'Diesel + AdBlue package',
       calc_item_red_corridor: 'Red corridor',
       calc_item_thanks_astana: '“Thanks to Astana”',
+      calc_item_driver: 'Driver',
+      calc_item_insurance: 'Insurance',
+      calc_item_toll_road: 'Toll road',
 
       calc_item_declaration: 'Declaration of conformity',
       calc_item_customs_broker: 'Customs broker',
