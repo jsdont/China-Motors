@@ -496,7 +496,8 @@
     document.getElementById('vatOutKZT') &&
       (document.getElementById('vatOutKZT').textContent = fmt(vatKZT) + ' ₸');
 
-    const excelMax = document.getElementById('flagExcelMax')?.checked;
+    // Клиентский расчёт всегда показывает полную расшифровку расходов.
+    const excelMax = true;
 
     const pkg = getExpensePackage(
       CURRENT_VEHICLE_PROFILE,
@@ -655,10 +656,6 @@
       deliveryTotal +
       utilTotal;
 
-    if (document.getElementById('flagExcludeBase')?.checked) {
-      totalKZT -= baseKZT;
-    }
-
     $('#sTotalKZT').textContent = fmt(totalKZT) + ' ₸';
     $('#sTotalUSD').textContent = '≈ ' + fmt(totalKZT / rate) + ' USD';
     if ($('#sTotalCNY')) {
@@ -733,10 +730,6 @@
     }
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    updateNBKRate(false); // только показать, НЕ менять input
-  });
-
   document.addEventListener('langchange', recalc);
 
   function generateCalcId() {
@@ -785,7 +778,9 @@
     await loadCalcConfig();
     // Живые курсы нужны до prefillFromURL(), иначе перевод цены из юаней
     // в доллары (если товар пришёл с CNY-ценой) отработает на дефолтном курсе.
-    await updateNBKRate();
+    // updateInput:true — сразу подставляем живой курс в поле #rate, а не
+    // ждём, пока клиент сам нажмёт «Обновить курс».
+    await updateNBKRate({ updateInput: true });
     prefillFromURL();
     updateVehicleProfile();
     recalc(); // уже пересчитает с новым годом и весом
@@ -853,7 +848,6 @@
 
   }
 
-  document.getElementById('flagExcelMax')?.addEventListener('change', recalc);
   document.getElementById('btnRefreshRate')
     ?.addEventListener('click', () => {
       updateNBKRate({ updateInput: true, doRecalc: true });
