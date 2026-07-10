@@ -210,6 +210,7 @@
       calc_item_util_tax: 'Утилизационный сбор',
       calc_item_first_reg: 'Первичная регистрация',
       calc_item_srtc: 'Техпаспорт (СРТС)',
+      calc_flag_intl_carrier: 'Есть удостоверение международного перевозчика (первичная регистрация не взимается для тягачей до 7 лет)',
 
 
       // TOTAL LABELS
@@ -422,6 +423,7 @@
       calc_item_util_tax: 'Утилизациялық алым',
       calc_item_first_reg: 'Бастапқы тіркеу',
       calc_item_srtc: 'Техникалық төлқұжат (СРТС)',
+      calc_flag_intl_carrier: 'Халықаралық тасымалдаушы куәлігі бар (тартқыштар үшін 7 жасқа дейін бастапқы тіркеу алынбайды)',
 
       // TOTAL LABELS
       calc_total_vehicle: 'Көлік құны',
@@ -633,6 +635,7 @@
       calc_item_util_tax: '回收费',
       calc_item_first_reg: '首次注册',
       calc_item_srtc: '技术护照（SRTC）',
+      calc_flag_intl_carrier: '持有国际承运人证书（7年以内牵引车免收首次注册费）',
 
       // TOTAL LABELS
       calc_total_vehicle: '车辆价格',
@@ -846,6 +849,7 @@
       calc_item_util_tax: 'Recycling fee',
       calc_item_first_reg: 'Initial registration',
       calc_item_srtc: 'Technical passport (SRTC)',
+      calc_flag_intl_carrier: 'Has international carrier permit (primary registration waived for tractors under 7 years old)',
 
       // TOTAL LABELS
       calc_total_vehicle: 'Vehicle price',

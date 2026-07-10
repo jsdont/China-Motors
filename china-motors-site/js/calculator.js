@@ -446,10 +446,14 @@
     const mrp = getCurrentMRP();
 
     // ✅ правильная ставка первички
+    // Чекбокс "есть удостоверение международного перевозчика" — по
+    // умолчанию включён (checked в HTML), т.к. в большинстве случаев он
+    // у клиентов есть; актуален только для тягачей (см. toggleTractorBlock).
+    const intlCarrier = document.getElementById('flagIntlCarrier')?.checked ?? URL_PARAMS.intl;
     const firstRegRate = getFirstRegRateByAge(
       vehicleAge,
       CURRENT_VEHICLE_PROFILE,
-      URL_PARAMS.intl
+      intlCarrier
     );
 
 
@@ -754,6 +758,7 @@
     await updateNBKRate({ updateInput: true });
     prefillFromURL();
     updateVehicleProfile();
+    toggleTractorBlock();
     recalc(); // уже пересчитает с новым годом и весом
     // ✅ показать hybridBlock сразу при загрузке
     const isCar = document.getElementById("type").value === "CAR";
@@ -813,10 +818,20 @@
         document.getElementById("hybridFields").style.display = "none";
       }
 
+      toggleTractorBlock();
+
       recalc();
     });
 
 
+  }
+
+  // Чекбокс "удостоверение международного перевозчика" актуален только
+  // для тягачей (N3) — для остальных типов техники он не влияет на расчёт.
+  function toggleTractorBlock() {
+    const isTractor = document.getElementById("type")?.value === "TRACTOR_N3";
+    const box = document.getElementById("tractorBlock");
+    if (box) box.style.display = isTractor ? "block" : "none";
   }
 
   document.getElementById('btnRefreshRate')
