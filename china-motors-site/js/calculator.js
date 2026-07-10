@@ -48,6 +48,15 @@
     }
     return map[year];
   }
+
+  // МРП для расчёта сборов — всегда МРП ТЕКУЩЕГО года (когда оформляется
+  // растаможка), а не года выпуска техники. getMRPByYear(vehicleYear) годится
+  // только для получения возраста техники, не суммы сбора.
+  function getCurrentMRP() {
+    const map = CALC_CONFIG.mrp_by_year;
+    const year = CALC_CONFIG.current_year || new Date().getFullYear();
+    return map?.[year] || 4325;
+  }
   
   /* =========================================================
      CONFIG (fallback)
@@ -69,11 +78,8 @@
       adblue: 13500,
       driver: 65000,
       insurance: 5000,
-      toll_road: 9000
-    },
-    util_2026: {
-      TRACTOR_N3: 2162600,
-      DEFAULT: 4030000
+      toll_road: 9000,
+      svh: 91000
     }
   };
 
@@ -91,8 +97,7 @@
         currency: { ...CALC_DEFAULT_CONFIG.currency, ...data.currency },
         diesel: { ...CALC_DEFAULT_CONFIG.diesel, ...data.diesel },
         taxes: { ...CALC_DEFAULT_CONFIG.taxes, ...data.taxes },
-        fees: { ...CALC_DEFAULT_CONFIG.fees, ...data.fees },
-        util_2026: { ...CALC_DEFAULT_CONFIG.util_2026, ...data.util_2026 }
+        fees: { ...CALC_DEFAULT_CONFIG.fees, ...data.fees }
       };
 
       console.log('[CALC] config loaded');
@@ -219,23 +224,45 @@
     // ✅ Прицепы не платят первичную регистрацию
     if (profile === "TRAILER") return 0;
 
-    // 🚛 Международник (N3) до 7 лет — первичка 0
+    // 🚛 Международник (N3) до 7 лет — первичка 0 (льгота до 1 января 2028,
+    // ст. 830 Налогового кодекса РК)
     if (profile === "TRACTOR_N3" && intl && age <= 7) return 0;
 
-    // До 2 лет
-    if (age <= 2) return 0.25;
+    // До 2 лет включительно (год выпуска = текущий или предыдущий)
+    if (age <= 1) return 0.25;
 
-    // От 2 до 3 лет
-    if (age > 2 && age <= 3) return 240;
+    // Ровно 2 года
+    if (age === 2) return 240;
 
-    // От 3 до 5 лет
-    if (age > 3 && age <= 5) return 350;
+    // 🚛 Седельные тягачи (N3): расширенная вилка 3–7 лет / от 7 лет
+    if (profile === "TRACTOR_N3") {
+      if (age >= 3 && age <= 6) return 350;
+      return 2500;
+    }
 
-    // Старше 5 лет
+    // Остальные грузовики/автобусы (M2/M3/N1/N2/N3 кроме тягачей): 3–5 лет / от 5 лет
+    if (age >= 3 && age <= 4) return 350;
     return 2500;
   }
 
 
+
+  // Утильсбор = 50 × МРП(текущий год) × коэффициент по весу/категории
+  function getUtilCoefByWeight(weight, profile) {
+    // 🚛 Седельный тягач — всегда считается по классу автопоезда 20–50 т,
+    // независимо от собственной массы тягача (подтверждено реальными
+    // таможенными расчётами: тягач весом 10.35 т получает именно этот
+    // коэффициент, а не коэффициент по своему curb weight).
+    if (profile === "TRACTOR_N3") return 11.0;
+
+    if (weight <= 2.5) return 3.5;
+    if (weight <= 3.5) return 7.5;
+    if (weight <= 5)   return 7.5;
+    if (weight <= 8)   return 8.0;
+    if (weight <= 12)  return 9.5;
+    if (weight <= 20)  return 10.5;
+    return 20.5; // 20–50 т и выше (кроме тягачей)
+  }
 
   function getUtilByWeight2026(weight, profile) {
     if (!weight) return 0;
@@ -248,24 +275,8 @@
       return 0;
     }
 
-    // ✅ Берём утиль из конфига
-    if (profile === "TRACTOR_N3") {
-      return getUtilByWeightTable(weight);
-    }
-
-
-    // Для остальных грузовых
-    return getUtilByWeightTable(weight);
-  }
-  function getUtilByWeightTable(weight) {
-    if (weight <= 2.5) return 756875;
-    if (weight <= 3.5) return 1621875;
-    if (weight <= 5)   return 1621875;
-    if (weight <= 8)   return 1730000;
-    if (weight <= 12)  return 2054375;
-    if (weight <= 20)  return 2270625;
-    if (weight <= 50)  return 4433125;
-    return 0;
+    const coef = getUtilCoefByWeight(weight, profile);
+    return 50 * getCurrentMRP() * coef;
   }
   // ===============================
   // ✅ Пошлина по профилю техники
@@ -322,32 +333,19 @@
   function getExpensePackage(profile, excelMax, rate) {
     const fees = CALC_CONFIG.fees;
 
-    // Дизель + AdBlue одним пакетом (см. calc_item_diesel_pack)
+    // Дизель и AdBlue — отдельные строки (как в реальных счетах на растаможку)
     const dieselLiters = CALC_CONFIG.diesel?.liters || 200;
     const dieselPrice = CALC_CONFIG.diesel?.price_kzt_per_l || 335;
-    const dieselSum = dieselLiters * dieselPrice + (fees.adblue || 0);
+    const dieselSum = dieselLiters * dieselPrice;
+    const adblueSum = fees.adblue || 0;
 
     // ✅ Декларант на границе: 250$ × курс
     const declarantUSD = 250;
     const declarantSum = declarantUSD * rate;
-    // ===============================
-    // ✅ СВХ формула как в Excel
-    // ===============================
 
-    let svhSum = 0;
-
-    if (profile === "TRACTOR_N3") {
-      // 🚛 Тягач: 2500 × 18 + 27000
-      svhSum = 2500 * 18 + 27000;
-
-    } else if (profile === "TRAILER") {
-      // Прицепы: СВХ не считаем пока (нужна формула из Excel)
-      svhSum = 0;
-    } else {
-      // 🚚 Самосвал/грузовой: 3500 × 16 + 35000
-      svhSum = 3500 * 16 + 35000;
-    }
-
+    // ✅ Услуги СВХ — фиксированная сумма, одинаковая для грузовых и тягачей
+    // (прицепы отдельно не учитываются, для них своей формулы пока нет)
+    const svhSum = (profile === "TRAILER") ? 0 : (fees.svh || 91000);
 
     // Пока делаем для грузовых / тягачей
     if (!excelMax) {
@@ -371,14 +369,15 @@
         ['calc_item_customs_fee', fees.customs_fee],
         ['calc_item_broker_service', fees.broker_service],
 
-        // ✅ СВХ по формуле
+        // ✅ СВХ
         ['calc_item_svh', svhSum],
 
         // ✅ Декларант на границе
         ['calc_item_border_broker', declarantSum],
 
-        // ✅ Дизель + AdBlue
-        ['calc_item_diesel_pack', dieselSum],
+        // ✅ Дизель и AdBlue отдельными строками
+        ['calc_item_diesel', dieselSum],
+        ['calc_item_adblue', adblueSum],
 
         ['calc_item_red_corridor', fees.red_corridor],
 
@@ -452,7 +451,7 @@
     const vehicleYear = yearEl ? Number(yearEl.value) : null;
 
     const vehicleAge = getVehicleAge(vehicleYear);
-    const mrp = getMRPByYear(vehicleYear);
+    const mrp = getCurrentMRP();
 
     // ✅ правильная ставка первички
     const firstRegRate = getFirstRegRateByAge(

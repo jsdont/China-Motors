@@ -29,7 +29,8 @@
     "adblue": 13500,
     "driver": 65000,
     "insurance": 5000,
-    "toll_road": 9000
+    "toll_road": 9000,
+    "svh": 91000
   },
   "duty_rules": {
     "SPECIAL": 0,
