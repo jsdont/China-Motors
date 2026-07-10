@@ -218,9 +218,6 @@
   }
 
   function getFirstRegRateByAge(age, profile, intl) {
-    // ✅ Спецтехника не платит первичную регистрацию
-    if (profile === "SPECIAL") return 0;
-
     // ✅ Прицепы не платят первичную регистрацию
     if (profile === "TRAILER") return 0;
 
@@ -255,23 +252,20 @@
     // коэффициент, а не коэффициент по своему curb weight).
     if (profile === "TRACTOR_N3") return 11.0;
 
-    if (weight <= 2.5) return 3.5;
-    if (weight <= 3.5) return 7.5;
-    if (weight <= 5)   return 7.5;
-    if (weight <= 8)   return 8.0;
-    if (weight <= 12)  return 9.5;
-    if (weight <= 20)  return 10.5;
-    return 20.5; // 20–50 т и выше (кроме тягачей)
+    // 🚚 Остальная тяжёлая техника (самосвалы, манипуляторы и т.д.):
+    // во ВСЕХ реальных счетах на растаможку утильсбор посчитан по
+    // максимальному разряду (20–50 т) независимо от указанного веса
+    // техники "по паспорту" (собственная масса 10–18 т в этих примерах) —
+    // сбор считается по полной/разрешённой массе, а не по массе тары.
+    // Весь наш каталог — тяжёлые грузовики этого класса, поэтому берём
+    // максимальный коэффициент всегда, а не по весовой сетке.
+    return 20.5;
   }
 
   function getUtilByWeight2026(weight, profile) {
     if (!weight) return 0;
     // ✅ Прицепы и полуприцепы — утильсбор не применяется
     if (profile === "TRAILER") {
-      return 0;
-    }
-    // ✅ Спецтехника — утильсбор не применяется
-    if (profile === "SPECIAL") {
       return 0;
     }
 
@@ -301,10 +295,11 @@
       return 0;
     }
 
-    // ✅ Спецтехника (вышка, манипулятор, миксер и т.д.) = 0%
-    if (profile === "SPECIAL") {
-      return 0;
-    }
+    // ⚠️ Остальная "спецтехника" (манипулятор, автовышка, миксер и т.д.) —
+    // по факту это грузовик с надстройкой, таможня облагает пошлиной как
+    // обычный грузовой (ТНВЭД 8704, не спецмашина) — подтверждено реальным
+    // счётом на манипулятор (10% пошлины, не 0%). Раньше здесь стояло
+    // ошибочное освобождение всего профиля SPECIAL от пошлины.
 
     if (t.includes("кран")) {
       return CALC_CONFIG.duty_rules?.CRANE || 0.08;
@@ -330,7 +325,7 @@
    PACKAGES (as in Excel)
    ========================================================= */
 
-  function getExpensePackage(profile, excelMax, rate) {
+  function getExpensePackage(profile, rate) {
     const fees = CALC_CONFIG.fees;
 
     // Дизель и AdBlue — отдельные строки (как в реальных счетах на растаможку)
@@ -347,20 +342,6 @@
     // (прицепы отдельно не учитываются, для них своей формулы пока нет)
     const svhSum = (profile === "TRAILER") ? 0 : (fees.svh || 91000);
 
-    // Пока делаем для грузовых / тягачей
-    if (!excelMax) {
-      return {
-        mandatory: [
-          ['calc_item_customs_fee', fees.customs_fee],
-          ['calc_item_broker_service', fees.broker_service]
-        ],
-        delivery: [
-          ['calc_item_delivery_city', 150000]
-        ]
-      };
-    }
-
-    // Excel / максимум
     return {
       mandatory: [
         ['calc_item_epts', fees.eptc],
@@ -375,18 +356,21 @@
         // ✅ Декларант на границе
         ['calc_item_border_broker', declarantSum],
 
-        // ✅ Дизель и AdBlue отдельными строками
+        ['calc_item_red_corridor', fees.red_corridor]
+      ],
+      // ✅ Реальная "доставка" — это водитель, топливо, страховка, платная
+      // дорога (ровно так эти статьи сгруппированы в v32fix_work и в реальных
+      // счетах на растаможку). Раньше здесь стояла ОТДЕЛЬНАЯ фиктивная строка
+      // "Доставка до Алматы/лаборатории/СВХ" 150 000 ₸ — в реальных счетах
+      // такой отдельной строки нет, её сумма нигде не встречается: итог
+      // расходов там полностью и без остатка складывается именно из этих
+      // пяти статей. Оставляли бы её — клиент платил бы дважды за доставку.
+      delivery: [
+        ['calc_item_driver', fees.driver],
         ['calc_item_diesel', dieselSum],
         ['calc_item_adblue', adblueSum],
-
-        ['calc_item_red_corridor', fees.red_corridor],
-
-        ['calc_item_driver', fees.driver],
         ['calc_item_insurance', fees.insurance],
         ['calc_item_toll_road', fees.toll_road]
-      ],
-      delivery: [
-        ['calc_item_delivery_city', 150000]
       ]
     };
   }
@@ -496,14 +480,7 @@
     document.getElementById('vatOutKZT') &&
       (document.getElementById('vatOutKZT').textContent = fmt(vatKZT) + ' ₸');
 
-    // Клиентский расчёт всегда показывает полную расшифровку расходов.
-    const excelMax = true;
-
-    const pkg = getExpensePackage(
-      CURRENT_VEHICLE_PROFILE,
-      excelMax,
-      rate
-    );
+    const pkg = getExpensePackage(CURRENT_VEHICLE_PROFILE, rate);
 
     // --- 3) Дополнительные расходы ---
     const mandatoryList = document.getElementById('list-mandatory');
@@ -574,21 +551,15 @@
 
     }
 
-    // ✅ Госномер: только грузовые и тягачи
+    // ✅ Госномер: все, кроме прицепов
     let plateSum = 0;
-    if (
-      CURRENT_VEHICLE_PROFILE !== "SPECIAL" &&
-      CURRENT_VEHICLE_PROFILE !== "TRAILER"
-    ) {
+    if (CURRENT_VEHICLE_PROFILE !== "TRAILER") {
       plateSum = CALC_CONFIG.fees.plate;
     }
 
-    // ✅ СРТС: только грузовые и тягачи
+    // ✅ СРТС: все, кроме прицепов
     let srtcSum = 0;
-    if (
-      CURRENT_VEHICLE_PROFILE !== "SPECIAL" &&
-      CURRENT_VEHICLE_PROFILE !== "TRAILER"
-    ) {
+    if (CURRENT_VEHICLE_PROFILE !== "TRAILER") {
       srtcSum = CALC_CONFIG.fees.srtc || 0;
     }
 
@@ -664,14 +635,6 @@
 
     $('#mandatoryTotal') && ($('#mandatoryTotal').textContent = fmt(mandatoryTotal));
     $('#deliveryTotal') && ($('#deliveryTotal').textContent = fmt(deliveryTotal));
-    console.log('EXCEL MODE CHECK:', excelMax);
-    console.log('BASE KZT:', baseKZT);
-    console.log("TOTAL =", totalKZT);
-
-    const out = document.getElementById("sTotalKZT");
-    console.log("ELEMENT =", out);
-
-
   }
   // nationalbank.kz не отдаёт CORS-заголовки, поэтому браузер не может
   // сходить туда напрямую — курсы берём через бэкенд, который проксирует
