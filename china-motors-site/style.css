@@ -636,7 +636,9 @@ p {
   color: #1F1F1F;
   background: #ffffffff;
 }
-
+html.dark .contact-form textarea {
+  color: white;
+}
 .contact-form input:focus,
 .contact-form textarea:focus {
   border-color: var(--accent-orange);
