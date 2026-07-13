@@ -117,7 +117,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // === helpers (вынесено из catalog.js логики) ===
   const nf = new Intl.NumberFormat('ru-RU');
-  const fmtPrice = n => (n === 0 || n) ? `${nf.format(Number(n))}¥` : 'Цена по запросу';
+  const fmtPrice = (n, currency = 'cny') =>
+    (n === 0 || n) ? `${nf.format(Number(n))}${currency === 'kzt' ? '₸' : '¥'}` : 'Цена по запросу';
 
   function pickImages(v) {
     if (Array.isArray(v.images) && v.images.length) return v.images;
@@ -127,7 +128,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function pickPrice(v) {
-    return v.price_cny ?? v.priceCNY ?? null;
+    if (v.price_kzt) return { amount: v.price_kzt, currency: 'kzt' };
+    if (v.price_cny ?? v.priceCNY) return { amount: v.price_cny ?? v.priceCNY, currency: 'cny' };
+    return { amount: null, currency: 'cny' };
   }
 
   const AVAIL_LABELS = {
@@ -143,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function pickBodyRaw(v) {
     return (
-      v.body_type ?? v.bodyType ?? v.body ?? v.body_name ??
+      v.category ?? v.body_type ?? v.bodyType ?? v.body ?? v.body_name ??
       v.configuration ?? v.config ?? v.spec ?? v.specs ?? ''
     );
   }
@@ -173,17 +176,19 @@ document.addEventListener('DOMContentLoaded', () => {
   function buildSpecsTable(v) {
     specsEl.innerHTML = '';
 
+    const price = pickPrice(v);
+
     const rows = [
       ['fa-industry', 'Бренд', v.brand],
       ['fa-hashtag', 'Модель', v.model],
       ['fa-calendar', 'Год выпуска', v.year],
-      ['fa-truck', 'Конструкция', v.body_type],
+      ['fa-truck', 'Категория', v.category],
+      ['fa-location-dot', 'Город', v.city],
       ['fa-road', 'Колёсная формула', v.wheel_formula],
       ['fa-gears', 'КПП', v.gearbox],
       ['fa-bolt', 'Мощность двигателя', v.engine_power_hp ? `${v.engine_power_hp} л.с.` : null],
       ['fa-weight-hanging', 'Грузоподъёмность', v.load_capacity_t ? `${v.load_capacity_t} т` : null],
-      ['fa-gauge-high', 'Макс. скорость', v.max_speed_kmh ? `${v.max_speed_kmh} км/ч` : null],
-      ['fa-tag', 'Цена', v.price_cny ? `${v.price_cny}¥` : null],
+      ['fa-tag', 'Цена', price.amount ? fmtPrice(price.amount, price.currency) : null],
       ['fa-circle-check', 'Наличие', AVAIL_LABELS[v.availability] || null],
       ['fa-weight', 'Масса, т', v.weight_t],
       ['fa-road-circle-check', 'Пробег, км', v.mileage_km],
@@ -233,9 +238,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const v = await res.json();
 
       const title =
-        [v.brand, v.model, v.name].filter(Boolean).join(' ').trim() || 'Без названия';
+        [v.brand, v.model, v.body_type].filter(Boolean).join(' ').trim() || 'Без названия';
 
-      const priceNum = pickPrice(v);
+      const price = pickPrice(v);
       const priceUsdForCalc = pickPriceUsd(v);
       const images = pickImages(v);
       const bodyRaw = pickBodyRaw(v);
@@ -245,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // === fill page ===
       titleEl.textContent = title;
-      priceEl.textContent = fmtPrice(priceNum);
+      priceEl.textContent = fmtPrice(price.amount, price.currency);
 
       const userListingBadge = document.getElementById('userListingBadge');
       if (userListingBadge && v.is_user_listing) {
@@ -271,7 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
           `calculator.html?` +
           `title=${encodeURIComponent(title)}` +
           `&price=${encodeURIComponent(priceUsdForCalc ?? '')}` +
-          `&price_cny=${encodeURIComponent(priceNum ?? '')}` +
+          `&price_cny=${encodeURIComponent(price.currency === 'cny' ? (price.amount ?? '') : '')}` +
           `&body=${encodeURIComponent(bodyCanon)}` +
           `&body_raw=${encodeURIComponent(bodyRaw || '')}` +
           `&weight=${encodeURIComponent(v.weight_t ?? '')}` +
@@ -281,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (btnReq) {
         btnReq.href =
           `contacts.html?message=${encodeURIComponent(
-            `Запрос по технике:\n${title}\nЦена: ${fmtPrice(priceNum)}`
+            `Запрос по технике:\n${title}\nЦена: ${fmtPrice(price.amount, price.currency)}`
           )}`;
       }
 

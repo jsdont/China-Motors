@@ -132,32 +132,62 @@
         <form id="listingForm" class="listing-form">
           <div class="grid-2">
             <div>
-              <label data-i18n="register_fullname_label">Название / модель</label>
-              <input type="text" id="l-name" required>
-            </div>
-            <div>
-              <label data-i18n="register_companyname_label">Марка</label>
+              <label data-i18n="account_listing_brand_label">Бренд</label>
               <input type="text" id="l-brand">
             </div>
-          </div>
-          <div class="grid-2">
             <div>
               <label>Модель</label>
               <input type="text" id="l-model">
             </div>
+          </div>
+          <div class="grid-2">
             <div>
               <label data-i18n="calc_year_label">Год выпуска</label>
               <input type="number" id="l-year">
             </div>
+            <div>
+              <label data-i18n="account_listing_category_label">Категория</label>
+              <input type="text" id="l-category" placeholder="Самосвал, тягач...">
+            </div>
           </div>
           <div class="grid-2">
             <div>
-              <label data-i18n="filter_body_label">Тип транспорта</label>
-              <input type="text" id="l-body-type" placeholder="Самосвал, тягач...">
+              <label data-i18n="account_listing_title_label">Название / модель</label>
+              <input type="text" id="l-body-type" required>
             </div>
             <div>
-              <label>Цена, ¥</label>
-              <input type="number" id="l-price-cny">
+              <label data-i18n="account_listing_city_label">Город</label>
+              <input type="text" id="l-city">
+            </div>
+          </div>
+          <div class="grid-2">
+            <div>
+              <label data-i18n="account_listing_weight_label">Масса, т</label>
+              <input type="number" step="0.01" id="l-weight-t">
+            </div>
+            <div>
+              <label data-i18n="card_wheel_formula_label">Колёсная формула</label>
+              <input type="text" id="l-wheel-formula" placeholder="6x4">
+            </div>
+          </div>
+          <div class="grid-2">
+            <div>
+              <label data-i18n="account_listing_power_label">Мощность двигателя, л.с.</label>
+              <input type="number" id="l-engine-power">
+            </div>
+            <div>
+              <label data-i18n="account_listing_load_capacity_label">Грузоподъёмность, т</label>
+              <input type="number" step="0.01" id="l-load-capacity">
+            </div>
+          </div>
+          <div class="grid-2">
+            <div>
+              <label data-i18n="card_gearbox_label">КПП</label>
+              <input type="text" id="l-gearbox">
+            </div>
+            <div>
+              <label data-i18n="account_listing_price_kzt_label">Цена, ₸</label>
+              <input type="number" id="l-price-kzt">
             </div>
           </div>
           <div class="grid-2">
@@ -166,11 +196,11 @@
               <input type="number" id="l-mileage">
             </div>
             <div>
-              <label>Ссылка на фото</label>
-              <input type="url" id="l-image-url" placeholder="https://.../photo.jpg">
+              <label data-i18n="account_listing_photos_label">Фото</label>
+              <input type="file" id="l-photos" accept="image/*" multiple>
             </div>
           </div>
-          <label data-i18n="register_address_label">Доп. информация</label>
+          <label data-i18n="account_listing_description_label">Описание</label>
           <textarea id="l-extra-info"></textarea>
 
           <button type="submit" class="btn" style="margin-top:12px" id="btnSubmitListing">

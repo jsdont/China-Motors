@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         listEl.innerHTML = listings.length
           ? listings.map(l => `
               <div class="my-listing-card">
-                <span>${[l.brand, l.model, l.name].filter(Boolean).join(' ') || ('Объявление #' + l.id)}${l.year ? ', ' + l.year : ''}</span>
+                <span>${[l.brand, l.model, l.body_type].filter(Boolean).join(' ') || ('Объявление #' + l.id)}${l.year ? ', ' + l.year : ''}</span>
                 <span class="listing-approval ${l.is_approved ? 'approved' : 'pending'}">
                   ${l.is_approved ? 'Одобрено, видно в каталоге' : 'На модерации'}
                 </span>
@@ -187,17 +187,30 @@ document.addEventListener('DOMContentLoaded', async () => {
       const btn = document.getElementById('btnSubmitListing');
       btn.disabled = true;
       try {
-        await window.CMAuth.apiAuthed('POST', '/api/vehicles/my-listings/', {
-          name: document.getElementById('l-name').value.trim(),
+        const created = await window.CMAuth.apiAuthed('POST', '/api/vehicles/my-listings/', {
           brand: document.getElementById('l-brand').value.trim(),
           model: document.getElementById('l-model').value.trim(),
           year: Number(document.getElementById('l-year').value) || null,
           body_type: document.getElementById('l-body-type').value.trim(),
-          price_cny: Number(document.getElementById('l-price-cny').value) || null,
+          category: document.getElementById('l-category').value.trim(),
+          city: document.getElementById('l-city').value.trim(),
+          weight_t: document.getElementById('l-weight-t').value || null,
+          wheel_formula: document.getElementById('l-wheel-formula').value.trim(),
+          engine_power_hp: Number(document.getElementById('l-engine-power').value) || null,
+          load_capacity_t: document.getElementById('l-load-capacity').value || null,
+          gearbox: document.getElementById('l-gearbox').value.trim(),
+          price_kzt: document.getElementById('l-price-kzt').value || null,
           mileage_km: Number(document.getElementById('l-mileage').value) || null,
-          image_url: document.getElementById('l-image-url').value.trim(),
           extra_info: document.getElementById('l-extra-info').value.trim(),
         });
+
+        const photoInput = document.getElementById('l-photos');
+        if (photoInput?.files?.length) {
+          const formData = new FormData();
+          [...photoInput.files].forEach(f => formData.append('photos', f));
+          await window.CMAuth.apiAuthedUpload('POST', `/api/vehicles/my-listings/${created.id}/photos/`, formData);
+        }
+
         statusEl.textContent = 'Объявление отправлено на модерацию';
         statusEl.className = 'success';
         statusEl.style.display = 'block';

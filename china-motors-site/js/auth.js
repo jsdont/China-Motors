@@ -158,8 +158,41 @@
     return data;
   }
 
+  // Как apiAuthed, но для multipart/form-data (загрузка файлов) — без
+  // Content-Type (браузер сам проставит его с boundary) и без JSON.stringify.
+  async function apiAuthedUpload(method, path, formData) {
+    let session = getSession();
+    if (!session) throw new Error('NOT_AUTHENTICATED');
+
+    async function doFetch(token) {
+      return fetch(`${API_BASE}${path}`, {
+        method,
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData,
+      });
+    }
+
+    let res = await doFetch(session.access);
+    if (res.status === 401) {
+      const newAccess = await refreshAccess();
+      if (!newAccess) {
+        clearSession();
+        throw new Error('SESSION_EXPIRED');
+      }
+      res = await doFetch(newAccess);
+    }
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const firstError = Object.values(data)[0];
+      const message = Array.isArray(firstError) ? firstError[0] : (data.detail || 'Ошибка запроса');
+      throw new Error(message);
+    }
+    return data;
+  }
+
   window.CMAuth = {
     API_BASE, registerPerson, registerCompany, registerService, registerBank, registerPartner,
-    login, logout, getSession, apiAuthed,
+    login, logout, getSession, apiAuthed, apiAuthedUpload,
   };
 })();

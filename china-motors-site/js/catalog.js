@@ -59,15 +59,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!v?.id) return null;
 
     const title =
-      [v.brand, v.model, v.name].filter(Boolean).join(' ').trim();
+      [v.brand, v.model, v.body_type].filter(Boolean).join(' ').trim();
 
     const bodyRaw =
-      v.body_type || v.body || v.configuration || '';
+      v.category || v.body_type || v.body || v.configuration || '';
+
+    const priceKzt = Number(v.price_kzt) || null;
+    const priceCny = Number(v.price_cny) || null;
 
     return {
       id: v.id,
       title,
-      price: Number(v.price_cny) || null,
+      price: priceKzt || priceCny,
+      priceCurrency: priceKzt ? 'kzt' : 'cny',
       year: v.year || null,
       bodyType: canonBody(title, bodyRaw),
       bodyRaw,
@@ -116,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <div class="cm-card__footer">
             <div class="price">
-              ${item.price ? `${item.price.toLocaleString('ru-RU')} ¥` : 'Цена уточняется'}
+              ${item.price ? `${item.price.toLocaleString('ru-RU')} ${item.priceCurrency === 'kzt' ? '₸' : '¥'}` : 'Цена уточняется'}
             </div>
             <span data-i18n="btn_calculate_catalog" class="btn-outline">Подробнее и расчёт</span>
           </div>
