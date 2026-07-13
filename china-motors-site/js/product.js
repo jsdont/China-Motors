@@ -247,6 +247,13 @@ document.addEventListener('DOMContentLoaded', () => {
       titleEl.textContent = title;
       priceEl.textContent = fmtPrice(priceNum);
 
+      const userListingBadge = document.getElementById('userListingBadge');
+      if (userListingBadge && v.is_user_listing) {
+        const prefix = window.t ? window.t('badge_user_listing_prefix') : 'Объявление от';
+        userListingBadge.textContent = `${prefix} ${v.owner_role_label || 'клиента'}`;
+        userListingBadge.style.display = 'inline-block';
+      }
+
       document.title = `${title} — China Motors`;
 
       buildGallery(images);
