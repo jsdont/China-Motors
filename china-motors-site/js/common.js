@@ -13,6 +13,34 @@
       nav_services: 'Услуги',
       nav_contacts: 'Контакты',
       nav_calculator: 'Калькулятор',
+      nav_login: 'Войти',
+      nav_account: 'Личный кабинет',
+      nav_not_verified: 'не подтверждён',
+      nav_logout_confirm: 'Выйти из аккаунта?',
+      title_register: 'China Motors - Регистрация',
+      title_login: 'China Motors - Вход',
+      register_hero: 'Регистрация',
+      register_tagline: 'Создайте аккаунт клиента China Motors',
+      register_tab_person: 'Физ. лицо',
+      register_tab_company: 'Юр. лицо',
+      register_person_note: 'Физ. лицо может приобрести легковой автомобиль. Для коммерческой техники используйте регистрацию юр. лица.',
+      register_company_note: 'Юр. лица могут приобретать коммерческую технику разных видов.',
+      register_phone_label: 'Телефон',
+      register_password_label: 'Пароль',
+      register_fullname_label: 'ФИО',
+      register_iin_label: 'ИИН (для договора)',
+      register_companyname_label: 'Название компании',
+      register_bin_label: 'БИН (для договора)',
+      register_address_label: 'Юридический адрес',
+      register_submit: 'Создать аккаунт',
+      register_have_account: 'Уже есть аккаунт? Войти',
+      register_err_required: 'Заполните обязательные поля',
+      register_success: 'Регистрация завершена! Аккаунт ожидает подтверждения администратором.',
+      login_hero: 'Вход',
+      login_tagline: 'Войдите в личный кабинет China Motors',
+      login_submit: 'Войти',
+      login_no_account: 'Нет аккаунта? Зарегистрироваться',
+      login_success: 'Вход выполнен!',
 
       // COMMON
       brand_title: 'China Motors',
@@ -238,6 +266,34 @@
       nav_services: 'Қызметтер',
       nav_contacts: 'Байланыс',
       nav_calculator: 'Калькулятор',
+      nav_login: 'Кіру',
+      nav_account: 'Жеке кабинет',
+      nav_not_verified: 'расталмаған',
+      nav_logout_confirm: 'Аккаунттан шығу керек пе?',
+      title_register: 'China Motors - Тіркелу',
+      title_login: 'China Motors - Кіру',
+      register_hero: 'Тіркелу',
+      register_tagline: 'China Motors клиент аккаунтын жасаңыз',
+      register_tab_person: 'Жеке тұлға',
+      register_tab_company: 'Заңды тұлға',
+      register_person_note: 'Жеке тұлға жеңіл автокөлік сатып ала алады. Коммерциялық техника үшін заңды тұлға ретінде тіркеліңіз.',
+      register_company_note: 'Заңды тұлғалар әртүрлі коммерциялық техниканы сатып ала алады.',
+      register_phone_label: 'Телефон',
+      register_password_label: 'Құпия сөз',
+      register_fullname_label: 'Аты-жөні',
+      register_iin_label: 'ЖСН (келісімшарт үшін)',
+      register_companyname_label: 'Компания атауы',
+      register_bin_label: 'БСН (келісімшарт үшін)',
+      register_address_label: 'Заңды мекенжай',
+      register_submit: 'Аккаунт жасау',
+      register_have_account: 'Аккаунтыңыз бар ма? Кіру',
+      register_err_required: 'Міндетті өрістерді толтырыңыз',
+      register_success: 'Тіркелу аяқталды! Аккаунт әкімші растауын күтуде.',
+      login_hero: 'Кіру',
+      login_tagline: 'China Motors жеке кабинетіне кіріңіз',
+      login_submit: 'Кіру',
+      login_no_account: 'Аккаунтыңыз жоқ па? Тіркелу',
+      login_success: 'Кіру сәтті өтті!',
 
       brand_title: 'China Motors',
       hero_title_main: 'China Motors',
@@ -450,6 +506,34 @@
       nav_services: '服务',
       nav_contacts: '联系',
       nav_calculator: '计算器',
+      nav_login: '登录',
+      nav_account: '个人中心',
+      nav_not_verified: '未验证',
+      nav_logout_confirm: '确定要退出登录吗？',
+      title_register: 'China Motors - 注册',
+      title_login: 'China Motors - 登录',
+      register_hero: '注册',
+      register_tagline: '创建 China Motors 客户账户',
+      register_tab_person: '个人',
+      register_tab_company: '公司',
+      register_person_note: '个人可以购买乘用车。购买商用车请使用公司注册。',
+      register_company_note: '公司可以购买各种商用车辆。',
+      register_phone_label: '电话',
+      register_password_label: '密码',
+      register_fullname_label: '姓名',
+      register_iin_label: '身份识别号（IIN，用于合同）',
+      register_companyname_label: '公司名称',
+      register_bin_label: '商业识别号（BIN，用于合同）',
+      register_address_label: '法定地址',
+      register_submit: '创建账户',
+      register_have_account: '已有账户？登录',
+      register_err_required: '请填写必填项',
+      register_success: '注册完成！账户正在等待管理员验证。',
+      login_hero: '登录',
+      login_tagline: '登录您的 China Motors 个人中心',
+      login_submit: '登录',
+      login_no_account: '没有账户？注册',
+      login_success: '登录成功！',
 
       brand_title: 'China Motors',
       hero_title_main: 'China Motors',
@@ -662,6 +746,34 @@
       nav_services: 'Services',
       nav_contacts: 'Contacts',
       nav_calculator: 'Calculator',
+      nav_login: 'Log in',
+      nav_account: 'Account',
+      nav_not_verified: 'not verified',
+      nav_logout_confirm: 'Log out of your account?',
+      title_register: 'China Motors - Register',
+      title_login: 'China Motors - Login',
+      register_hero: 'Register',
+      register_tagline: 'Create a China Motors customer account',
+      register_tab_person: 'Individual',
+      register_tab_company: 'Company',
+      register_person_note: 'Individuals can purchase a passenger car. For commercial vehicles, please register as a company.',
+      register_company_note: 'Companies can purchase various types of commercial vehicles.',
+      register_phone_label: 'Phone',
+      register_password_label: 'Password',
+      register_fullname_label: 'Full name',
+      register_iin_label: 'IIN (for the contract)',
+      register_companyname_label: 'Company name',
+      register_bin_label: 'BIN (for the contract)',
+      register_address_label: 'Legal address',
+      register_submit: 'Create account',
+      register_have_account: 'Already have an account? Log in',
+      register_err_required: 'Please fill in the required fields',
+      register_success: 'Registration complete! Your account is awaiting admin verification.',
+      login_hero: 'Login',
+      login_tagline: 'Log in to your China Motors account',
+      login_submit: 'Log in',
+      login_no_account: "Don't have an account? Register",
+      login_success: 'Logged in successfully!',
 
       brand_title: 'China Motors',
       hero_title_main: 'China Motors',
@@ -956,6 +1068,38 @@
     });
   }
 
+  // Показывает «Войти» или «Личный кабинет» в шапке — зависит от того,
+  // залогинен ли клиент (js/auth.js, если подключён на странице).
+  function initAuthNav() {
+    const link = document.getElementById('navAuthLink');
+    if (!link || !window.CMAuth) return;
+
+    const session = window.CMAuth.getSession();
+    const label = link.querySelector('span');
+
+    if (session) {
+      link.href = '#';
+      if (label) label.setAttribute('data-i18n', 'nav_account');
+      label.textContent = session.isVerified
+        ? window.t('nav_account')
+        : `${window.t('nav_account')} (${window.t('nav_not_verified')})`;
+      link.onclick = (e) => {
+        e.preventDefault();
+        if (confirm(window.t('nav_logout_confirm'))) {
+          window.CMAuth.logout();
+          location.reload();
+        }
+      };
+    } else {
+      link.href = 'login.html';
+      if (label) {
+        label.setAttribute('data-i18n', 'nav_login');
+        label.textContent = window.t('nav_login');
+      }
+      link.onclick = null;
+    }
+  }
+
   /* =====================
      PARTIAL LOADER
      ===================== */
@@ -977,6 +1121,7 @@
     initTheme();
     initLang();
     initBurger();
+    initAuthNav();
   });
 
 
