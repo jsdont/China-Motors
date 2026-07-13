@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta name="api-base" content="https://cm-backend-daniyal.fly.dev">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Личный кабинет China Motors">
+
+  <meta name="theme-color" content="#0b2b5a">
+  <link rel="icon" href="/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+  <title data-i18n="title_account">China Motors - Личный кабинет</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    .account-header {
+      max-width: 900px;
+      margin: 0 auto 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .account-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+    .account-badge.verified { background: #1e7e34; color: #fff; }
+    .account-badge.not-verified { background: #a15c00; color: #fff; }
+
+    .deal-list { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+    .deal-card {
+      background: #1e1e1e;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: left;
+    }
+    .deal-card h3 { color: #fff; margin-bottom: 6px; }
+    .deal-card .deal-meta { opacity: .8; font-size: 14px; margin-bottom: 12px; }
+
+    .assignment-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px dashed rgba(255,255,255,.1);
+      flex-wrap: wrap;
+    }
+    .assignment-row:last-child { border-bottom: none; }
+    .assignment-role { font-weight: 600; min-width: 140px; }
+    .assignment-status { font-size: 13px; opacity: .85; }
+    .assignment-status.PENDING { color: #cccccc; }
+    .assignment-status.IN_PROGRESS { color: #f0ad4e; }
+    .assignment-status.DONE { color: #4caf50; }
+
+    .my-assignment-form { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 8px; }
+    .my-assignment-form select, .my-assignment-form input {
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid var(--primary-blue);
+      background: #1f1f1f;
+      color: #fff;
+    }
+
+    .comments-block { margin-top: 14px; border-top: 1px solid rgba(255,255,255,.1); padding-top: 12px; }
+    .comment-item { font-size: 14px; margin-bottom: 8px; opacity: .9; }
+    .comment-item b { opacity: .7; font-weight: 600; }
+    .comment-form { display: flex; gap: 8px; margin-top: 8px; }
+    .comment-form input { flex: 1; padding: 8px; border-radius: 6px; border: 1px solid var(--primary-blue); background: #1f1f1f; color: #fff; }
+
+    .empty-note { text-align: center; opacity: .7; padding: 30px 0; }
+  </style>
+</head>
+<body>
+  <div id="siteHeader"></div>
+
+  <section class="hero section fade-in">
+    <div class="container">
+      <div class="hero-overlay">
+        <h1 data-i18n="account_hero">Личный кабинет</h1>
+        <p class="White-p" id="accountRoleLine">—</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section fade-in">
+    <div class="container">
+      <div class="account-header">
+        <div></div>
+        <button class="btn" id="btnLogout"><i class="fas fa-right-from-bracket"></i> <span data-i18n="account_logout">Выйти</span></button>
+      </div>
+
+      <div id="dealList" class="deal-list">
+        <p class="empty-note" data-i18n="account_loading">Загрузка...</p>
+      </div>
+    </div>
+  </section>
+
+  <div id="siteFooter"></div>
+  <script src="js/common.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/account.js"></script>
+</body>
+</html>
