@@ -634,7 +634,7 @@ p {
   margin-bottom: 20px;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
   color: #ffffff;
-  background: #ffffffff;
+  background: #1f1f1f;
 }
 
 .contact-form input:focus,

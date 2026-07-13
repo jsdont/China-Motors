@@ -66,6 +66,30 @@
     return data;
   }
 
+  async function registerService({ phone, password, companyName, bin, roleKey }) {
+    const data = await apiPost('/api/auth/register/service/', {
+      phone, password, company_name: companyName, bin, role_key: roleKey,
+    });
+    saveSession(data);
+    return data;
+  }
+
+  async function registerBank({ phone, password, bankName, bik, address }) {
+    const data = await apiPost('/api/auth/register/bank/', {
+      phone, password, bank_name: bankName, bik, address,
+    });
+    saveSession(data);
+    return data;
+  }
+
+  async function registerPartner({ phone, password, companyName, country, regNo }) {
+    const data = await apiPost('/api/auth/register/partner/', {
+      phone, password, company_name: companyName, country, reg_no: regNo,
+    });
+    saveSession(data);
+    return data;
+  }
+
   async function login({ phone, password }) {
     const data = await apiPost('/api/auth/login/', { phone, password });
     saveSession(data);
@@ -76,5 +100,8 @@
     clearSession();
   }
 
-  window.CMAuth = { API_BASE, registerPerson, registerCompany, login, logout, getSession };
+  window.CMAuth = {
+    API_BASE, registerPerson, registerCompany, registerService, registerBank, registerPartner,
+    login, logout, getSession,
+  };
 })();
