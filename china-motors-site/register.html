@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta name="api-base" content="https://cm-backend-daniyal.fly.dev">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Регистрация клиента China Motors — физическое или юридическое лицо">
+
+  <meta name="theme-color" content="#0b2b5a">
+  <link rel="icon" href="/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+  <title data-i18n="title_register">China Motors - Регистрация</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    .auth-toggle {
+      display: flex;
+      gap: 10px;
+      max-width: 600px;
+      margin: 0 auto 20px;
+    }
+    .auth-toggle button {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      border: 2px solid var(--primary-blue);
+      background: transparent;
+      color: var(--primary-blue);
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .auth-toggle button.active {
+      background: var(--primary-blue);
+      color: #fff;
+    }
+    .auth-note {
+      max-width: 600px;
+      margin: 0 auto 16px;
+      opacity: .8;
+      font-size: 14px;
+    }
+    .auth-link {
+      display: block;
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="siteHeader"></div>
+
+  <section class="hero section fade-in">
+    <div class="container">
+      <div class="hero-overlay">
+        <h1 data-i18n="register_hero">Регистрация</h1>
+        <p class="White-p" data-i18n="register_tagline">Создайте аккаунт клиента China Motors</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section fade-in">
+    <div class="container">
+
+      <div class="auth-toggle">
+        <button id="tabPerson" class="active" data-i18n="register_tab_person">Физ. лицо</button>
+        <button id="tabCompany" data-i18n="register_tab_company">Юр. лицо</button>
+      </div>
+
+      <!-- ФИЗ. ЛИЦО -->
+      <form id="formPerson" class="contact-form">
+        <p class="auth-note" data-i18n="register_person_note">Физ. лицо может приобрести легковой автомобиль. Для коммерческой техники используйте регистрацию юр. лица.</p>
+
+        <label for="p-phone" data-i18n="register_phone_label">Телефон</label>
+        <input type="tel" id="p-phone" data-i18n-placeholder="contact_phone_ph" placeholder="+7 (___) ___-__-__" required>
+
+        <label for="p-password" data-i18n="register_password_label">Пароль</label>
+        <input type="password" id="p-password" required>
+
+        <label for="p-fullname" data-i18n="register_fullname_label">ФИО</label>
+        <input type="text" id="p-fullname">
+
+        <label for="p-iin" data-i18n="register_iin_label">ИИН (для договора)</label>
+        <input type="text" id="p-iin">
+
+        <button type="submit" class="btn" id="btnRegisterPerson">
+          <i class="fas fa-user-plus"></i> <span data-i18n="register_submit">Создать аккаунт</span>
+        </button>
+
+        <div id="personStatus"></div>
+      </form>
+
+      <!-- ЮР. ЛИЦО -->
+      <form id="formCompany" class="contact-form" style="display:none">
+        <p class="auth-note" data-i18n="register_company_note">Юр. лица могут приобретать коммерческую технику разных видов.</p>
+
+        <label for="c-phone" data-i18n="register_phone_label">Телефон</label>
+        <input type="tel" id="c-phone" data-i18n-placeholder="contact_phone_ph" placeholder="+7 (___) ___-__-__" required>
+
+        <label for="c-password" data-i18n="register_password_label">Пароль</label>
+        <input type="password" id="c-password" required>
+
+        <label for="c-companyname" data-i18n="register_companyname_label">Название компании</label>
+        <input type="text" id="c-companyname" required>
+
+        <label for="c-bin" data-i18n="register_bin_label">БИН (для договора)</label>
+        <input type="text" id="c-bin">
+
+        <label for="c-address" data-i18n="register_address_label">Юридический адрес</label>
+        <input type="text" id="c-address">
+
+        <button type="submit" class="btn" id="btnRegisterCompany">
+          <i class="fas fa-building"></i> <span data-i18n="register_submit">Создать аккаунт</span>
+        </button>
+
+        <div id="companyStatus"></div>
+      </form>
+
+      <a class="auth-link" href="login.html" data-i18n="register_have_account">Уже есть аккаунт? Войти</a>
+
+    </div>
+  </section>
+
+  <div id="siteFooter"></div>
+  <script src="js/common.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/register.js"></script>
+</body>
+</html>
