@@ -633,10 +633,12 @@ p {
   border-radius: 6px;
   margin-bottom: 20px;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  color: #ffffff;
-  background: #1f1f1f;
+  color: #1F1F1F;
+  background: #ffffffff;
 }
-
+html.dark .contact-form textarea {
+  color: white;
+}
 .contact-form input:focus,
 .contact-form textarea:focus {
   border-color: var(--accent-orange);
