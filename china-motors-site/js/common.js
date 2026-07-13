@@ -58,6 +58,11 @@
       register_partner_note: 'Партнёр получает кабинет и загружает объявления техники — они проходят модерацию администратора.',
       register_country_label: 'Страна',
       register_regno_label: 'Регистрационный номер компании (для договора)',
+      title_account: 'China Motors - Личный кабинет',
+      account_hero: 'Личный кабинет',
+      account_logout: 'Выйти',
+      account_loading: 'Загрузка...',
+      product_create_deal: 'Оформить сделку',
 
       // COMMON
       brand_title: 'China Motors',
@@ -328,6 +333,11 @@
       register_partner_note: 'Серіктес кабинет алады және техника хабарландыруларын жүктейді — олар әкімші модерациясынан өтеді.',
       register_country_label: 'Ел',
       register_regno_label: 'Компанияның тіркеу нөмірі (келісімшарт үшін)',
+      title_account: 'China Motors - Жеке кабинет',
+      account_hero: 'Жеке кабинет',
+      account_logout: 'Шығу',
+      account_loading: 'Жүктелуде...',
+      product_create_deal: 'Мәміле рәсімдеу',
 
       brand_title: 'China Motors',
       hero_title_main: 'China Motors',
@@ -585,6 +595,11 @@
       register_partner_note: '合作伙伴将获得账户并上传车辆信息 — 需经管理员审核。',
       register_country_label: '国家',
       register_regno_label: '公司注册号（用于合同）',
+      title_account: 'China Motors - 个人中心',
+      account_hero: '个人中心',
+      account_logout: '退出',
+      account_loading: '加载中...',
+      product_create_deal: '办理交易',
 
       brand_title: 'China Motors',
       hero_title_main: 'China Motors',
@@ -842,6 +857,11 @@
       register_partner_note: 'Partners get a dashboard and upload vehicle listings — subject to admin moderation.',
       register_country_label: 'Country',
       register_regno_label: 'Company registration number (for the contract)',
+      title_account: 'China Motors - Account',
+      account_hero: 'Account',
+      account_logout: 'Log out',
+      account_loading: 'Loading...',
+      product_create_deal: 'Create a deal',
 
       brand_title: 'China Motors',
       hero_title_main: 'China Motors',
@@ -1146,18 +1166,12 @@
     const label = link.querySelector('span');
 
     if (session) {
-      link.href = '#';
+      link.href = 'account.html';
       if (label) label.setAttribute('data-i18n', 'nav_account');
       label.textContent = session.isVerified
         ? window.t('nav_account')
         : `${window.t('nav_account')} (${window.t('nav_not_verified')})`;
-      link.onclick = (e) => {
-        e.preventDefault();
-        if (confirm(window.t('nav_logout_confirm'))) {
-          window.CMAuth.logout();
-          location.reload();
-        }
-      };
+      link.onclick = null;
     } else {
       link.href = 'login.html';
       if (label) {

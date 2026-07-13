@@ -25,7 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       await window.CMAuth.login({ phone, password });
       showStatus(t('login_success'), false);
-      setTimeout(() => { location.href = 'index.html'; }, 1000);
+      const next = new URLSearchParams(location.search).get('next');
+      setTimeout(() => { location.href = next || 'index.html'; }, 1000);
     } catch (err) {
       showStatus(err.message, true);
       btn.disabled = false;
