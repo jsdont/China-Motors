@@ -1976,6 +1976,12 @@ html.dark .cm-card {
   background: #f39c12;
 }
 
+.cm-badge--user-listing {
+  left: auto;
+  right: 12px;
+  background: #2f6fed;
+}
+
 /* BODY */
 .cm-card__body {
   padding: 18px 20px 20px;

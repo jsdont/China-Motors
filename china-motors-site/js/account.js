@@ -148,6 +148,73 @@ document.addEventListener('DOMContentLoaded', async () => {
     return card;
   }
 
+  // === "Мои объявления" — только для клиентов (физ./юр. лицо) ===
+  function initMyListings() {
+    if (!CUSTOMER_ROLES.includes(session.role)) return;
+
+    const section = document.getElementById('myListingsSection');
+    const form = document.getElementById('listingForm');
+    const toggleBtn = document.getElementById('btnToggleListingForm');
+    const listEl = document.getElementById('myListingsList');
+    const statusEl = document.getElementById('listingFormStatus');
+    if (!section) return;
+
+    section.style.display = '';
+
+    toggleBtn?.addEventListener('click', () => {
+      form.classList.toggle('open');
+    });
+
+    async function loadMyListings() {
+      try {
+        const listings = await window.CMAuth.apiAuthed('GET', '/api/vehicles/my-listings/');
+        listEl.innerHTML = listings.length
+          ? listings.map(l => `
+              <div class="my-listing-card">
+                <span>${[l.brand, l.model, l.name].filter(Boolean).join(' ') || ('Объявление #' + l.id)}${l.year ? ', ' + l.year : ''}</span>
+                <span class="listing-approval ${l.is_approved ? 'approved' : 'pending'}">
+                  ${l.is_approved ? 'Одобрено, видно в каталоге' : 'На модерации'}
+                </span>
+              </div>`).join('')
+          : '<p class="empty-note">Объявлений пока нет.</p>';
+      } catch (e) {
+        listEl.innerHTML = `<p class="empty-note" style="color:#e74c3c">Ошибка загрузки: ${e.message}</p>`;
+      }
+    }
+
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmitListing');
+      btn.disabled = true;
+      try {
+        await window.CMAuth.apiAuthed('POST', '/api/vehicles/my-listings/', {
+          name: document.getElementById('l-name').value.trim(),
+          brand: document.getElementById('l-brand').value.trim(),
+          model: document.getElementById('l-model').value.trim(),
+          year: Number(document.getElementById('l-year').value) || null,
+          body_type: document.getElementById('l-body-type').value.trim(),
+          price_cny: Number(document.getElementById('l-price-cny').value) || null,
+          mileage_km: Number(document.getElementById('l-mileage').value) || null,
+          image_url: document.getElementById('l-image-url').value.trim(),
+          extra_info: document.getElementById('l-extra-info').value.trim(),
+        });
+        statusEl.textContent = 'Объявление отправлено на модерацию';
+        statusEl.className = 'success';
+        statusEl.style.display = 'block';
+        form.reset();
+        form.classList.remove('open');
+        loadMyListings();
+      } catch (err) {
+        statusEl.textContent = 'Ошибка: ' + err.message;
+        statusEl.className = 'error';
+        statusEl.style.display = 'block';
+      }
+      btn.disabled = false;
+    });
+
+    loadMyListings();
+  }
+
   async function render() {
     dealListEl.innerHTML = '<p class="empty-note">Загрузка...</p>';
     try {
@@ -177,5 +244,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  initMyListings();
   render();
 });

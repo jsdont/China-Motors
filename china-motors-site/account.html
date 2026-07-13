@@ -81,6 +81,27 @@
     .comment-form input { flex: 1; padding: 8px; border-radius: 6px; border: 1px solid var(--primary-blue); background: #1f1f1f; color: #fff; }
 
     .empty-note { text-align: center; opacity: .7; padding: 30px 0; }
+
+    .my-listings-section { max-width: 900px; margin: 0 auto 30px; text-align: left; }
+    .my-listings-section h2 { color: #fff; font-size: 20px; margin-bottom: 12px; }
+    .listing-form { background: #1e1e1e; border-radius: 12px; padding: 20px; margin-bottom: 20px; display: none; }
+    .listing-form.open { display: block; }
+    .listing-form .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .listing-form label { display: block; font-size: 13px; opacity: .8; margin-top: 8px; margin-bottom: 4px; }
+    .listing-form input, .listing-form textarea {
+      width: 100%; padding: 8px; border-radius: 6px;
+      border: 1px solid var(--primary-blue); background: #1f1f1f; color: #fff;
+    }
+    .listing-form textarea { min-height: 70px; }
+
+    .my-listing-card {
+      background: #1e1e1e; border-radius: 10px; padding: 14px 18px;
+      margin-bottom: 10px; display: flex; justify-content: space-between;
+      align-items: center; gap: 10px; flex-wrap: wrap;
+    }
+    .listing-approval { font-size: 13px; font-weight: 600; padding: 3px 10px; border-radius: 999px; }
+    .listing-approval.pending { background: #a15c00; color: #fff; }
+    .listing-approval.approved { background: #1e7e34; color: #fff; }
   </style>
 </head>
 <body>
@@ -100,6 +121,65 @@
       <div class="account-header">
         <div></div>
         <button class="btn" id="btnLogout"><i class="fas fa-right-from-bracket"></i> <span data-i18n="account_logout">Выйти</span></button>
+      </div>
+
+      <div id="myListingsSection" class="my-listings-section" style="display:none">
+        <h2 data-i18n="account_my_listings_title">Мои объявления</h2>
+        <button class="btn" id="btnToggleListingForm" type="button">
+          <i class="fa fa-plus"></i> <span data-i18n="account_new_listing">Разместить объявление</span>
+        </button>
+
+        <form id="listingForm" class="listing-form">
+          <div class="grid-2">
+            <div>
+              <label data-i18n="register_fullname_label">Название / модель</label>
+              <input type="text" id="l-name" required>
+            </div>
+            <div>
+              <label data-i18n="register_companyname_label">Марка</label>
+              <input type="text" id="l-brand">
+            </div>
+          </div>
+          <div class="grid-2">
+            <div>
+              <label>Модель</label>
+              <input type="text" id="l-model">
+            </div>
+            <div>
+              <label data-i18n="calc_year_label">Год выпуска</label>
+              <input type="number" id="l-year">
+            </div>
+          </div>
+          <div class="grid-2">
+            <div>
+              <label data-i18n="filter_body_label">Тип транспорта</label>
+              <input type="text" id="l-body-type" placeholder="Самосвал, тягач...">
+            </div>
+            <div>
+              <label>Цена, ¥</label>
+              <input type="number" id="l-price-cny">
+            </div>
+          </div>
+          <div class="grid-2">
+            <div>
+              <label>Пробег, км</label>
+              <input type="number" id="l-mileage">
+            </div>
+            <div>
+              <label>Ссылка на фото</label>
+              <input type="url" id="l-image-url" placeholder="https://.../photo.jpg">
+            </div>
+          </div>
+          <label data-i18n="register_address_label">Доп. информация</label>
+          <textarea id="l-extra-info"></textarea>
+
+          <button type="submit" class="btn" style="margin-top:12px" id="btnSubmitListing">
+            <span data-i18n="register_submit">Отправить на модерацию</span>
+          </button>
+          <div id="listingFormStatus"></div>
+        </form>
+
+        <div id="myListingsList"></div>
       </div>
 
       <div id="dealList" class="deal-list">

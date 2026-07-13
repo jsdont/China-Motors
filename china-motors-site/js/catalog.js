@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchEl = document.getElementById('search');
   const brandEl  = document.getElementById('brand');
   const wheelEl  = document.getElementById('wheelFormula');
+  const sourceEl = document.getElementById('source');
 
   /* ================= HELPERS ================= */
 
@@ -74,6 +75,8 @@ document.addEventListener('DOMContentLoaded', () => {
       wheelFormula: normText(v.wheel_formula || '') || extractWheelFormula(`${title} ${bodyRaw}`),
       image: v.image_url || '/img/no-photo.png',
       availability: v.availability || 'in_stock',
+      isUserListing: Boolean(v.is_user_listing),
+      ownerRoleLabel: v.owner_role_label || '',
       raw: v
     };
   }
@@ -86,6 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="cm-card__image">
           <img src="${item.image}" alt="${item.title}">
           <span class="cm-badge cm-badge--${item.availability}">${AVAIL_LABELS[item.availability] || ''}</span>
+          ${item.isUserListing ? `<span class="cm-badge cm-badge--user-listing">${window.t ? window.t('badge_user_listing_prefix') : 'Объявление от'} ${item.ownerRoleLabel || 'клиента'}</span>` : ''}
         </div>
 
         <div class="cm-card__body">
@@ -161,16 +165,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const b = bodyEl?.value || '';
     const brand = brandEl?.value || '';
     const wheel = wheelEl?.value || '';
+    const source = sourceEl?.value || '';
     const q = normText(searchEl?.value || '');
 
     current = all.filter(x => {
       const bodyOk = !b || x.bodyType === b;
       const brandOk = !brand || x.brand === brand;
       const wheelOk = !wheel || x.wheelFormula === wheel;
+      const sourceOk = !source ||
+        (source === 'user' && x.isUserListing) ||
+        (source === 'official' && !x.isUserListing);
       const searchOk = !q ||
         normText(x.title).includes(q) ||
         normText(x.bodyRaw).includes(q);
-      return bodyOk && brandOk && wheelOk && searchOk;
+      return bodyOk && brandOk && wheelOk && sourceOk && searchOk;
     });
   }
 
@@ -191,6 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
   searchEl?.addEventListener('input', refilter);
   brandEl?.addEventListener('change', refilter);
   wheelEl?.addEventListener('change', refilter);
+  sourceEl?.addEventListener('change', refilter);
 
   /* ================= LOAD ================= */
 
