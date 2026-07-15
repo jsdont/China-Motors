@@ -76,6 +76,11 @@
       account_listing_description_label: 'Описание',
       badge_user_listing_prefix: 'Объявление от',
       product_create_deal: 'Оформить сделку',
+      product_secure_note: 'Безопасная оплата через банк · полный пакет документов',
+      product_extra_title: 'Комплектация и характеристики',
+      product_cta_title: 'Хотите приобрести эту технику?',
+      product_cta_sub: 'Рассчитаем полную стоимость и оформим сделку по договору.',
+      product_cta_ask: 'Задать вопрос',
 
       // COMMON
       brand_title: 'China Motors',
@@ -409,6 +414,11 @@
       account_listing_description_label: 'Сипаттама',
       badge_user_listing_prefix: 'Хабарландыру:',
       product_create_deal: 'Мәміле рәсімдеу',
+      product_secure_note: 'Банк арқылы қауіпсіз төлем · құжаттардың толық жинағы',
+      product_extra_title: 'Жиынтықтама және сипаттамалар',
+      product_cta_title: 'Осы техниканы сатып алғыңыз келе ме?',
+      product_cta_sub: 'Толық құнын есептейміз және шарт бойынша мәміле рәсімдейміз.',
+      product_cta_ask: 'Сұрақ қою',
 
       brand_title: 'China Motors',
       hero_title_main: 'Қытайдан арнайы техника мен автомобильдер, кілт тапсыру форматында',
@@ -729,6 +739,11 @@
       account_listing_description_label: '描述',
       badge_user_listing_prefix: '来自',
       product_create_deal: '办理交易',
+      product_secure_note: '通过银行安全付款 · 提供完整证件',
+      product_extra_title: '配置与规格',
+      product_cta_title: '想购买这台设备吗?',
+      product_cta_sub: '我们将核算完整费用并按合同办理交易。',
+      product_cta_ask: '提出问题',
 
       brand_title: 'China Motors',
       hero_title_main: '来自中国的专用设备和汽车,一站式服务',
@@ -1049,6 +1064,11 @@
       account_listing_description_label: 'Description',
       badge_user_listing_prefix: 'Listed by',
       product_create_deal: 'Create a deal',
+      product_secure_note: 'Secure payment through the bank · full set of documents',
+      product_extra_title: 'Specifications and equipment',
+      product_cta_title: 'Want to buy this unit?',
+      product_cta_sub: "We'll calculate the full cost and arrange the deal under contract.",
+      product_cta_ask: 'Ask a question',
 
       brand_title: 'China Motors',
       hero_title_main: 'Special equipment and vehicles from China, turnkey',

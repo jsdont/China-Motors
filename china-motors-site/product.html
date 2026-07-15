@@ -20,7 +20,23 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
-    .product-page { padding: 40px 0 80px; }
+    .product-page { padding: 24px 0 80px; background: #f5f6f8; }
+
+    .hp-breadcrumb {
+      max-width: 1200px;
+      margin: 0 auto 20px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #8a8f9c;
+      flex-wrap: wrap;
+    }
+    .hp-breadcrumb a { color: #8a8f9c; text-decoration: none; }
+    .hp-breadcrumb a:hover { color: #E12821; }
+    .hp-breadcrumb span.current { color: #12172a; font-weight: 600; }
+
     .product-grid {
       display: grid;
       grid-template-columns: 1.2fr 1fr;
@@ -30,30 +46,64 @@
       .product-grid { grid-template-columns: 1fr; }
     }
 
+    .product-gallery__frame {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(18,23,42,0.08);
+      background: #fff;
+    }
+
     .product-gallery img {
       max-width: 100%;
-      max-height: 520px;
-      object-fit: contain;
-      background: #111;
-      border-radius: 16px;
+      max-height: 420px;
+      width: 100%;
+      object-fit: cover;
+      background: #fff;
+      display: block;
       cursor: zoom-in;
     }
 
+    .product-badge-availability,
+    .product-badge-city {
+      position: absolute;
+      top: 16px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 999px;
+      color: #fff;
+    }
+    .product-badge-availability { left: 16px; background: #16a34a; }
+    .product-badge-city { right: 16px; background: rgba(18,23,42,0.85); font-weight: 600; }
+
     .thumbs {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-      overflow-x: auto;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-top: 12px;
     }
     .thumbs img {
-      width: 90px;
-      height: 60px;
+      width: 100%;
+      height: 76px;
       object-fit: cover;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
-      opacity: .75;
+      opacity: .8;
+      border: 2px solid transparent;
     }
-    .thumbs img.active { opacity: 1; outline: 2px solid #e11d48; }
+    .thumbs img.active { opacity: 1; border-color: #E12821; }
+
+    .product-trust-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px 24px;
+      box-shadow: 0 4px 24px rgba(18,23,42,0.06);
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
 
     /* LIGHTBOX */
     .pg-lightbox {
@@ -104,72 +154,92 @@
     .pg-lightbox__nav--prev { left: 18px; }
     .pg-lightbox__nav--next { right: 18px; }
 
+    /* INFO CARD */
+    .product-info-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 4px 24px rgba(18,23,42,0.06);
+    }
+
+    .product-subtitle {
+      font-size: 14px;
+      color: #8a8f9c;
+      margin-bottom: 18px;
+    }
+
     /* TRUST LIST */
     .trust-list {
       list-style: none;
-      margin: 22px 0 0;
+      margin: 0;
       padding: 0;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
     }
     .trust-list li {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 12px 16px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 12px;
-      font-size: 15px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: #12172a;
     }
     .trust-list li i {
-      color: #ff3b30;
+      color: #16a34a;
       font-size: 16px;
       flex-shrink: 0;
     }
 
     /* EXTRA INFO */
-    .product-extra {
+    .product-extra-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 4px 24px rgba(18,23,42,0.06);
       margin-top: 24px;
-      padding-top: 16px;
-      border-top: 1px solid rgba(255,255,255,.08);
+    }
+    .product-extra-card h2 {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      margin: 0 0 16px;
+      color: #12172a;
+    }
+    .product-extra {
       white-space: pre-line;
       line-height: 1.6;
-      opacity: .9;
+      color: #4b5165;
     }
 
-    .product-title { font-size: 28px; font-weight: 700; margin-bottom: 10px; }
-    .product-price { font-size: 22px; font-weight: 700; margin: 16px 0; }
+    .product-title { font-family: 'Oswald', sans-serif; font-size: 28px; font-weight: 700; margin-bottom: 6px; color: #12172a; }
+    .product-price { font-family: 'Oswald', sans-serif; font-size: 30px; font-weight: 700; margin: 0 0 20px; color: #E12821; }
 
     table.specs {
       width: 100%;
-      border-collapse: separate;
-      border-spacing: 0 6px;
-      margin-top: 20px;
-    }
-    table.specs tr {
-      background: rgba(255,255,255,.04);
+      border-collapse: collapse;
+      margin-top: 4px;
     }
     table.specs td {
-      padding: 12px 16px;
-      border: none;
+      padding: 10px 0;
+      border-bottom: 1px solid #eef0f4;
+    }
+    table.specs tr:last-child td {
+      border-bottom: none;
     }
     table.specs td:first-child {
-      opacity: .7;
-      font-size: 13px;
-      width: 50%;
-      border-radius: 10px 0 0 10px;
+      color: #8a8f9c;
+      font-size: 13.5px;
     }
     table.specs td:last-child {
       text-align: right;
       font-weight: 600;
-      border-radius: 0 10px 10px 0;
+      color: #12172a;
     }
     table.specs td i {
       width: 16px;
       margin-right: 8px;
-      color: #ff3b30;
+      color: #E12821;
     }
 
     /* FULL-WIDTH VIDEO SECTION */
@@ -188,8 +258,59 @@
       gap: 12px;
       margin-top: 24px;
       flex-wrap: wrap;
+    }
+    .product-actions .btn,
+    .product-actions #btnCreateDeal {
+      flex: 1;
+      min-width: 180px;
+      text-align: center;
+      border-radius: 999px;
       justify-content: center;
     }
+
+    .product-cta-banner {
+      background: #12172a;
+      border-radius: 16px;
+      padding: 36px;
+      margin-top: 32px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .product-cta-banner__title {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .product-cta-banner__sub { font-size: 14px; color: rgba(255,255,255,0.6); }
+    .product-cta-banner .btn-outline-light {
+      border: 1.5px solid rgba(255,255,255,0.5);
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    html.dark .product-gallery__frame,
+    html.dark .product-trust-card,
+    html.dark .product-info-card,
+    html.dark .product-extra-card {
+      background: #1e1e1e;
+    }
+    html.dark .product-title,
+    html.dark .product-extra-card h2,
+    html.dark table.specs td:last-child {
+      color: #f5f5f5;
+    }
+    html.dark .trust-list li { color: #f5f5f5; }
+    html.dark .product-extra { color: #cfd4dd; }
+    html.dark table.specs td { border-bottom-color: rgba(255,255,255,.08); }
   </style>
 </head>
 
@@ -197,19 +318,41 @@
 
 <div id="siteHeader"></div>
 
-<section class="product-page section fade-in">
+<div class="hp-breadcrumb">
+  <a href="index.html" data-i18n="nav_home">Главная</a>
+  <span>/</span>
+  <a href="catalog.html" data-i18n="nav_catalog">Каталог</a>
+  <span>/</span>
+  <span class="current" id="breadcrumbTitle">—</span>
+</div>
+
+<section class="product-page fade-in">
   <div class="container">
     <div class="product-grid">
 
       <!-- ЛЕВО: ГАЛЕРЕЯ -->
       <div class="product-gallery">
-        <img id="mainImage" src="" alt="">
+        <div class="product-gallery__frame">
+          <img id="mainImage" src="" alt="">
+          <span class="product-badge-availability" id="availabilityBadge" style="display:none"></span>
+          <span class="product-badge-city" id="cityBadge" style="display:none"></span>
+        </div>
         <div class="thumbs" id="thumbs"></div>
+
+        <div class="product-trust-card">
+          <ul class="trust-list">
+            <li><i class="fa-solid fa-file-signature"></i><span data-i18n="why_card1_y">Работа по договору</span></li>
+            <li><i class="fa-solid fa-camera"></i><span data-i18n="why_card2_y">Фото и видео с погрузки и доставки</span></li>
+            <li><i class="fa-solid fa-calculator"></i><span data-i18n="why_card3_y">Прозрачный расчёт без «вдруг доплатите»</span></li>
+            <li><i class="fa-solid fa-file-shield"></i><span data-i18n="why_card4_y">Помощь с таможней и регистрацией</span></li>
+          </ul>
+        </div>
       </div>
 
       <!-- ПРАВО: ИНФО -->
-      <div>
+      <div class="product-info-card">
         <h1 class="product-title" id="productTitle">—</h1>
+        <div class="product-subtitle" id="productSubtitle"></div>
         <span class="cm-badge cm-badge--user-listing" id="userListingBadge" style="position:static; display:none; margin-bottom:8px;"></span>
 
         <div class="product-price" id="productPrice">—</div>
@@ -224,20 +367,31 @@
             <i class="fa fa-file-signature"></i> <span data-i18n="product_create_deal">Оформить сделку</span>
           </button>
         </div>
-
-        <ul class="trust-list">
-          <li><i class="fa-solid fa-file-signature"></i><span data-i18n="why_card1_y">Работа по договору</span></li>
-          <li><i class="fa-solid fa-camera"></i><span data-i18n="why_card2_y">Фото и видео с погрузки и доставки</span></li>
-          <li><i class="fa-solid fa-calculator"></i><span data-i18n="why_card3_y">Прозрачный расчёт без «вдруг доплатите»</span></li>
-          <li><i class="fa-solid fa-file-shield"></i><span data-i18n="why_card4_y">Помощь с таможней и регистрацией</span></li>
-        </ul>
-
-        <div class="product-extra" id="extraInfo" style="display:none"></div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;font-size:12.5px;color:#8a8f9c">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span data-i18n="product_secure_note">Безопасная оплата через банк · полный пакет документов</span>
+        </div>
       </div>
 
     </div>
 
+    <div class="product-extra-card" id="extraInfo" style="display:none">
+      <h2 data-i18n="product_extra_title">Комплектация и характеристики</h2>
+      <div class="product-extra" id="extraInfoText"></div>
+    </div>
+
     <div class="product-video-section" id="videoReview" style="display:none"></div>
+
+    <div class="product-cta-banner">
+      <div>
+        <div class="product-cta-banner__title" data-i18n="product_cta_title">Хотите приобрести эту технику?</div>
+        <div class="product-cta-banner__sub" data-i18n="product_cta_sub">Рассчитаем полную стоимость и оформим сделку по договору.</div>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <a id="btnCalcBanner" class="btn btn--primary" data-i18n="hp_calc_submit">Рассчитать стоимость</a>
+        <a href="contacts.html" class="btn-outline-light" data-i18n="product_cta_ask">Задать вопрос</a>
+      </div>
+    </div>
   </div>
 </section>
 
