@@ -29,33 +29,71 @@
 <body>
   <div id="siteHeader"></div>
 
-  <section class="hero section fade-in">
-    <div class="container">
-      <div class="hero-overlay">
-        <h1 data-i18n="contacts_hero">Контакты</h1>
-        <p class="White-p" data-i18n="contacts_tagline">Свяжитесь с нами удобным способом</p>
-      </div>
+  <section class="hp-page-head fade-in">
+    <div>
+      <h1 data-i18n="contacts_hero">Контакты</h1>
+      <p data-i18n="contacts_tagline">Свяжитесь с нами удобным способом</p>
     </div>
   </section>
 
-  <section id="contact" class="section fade-in">
-    <div class="container">
-      <h2 class="blue-title" data-i18n="contact_title">Оставьте заявку</h2>
+  <section id="contact" class="fade-in">
+    <div class="hp-contact-grid">
+      <div class="hp-contact-card">
+        <div class="hp-contact-card__title" data-i18n="contact_title">Оставьте заявку</div>
+        <div class="contact-form" style="background:transparent;box-shadow:none;padding:0;margin:0;max-width:none">
+          <label for="c-name" data-i18n="contact_name_label">Ваше имя</label>
+          <input type="text" id="c-name" data-i18n-placeholder="contact_name_ph" placeholder="Введите имя">
 
-      <div class="contact-form">
-        <label for="c-name" data-i18n="contact_name_label">Ваше имя</label>
-        <input type="text" id="c-name" data-i18n-placeholder="contact_name_ph" placeholder="Введите имя">
+          <label for="c-phone" data-i18n="contact_phone_label">Телефон</label>
+          <input type="tel" id="c-phone" data-i18n-placeholder="contact_phone_ph" placeholder="+7 (___) ___-__-__">
 
-        <label for="c-phone" data-i18n="contact_phone_label">Телефон</label>
-        <input type="tel" id="c-phone" data-i18n-placeholder="contact_phone_ph" placeholder="+7 (___) ___-__-__">
+          <label for="c-message" data-i18n="contact_msg_label">Сообщение</label>
+          <textarea id="c-message" data-i18n-placeholder="contact_msg_ph" placeholder="Ваше сообщение"></textarea>
 
-        <label for="c-message" data-i18n="contact_msg_label">Сообщение</label>
-        <textarea id="c-message" data-i18n-placeholder="contact_msg_ph" placeholder="Ваше сообщение"></textarea>
+          <button id="c-send" class="btn"><i class="fas fa-paper-plane" style="color:white"></i> <span data-i18n="btn_send">Отправить</span></button>
 
-        <button id="c-send" class="btn"><i class="fas fa-paper-plane" style="color:white"></i> <span data-i18n="btn_send">Отправить</span></button>
+          <p class="form-note" data-i18n="contact_note">После нажатия «Отправить» заявка сразу попадёт нам в Telegram</p>
+          <div id="formStatus"></div>
+        </div>
+      </div>
 
-        <p class="form-note" data-i18n="contact_note">После нажатия «Отправить» заявка сразу попадёт нам в Telegram</p>
-        <div id="formStatus"></div>
+      <div>
+        <div class="hp-contact-card">
+          <div class="hp-contact-card__title" data-i18n="hp_contact_reach_title">Свяжитесь с нами</div>
+
+          <a class="hp-contact-row" href="tel:+77776133731">
+            <span class="hp-contact-row__icon"><i class="fas fa-phone"></i></span>
+            <span>
+              <span class="hp-contact-row__label" data-i18n="hp_contact_phone_label">Телефон</span><br>
+              <span class="hp-contact-row__value">+7 (777) 613-3731</span>
+            </span>
+          </a>
+          <a class="hp-contact-row" href="mailto:alijumdd@mail.ru">
+            <span class="hp-contact-row__icon"><i class="fas fa-envelope"></i></span>
+            <span>
+              <span class="hp-contact-row__label">Email</span><br>
+              <span class="hp-contact-row__value">alijumdd@mail.ru</span>
+            </span>
+          </a>
+          <div class="hp-contact-row">
+            <span class="hp-contact-row__icon"><i class="fas fa-map-marker-alt"></i></span>
+            <span>
+              <span class="hp-contact-row__label" data-i18n="hp_contact_address_label">Адреса</span><br>
+              <span class="hp-contact-row__value" data-i18n="footer_address_khorgos">г. Хоргос — склад и отгрузка</span><br>
+              <span class="hp-contact-row__value" data-i18n="footer_address_almaty">г. Алматы — выдача техники</span>
+            </span>
+          </div>
+
+          <a href="https://wa.me/77776133731" target="_blank" rel="noopener" class="btn" style="display:block;text-align:center;margin-top:8px;background:linear-gradient(90deg,#25D366,#1ebe5d)">
+            <i class="fab fa-whatsapp"></i> <span data-i18n="hp_contact_whatsapp">Написать в WhatsApp</span>
+          </a>
+
+          <div class="hp-contact-social">
+            <a href="https://www.instagram.com/china_motors_ala" target="_blank" rel="noopener noreferrer">Instagram</a>
+            <a href="https://www.tiktok.com/@china.motors_ala" target="_blank" rel="noopener noreferrer">TikTok</a>
+            <a href="https://www.youtube.com/channel/UCO3Z8Z8wbXE7Q3kXAVIb69w" target="_blank" rel="noopener noreferrer">YouTube</a>
+          </div>
+        </div>
       </div>
     </div>
   </section>

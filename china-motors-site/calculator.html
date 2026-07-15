@@ -44,20 +44,16 @@
 <body>
   <div id="siteHeader"></div>
 
-  <!-- Hero -->
-  <section class="hero section fade-in">
-    <div class="container">
-      <div class="hero-overlay">
-        <h1 data-i18n="calculator_hero">Калькулятор</h1>
-        <p class="White-p" data-i18n="calculator_tagline">Подбор, доставка и оформление под ключ — рассчитайте стоимость за 2 минуты</p>
-      </div>
+  <!-- Header -->
+  <section class="hp-page-head fade-in">
+    <div>
+      <h1 data-i18n="calc_page_title">Калькулятор стоимости</h1>
+      <p data-i18n="calculator_tagline">Подбор, доставка и оформление под ключ — рассчитайте стоимость за 2 минуты</p>
     </div>
   </section>
 
   <!-- Main -->
   <main class="container" style="padding-top:24px;padding-bottom:60px">
-    <h1 class="page-title" data-i18n="calc_page_title">Калькулятор стоимости</h1>
-
     <div id="calcGrid" class="grid-2">
       <form id="calcForm" class="calc-sections">
         <!-- 1. Входные данные -->
@@ -254,14 +250,14 @@
 
         <!-- 2. Реальная стоимость -->
         <section class="calc-card">
-          <h2 class="calc-card__title" data-i18n="calc_real_title">1) Реальная стоимость</h2>
+          <h2 class="calc-card__title"><span class="hp-calc-step">1</span> <span data-i18n="calc_real_title">Реальная стоимость</span></h2>
           <p class="calc-hint" data-i18n="calc_real_hint">Цена авто в тенге = Цена($) × Курс</p>
           <div class="summary-line"><span>=</span><strong id="realCostKZT">—</strong></div>
         </section>
 
         <!-- 3. Таможенная стоимость -->
         <section class="calc-card">
-          <h2 class="calc-card__title" data-i18n="calc_ts_title">2) Таможенная стоимость</h2>
+          <h2 class="calc-card__title"><span class="hp-calc-step">2</span> <span data-i18n="calc_ts_title">Таможенная стоимость</span></h2>
 
           <div class="bill">
             <h4 data-i18n="calc_ts_bill_title">Таможенные платежи</h4>
@@ -284,7 +280,7 @@
 
         <!-- 4. Дополнительные расходы -->
         <section class="calc-card">
-          <h2 class="calc-card__title" data-i18n="calc_mand_title">3) Дополнительные расходы</h2>
+          <h2 class="calc-card__title"><span class="hp-calc-step">3</span> <span data-i18n="calc_mand_title">Дополнительные расходы</span></h2>
           <p class="readonly-note" data-i18n="calc_mand_note">Фиксируется по типу транспорта и выбранному режиму ТС.</p>
           <div class="bill">
             <h4 data-i18n="calc_mand_list_title">За что платим</h4>
@@ -294,7 +290,7 @@
 
         <!-- 5. Доставка -->
         <section class="calc-card">
-          <h2 class="calc-card__title" data-i18n="calc_ship_title">4) Доставка и граница</h2>
+          <h2 class="calc-card__title"><span class="hp-calc-step">4</span> <span data-i18n="calc_ship_title">Доставка и граница</span></h2>
           <div class="bill">
             <h4 data-i18n="calc_ship_list_title">Состав доставки</h4>
             <ul id="list-delivery"></ul>
@@ -303,7 +299,7 @@
 
         <!-- 6. Утиль и регистрация -->
         <section class="calc-card">
-          <h2 class="calc-card__title" data-i18n="calc_util_title">5) Утилизационный сбор и регистрация</h2>
+          <h2 class="calc-card__title"><span class="hp-calc-step">5</span> <span data-i18n="calc_util_title">Утилизационный сбор и регистрация</span></h2>
           <div class="bill">
             <h4 data-i18n="calc_util_list_title">Государственные платежи</h4>
             <ul id="list-util"></ul>

@@ -59,54 +59,58 @@
 <body>
   <div id="siteHeader"></div>
 
-  <section class="hero section fade-in">
-    <div class="container">
-      <div class="hero-overlay">
-        <h1 data-i18n="catalog_hero">Актуальные предложения из базы</h1>
+  <section class="hp-page-head fade-in">
+    <div>
+      <h1 data-i18n="catalog_hero">Актуальные предложения из базы</h1>
+      <p data-i18n="catalog_subhead">Каталог техники China Motors</p>
+    </div>
+    <div class="hp-page-head__count"><span data-i18n="catalog_found">Найдено</span>: <span id="resultsCount">0</span></div>
+  </section>
+
+  <div class="hp-filter-card">
+    <div class="hp-filter-card__inner">
+      <div class="f-search">
+        <input id="search" type="text" data-i18n-placeholder="search_placeholder" placeholder="Поиск...">
+      </div>
+      <div class="f">
+        <label for="body" data-i18n="filter_body_label">Тип транспорта</label>
+        <select id="body">
+          <option value="" data-i18n="body_all">{Все}</option>
+        </select>
+      </div>
+      <div class="f">
+        <label for="sort" data-i18n="filter_sort_label">Сортировка</label>
+        <select id="sort">
+          <option value="" data-i18n="sort_none">Без сортировки</option>
+          <option value="price_asc" data-i18n="sort_price_asc">Цена ↑</option>
+          <option value="price_desc" data-i18n="sort_price_desc">Цена ↓</option>
+        </select>
+      </div>
+      <div class="f">
+        <label for="brand">Марка</label>
+        <select id="brand">
+          <option value="">Все марки</option>
+        </select>
+      </div>
+      <div class="f">
+        <label for="wheelFormula">Колёсная формула</label>
+        <select id="wheelFormula">
+          <option value="">Любая</option>
+        </select>
+      </div>
+      <div class="f">
+        <label for="source" data-i18n="filter_source_label">Источник</label>
+        <select id="source">
+          <option value="" data-i18n="filter_source_all">Все объявления</option>
+          <option value="official" data-i18n="filter_source_official">Официальный каталог</option>
+          <option value="user" data-i18n="filter_source_user">Объявления клиентов</option>
+        </select>
       </div>
     </div>
-  </section>
+  </div>
 
   <section class="section fade-in" style="padding-bottom:60px">
     <div class="container">
-      <div class="filters">
-        <input id="search" type="text" data-i18n-placeholder="search_placeholder" placeholder="Поиск...">
-        <div class="f">
-          <label for="body" data-i18n="filter_body_label">Тип транспорта</label>
-          <select id="body">
-            <option value="" data-i18n="body_all">{Все}</option>
-          </select>
-        </div>
-        <div class="f">
-          <label for="sort" data-i18n="filter_sort_label">Сортировка</label>
-          <select id="sort">
-            <option value="" data-i18n="sort_none">Без сортировки</option>
-            <option value="price_asc" data-i18n="sort_price_asc">Цена ↑</option>
-            <option value="price_desc" data-i18n="sort_price_desc">Цена ↓</option>
-          </select>
-        </div>
-        <div class="f">
-          <label for="brand">Марка</label>
-          <select id="brand">
-            <option value="">Все марки</option>
-          </select>
-        </div>
-        <div class="f">
-          <label for="wheelFormula">Колёсная формула</label>
-          <select id="wheelFormula">
-            <option value="">Любая</option>
-          </select>
-        </div>
-        <div class="f">
-          <label for="source" data-i18n="filter_source_label">Источник</label>
-          <select id="source">
-            <option value="" data-i18n="filter_source_all">Все объявления</option>
-            <option value="official" data-i18n="filter_source_official">Официальный каталог</option>
-            <option value="user" data-i18n="filter_source_user">Объявления клиентов</option>
-          </select>
-        </div>
-      </div>
-
       <div id="grid" class="feature-grid"></div>
     </div>
   </section>

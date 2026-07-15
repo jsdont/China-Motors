@@ -134,6 +134,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function render(list) {
     grid.innerHTML = list.map(cardHTML).join('');
+    const countEl = document.getElementById('resultsCount');
+    if (countEl) countEl.textContent = list.length;
   }
 
   /* ================= FILTER / SORT ================= */
