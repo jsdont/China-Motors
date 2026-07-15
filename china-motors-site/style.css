@@ -307,14 +307,21 @@ p {
 
 /* About Section */
 #about {
-  background: url('https://res.cloudinary.com/dkita2qyq/image/upload/v1756128163/%D0%98%D0%B7%D0%BE%D0%B1%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5_WhatsApp_2025-05-27_%D0%B2_18.33.36_00394245_jhppmi.jpg') no-repeat center center/cover;
+  background: #ffffff;
+  padding: 70px 0;
 }
 
 #about .container {
-  background: rgb(0 0 0 / 56%);
-  padding: 50px;
-  border-radius: 15px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  background: transparent;
+  padding: 0 20px;
+  border-radius: 0;
+  box-shadow: none;
+  max-width: 980px;
+}
+
+#about p,
+#about .White-p {
+  color: #4b5165;
 }
 
 .feature-grid, .gallery-grid, .reviews-grid {
@@ -342,7 +349,7 @@ p {
 }
 
 .card i {
-  color: var(--secondary-blue);
+  color: var(--accent);
   font-size: 40px;
   margin-bottom: 15px;
 }
@@ -381,14 +388,21 @@ p {
 
 /* Reviews Section */
 #reviews {
-  background: url('https://res.cloudinary.com/dkita2qyq/image/upload/v1756128160/%D0%98%D0%B7%D0%BE%D0%B1%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5_WhatsApp_2025-05-27_%D0%B2_18.33.37_7578422b_swxm3b.jpg') no-repeat center center/cover;
+  background: #ffffff;
+  padding: 70px 0;
 }
 
 #reviews .container {
-  background: rgb(0 0 0 / 56%);
-  padding: 50px;
-  border-radius: 15px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  background: transparent;
+  padding: 0 20px;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+#reviews p,
+#reviews .White-p,
+#reviews .cta-text {
+  color: #4b5165;
 }
 
 .review-card {
@@ -1817,6 +1831,20 @@ html.dark .why-card {
 html.dark .why-card p {
   color: #e0e0e0;
 }
+
+html.dark #about,
+html.dark #reviews {
+  background: #171717;
+}
+
+html.dark #about p,
+html.dark #about .White-p,
+html.dark #reviews p,
+html.dark #reviews .White-p,
+html.dark #reviews .cta-text {
+  color: #cfd4dd;
+}
+
 /* Calculator disclaimer */
 .calc-disclaimer {
   max-width: 900px;
@@ -2476,3 +2504,205 @@ html.dark .hp-calc-widget select, html.dark .hp-calc-widget input { background: 
 html.dark .hp-calc-widget label { color: #aab4c5; }
 html.dark .hp-section-head h2 { color: #f5f5f5; }
 html.dark .hp-step h4 { color: #f5f5f5; }
+
+/* =========================================================
+   INNER PAGES (catalog / calculator / contacts) — hp-page-*
+   ========================================================= */
+.hp-page-head {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 44px 20px 8px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px;
+  text-align: left;
+}
+
+.hp-page-head h1 {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 34px;
+  margin: 0 0 6px;
+  color: #12172a;
+  text-align: left;
+}
+
+.hp-page-head p {
+  font-size: 15px;
+  color: #6b7280;
+  margin: 0;
+  text-align: left;
+  max-width: none;
+}
+
+.hp-page-head__count {
+  font-size: 14px;
+  font-weight: 600;
+  color: #4b5165;
+  white-space: nowrap;
+}
+
+html.dark .hp-page-head h1 { color: #f5f5f5; }
+html.dark .hp-page-head p { color: #aab4c5; }
+html.dark .hp-page-head__count { color: #cfd4dd; }
+
+/* Catalog filter card */
+.hp-filter-card {
+  max-width: 1200px;
+  margin: 24px auto 8px;
+  padding: 0 20px;
+}
+
+.hp-filter-card__inner {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 24px rgba(18,23,42,0.06);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 14px;
+  align-items: end;
+}
+
+.hp-filter-card__inner .f-search { grid-column: 1 / -1; }
+
+.hp-filter-card label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #8a8f9c;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.hp-filter-card input,
+.hp-filter-card select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #e4e6eb;
+  font-size: 13.5px;
+  font-family: 'Open Sans', sans-serif;
+  color: #12172a;
+  background: #fff;
+}
+
+html.dark .hp-filter-card__inner { background: #1e1e1e; }
+html.dark .hp-filter-card input, html.dark .hp-filter-card select { background: #1f1f1f; color: #fff; border-color: #333; }
+html.dark .hp-filter-card label { color: #aab4c5; }
+
+/* Calculator numbered step badge */
+.calc-card__title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hp-calc-step {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: #E12821;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* Contacts page */
+.hp-contact-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 20px 70px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 28px;
+  align-items: start;
+}
+
+.hp-contact-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 4px 24px rgba(18,23,42,0.06);
+}
+
+.hp-contact-card__title {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 19px;
+  margin-bottom: 20px;
+  color: #12172a;
+}
+
+.hp-contact-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: #12172a;
+  text-decoration: none;
+  margin-bottom: 16px;
+}
+
+.hp-contact-row:last-child { margin-bottom: 0; }
+
+.hp-contact-row__icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: #f5f6f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #E12821;
+  font-size: 16px;
+}
+
+.hp-contact-row__label {
+  font-size: 12px;
+  color: #8a8f9c;
+}
+
+.hp-contact-row__value {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.hp-contact-social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.hp-contact-social a {
+  flex: 1;
+  text-align: center;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #12172a;
+  border: 1px solid #e4e6eb;
+  padding: 9px 14px;
+  border-radius: 999px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+html.dark .hp-contact-card { background: #1e1e1e; color: #f5f5f5; }
+html.dark .hp-contact-card__title { color: #f5f5f5; }
+html.dark .hp-contact-row { color: #f5f5f5; }
+html.dark .hp-contact-row__icon { background: #1f1f1f; }
+html.dark .hp-contact-row__label { color: #9fa4b0; }
+html.dark .hp-contact-social a { color: #f5f5f5; border-color: #333; }
+
+/* Summary card brand navy */
+.summary-card { background: #12172a; }
+.summary-card--dark { background: #12172a; }
