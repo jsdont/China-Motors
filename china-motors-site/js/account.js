@@ -48,10 +48,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       const comments = await window.CMAuth.apiAuthed('GET', `/api/deals/${dealId}/comments/`);
       container.innerHTML = comments.length
-        ? comments.map(c => `<div class="comment-item"><b>${c.author_info?.name || c.author_info?.phone || '—'}:</b> ${escapeHtml(c.text)}</div>`).join('')
-        : '<div class="comment-item" style="opacity:.6">Пока нет сообщений</div>';
+        ? comments.map(c => {
+            const isOwn = c.author === session.userId;
+            const who = c.author_info?.name || c.author_info?.phone || '—';
+            return `
+              <div class="comment-item ${isOwn ? 'own' : 'other'}">
+                ${isOwn ? '' : `<div class="who">${escapeHtml(who)}</div>`}
+                <div class="bubble">${escapeHtml(c.text)}</div>
+              </div>`;
+          }).join('')
+        : '<div class="comment-item other"><div class="bubble" style="opacity:.6">Пока нет сообщений</div></div>';
+      container.scrollTop = container.scrollHeight;
     } catch (e) {
-      container.innerHTML = `<div class="comment-item" style="color:#e74c3c">Ошибка загрузки: ${e.message}</div>`;
+      container.innerHTML = `<div class="comment-item other"><div class="bubble" style="color:#e74c3c">Ошибка загрузки: ${e.message}</div></div>`;
     }
   }
 
@@ -65,6 +74,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const wrap = document.createElement('div');
     wrap.className = 'comments-block';
     wrap.innerHTML = `
+      <div class="comments-block__head">Чат по сделке</div>
       <div class="comments-list"></div>
       <form class="comment-form">
         <input type="text" placeholder="Написать сообщение..." required>
@@ -95,12 +105,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     const card = document.createElement('div');
     card.className = 'deal-card';
 
+    const statusIcon = (status) => status === 'DONE'
+      ? '<i class="fa-solid fa-circle-check" style="color:#4ade80;flex-shrink:0"></i>'
+      : '<i class="fa-regular fa-circle" style="color:rgba(255,255,255,0.3);flex-shrink:0"></i>';
+
     const assignmentsHtml = deal.assignments.length
       ? deal.assignments.map(a => {
           const isMine = editableRole && a.role === editableRole;
           if (!isMine) {
             return `
               <div class="assignment-row">
+                ${statusIcon(a.status)}
                 <span class="assignment-role">${ROLE_LABELS_SHORT[a.role] || a.role}</span>
                 <span>${a.assigned_user_info?.name || a.assigned_user_info?.phone || '— не назначен'}</span>
                 <span class="assignment-status ${a.status}">${STATUS_LABELS[a.status] || a.status}</span>
@@ -108,6 +123,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           }
           return `
             <div class="assignment-row">
+              ${statusIcon(a.status)}
               <span class="assignment-role">${ROLE_LABELS_SHORT[a.role] || a.role} (вы)</span>
               <form class="my-assignment-form" data-assignment-id="${a.id}">
                 <select name="status">
@@ -118,13 +134,16 @@ document.addEventListener('DOMContentLoaded', async () => {
               </form>
             </div>`;
         }).join('')
-      : '<p style="opacity:.7">Пока никто не назначен</p>';
+      : '<p style="opacity:.7;color:rgba(255,255,255,0.6)">Пока никто не назначен</p>';
 
     card.innerHTML = `
-      <h3>${deal.vehicle_title || deal.title || ('Сделка #' + deal.id)}</h3>
+      <div class="deal-card__head">
+        <h3>${deal.vehicle_title || deal.title || ('Сделка #' + deal.id)}</h3>
+        <span class="deal-status-pill">${escapeHtml(deal.status || '')}</span>
+      </div>
       <div class="deal-meta">
-        Статус сделки: <b>${deal.status}</b> · Создана: ${fmtDate(deal.created_at)}
-        ${editableRole ? '' : `<br>Клиент: ${deal.customer_info?.name || deal.customer_info?.phone || '—'}`}
+        Создана: ${fmtDate(deal.created_at)}
+        ${editableRole ? '' : `· Клиент: ${deal.customer_info?.name || deal.customer_info?.phone || '—'}`}
       </div>
       <div class="assignments-block">${assignmentsHtml}</div>
     `;

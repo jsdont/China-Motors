@@ -1,6 +1,7 @@
 // js/register.js — переключение форм по типу регистрации + отправка на бэкенд
 document.addEventListener('DOMContentLoaded', () => {
   const regType = document.getElementById('regType');
+  const tabButtons = document.querySelectorAll('#regTabs button');
   const forms = {
     person: document.getElementById('formPerson'),
     company: document.getElementById('formCompany'),
@@ -9,11 +10,16 @@ document.addEventListener('DOMContentLoaded', () => {
     partner: document.getElementById('formPartner'),
   };
 
-  regType?.addEventListener('change', () => {
-    Object.entries(forms).forEach(([key, form]) => {
-      if (form) form.style.display = key === regType.value ? '' : 'none';
+  function selectType(key) {
+    if (regType) regType.value = key;
+    Object.entries(forms).forEach(([k, form]) => {
+      if (form) form.style.display = k === key ? '' : 'none';
     });
-  });
+    tabButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.type === key));
+  }
+
+  tabButtons.forEach(btn => btn.addEventListener('click', () => selectType(btn.dataset.type)));
+  regType?.addEventListener('change', () => selectType(regType.value));
 
   function showStatus(el, message, isError) {
     if (!el) return;
