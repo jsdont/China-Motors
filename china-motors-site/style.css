@@ -2045,3 +2045,434 @@ html.dark .price {
 html.dark p {
   color: #e0e0e0;
 }
+
+/* =========================================================
+   HOMEPAGE REDESIGN (hp-*) — hero, process, vehicle preview, stats
+   ========================================================= */
+.logo-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.logo-mark {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: #12172a;
+  color: #fff;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.logo-mark::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #E12821;
+  clip-path: polygon(0 0, 62% 0, 0 100%);
+}
+
+.logo-mark span,
+.logo-mark {
+  z-index: 1;
+}
+
+.hp-hero {
+  position: relative;
+  min-height: 560px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: url('https://res.cloudinary.com/dkita2qyq/image/upload/v1756128166/%D0%98%D0%B7%D0%BE%D0%B1%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5_WhatsApp_2025-05-27_%D0%B2_18.33.35_cbb88195_nxd0wv.jpg') no-repeat center center/cover;
+  padding: 56px 20px;
+}
+
+.hp-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, rgba(18,23,42,0.88) 0%, rgba(18,23,42,0.72) 55%, rgba(18,23,42,0.35) 100%);
+}
+
+.hp-hero-inner {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 40px;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.hp-hero-badge {
+  display: inline-block;
+  background: #E12821;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  margin-bottom: 20px;
+}
+
+.hp-hero-inner h1 {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 44px;
+  line-height: 1.15;
+  color: #fff;
+  margin: 0 0 16px;
+  text-align: left;
+}
+
+.hp-hero-inner p.hp-hero-sub {
+  font-size: 16px;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.85);
+  max-width: 480px;
+  margin: 0 0 26px;
+  text-align: left;
+}
+
+.hp-hero-bullets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px;
+  margin-bottom: 30px;
+}
+
+.hp-hero-bullets div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.hp-hero-cta {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.hp-hero-cta .btn-outline-light {
+  border: 1.5px solid rgba(255,255,255,0.6);
+  color: #fff;
+  padding: 12px 26px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.hp-calc-widget {
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+  color: #12172a;
+}
+
+.hp-calc-widget__title {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 17px;
+  margin-bottom: 16px;
+}
+
+.hp-calc-widget label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #8a8f9c;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.hp-calc-widget .hp-field {
+  margin-bottom: 14px;
+}
+
+.hp-calc-widget select,
+.hp-calc-widget input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #e4e6eb;
+  font-size: 14px;
+  font-family: 'Inter', 'Open Sans', sans-serif;
+  color: #12172a;
+  background: #fff;
+}
+
+.hp-calc-widget button {
+  width: 100%;
+  margin-top: 6px;
+  background: #12172a;
+  color: #fff;
+  border: none;
+  padding: 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.hp-calc-widget button:hover {
+  background: #1c2340;
+}
+
+.hp-calc-widget__note {
+  text-align: center;
+  font-size: 12px;
+  color: #8a8f9c;
+  margin-top: 10px;
+}
+
+@media (max-width: 900px) {
+  .hp-hero-inner { grid-template-columns: 1fr; }
+  .hp-hero-inner h1 { font-size: 32px; }
+}
+
+/* Process steps */
+.hp-process {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 70px 20px;
+}
+
+.hp-section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+.hp-section-head h2 {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 30px;
+  margin: 0;
+  color: #12172a;
+}
+
+.hp-section-head a {
+  font-size: 14px;
+  font-weight: 600;
+  color: #E12821;
+  text-decoration: none;
+}
+
+.hp-steps {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+}
+
+.hp-steps::before {
+  content: '';
+  position: absolute;
+  top: 26px;
+  left: 5%;
+  right: 5%;
+  height: 0;
+  border-top: 2px dashed #d7dbe3;
+  z-index: 0;
+}
+
+.hp-step {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  padding: 0 6px;
+}
+
+.hp-step-n {
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  background: #fff;
+  border: 2px solid #E12821;
+  color: #E12821;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.hp-step h4 {
+  font-weight: 600;
+  font-size: 14px;
+  margin: 0;
+  color: #12172a;
+}
+
+.hp-step p {
+  font-size: 12.5px;
+  color: #6b7280;
+  line-height: 1.5;
+  margin: 0;
+  max-width: 800px;
+}
+
+@media (max-width: 900px) {
+  .hp-steps { grid-template-columns: repeat(2, 1fr); }
+  .hp-steps::before { display: none; }
+}
+
+/* Vehicle preview cards */
+.hp-vehicles {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px 70px;
+}
+
+.hp-vehicles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 20px;
+}
+
+.hp-vehicle-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(18,23,42,0.08);
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: #12172a;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.hp-vehicle-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 28px rgba(18,23,42,0.15);
+}
+
+.hp-vehicle-card img {
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+  display: block;
+  background: #f5f6f8;
+}
+
+.hp-vehicle-card__body {
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hp-vehicle-card__category {
+  font-size: 11.5px;
+  color: #8a8f9c;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.hp-vehicle-card__name {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.hp-vehicle-card__price {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 19px;
+  margin-top: 4px;
+}
+
+.hp-vehicle-card__cta {
+  margin-top: 12px;
+  background: #12172a;
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* Stats bar */
+.hp-stats {
+  background: #12172a;
+  padding: 50px 20px;
+}
+
+.hp-stats-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hp-stats-label {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: #E12821;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.hp-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 20px;
+}
+
+.hp-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.hp-stat strong {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 28px;
+  color: #fff;
+}
+
+.hp-stat span {
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+}
+
+html.dark .hp-vehicle-card { background: #1e1e1e; color: #f5f5f5; }
+html.dark .hp-vehicle-card__category { color: #9fa4b0; }
+html.dark .hp-calc-widget { background: #1e1e1e; color: #f5f5f5; }
+html.dark .hp-calc-widget select, html.dark .hp-calc-widget input { background: #1f1f1f; color: #fff; border-color: #333; }
+html.dark .hp-calc-widget label { color: #aab4c5; }
+html.dark .hp-section-head h2 { color: #f5f5f5; }
+html.dark .hp-step h4 { color: #f5f5f5; }
