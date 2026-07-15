@@ -22,10 +22,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const thumbsEl = document.getElementById('thumbs');
 
   const btnCalc = document.getElementById('btnCalc');
+  const btnCalcBanner = document.getElementById('btnCalcBanner');
   const btnReq  = document.getElementById('btnRequest');
   const btnCreateDeal = document.getElementById('btnCreateDeal');
-  const extraEl = document.getElementById('extraInfo');
+  const extraCardEl = document.getElementById('extraInfo');
+  const extraEl = document.getElementById('extraInfoText');
   const videoEl = document.getElementById('videoReview');
+  const breadcrumbTitleEl = document.getElementById('breadcrumbTitle');
+  const productSubtitleEl = document.getElementById('productSubtitle');
+  const availabilityBadgeEl = document.getElementById('availabilityBadge');
+  const cityBadgeEl = document.getElementById('cityBadge');
 
   const CUSTOMER_ROLES = ['CUSTOMER_PERSON', 'CUSTOMER_COMPANY'];
 
@@ -260,28 +266,43 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       document.title = `${title} — China Motors`;
+      if (breadcrumbTitleEl) breadcrumbTitleEl.textContent = title;
+      if (productSubtitleEl) {
+        productSubtitleEl.textContent =
+          [v.model, v.year].filter(Boolean).join(' · ');
+      }
+
+      if (availabilityBadgeEl && AVAIL_LABELS[v.availability]) {
+        availabilityBadgeEl.textContent = AVAIL_LABELS[v.availability];
+        availabilityBadgeEl.style.display = '';
+      }
+      if (cityBadgeEl && v.city) {
+        cityBadgeEl.textContent = v.city;
+        cityBadgeEl.style.display = '';
+      }
 
       buildGallery(images);
       buildSpecsTable(v);
       buildTikTokEmbed(v.tiktok_url);
 
-      if (v.extra_info && extraEl) {
+      if (v.extra_info && extraEl && extraCardEl) {
         extraEl.textContent = v.extra_info;
-        extraEl.style.display = '';
+        extraCardEl.style.display = '';
       }
 
       // === buttons ===
-      if (btnCalc) {
-        btnCalc.href =
-          `calculator.html?` +
-          `title=${encodeURIComponent(title)}` +
-          `&price=${encodeURIComponent(priceUsdForCalc ?? '')}` +
-          `&price_cny=${encodeURIComponent(price.currency === 'cny' ? (price.amount ?? '') : '')}` +
-          `&body=${encodeURIComponent(bodyCanon)}` +
-          `&body_raw=${encodeURIComponent(bodyRaw || '')}` +
-          `&weight=${encodeURIComponent(v.weight_t ?? '')}` +
-          `&year=${encodeURIComponent(v.year ?? '')}`;
-      }
+      const calcHref =
+        `calculator.html?` +
+        `title=${encodeURIComponent(title)}` +
+        `&price=${encodeURIComponent(priceUsdForCalc ?? '')}` +
+        `&price_cny=${encodeURIComponent(price.currency === 'cny' ? (price.amount ?? '') : '')}` +
+        `&body=${encodeURIComponent(bodyCanon)}` +
+        `&body_raw=${encodeURIComponent(bodyRaw || '')}` +
+        `&weight=${encodeURIComponent(v.weight_t ?? '')}` +
+        `&year=${encodeURIComponent(v.year ?? '')}`;
+
+      if (btnCalc) btnCalc.href = calcHref;
+      if (btnCalcBanner) btnCalcBanner.href = calcHref;
 
       if (btnReq) {
         btnReq.href =

@@ -47,11 +47,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const phone = phoneEl?.value?.trim() || '';
     const msg = msgEl?.value?.trim() || '';
 
-    // simple validation
+    // simple validation — телефон разрешает +, цифры, пробелы, дефисы
+    // и скобки (плейсхолдер показывает формат "+7 (___) ___-__-__",
+    // так что скобки должны проходить, а не блокировать отправку).
     let valid = true;
     phoneEl?.style.removeProperty('border-color');
     msgEl?.style.removeProperty('border-color');
-    if (!phone || !/^\+?[0-9\s-]{6,}$/.test(phone)) {
+    if (!phone || !/^\+?[0-9()\s-]{6,}$/.test(phone)) {
       phoneEl?.style.setProperty('border-color', 'red');
       valid = false;
     }
@@ -78,6 +80,11 @@ document.addEventListener('DOMContentLoaded', () => {
         statusEl.className = 'success';
         statusEl.style.display = 'block';
       }
+      // Поля очищаем только при успехе — при ошибке пользователь не
+      // должен терять то, что уже написал, и может просто нажать ещё раз.
+      nameEl && (nameEl.value = '');
+      phoneEl && (phoneEl.value = '');
+      msgEl && (msgEl.value = '');
     } catch (err) {
       console.error(err);
       if (statusEl) {
@@ -86,10 +93,6 @@ document.addEventListener('DOMContentLoaded', () => {
         statusEl.style.display = 'block';
       }
     }
-
-    nameEl && (nameEl.value = '');
-    phoneEl && (phoneEl.value = '');
-    msgEl && (msgEl.value = '');
 
     sendBtn.disabled = false;
     sendBtn.textContent = prev;
