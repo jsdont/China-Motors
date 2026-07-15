@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  <meta name="api-base" content="https://cm-backend-daniyal.fly.dev">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="China Motors — спецтехника и авто из Китая">
@@ -28,14 +29,49 @@
 <body>
   <div id="siteHeader"></div>
 
-  <section class="hero section fade-in">
-    <div class="container">
-      <div class="hero-overlay">
+  <section class="hp-hero fade-in">
+    <div class="hp-hero-overlay"></div>
+    <div class="hp-hero-inner">
+      <div>
+        <div class="hp-hero-badge" data-i18n="hp_hero_badge">ПРЯМЫЕ ПОСТАВКИ ОТ ЗАВОДОВ КИТАЯ</div>
         <h1 data-i18n="hero_title_main">Спецтехника и автомобили из Китая под ключ</h1>
-        <p class="White-p" data-i18n="hero_tagline">Подбор • расчёт • доставка • таможня • постановка на учёт в РК</p>
+        <p class="hp-hero-sub" data-i18n="hero_tagline">Подбор • расчёт • доставка • таможня • постановка на учёт в РК</p>
+
+        <div class="hp-hero-bullets">
+          <div><i class="fa-solid fa-file-signature"></i> <span data-i18n="hp_bullet1">Официальный договор</span></div>
+          <div><i class="fa-solid fa-shield-halved"></i> <span data-i18n="hp_bullet2">Банк защищает деньги</span></div>
+          <div><i class="fa-solid fa-file-shield"></i> <span data-i18n="hp_bullet3">Полный комплект документов</span></div>
+          <div><i class="fa-regular fa-clock"></i> <span data-i18n="hp_bullet4">С 2018 года</span></div>
+        </div>
+
+        <div class="hp-hero-cta">
+          <a href="contacts.html" class="btn btn--primary" data-i18n="hp_cta_offer">Получить КП</a>
+          <a href="catalog.html" class="btn-outline-light" data-i18n="hp_cta_catalog">Смотреть каталог →</a>
+        </div>
+      </div>
+
+      <div class="hp-calc-widget">
+        <div class="hp-calc-widget__title" data-i18n="hp_calc_widget_title">Рассчитать стоимость</div>
+        <form id="hpCalcWidget">
+          <div class="hp-field">
+            <label data-i18n="hp_calc_category">Категория</label>
+            <select id="hpCalcCategory"></select>
+          </div>
+          <div class="hp-field">
+            <label data-i18n="hp_calc_brand">Марка</label>
+            <select id="hpCalcBrand"></select>
+          </div>
+          <div class="hp-field">
+            <label data-i18n="calc_year_label">Год выпуска</label>
+            <select id="hpCalcYear"></select>
+          </div>
+          <button type="submit" data-i18n="hp_calc_submit">Рассчитать стоимость</button>
+        </form>
+        <div class="hp-calc-widget__note" data-i18n="hp_calc_widget_note">бесплатно и ни к чему не обязывает</div>
       </div>
     </div>
   </section>
+
   <!-- WHY US -->
   <section class="section why-us fade-in">
     <div class="container">
@@ -75,6 +111,64 @@
       <div class="cta-row">
         <a href="catalog.html" class="btn">Смотреть каталог</a>
         <a href="calculator.html" class="btn btn--primary">Рассчитать стоимость</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="hp-process fade-in">
+    <div class="hp-section-head">
+      <h2 data-i18n="hp_process_title">Как проходит сделка</h2>
+    </div>
+    <div class="hp-steps">
+      <div class="hp-step">
+        <div class="hp-step-n">1</div>
+        <h4 data-i18n="hp_step1_t">Выбор техники</h4>
+        <p data-i18n="hp_step1_d">Подбираем модель под задачи и бюджет</p>
+      </div>
+      <div class="hp-step">
+        <div class="hp-step-n">2</div>
+        <h4 data-i18n="hp_step2_t">Коммерческое предложение</h4>
+        <p data-i18n="hp_step2_d">Расчёт стоимости с полной спецификацией</p>
+      </div>
+      <div class="hp-step">
+        <div class="hp-step-n">3</div>
+        <h4 data-i18n="hp_step3_t">Договор и оплата</h4>
+        <p data-i18n="hp_step3_d">Безопасная оплата через банк, полный пакет документов</p>
+      </div>
+      <div class="hp-step">
+        <div class="hp-step-n">4</div>
+        <h4 data-i18n="hp_step4_t">Поставка и растаможка</h4>
+        <p data-i18n="hp_step4_d">Логистика из Китая и таможенное оформление</p>
+      </div>
+      <div class="hp-step">
+        <div class="hp-step-n">5</div>
+        <h4 data-i18n="hp_step5_t">Получение техники</h4>
+        <p data-i18n="hp_step5_d">Передача техники и полный комплект документов</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- POPULAR VEHICLES (real data) -->
+  <section class="hp-vehicles fade-in">
+    <div class="hp-section-head">
+      <h2 data-i18n="hp_vehicles_title">Популярная техника</h2>
+      <a href="catalog.html" data-i18n="hp_vehicles_link">Смотреть весь каталог →</a>
+    </div>
+    <div class="hp-vehicles-grid" id="hpVehiclesGrid">
+      <p class="empty-note" data-i18n="hp_vehicles_loading">Загрузка...</p>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="hp-stats fade-in">
+    <div class="hp-stats-inner">
+      <div class="hp-stats-label" data-i18n="hp_stats_label">НАМ ДОВЕРЯЮТ</div>
+      <div class="hp-stats-grid">
+        <div class="hp-stat"><strong>500+</strong><span data-i18n="hp_stat1">клиентов</span></div>
+        <div class="hp-stat"><strong>50+</strong><span data-i18n="hp_stat2">заводов-партнёров</span></div>
+        <div class="hp-stat"><strong>1000+</strong><span data-i18n="hp_stat3">единиц техники</span></div>
+        <div class="hp-stat"><strong>7 <span data-i18n="hp_stat4_years">лет</span></strong><span data-i18n="hp_stat4">работы</span></div>
       </div>
     </div>
   </section>
@@ -222,5 +316,6 @@
 
   <script src="js/common.js"></script>
   <script src="js/auth.js"></script>
+  <script src="js/home.js"></script>
 </body>
 </html>
