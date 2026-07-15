@@ -18,116 +18,258 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
+    .account-page { background: #f5f6f8; padding: 32px 0 70px; }
+
     .account-header {
-      max-width: 900px;
-      margin: 0 auto 20px;
+      max-width: 1300px;
+      margin: 0 auto 28px;
+      padding: 0 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 12px;
+      box-sizing: border-box;
     }
+    .account-header h1 {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 700;
+      font-size: 30px;
+      color: #12172a;
+      margin: 0;
+    }
+    .account-header-left { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
     .account-badge {
-      display: inline-block;
-      padding: 4px 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
       border-radius: 999px;
       font-size: 13px;
-      font-weight: 600;
-      margin-left: 8px;
+      font-weight: 700;
     }
-    .account-badge.verified { background: #1e7e34; color: #fff; }
-    .account-badge.not-verified { background: #a15c00; color: #fff; }
+    .account-badge.verified { background: rgba(22,163,74,0.1); color: #16a34a; }
+    .account-badge.not-verified { background: rgba(217,119,6,0.12); color: #d97706; }
+    #btnLogout {
+      border: 1px solid #e4e6eb;
+      color: #4b5165;
+      background: #fff;
+      padding: 11px 24px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 13.5px;
+    }
 
-    .deal-list { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+    .account-grid {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .deal-list { display: flex; flex-direction: column; gap: 20px; }
     .deal-card {
-      background: #1e1e1e;
-      border-radius: 12px;
-      padding: 20px;
+      background: #12172a;
+      border-radius: 16px;
+      padding: 28px;
       text-align: left;
     }
-    .deal-card h3 { color: #fff; margin-bottom: 6px; }
-    .deal-card .deal-meta { opacity: .8; font-size: 14px; margin-bottom: 12px; color: white; }
+    .deal-card__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
+    .deal-card h3 { color: #fff; margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 19px; }
+    .deal-status-pill {
+      background: #E12821;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 999px;
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+    .deal-card .deal-meta { font-size: 12.5px; color: rgba(255,255,255,0.55); margin-bottom: 18px; }
+    .deal-card .deal-meta b { color: #fff; font-weight: 600; }
 
     .assignment-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
-      padding: 8px 0;
-      border-bottom: 1px dashed rgba(255,255,255,.1);
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
       flex-wrap: wrap;
     }
     .assignment-row:last-child { border-bottom: none; }
-    .assignment-role { font-weight: 600; min-width: 140px; }
-    .assignment-status { font-size: 13px; opacity: .85; }
-    .assignment-status.PENDING { color: #cccccc; }
-    .assignment-status.IN_PROGRESS { color: #f0ad4e; }
-    .assignment-status.DONE { color: #4caf50; }
+    .assignment-role { font-weight: 500; min-width: 140px; font-size: 13.5px; color: #fff; }
+    .assignment-status {
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.55);
+      white-space: nowrap;
+    }
+    .assignment-status.DONE { background: rgba(22,163,74,0.2); color: #4ade80; }
+    .assignment-status.IN_PROGRESS { background: rgba(226,35,26,0.2); color: #ff8a80; }
 
-    .my-assignment-form { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 8px; }
+    .my-assignment-form { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 8px; width: 100%; }
     .my-assignment-form select, .my-assignment-form input {
-      padding: 8px;
-      border-radius: 6px;
-      border: 1px solid var(--primary-blue);
-      background: #1f1f1f;
+      padding: 9px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+      font-size: 13px;
+    }
+    .my-assignment-form .btn { border-radius: 999px; padding: 9px 16px; font-size: 12.5px; }
+
+    /* CHAT */
+    .comments-block {
+      background: #fff;
+      border-radius: 16px;
+      margin-top: 12px;
+      box-shadow: 0 4px 24px rgba(18,23,42,0.06);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .comments-block__head {
+      padding: 16px 22px;
+      border-bottom: 1px solid #eef0f4;
+      font-family: 'Oswald', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: #12172a;
+    }
+    .comments-list {
+      padding: 18px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 360px;
+      overflow-y: auto;
+    }
+    .comment-item { max-width: 80%; }
+    .comment-item.own { align-self: flex-end; }
+    .comment-item .bubble {
+      padding: 10px 15px;
+      border-radius: 14px 14px 4px 14px;
+      font-size: 13.5px;
+      line-height: 1.5;
+      background: #12172a;
       color: #fff;
     }
+    .comment-item.other .bubble {
+      border-radius: 14px 14px 14px 4px;
+      background: #f5f6f8;
+      color: #12172a;
+    }
+    .comment-item .who {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #8a8f9c;
+      margin: 0 0 3px 4px;
+    }
+    .comment-form { display: flex; gap: 10px; padding: 14px 22px; border-top: 1px solid #eef0f4; }
+    .comment-form input {
+      flex: 1;
+      padding: 11px 14px;
+      border-radius: 999px;
+      border: 1px solid #e4e6eb;
+      background: #f5f6f8;
+      color: #12172a;
+      font-size: 13.5px;
+    }
+    .comment-form .btn { border-radius: 999px; padding: 11px 22px; font-size: 13px; }
 
-    .comments-block { margin-top: 14px; border-top: 1px solid rgba(255,255,255,.1); padding-top: 12px; }
-    .comment-item { font-size: 14px; margin-bottom: 8px; opacity: .9; color: white; }
-    html.dark .deal-card .deal-meta .comment-item { color: #1f1f1f; }
-    .comment-item b { opacity: .7; font-weight: 600; }
-    .comment-form { display: flex; gap: 8px; margin-top: 8px; }
-    .comment-form input { flex: 1; padding: 8px; border-radius: 6px; border: 1px solid var(--primary-blue); background: #1f1f1f; color: #fff; }
+    .empty-note { text-align: center; opacity: .7; padding: 30px 0; color: #4b5165; }
 
-    .empty-note { text-align: center; opacity: .7; padding: 30px 0; }
-
-    .my-listings-section { max-width: 900px; margin: 0 auto 30px; text-align: left; }
-    .my-listings-section h2 { color: #fff; font-size: 20px; margin-bottom: 12px; }
-    .listing-form { background: #1e1e1e; border-radius: 12px; padding: 20px; margin-bottom: 20px; display: none; }
+    .my-listings-section { text-align: left; }
+    .cab-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 4px 24px rgba(18,23,42,0.06);
+    }
+    .cab-card-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .my-listings-section h2 {
+      color: #12172a;
+      font-family: 'Oswald', sans-serif;
+      font-weight: 600;
+      font-size: 19px;
+      margin: 0;
+    }
+    #btnToggleListingForm {
+      background: #12172a;
+      color: #fff;
+      border-radius: 999px;
+      padding: 10px 20px;
+      font-size: 13px;
+    }
+    .listing-form { background: #f5f6f8; border-radius: 12px; padding: 20px; margin-bottom: 20px; display: none; }
     .listing-form.open { display: block; }
     .listing-form .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .listing-form label { display: block; font-size: 13px; opacity: .8; margin-top: 8px; margin-bottom: 4px; }
+    .listing-form label { display: block; font-size: 11px; font-weight: 600; color: #8a8f9c; text-transform: uppercase; letter-spacing: .5px; margin-top: 10px; margin-bottom: 6px; }
     .listing-form input, .listing-form textarea {
-      width: 100%; padding: 8px; border-radius: 6px;
-      border: 1px solid var(--primary-blue); background: #1f1f1f; color: #fff;
+      width: 100%; box-sizing: border-box; padding: 11px 12px; border-radius: 8px;
+      border: 1px solid #e4e6eb; background: #fff; color: #12172a;
     }
     .listing-form textarea { min-height: 70px; }
 
     .my-listing-card {
-      background: #1e1e1e; border-radius: 10px; padding: 14px 18px;
+      background: #f5f6f8; border-radius: 12px; padding: 14px 18px;
       margin-bottom: 10px; display: flex; justify-content: space-between;
       align-items: center; gap: 10px; flex-wrap: wrap;
     }
-    .listing-approval { font-size: 13px; font-weight: 600; padding: 3px 10px; border-radius: 999px; }
-    .listing-approval.pending { background: #a15c00; color: #fff; }
-    .listing-approval.approved { background: #1e7e34; color: #fff; }
+    .listing-approval { font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 999px; white-space: nowrap; }
+    .listing-approval.pending { background: rgba(217,119,6,0.12); color: #d97706; }
+    .listing-approval.approved { background: rgba(22,163,74,0.1); color: #16a34a; }
+
+    html.dark .account-header h1 { color: #f5f5f5; }
+    html.dark #btnLogout { background: #1e1e1e; color: #ccc; border-color: #333; }
+    html.dark .cab-card { background: #1e1e1e; color: #f5f5f5; }
+    html.dark .my-listings-section h2 { color: #f5f5f5; }
+    html.dark .listing-form { background: #171717; }
+    html.dark .listing-form input, html.dark .listing-form textarea { background: #1f1f1f; color: #fff; border-color: #333; }
+    html.dark .my-listing-card { background: #171717; }
+    html.dark .comments-block { background: #1e1e1e; }
+    html.dark .comments-block__head { color: #f5f5f5; border-color: rgba(255,255,255,.08); }
+    html.dark .comment-item.other .bubble { background: #171717; color: #f5f5f5; }
+    html.dark .comment-form { border-color: rgba(255,255,255,.08); }
+    html.dark .comment-form input { background: #171717; color: #fff; border-color: #333; }
+    html.dark .empty-note { color: #aab4c5; }
   </style>
 </head>
 <body>
   <div id="siteHeader"></div>
 
-  <section class="hero section fade-in">
-    <div class="container">
-      <div class="hero-overlay">
+  <section class="account-page fade-in">
+    <div class="account-header">
+      <div class="account-header-left">
         <h1 data-i18n="account_hero">Личный кабинет</h1>
-        <p class="White-p" id="accountRoleLine">—</p>
+        <span id="accountRoleLine">—</span>
       </div>
+      <button id="btnLogout"><i class="fas fa-right-from-bracket"></i> <span data-i18n="account_logout">Выйти</span></button>
     </div>
-  </section>
 
-  <section class="section fade-in">
-    <div class="container">
-      <div class="account-header">
-        <div></div>
-        <button class="btn" id="btnLogout"><i class="fas fa-right-from-bracket"></i> <span data-i18n="account_logout">Выйти</span></button>
-      </div>
-
-      <div id="myListingsSection" class="my-listings-section" style="display:none">
-        <h2 data-i18n="account_my_listings_title">Мои объявления</h2>
-        <button class="btn" id="btnToggleListingForm" type="button">
-          <i class="fa fa-plus"></i> <span data-i18n="account_new_listing">Разместить объявление</span>
-        </button>
+    <div class="account-grid">
+      <div id="myListingsSection" class="my-listings-section cab-card" style="display:none">
+        <div class="cab-card-head">
+          <h2 data-i18n="account_my_listings_title">Мои объявления</h2>
+          <button id="btnToggleListingForm" type="button">
+            <i class="fa fa-plus"></i> <span data-i18n="account_new_listing">Разместить объявление</span>
+          </button>
+        </div>
 
         <form id="listingForm" class="listing-form">
           <div class="grid-2">

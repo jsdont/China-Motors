@@ -18,27 +18,88 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
+    .auth-page {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(32px,6vw,72px) 16px;
+      background: #f5f6f8;
+    }
+    .auth-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 12px 48px rgba(18,23,42,0.1);
+      width: 100%;
+      max-width: 420px;
+      box-sizing: border-box;
+    }
+    .auth-card__logo {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .auth-card__logo .logo-mark {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      font-size: 21px;
+    }
+    .auth-card h1 {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 700;
+      font-size: 28px;
+      margin: 0 0 8px;
+      text-align: center;
+      color: #12172a;
+    }
+    .auth-card__sub {
+      font-size: 14px;
+      color: #6b7280;
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .auth-card .contact-form {
+      max-width: none;
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+    .auth-card .contact-form label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #8a8f9c;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .auth-card .contact-form .btn {
+      width: 100%;
+      border-radius: 999px;
+      margin-top: 4px;
+    }
     .auth-link {
       display: block;
       text-align: center;
-      margin-top: 10px;
+      margin-top: 16px;
+      font-size: 13.5px;
+      color: #6b7280;
     }
+    html.dark .auth-page { background: #121212; }
+    html.dark .auth-card { background: #1e1e1e; }
+    html.dark .auth-card h1 { color: #f5f5f5; }
   </style>
 </head>
-<body>
+<body style="display:flex;flex-direction:column;min-height:100vh">
   <div id="siteHeader"></div>
 
-  <section class="hero section fade-in">
-    <div class="container">
-      <div class="hero-overlay">
-        <h1 data-i18n="login_hero">Вход</h1>
-        <p class="White-p" data-i18n="login_tagline">Войдите в личный кабинет China Motors</p>
-      </div>
-    </div>
-  </section>
+  <main class="auth-page">
+    <div class="auth-card">
+      <div class="auth-card__logo"><span class="logo-mark">CM</span></div>
+      <h1 data-i18n="login_hero">Вход</h1>
+      <div class="auth-card__sub" data-i18n="login_tagline">Войдите в личный кабинет China Motors</div>
 
-  <section class="section fade-in">
-    <div class="container">
       <form id="formLogin" class="contact-form">
         <label for="l-phone" data-i18n="register_phone_label">Телефон</label>
         <input type="tel" id="l-phone" data-i18n-placeholder="contact_phone_ph" placeholder="+7 (___) ___-__-__" required>
@@ -55,7 +116,7 @@
 
       <a class="auth-link" href="register.html" data-i18n="login_no_account">Нет аккаунта? Зарегистрироваться</a>
     </div>
-  </section>
+  </main>
 
   <div id="siteFooter"></div>
   <script src="js/common.js"></script>
