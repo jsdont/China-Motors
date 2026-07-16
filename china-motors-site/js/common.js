@@ -13,6 +13,9 @@
       nav_services: 'Услуги',
       nav_contacts: 'Контакты',
       nav_calculator: 'Калькулятор',
+      brand_subtitle: 'СПЕЦТЕХНИКА ИЗ КИТАЯ',
+      nav_how_it_works: 'Как это работает',
+      nav_favorites: 'Избранное',
       nav_login: 'Войти',
       nav_account: 'Личный кабинет',
       nav_not_verified: 'не подтверждён',
@@ -135,9 +138,10 @@
       hp_contact_address_label: 'Адреса',
       hp_contact_whatsapp: 'Написать в WhatsApp',
       footer_address_almaty: 'г. Алматы — выдача техники',
-      footer_col1_text: 'Надежная техника из Китая под заказ и в наличии.',
+      footer_col1_text: 'Надежная техника из Китая под заказ и в наличии. Доставка из Хоргоса до Алматы, полное сопровождение сделки. Работаем с 2024 года.',
       footer_col2_title: 'Навигация',
       footer_col3_title: 'Контакты',
+      footer_col4_title: 'Соцсети',
       footer_copy: '© 2026 China Motors. Все права защищены.',
       footer_devnote: 'Информация на сайте носит справочный характер и не является публичной офертой',
       btn_photos: 'Фотографии',
@@ -361,6 +365,9 @@
       nav_services: 'Қызметтер',
       nav_contacts: 'Байланыс',
       nav_calculator: 'Калькулятор',
+      brand_subtitle: 'ҚЫТАЙДАН АРНАЙЫ ТЕХНИКА',
+      nav_how_it_works: 'Бұл қалай жұмыс істейді',
+      nav_favorites: 'Таңдаулылар',
       nav_login: 'Кіру',
       nav_account: 'Жеке кабинет',
       nav_not_verified: 'расталмаған',
@@ -482,9 +489,10 @@
       hp_contact_address_label: 'Мекенжайлар',
       hp_contact_whatsapp: 'WhatsApp-қа жазу',
       footer_address_almaty: 'Алматы қ. — техниканы беру',
-      footer_col1_text: 'Қытайдан тапсырыспен және қолжетімді техника.',
+      footer_col1_text: 'Қытайдан сенімді техника — тапсырыспен және дайын тұрған. Хоргостан Алматыға дейін жеткізу, мәмілені толық сүйемелдеу. 2024 жылдан бері жұмыс істейміз.',
       footer_col2_title: 'Навигация',
       footer_col3_title: 'Байланыс',
+      footer_col4_title: 'Әлеуметтік желілер',
       footer_copy: '© 2026 China Motors. Барлық құқықтар қорғалған.',
       footer_devnote: 'Сайттағы ақпарат анықтамалық сипатта болып табылады және ашық ұсыныс емес',
       btn_photos: 'Фотосуреттер',
@@ -696,6 +704,9 @@
       nav_services: '服务',
       nav_contacts: '联系',
       nav_calculator: '计算器',
+      brand_subtitle: '中国专用设备',
+      nav_how_it_works: '如何运作',
+      nav_favorites: '收藏',
       nav_login: '登录',
       nav_account: '个人中心',
       nav_not_verified: '未验证',
@@ -817,9 +828,10 @@
       hp_contact_address_label: '地址',
       hp_contact_whatsapp: '通过WhatsApp联系',
       footer_address_almaty: '阿拉木图市 — 设备提取',
-      footer_col1_text: '来自中国的可靠设备，可现货或订购。',
+      footer_col1_text: '来自中国的可靠设备，现货或订购。从霍尔果斯到阿拉木图的运输，全程交易支持。我们自2024年开始运营。',
       footer_col2_title: '导航',
       footer_col3_title: '联系方式',
+      footer_col4_title: '社交媒体',
       footer_copy: '© 2026 China Motors. 保留所有权利。',
       footer_devnote: '网站上的信息仅供参考，不构成公开报价',
       btn_photos: '照片',
@@ -1031,6 +1043,9 @@
       nav_services: 'Services',
       nav_contacts: 'Contacts',
       nav_calculator: 'Calculator',
+      brand_subtitle: 'SPECIAL EQUIPMENT FROM CHINA',
+      nav_how_it_works: 'How it works',
+      nav_favorites: 'Favorites',
       nav_login: 'Log in',
       nav_account: 'Account',
       nav_not_verified: 'not verified',
@@ -1152,9 +1167,10 @@
       hp_contact_address_label: 'Addresses',
       hp_contact_whatsapp: 'Message on WhatsApp',
       footer_address_almaty: 'Almaty — equipment pickup',
-      footer_col1_text: 'Reliable vehicles from China — in stock and on order.',
+      footer_col1_text: 'Reliable vehicles from China — in stock and on order. Delivery from Khorgos to Almaty, full deal support. Running since 2024.',
       footer_col2_title: 'Navigation',
       footer_col3_title: 'Contacts',
+      footer_col4_title: 'Social',
       footer_copy: '© 2026 China Motors. All rights reserved.',
       footer_devnote: 'Information on the site is for reference only and does not constitute a public offer',
       btn_photos: 'Photos',
@@ -1381,6 +1397,13 @@
       if (value) el.placeholder = value;
     });
 
+    // title (tooltips)
+    document.querySelectorAll('[data-i18n-title]').forEach(el => {
+      const key = el.dataset.i18nTitle;
+      const value = translations[lang]?.[key];
+      if (value) el.title = value;
+    });
+
     localStorage.setItem('lang', lang);
   }
 
@@ -1405,31 +1428,58 @@
   }
 
   /* =====================
-     LANGUAGE BUTTON
+     LANGUAGE SWITCH (dropdown "шторка")
      ===================== */
   function initLang() {
-    const langBtn = document.getElementById('langToggle');
-    if (!langBtn) return;
+    const wrap = document.getElementById('langSwitch');
+    const trigger = document.getElementById('langToggle');
+    const label = document.getElementById('langCurrentLabel');
+    const menu = document.getElementById('langMenu');
+    if (!trigger) return;
 
-    const order = ['ru', 'kk', 'en', 'zh'];
     let current = getLang();
-
     applyLang(current);
-    langBtn.textContent = current.toUpperCase();
-    
-    langBtn.addEventListener('click', () => {
-      current = order[(order.indexOf(current) + 1) % order.length];
-      langBtn.textContent = current.toUpperCase();
-      applyLang(current);
-
-      if (typeof window.recalc === 'function') {
-        window.recalc();
-      }
-
+    if (label) label.textContent = current.toUpperCase();
+    menu?.querySelectorAll('button[data-lang]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === current);
     });
 
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      wrap?.classList.toggle('open');
+    });
 
+    document.addEventListener('click', (e) => {
+      if (wrap && !wrap.contains(e.target)) wrap.classList.remove('open');
+    });
+
+    menu?.querySelectorAll('button[data-lang]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        current = btn.dataset.lang;
+        if (label) label.textContent = current.toUpperCase();
+        menu.querySelectorAll('button[data-lang]').forEach(b => b.classList.toggle('active', b === btn));
+        applyLang(current);
+        wrap?.classList.remove('open');
+
+        if (typeof window.recalc === 'function') {
+          window.recalc();
+        }
+      });
+    });
   }
+
+  /* =====================
+     ACTIVE NAV LINK
+     ===================== */
+  function initActiveNav() {
+    const links = document.querySelectorAll('.nav-links a');
+    const current = location.pathname.split('/').pop() || 'index.html';
+    links.forEach(a => {
+      const hrefPage = (a.getAttribute('href') || '').split('#')[0].split('/').pop();
+      if (hrefPage === current) a.classList.add('active');
+    });
+  }
+
   function initBurger() {
     const burger = document.querySelector('.menu-toggle');
     const navLinks = document.querySelector('.nav-links');
@@ -1496,6 +1546,7 @@
     initLang();
     initBurger();
     initAuthNav();
+    initActiveNav();
   });
 
 

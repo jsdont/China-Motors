@@ -5,17 +5,19 @@
     <div class="nav-left">
       <a href="index.html" class="logo-link">
         <span class="logo-mark">CM</span>
-        <span class="logo" data-i18n="brand_title">China Motors</span>
+        <span class="logo-text">
+          <span class="logo"><span class="logo-china">China</span> Motors</span>
+          <span class="logo-sub" data-i18n="brand_subtitle">СПЕЦТЕХНИКА ИЗ КИТАЯ</span>
+        </span>
       </a>
     </div>
 
     <!-- CENTER (desktop nav) -->
     <ul class="nav-links">
-      <li><a href="index.html"><i class="fas fa-home"></i><span data-i18n="nav_home">Главная</span></a></li>
-      <li><a href="catalog.html"><i class="fas fa-car"></i><span data-i18n="nav_catalog">Каталог</span></a></li>
-      <li><a href="services.html"><i class="fas fa-tools"></i><span data-i18n="nav_services">Услуги</span></a></li>
-      <li><a href="contacts.html"><i class="fas fa-envelope"></i><span data-i18n="nav_contacts">Контакты</span></a></li>
-      <li><a href="calculator.html"><i class="fas fa-calculator"></i><span data-i18n="nav_calculator">Калькулятор</span></a></li>
+      <li><a href="index.html" data-i18n="nav_home">Главная</a></li>
+      <li class="nav-pill"><a href="catalog.html" data-i18n="nav_catalog">Каталог</a></li>
+      <li><a href="calculator.html" data-i18n="nav_calculator">Калькулятор</a></li>
+      <li><a href="contacts.html" data-i18n="nav_contacts">Контакты</a></li>
     </ul>
 
     <!-- RIGHT -->
@@ -23,8 +25,22 @@
 
       <!-- Auth (Войти / Личный кабинет) -->
       <a id="navAuthLink" href="login.html" class="nav-auth-link">
-        <i class="fas fa-right-to-bracket"></i> <span data-i18n="nav_login">Войти</span>
+        <span data-i18n="nav_login">Войти</span>
       </a>
+
+      <!-- Language switch (dropdown "шторка") -->
+      <div class="lang-switch" id="langSwitch">
+        <button id="langToggle" class="lang-toggle" aria-haspopup="true" aria-label="Language">
+          <span id="langCurrentLabel">RU</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="lang-switch__menu" id="langMenu">
+          <button type="button" data-lang="ru">🇷🇺 Русский</button>
+          <button type="button" data-lang="kk">🇰🇿 Қазақша</button>
+          <button type="button" data-lang="zh">🇨🇳 中文</button>
+          <button type="button" data-lang="en">🇬🇧 English</button>
+        </div>
+      </div>
 
       <!-- Theme toggle -->
       <button id="themeToggle" class="theme-toggle" aria-label="Theme">
@@ -32,10 +48,10 @@
         <span class="icon moon"><i class="fa-solid fa-moon"></i></span>
       </button>
 
-      <!-- Language toggle -->
-      <button id="langToggle" class="lang-toggle" aria-label="Language">
-        RU
-      </button>
+      <!-- Favorites (placeholder) -->
+      <a href="catalog.html" class="nav-icon-btn" title="Избранное" data-i18n-title="nav_favorites">
+        <i class="fa-regular fa-bookmark"></i>
+      </a>
 
       <!-- Burger -->
       <button class="menu-toggle" aria-label="Menu">☰</button>
