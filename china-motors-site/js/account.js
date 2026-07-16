@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               <div class="assignment-row">
                 ${statusIcon(a.status)}
                 <span class="assignment-role">${ROLE_LABELS_SHORT[a.role] || a.role}</span>
-                <span>${a.assigned_user_info?.name || a.assigned_user_info?.phone || '— не назначен'}</span>
+                <span class="assignment-role">${a.assigned_user_info?.name || a.assigned_user_info?.phone || '— не назначен'}</span>
                 <span class="assignment-status ${a.status}">${STATUS_LABELS[a.status] || a.status}</span>
               </div>`;
           }
