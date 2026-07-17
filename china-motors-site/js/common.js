@@ -182,6 +182,19 @@
       catalog_hero: 'Актуальные предложения из базы',
       catalog_subhead: 'Каталог техники China Motors',
       catalog_found: 'Найдено',
+
+      // FAVORITES
+      title_favorites: 'China Motors - Избранное',
+      fav_subtitle: 'Сохранённая техника — сравните и запросите расчёт',
+      fav_saved_count: 'Сохранено',
+      fav_cta_title: 'Запросить расчёт по всему списку',
+      fav_cta_sub: 'Пришлём КП по каждой позиции из избранного — с доставкой до Алматы.',
+      fav_cta_btn: 'Получить КП по списку',
+      fav_empty_title: 'В избранном пока пусто',
+      fav_empty_sub: 'Нажимайте на закладку на карточках техники в каталоге — они появятся здесь.',
+      fav_empty_btn: 'Перейти в каталог',
+      fav_remove_title: 'Убрать из избранного',
+      fav_request_btn: 'Получить КП',
       filter_body_label: 'Тип транспорта',
       filter_source_label: 'Источник',
       filter_source_all: 'Все объявления',
@@ -527,6 +540,19 @@
       catalog_hero: 'Деректер базасындағы өзекті ұсыныстар',
       catalog_subhead: 'China Motors техника каталогы',
       catalog_found: 'Табылды',
+
+      // FAVORITES
+      title_favorites: 'China Motors - Таңдаулылар',
+      fav_subtitle: 'Сақталған техника — салыстырыңыз және есептеу сұраңыз',
+      fav_saved_count: 'Сақталды',
+      fav_cta_title: 'Барлық тізім бойынша есептеу сұрау',
+      fav_cta_sub: 'Таңдаулыдағы әр позиция бойынша КҰ жібереміз — Алматыға жеткізумен.',
+      fav_cta_btn: 'Тізім бойынша КҰ алу',
+      fav_empty_title: 'Таңдаулылар әзірге бос',
+      fav_empty_sub: 'Каталогтағы техника карточкаларындағы бетбелгіні басыңыз — олар осында пайда болады.',
+      fav_empty_btn: 'Каталогқа өту',
+      fav_remove_title: 'Таңдаулылардан алып тастау',
+      fav_request_btn: 'КҰ алу',
       filter_body_label: 'Көлік түрі',
       filter_source_label: 'Дереккөз',
       filter_source_all: 'Барлық хабарландырулар',
@@ -866,6 +892,19 @@
       catalog_hero: '数据库中的最新优惠',
       catalog_subhead: 'China Motors 设备目录',
       catalog_found: '找到',
+
+      // FAVORITES
+      title_favorites: 'China Motors - 收藏',
+      fav_subtitle: '已保存的设备 — 比较并申请报价',
+      fav_saved_count: '已保存',
+      fav_cta_title: '申请整个列表的报价',
+      fav_cta_sub: '我们将为收藏中的每一项发送报价单 — 含送达阿拉木图的运输。',
+      fav_cta_btn: '获取列表报价',
+      fav_empty_title: '收藏夹还是空的',
+      fav_empty_sub: '点击目录中设备卡片上的书签图标 — 它们将出现在这里。',
+      fav_empty_btn: '前往目录',
+      fav_remove_title: '从收藏中移除',
+      fav_request_btn: '获取报价',
       filter_body_label: '车型',
       filter_source_label: '来源',
       filter_source_all: '全部信息',
@@ -1206,6 +1245,19 @@
       catalog_hero: 'Latest offers from the database',
       catalog_subhead: 'China Motors equipment catalog',
       catalog_found: 'Found',
+
+      // FAVORITES
+      title_favorites: 'China Motors - Favorites',
+      fav_subtitle: 'Saved vehicles — compare and request a quote',
+      fav_saved_count: 'Saved',
+      fav_cta_title: 'Request a quote for the whole list',
+      fav_cta_sub: "We'll send a quote for every item in your favorites — delivered to Almaty.",
+      fav_cta_btn: 'Get a quote for the list',
+      fav_empty_title: 'No favorites yet',
+      fav_empty_sub: 'Tap the bookmark icon on any vehicle card in the catalog — it will appear here.',
+      fav_empty_btn: 'Go to catalog',
+      fav_remove_title: 'Remove from favorites',
+      fav_request_btn: 'Get a quote',
       filter_body_label: 'Vehicle type',
       filter_source_label: 'Source',
       filter_source_all: 'All listings',
@@ -1480,6 +1532,52 @@
     });
   }
 
+  /* =====================
+     FAVORITES (localStorage, per-device)
+     ===================== */
+  const LS_FAVORITES = 'cm_favorites';
+
+  function getFavorites() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(LS_FAVORITES));
+      return Array.isArray(raw) ? raw.map(String) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function isFavorite(id) {
+    return getFavorites().includes(String(id));
+  }
+
+  function toggleFavorite(id) {
+    id = String(id);
+    const favs = getFavorites();
+    const idx = favs.indexOf(id);
+    if (idx === -1) favs.push(id);
+    else favs.splice(idx, 1);
+    localStorage.setItem(LS_FAVORITES, JSON.stringify(favs));
+    document.dispatchEvent(new CustomEvent('cm:favorites-changed', { detail: { favorites: favs } }));
+    return idx === -1;
+  }
+
+  window.CMFavorites = { getFavorites, isFavorite, toggleFavorite };
+
+  function initFavNav() {
+    const countEl = document.getElementById('navFavCount');
+    if (!countEl) return;
+    const render = () => {
+      const n = getFavorites().length;
+      countEl.textContent = n;
+      countEl.style.display = n > 0 ? '' : 'none';
+    };
+    render();
+    document.addEventListener('cm:favorites-changed', render);
+    window.addEventListener('storage', (e) => {
+      if (e.key === LS_FAVORITES) render();
+    });
+  }
+
   function initBurger() {
     const burger = document.querySelector('.menu-toggle');
     const navLinks = document.querySelector('.nav-links');
@@ -1547,6 +1645,7 @@
     initBurger();
     initAuthNav();
     initActiveNav();
+    initFavNav();
   });
 
 

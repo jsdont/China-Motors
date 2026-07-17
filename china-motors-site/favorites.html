@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta name="api-base" content="https://cm-backend-daniyal.fly.dev">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Избранная техника China Motors — сравните и запросите расчёт">
+
+  <meta name="theme-color" content="#0b2b5a">
+
+  <link rel="icon" href="/icons/icon-192.png">
+
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+  <meta name="apple-mobile-web-app-title" content="China Motors">
+
+  <meta property="og:title" content="China Motors">
+  <meta property="og:description" content="Спецтехника и авто из Китая">
+  <meta property="og:image" content="/path/to/preview.jpg">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://chinamotors.com.kz">
+  <title data-i18n="title_favorites">China Motors - Избранное</title>
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <div id="siteHeader"></div>
+
+  <section class="hp-page-head fade-in">
+    <div>
+      <h1 data-i18n="nav_favorites">Избранное</h1>
+      <p data-i18n="fav_subtitle">Сохранённая техника — сравните и запросите расчёт</p>
+    </div>
+    <div class="hp-page-head__count"><span data-i18n="fav_saved_count">Сохранено</span>: <span id="favCount">0</span></div>
+  </section>
+
+  <section class="section fade-in" style="padding-bottom:60px">
+    <div class="container">
+
+      <div id="favGrid" class="feature-grid"></div>
+
+      <div id="favCtaBanner" class="fav-cta-banner" style="display:none">
+        <div>
+          <div class="fav-cta-banner__title" data-i18n="fav_cta_title">Запросить расчёт по всему списку</div>
+          <div class="fav-cta-banner__sub" data-i18n="fav_cta_sub">Пришлём КП по каждой позиции из избранного — с доставкой до Алматы.</div>
+        </div>
+        <a id="favCtaBtn" href="contacts.html" class="fav-cta-banner__btn" data-i18n="fav_cta_btn">Получить КП по списку</a>
+      </div>
+
+      <div id="favEmpty" class="fav-empty" style="display:none">
+        <i class="fa-regular fa-bookmark"></i>
+        <div class="fav-empty__title" data-i18n="fav_empty_title">В избранном пока пусто</div>
+        <div class="fav-empty__sub" data-i18n="fav_empty_sub">Нажимайте на закладку на карточках техники в каталоге — они появятся здесь.</div>
+        <a href="catalog.html" class="fav-empty__btn" data-i18n="fav_empty_btn">Перейти в каталог</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div id="siteFooter"></div>
+
+  <script src="js/common.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/favorites.js"></script>
+</body>
+</html>

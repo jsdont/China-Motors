@@ -37,9 +37,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     const title = [v.brand, v.model, v.body_type].filter(Boolean).join(' ').trim() || `Техника #${v.id}`;
     const category = v.category || v.body_type || '';
     const img = v.image_url || (Array.isArray(v.images) && v.images[0]) || '/img/no-photo.png';
+    const isFav = window.CMFavorites?.isFavorite(v.id);
     return `
       <a class="hp-vehicle-card" href="product.html?id=${v.id}">
-        <img src="${img}" alt="${title}" loading="lazy">
+        <div class="hp-vehicle-card__image">
+          <img src="${img}" alt="${title}" loading="lazy">
+          <button type="button" class="cm-card__fav-btn${isFav ? ' active' : ''}" data-fav-id="${v.id}" title="${window.t ? window.t('fav_remove_title') : 'Избранное'}">
+            <i class="fa-${isFav ? 'solid' : 'regular'} fa-bookmark"></i>
+          </button>
+        </div>
         <div class="hp-vehicle-card__body">
           <div class="hp-vehicle-card__category">${category}</div>
           <div class="hp-vehicle-card__name">${title}</div>
@@ -50,6 +56,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   fillYearSelect();
+
+  grid?.addEventListener('click', (e) => {
+    const btn = e.target.closest('.cm-card__fav-btn');
+    if (!btn) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const nowFav = window.CMFavorites?.toggleFavorite(btn.dataset.favId);
+    btn.classList.toggle('active', nowFav);
+    const icon = btn.querySelector('i');
+    if (icon) icon.className = `fa-${nowFav ? 'solid' : 'regular'} fa-bookmark`;
+  });
 
   try {
     const res = await fetch(`${API_BASE}/api/vehicles/`);
