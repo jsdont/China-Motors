@@ -351,7 +351,12 @@
 
       <!-- ПРАВО: ИНФО -->
       <div class="product-info-card">
-        <h1 class="product-title" id="productTitle">—</h1>
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+          <h1 class="product-title" id="productTitle">—</h1>
+          <button type="button" id="btnFav" class="nav-icon-btn" data-i18n-title="fav_remove_title" title="Избранное" style="flex-shrink:0;">
+            <i class="fa-regular fa-bookmark"></i>
+          </button>
+        </div>
         <div class="product-subtitle" id="productSubtitle"></div>
         <span class="cm-badge cm-badge--user-listing" id="userListingBadge" style="position:static; display:none; margin-bottom:8px;"></span>
 

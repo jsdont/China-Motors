@@ -88,12 +88,16 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ================= CARD ================= */
 
   function cardHTML(item) {
+    const isFav = window.CMFavorites?.isFavorite(item.id);
     return `
       <a class="cm-card" href="product.html?id=${item.id}">
         <div class="cm-card__image">
           <img src="${item.image}" alt="${item.title}">
           <span class="cm-badge cm-badge--${item.availability}">${AVAIL_LABELS[item.availability] || ''}</span>
           ${item.isUserListing ? `<span class="cm-badge cm-badge--user-listing">${window.t ? window.t('badge_user_listing_prefix') : 'Объявление от'} ${item.ownerRoleLabel || 'клиента'}</span>` : ''}
+          <button type="button" class="cm-card__fav-btn${isFav ? ' active' : ''}" data-fav-id="${item.id}" title="${window.t ? window.t('fav_remove_title') : 'Избранное'}">
+            <i class="fa-${isFav ? 'solid' : 'regular'} fa-bookmark"></i>
+          </button>
         </div>
 
         <div class="cm-card__body">
@@ -137,6 +141,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const countEl = document.getElementById('resultsCount');
     if (countEl) countEl.textContent = list.length;
   }
+
+  grid?.addEventListener('click', (e) => {
+    const btn = e.target.closest('.cm-card__fav-btn');
+    if (!btn) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const nowFav = window.CMFavorites?.toggleFavorite(btn.dataset.favId);
+    btn.classList.toggle('active', nowFav);
+    const icon = btn.querySelector('i');
+    if (icon) icon.className = `fa-${nowFav ? 'solid' : 'regular'} fa-bookmark`;
+  });
 
   /* ================= FILTER / SORT ================= */
 

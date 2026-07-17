@@ -25,6 +25,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnCalcBanner = document.getElementById('btnCalcBanner');
   const btnReq  = document.getElementById('btnRequest');
   const btnCreateDeal = document.getElementById('btnCreateDeal');
+  const btnFav = document.getElementById('btnFav');
+
+  function syncFavBtn() {
+    if (!btnFav) return;
+    const isFav = window.CMFavorites?.isFavorite(id);
+    btnFav.classList.toggle('active', isFav);
+    const icon = btnFav.querySelector('i');
+    if (icon) icon.className = `fa-${isFav ? 'solid' : 'regular'} fa-bookmark`;
+  }
+  syncFavBtn();
+  btnFav?.addEventListener('click', () => {
+    window.CMFavorites?.toggleFavorite(id);
+    syncFavBtn();
+  });
   const extraCardEl = document.getElementById('extraInfo');
   const extraEl = document.getElementById('extraInfoText');
   const videoEl = document.getElementById('videoReview');
