@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
       bodyRaw,
       brand: v.brand || '',
       wheelFormula: normText(v.wheel_formula || '') || extractWheelFormula(`${title} ${bodyRaw}`),
-      image: v.image_url || '/img/no-photo.png',
+      image: v.image_url ? (window.cmOptimizeImage?.(v.image_url, { width: 400 }) || v.image_url) : '/img/no-photo.png',
       availability: v.availability || 'in_stock',
       isUserListing: Boolean(v.is_user_listing),
       ownerRoleLabel: v.owner_role_label || '',
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return `
       <a class="cm-card" href="product.html?id=${item.id}">
         <div class="cm-card__image">
-          <img src="${item.image}" alt="${item.title}">
+          <img src="${item.image}" alt="${item.title}" loading="lazy" decoding="async">
           <span class="cm-badge cm-badge--${item.availability}">${AVAIL_LABELS[item.availability] || ''}</span>
           ${item.isUserListing ? `<span class="cm-badge cm-badge--user-listing">${window.t ? window.t('badge_user_listing_prefix') : 'Объявление от'} ${item.ownerRoleLabel || 'клиента'}</span>` : ''}
           <button type="button" class="cm-card__fav-btn${isFav ? ' active' : ''}" data-fav-id="${item.id}" title="${window.t ? window.t('fav_remove_title') : 'Избранное'}">
