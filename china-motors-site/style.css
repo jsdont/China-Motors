@@ -11,10 +11,12 @@ body {
   color: #000;
   background-color: #f9f9f9;
   font-size: 16px;
+  overflow-x: hidden;
 }
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 /* Dark theme */
@@ -1655,6 +1657,41 @@ html.dark .privacy-container a {
 
   .nav-links.active {
     right: 0;
+  }
+
+  /* .nav-links stops being a flex item once it's position:fixed, so the
+     overflow on small screens actually comes from .nav-left + the huge
+     desktop gap + .nav-right's 5 non-shrinking controls. #langSwitch and
+     #themeToggle get moved into this drawer by JS at this same breakpoint
+     (see initMobileNavControls in common.js) so nav-right only has to fit
+     the auth pill + favorites icon + burger. */
+  .container-navbar {
+    gap: 12px;
+    justify-content: space-between;
+  }
+  .nav-right {
+    gap: 8px;
+  }
+  .nav-auth-link {
+    padding: 9px 14px;
+    font-size: 12.5px;
+    max-width: 130px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .nav-mobile-extra {
+    width: 100%;
+    display: flex;
+  }
+  .nav-mobile-extra .lang-switch {
+    width: 100%;
+  }
+  .nav-mobile-extra .lang-toggle,
+  .nav-mobile-extra #themeToggle {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 10px;
   }
 }
 .nav-logo {
