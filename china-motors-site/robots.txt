@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /account.html
+Disallow: /favorites.html
+
+Sitemap: https://chinamotors.kz/sitemap.xml
+Sitemap: https://cm-backend-daniyal.fly.dev/sitemap-vehicles.xml
