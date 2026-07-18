@@ -1646,12 +1646,21 @@
     const navLinks = document.querySelector('.nav-links');
     const langSwitch = document.getElementById('langSwitch');
     const themeToggle = document.getElementById('themeToggle');
+    const favBtn = document.querySelector('.nav-right .nav-icon-btn');
     if (!navLinks || !langSwitch || !themeToggle) return;
 
+    const favAnchor = favBtn ? document.createComment('fav-btn-anchor') : null;
+    if (favBtn) favBtn.before(favAnchor);
     const langAnchor = document.createComment('lang-switch-anchor');
     const themeAnchor = document.createComment('theme-toggle-anchor');
     langSwitch.before(langAnchor);
     themeToggle.before(themeAnchor);
+
+    const favLi = favBtn ? document.createElement('li') : null;
+    if (favLi) {
+      favLi.className = 'nav-mobile-extra';
+      favLi.appendChild(favBtn);
+    }
 
     const langLi = document.createElement('li');
     langLi.className = 'nav-mobile-extra';
@@ -1664,13 +1673,16 @@
     const mq = window.matchMedia('(max-width: 768px)');
     function apply(isMobile) {
       if (isMobile) {
-        // Тема — сначала, шторка языка — последней: её выпадающее меню
-        // раскрывается вниз и иначе перекрывало бы кнопку темы под ней.
+        // Тема — сначала, избранное — затем, шторка языка — последней: её
+        // выпадающее меню раскрывается вниз и иначе перекрывало бы то, что
+        // идёт следом.
         navLinks.appendChild(themeLi);
+        if (favLi) navLinks.appendChild(favLi);
         navLinks.appendChild(langLi);
       } else {
         langAnchor.after(langSwitch);
         themeAnchor.after(themeToggle);
+        if (favBtn) favAnchor.after(favBtn);
       }
     }
     apply(mq.matches);
