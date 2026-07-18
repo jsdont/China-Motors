@@ -1637,6 +1637,46 @@
     });
   }
 
+  // На мобильных .nav-right (шторка языка + переключатель темы + избранное +
+  // бургер) физически не помещается в 375px рядом с логотипом — сдвигаем
+  // переключатели языка/темы в выпадающее меню, а не просто прячем их.
+  // Переносим сами узлы (не клоны), чтобы id/обработчики остались рабочими;
+  // якорь-комментарий помнит, куда вернуть их обратно на десктопе.
+  function initMobileNavControls() {
+    const navLinks = document.querySelector('.nav-links');
+    const langSwitch = document.getElementById('langSwitch');
+    const themeToggle = document.getElementById('themeToggle');
+    if (!navLinks || !langSwitch || !themeToggle) return;
+
+    const langAnchor = document.createComment('lang-switch-anchor');
+    const themeAnchor = document.createComment('theme-toggle-anchor');
+    langSwitch.before(langAnchor);
+    themeToggle.before(themeAnchor);
+
+    const langLi = document.createElement('li');
+    langLi.className = 'nav-mobile-extra';
+    langLi.appendChild(langSwitch);
+
+    const themeLi = document.createElement('li');
+    themeLi.className = 'nav-mobile-extra';
+    themeLi.appendChild(themeToggle);
+
+    const mq = window.matchMedia('(max-width: 768px)');
+    function apply(isMobile) {
+      if (isMobile) {
+        // Тема — сначала, шторка языка — последней: её выпадающее меню
+        // раскрывается вниз и иначе перекрывало бы кнопку темы под ней.
+        navLinks.appendChild(themeLi);
+        navLinks.appendChild(langLi);
+      } else {
+        langAnchor.after(langSwitch);
+        themeAnchor.after(themeToggle);
+      }
+    }
+    apply(mq.matches);
+    mq.addEventListener('change', (e) => apply(e.matches));
+  }
+
   // Показывает «Войти» или «Личный кабинет» в шапке — зависит от того,
   // залогинен ли клиент (js/auth.js, если подключён на странице).
   function initAuthNav() {
@@ -1689,6 +1729,7 @@
     initAuthNav();
     initActiveNav();
     initFavNav();
+    initMobileNavControls();
   });
 
 
