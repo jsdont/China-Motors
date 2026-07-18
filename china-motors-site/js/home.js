@@ -36,12 +36,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   function vehicleCard(v) {
     const title = [v.brand, v.model, v.body_type].filter(Boolean).join(' ').trim() || `Техника #${v.id}`;
     const category = v.category || v.body_type || '';
-    const img = v.image_url || (Array.isArray(v.images) && v.images[0]) || '/img/no-photo.png';
+    const rawImg = v.image_url || (Array.isArray(v.images) && v.images[0]) || '/img/no-photo.png';
+    const img = rawImg === '/img/no-photo.png' ? rawImg : (window.cmOptimizeImage?.(rawImg, { width: 300 }) || rawImg);
     const isFav = window.CMFavorites?.isFavorite(v.id);
     return `
       <a class="hp-vehicle-card" href="product.html?id=${v.id}">
         <div class="hp-vehicle-card__image">
-          <img src="${img}" alt="${title}" loading="lazy">
+          <img src="${img}" alt="${title}" loading="lazy" decoding="async">
           <button type="button" class="cm-card__fav-btn${isFav ? ' active' : ''}" data-fav-id="${v.id}" title="${window.t ? window.t('fav_remove_title') : 'Избранное'}">
             <i class="fa-${isFav ? 'solid' : 'regular'} fa-bookmark"></i>
           </button>

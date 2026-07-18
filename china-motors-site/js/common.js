@@ -1588,6 +1588,22 @@
     });
   }
 
+  /* =====================
+     IMAGE OPTIMIZATION (Cloudinary)
+     ===================== */
+  // Фото техники хранятся в Cloudinary — просим отдать WebP (там, где браузер
+  // его поддерживает) и ужатое под нужную ширину, вместо оригинала как есть.
+  // На остальные картинки (плейсхолдер /img/no-photo.png, внешние ссылки) не влияет.
+  function cmOptimizeImage(url, opts) {
+    if (!url || typeof url !== 'string') return url;
+    if (!url.includes('res.cloudinary.com') || !url.includes('/upload/')) return url;
+    if (/\/upload\/[^/]*f_auto/.test(url)) return url;
+    const width = opts && opts.width;
+    const transform = width ? `f_auto,q_auto,w_${width}` : 'f_auto,q_auto';
+    return url.replace('/upload/', `/upload/${transform}/`);
+  }
+  window.cmOptimizeImage = cmOptimizeImage;
+
   function initFavNav() {
     const countEl = document.getElementById('navFavCount');
     if (!countEl) return;

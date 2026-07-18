@@ -278,11 +278,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
+  function optimize(src, width) {
+    return window.cmOptimizeImage?.(src, { width }) || src;
+  }
+
   function buildGallery(images) {
     if (!images.length) return;
-    galleryImages = images;
+    // Полное разрешение — для лайтбокса (там смотрят детали крупно).
+    galleryImages = images.map(src => optimize(src, 1200));
 
-    mainImg.src = images[0];
+    mainImg.src = optimize(images[0], 800);
     mainImg.alt = titleEl.textContent;
     mainImg.addEventListener('click', () => {
       const activeIdx = Math.max(0, [...thumbsEl.querySelectorAll('img')].findIndex(t => t.classList.contains('active')));
@@ -292,10 +297,12 @@ document.addEventListener('DOMContentLoaded', () => {
     thumbsEl.innerHTML = '';
     images.forEach((src, i) => {
       const img = document.createElement('img');
-      img.src = src;
+      img.src = optimize(src, 150);
+      img.loading = 'lazy';
+      img.decoding = 'async';
       if (i === 0) img.classList.add('active');
       img.addEventListener('click', () => {
-        mainImg.src = src;
+        mainImg.src = optimize(src, 800);
         thumbsEl.querySelectorAll('img').forEach(t => t.classList.remove('active'));
         img.classList.add('active');
       });

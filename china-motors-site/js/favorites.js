@@ -25,12 +25,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function cardHTML(v) {
     const title = [v.brand, v.model, v.body_type].filter(Boolean).join(' ').trim() || `Техника #${v.id}`;
-    const img = v.image_url || (Array.isArray(v.images) && v.images[0]) || '/img/no-photo.png';
+    const rawImg = v.image_url || (Array.isArray(v.images) && v.images[0]) || '/img/no-photo.png';
+    const img = rawImg === '/img/no-photo.png' ? rawImg : (window.cmOptimizeImage?.(rawImg, { width: 400 }) || rawImg);
     const availability = v.availability || 'in_stock';
     return `
       <div class="cm-card fav-card" data-vehicle-id="${v.id}">
         <div class="cm-card__image">
-          <img src="${img}" alt="${title}">
+          <img src="${img}" alt="${title}" loading="lazy" decoding="async">
           <span class="cm-badge cm-badge--${availability}">${AVAIL_LABELS[availability] || ''}</span>
           <button type="button" class="cm-card__fav-btn active" data-fav-id="${v.id}" title="${window.t ? window.t('fav_remove_title') : 'Убрать из избранного'}">
             <i class="fa-solid fa-bookmark"></i>
