@@ -153,6 +153,24 @@ document.addEventListener('DOMContentLoaded', () => {
     if (icon) icon.className = `fa-${nowFav ? 'solid' : 'regular'} fa-bookmark`;
   });
 
+  /* ================= SEO (ItemList) ================= */
+
+  function applyItemListSeo(list) {
+    const el = document.getElementById('seoItemListLd');
+    if (!el) return;
+    const itemListLd = {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      itemListElement: list.slice(0, 50).map((item, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        url: `https://chinamotors.kz/product.html?id=${item.id}`,
+        name: item.title
+      }))
+    };
+    el.textContent = JSON.stringify(itemListLd);
+  }
+
   /* ================= FILTER / SORT ================= */
 
   let all = [];
@@ -235,6 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
       all = list.map(normalize).filter(Boolean);
       populateQuickFilters();
       refilter();
+      applyItemListSeo(all);
 
     } catch (e) {
       console.error(e);

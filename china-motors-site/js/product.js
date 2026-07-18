@@ -171,6 +171,60 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   }
 
+  const SCHEMA_AVAILABILITY = {
+    in_stock: 'https://schema.org/InStock',
+    out_of_stock: 'https://schema.org/OutOfStock',
+    on_order: 'https://schema.org/PreOrder'
+  };
+
+  function applySeo(v, title, price, images) {
+    const canonicalUrl = `https://chinamotors.kz/product.html?id=${v.id}`;
+    const description =
+      (v.extra_info && v.extra_info.slice(0, 160)) ||
+      `${title} — купить в China Motors. Доставка из Китая, полное сопровождение сделки.`;
+    const image = images[0] || 'https://chinamotors.kz/icons/china_motors_logo.jpg';
+
+    document.getElementById('seoDescription')?.setAttribute('content', description);
+    document.getElementById('seoCanonical')?.setAttribute('href', canonicalUrl);
+    document.getElementById('seoOgTitle')?.setAttribute('content', `${title} — China Motors`);
+    document.getElementById('seoOgDescription')?.setAttribute('content', description);
+    document.getElementById('seoOgImage')?.setAttribute('content', image);
+    document.getElementById('seoOgUrl')?.setAttribute('content', canonicalUrl);
+
+    const productLd = {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: title,
+      image: images.length ? images : [image],
+      description,
+      sku: String(v.id),
+      brand: { '@type': 'Brand', name: v.brand || 'China Motors' }
+    };
+    if (price.amount) {
+      productLd.offers = {
+        '@type': 'Offer',
+        url: canonicalUrl,
+        priceCurrency: price.currency === 'kzt' ? 'KZT' : 'CNY',
+        price: price.amount,
+        availability: SCHEMA_AVAILABILITY[v.availability] || 'https://schema.org/InStock'
+      };
+    }
+    const productLdEl = document.getElementById('seoProductLd');
+    if (productLdEl) productLdEl.textContent = JSON.stringify(productLd);
+
+    const breadcrumbLd = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://chinamotors.kz/' },
+        { '@type': 'ListItem', position: 2, name: 'Каталог', item: 'https://chinamotors.kz/catalog.html' },
+        { '@type': 'ListItem', position: 3, name: title, item: canonicalUrl }
+      ]
+    };
+    const breadcrumbLdEl = document.getElementById('seoBreadcrumbLd');
+    if (breadcrumbLdEl) breadcrumbLdEl.textContent = JSON.stringify(breadcrumbLd);
+  }
+
   function canonBody(title, raw) {
     const s = `${title} ${raw}`.toLowerCase();
     if (s.includes('самосвал')) return 'Самосвал';
@@ -285,6 +339,8 @@ document.addEventListener('DOMContentLoaded', () => {
         productSubtitleEl.textContent =
           [v.model, v.year].filter(Boolean).join(' · ');
       }
+
+      applySeo(v, title, price, images);
 
       if (availabilityBadgeEl && AVAIL_LABELS[v.availability]) {
         availabilityBadgeEl.textContent = AVAIL_LABELS[v.availability];
