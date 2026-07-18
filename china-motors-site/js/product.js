@@ -62,6 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btnCreateDeal.disabled = true;
     try {
       await window.CMAuth.apiAuthed('POST', '/api/deals/my/', { vehicle_id: Number(id) });
+      window.cmGoal?.('deal_created');
       location.href = 'account.html';
     } catch (e) {
       alert('Ошибка: ' + e.message);

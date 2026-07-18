@@ -741,6 +741,8 @@
   document.getElementById('toContactsAside')?.addEventListener('click', (e) => {
     e.preventDefault();
 
+    window.cmGoal?.('calc_to_contacts_click');
+
     const msg = buildContactsMessage();
     const url = `/contacts.html?message=${encodeURIComponent(msg)}`;
     window.location.href = url;
