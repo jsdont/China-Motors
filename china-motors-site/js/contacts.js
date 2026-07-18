@@ -80,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
         statusEl.className = 'success';
         statusEl.style.display = 'block';
       }
+      window.cmGoal?.('contact_form_success');
       // Поля очищаем только при успехе — при ошибке пользователь не
       // должен терять то, что уже написал, и может просто нажать ещё раз.
       nameEl && (nameEl.value = '');

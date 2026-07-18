@@ -1563,6 +1563,31 @@
 
   window.CMFavorites = { getFavorites, isFavorite, toggleFavorite };
 
+  /* =====================
+     YANDEX.METRIKA GOALS
+     ===================== */
+  const YM_COUNTER_ID = 110843946;
+
+  function cmGoal(name, params) {
+    if (typeof window.ym === 'function') {
+      window.ym(YM_COUNTER_ID, 'reachGoal', name, params);
+    }
+  }
+  window.cmGoal = cmGoal;
+
+  // Клики по телефону/WhatsApp встречаются в футере, на контактах и т.д. —
+  // делегирование на document ловит их везде, включая шапку/футер, которые
+  // подгружаются отдельным fetch'ем позже.
+  function initGoalTracking() {
+    document.addEventListener('click', (e) => {
+      const a = e.target.closest('a[href]');
+      if (!a) return;
+      const href = a.getAttribute('href') || '';
+      if (href.startsWith('tel:')) cmGoal('phone_click');
+      else if (href.includes('wa.me')) cmGoal('whatsapp_click');
+    });
+  }
+
   function initFavNav() {
     const countEl = document.getElementById('navFavCount');
     if (!countEl) return;
@@ -1638,6 +1663,8 @@
      INIT
      ===================== */
   document.addEventListener('DOMContentLoaded', () => {
+
+    initGoalTracking();
 
     loadPartial('siteHeader', './partials/navbar.html', () => {
     initTheme();

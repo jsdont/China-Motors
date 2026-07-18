@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         await action();
         showStatus(statusEl, t('register_success'), false);
+        window.cmGoal?.('registration_success');
         setTimeout(() => { location.href = 'index.html'; }, 1500);
       } catch (err) {
         showStatus(statusEl, err.message, true);
