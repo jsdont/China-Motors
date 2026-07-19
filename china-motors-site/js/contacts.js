@@ -7,8 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const nameEl = document.getElementById('c-name');
   const phoneEl = document.getElementById('c-phone');
   const msgEl = document.getElementById('c-message');
+  const companyEl = document.getElementById('c-company'); // honeypot — should stay empty
   const sendBtn = document.getElementById('c-send');
   const statusEl = document.getElementById('formStatus');
+
+  // момент загрузки формы — для проверки "слишком быстрой" отправки ботом
+  const formLoadedAt = Date.now();
 
   // 1) автоподстановка текста из калькулятора ?message=...
   const qs = new URLSearchParams(location.search);
@@ -28,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
         message,
         page: window.location.href,
         product_id: productId || null,
+        company: companyEl?.value || '', // honeypot, бэкенд отклонит непустое значение
       }),
 
 
@@ -40,6 +45,18 @@ document.addEventListener('DOMContentLoaded', () => {
     return true;
   }
 
+
+  function showSuccessAndReset() {
+    sendBtn.textContent = '✅ Отправлено';
+    if (statusEl) {
+      statusEl.textContent = 'Заявка успешно отправлена!';
+      statusEl.className = 'success';
+      statusEl.style.display = 'block';
+    }
+    nameEl && (nameEl.value = '');
+    phoneEl && (phoneEl.value = '');
+    msgEl && (msgEl.value = '');
+  }
 
   sendBtn?.addEventListener('click', async (e) => {
     e.preventDefault();
@@ -72,20 +89,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const productId = qs.get('product_id');
 
+    // Заполнено быстрее, чем реально успел бы человек, — почти наверняка
+    // бот. Отклоняем тихо (без запроса на бэкенд и без объяснения),
+    // чтобы не подсказывать боту, на что подстроиться.
+    const secondsSinceLoad = (Date.now() - formLoadedAt) / 1000;
+    if (secondsSinceLoad < 3) {
+      showSuccessAndReset();
+      sendBtn.disabled = false;
+      sendBtn.textContent = prev;
+      setTimeout(() => {
+        if (statusEl) {
+          statusEl.style.display = 'none';
+          statusEl.textContent = '';
+          statusEl.className = '';
+        }
+      }, 4000);
+      return;
+    }
+
     try {
       await sendToBackend(name, phone, msg, productId);
-      sendBtn.textContent = '✅ Отправлено';
-      if (statusEl) {
-        statusEl.textContent = 'Заявка успешно отправлена!';
-        statusEl.className = 'success';
-        statusEl.style.display = 'block';
-      }
+      showSuccessAndReset();
       window.cmGoal?.('contact_form_success');
-      // Поля очищаем только при успехе — при ошибке пользователь не
-      // должен терять то, что уже написал, и может просто нажать ещё раз.
-      nameEl && (nameEl.value = '');
-      phoneEl && (phoneEl.value = '');
-      msgEl && (msgEl.value = '');
     } catch (err) {
       console.error(err);
       if (statusEl) {

@@ -673,6 +673,18 @@ p {
   margin-bottom: 8px;
 }
 
+/* Honeypot: off-screen (not display:none) so bots that skip hidden
+   fields still fill it in, while real users never see or reach it. */
+.cf-hp {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+}
+
 .contact-form input,
 .contact-form textarea {
   width: 100%;
