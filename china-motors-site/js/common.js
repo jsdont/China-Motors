@@ -1524,7 +1524,7 @@
      ACTIVE NAV LINK
      ===================== */
   function initActiveNav() {
-    const links = document.querySelectorAll('.nav-links a');
+    const links = document.querySelectorAll('.nav-links a, .nav-drawer__nav a');
     const current = location.pathname.split('/').pop() || 'index.html';
     links.forEach(a => {
       const hrefPage = (a.getAttribute('href') || '').split('#')[0].split('/').pop();
@@ -1619,70 +1619,68 @@
     });
   }
 
-  function initBurger() {
-    const burger = document.querySelector('.menu-toggle');
-    const navLinks = document.querySelector('.nav-links');
+  // Мобильная шторка (см. мокап SiteHeader) — отдельный <aside>, а не
+  // переиспользованный .nav-links. Открывается бургером, закрывается
+  // крестиком/оверлеем/Escape/кликом по ссылке.
+  function initMobileDrawer() {
+    const burger = document.getElementById('navBurger');
+    const drawer = document.getElementById('navDrawer');
+    const overlay = document.getElementById('navDrawerOverlay');
+    const closeBtn = document.getElementById('navDrawerClose');
+    const nav = document.getElementById('navDrawerNav');
+    if (!burger || !drawer || !overlay) return;
 
-    if (!burger || !navLinks) return;
+    function open() {
+      drawer.classList.add('active');
+      overlay.classList.add('active');
+    }
+    function close() {
+      drawer.classList.remove('active');
+      overlay.classList.remove('active');
+    }
 
-    burger.addEventListener('click', () => {
-      navLinks.classList.toggle('active');
+    burger.addEventListener('click', open);
+    closeBtn?.addEventListener('click', close);
+    overlay.addEventListener('click', close);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') close();
     });
-
-    // закрытие меню при клике на пункт
-    navLinks.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        navLinks.classList.remove('active');
-      });
+    nav?.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', close);
     });
   }
 
-  // На мобильных .nav-right (шторка языка + переключатель темы + избранное +
-  // бургер) физически не помещается в 375px рядом с логотипом — сдвигаем
-  // переключатели языка/темы в выпадающее меню, а не просто прячем их.
-  // Переносим сами узлы (не клоны), чтобы id/обработчики остались рабочими;
-  // якорь-комментарий помнит, куда вернуть их обратно на десктопе.
+  // На мобильных верхняя панель не вмещает язык/тему/логин рядом с лого —
+  // переключатель языка, темы и кнопка "Войти" переезжают в подвал шторки
+  // (см. мокап SiteHeader); иконка избранного остаётся в верхней панели
+  // всегда. Переносим сами узлы (не клоны), чтобы id/обработчики остались
+  // рабочими; якорь-комментарий помнит, куда вернуть их обратно на десктопе.
   function initMobileNavControls() {
-    const navLinks = document.querySelector('.nav-links');
+    const footer = document.getElementById('navDrawerFooter');
     const langSwitch = document.getElementById('langSwitch');
     const themeToggle = document.getElementById('themeToggle');
-    const favBtn = document.querySelector('.nav-right .nav-icon-btn');
-    if (!navLinks || !langSwitch || !themeToggle) return;
+    const authLink = document.getElementById('navAuthLink');
+    if (!footer || !langSwitch || !themeToggle || !authLink) return;
 
-    const favAnchor = favBtn ? document.createComment('fav-btn-anchor') : null;
-    if (favBtn) favBtn.before(favAnchor);
     const langAnchor = document.createComment('lang-switch-anchor');
     const themeAnchor = document.createComment('theme-toggle-anchor');
+    const authAnchor = document.createComment('auth-link-anchor');
     langSwitch.before(langAnchor);
     themeToggle.before(themeAnchor);
+    authLink.before(authAnchor);
 
-    const favLi = favBtn ? document.createElement('li') : null;
-    if (favLi) {
-      favLi.className = 'nav-mobile-extra';
-      favLi.appendChild(favBtn);
-    }
+    const phoneLink = footer.querySelector('.nav-drawer__phone');
 
-    const langLi = document.createElement('li');
-    langLi.className = 'nav-mobile-extra';
-    langLi.appendChild(langSwitch);
-
-    const themeLi = document.createElement('li');
-    themeLi.className = 'nav-mobile-extra';
-    themeLi.appendChild(themeToggle);
-
-    const mq = window.matchMedia('(max-width: 768px)');
+    const mq = window.matchMedia('(max-width: 920px)');
     function apply(isMobile) {
       if (isMobile) {
-        // Тема — сначала, избранное — затем, шторка языка — последней: её
-        // выпадающее меню раскрывается вниз и иначе перекрывало бы то, что
-        // идёт следом.
-        navLinks.appendChild(themeLi);
-        if (favLi) navLinks.appendChild(favLi);
-        navLinks.appendChild(langLi);
+        footer.insertBefore(langSwitch, phoneLink);
+        footer.insertBefore(themeToggle, phoneLink);
+        footer.insertBefore(authLink, phoneLink);
       } else {
         langAnchor.after(langSwitch);
         themeAnchor.after(themeToggle);
-        if (favBtn) favAnchor.after(favBtn);
+        authAnchor.after(authLink);
       }
     }
     apply(mq.matches);
@@ -1737,7 +1735,7 @@
     loadPartial('siteHeader', './partials/navbar.html', () => {
     initTheme();
     initLang();
-    initBurger();
+    initMobileDrawer();
     initAuthNav();
     initActiveNav();
     initFavNav();
