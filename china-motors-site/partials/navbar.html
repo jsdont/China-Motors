@@ -55,8 +55,31 @@
       </a>
 
       <!-- Burger -->
-      <button class="menu-toggle" aria-label="Menu">☰</button>
+      <button class="menu-toggle" id="navBurger" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
     </div>
 
   </div>
 </header>
+
+<!-- Mobile drawer -->
+<div class="nav-drawer-overlay" id="navDrawerOverlay"></div>
+<aside class="nav-drawer" id="navDrawer">
+  <div class="nav-drawer__header">
+    <span class="nav-drawer__logo"><span class="logo-china">CHINA</span> MOTORS</span>
+    <button class="nav-drawer__close" id="navDrawerClose" aria-label="Закрыть">✕</button>
+  </div>
+  <nav class="nav-drawer__nav" id="navDrawerNav">
+    <a href="index.html" data-i18n="nav_home">Главная</a>
+    <a href="catalog.html" data-i18n="nav_catalog">Каталог</a>
+    <a href="calculator.html" data-i18n="nav_calculator">Калькулятор</a>
+    <a href="favorites.html" data-i18n="nav_favorites">Избранное</a>
+    <a href="contacts.html" data-i18n="nav_contacts">Контакты</a>
+  </nav>
+  <div class="nav-drawer__footer" id="navDrawerFooter">
+    <a href="tel:+77776133731" class="nav-drawer__phone">+7 (777) 613-3731</a>
+  </div>
+</aside>

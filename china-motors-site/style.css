@@ -873,21 +873,12 @@ html.dark .contact-form textarea {
     right: 0;
     display: flex;
   }
-  .menu-toggle {
-    display: block;     /* ← теперь он виден */
-  }
-  .navbar .menu-toggle {
-    display: block;
-    padding: 15px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 26px;
-    color: #12172a;
-    z-index: 100;
-    transform: translateX(-10px);
-  }
-  html.dark .navbar .menu-toggle { color: #fff; }
+  /* .menu-toggle/.navbar .menu-toggle styling lives in the dedicated
+     nav-drawer block below (920px breakpoint) -- this legacy 768px block
+     predates the current navbar markup (.navbar .container/.close-btn
+     don't exist anymore) and its more-specific .navbar .menu-toggle rule
+     would otherwise fight the drawer burger's padding/size in the
+     481-768px overlap. */
 
   .nav-links .close-btn {
     position: absolute;
@@ -1638,72 +1629,190 @@ html.dark .privacy-container a {
   padding: 4px 6px;
   border-radius: 6px;
 }
-/* mobile */
-@media (max-width: 768px) {
-  .nav-links {
-    position: fixed;
-    top: 0;
-    right: -100%;
-    width: 70%;
-    height: 100vh;
-    flex-direction: column;
-    justify-content: flex-start;
-    background: #1f1f1f;
-    padding: 80px 20px;
-    transition: right 0.3s ease;
-    gap: 20px;
-
+/* =========================================================
+   MOBILE NAV DRAWER (matches SiteHeader mockup, 920px breakpoint)
+   ========================================================= */
+@media (max-width: 920px) {
+  .nav-links,
+  #langSwitch,
+  .nav-auth-link {
+    display: none !important;
   }
-
-  .nav-links.active {
-    right: 0;
+  .menu-toggle {
+    display: flex !important;
   }
-
-  /* .nav-links stops being a flex item once it's position:fixed, so the
-     overflow on small screens actually comes from .nav-left + the huge
-     desktop gap + .nav-right's 5 non-shrinking controls. #langSwitch,
-     #themeToggle and the favorites icon get moved into this drawer by JS
-     at this same breakpoint (see initMobileNavControls in common.js) so
-     nav-right only has to fit the auth pill + burger. */
+  /* "СПЕЦТЕХНИКА ИЗ КИТАЯ" at 2px letter-spacing renders wider than the
+     "China Motors" title above it -- tighten it instead of hiding it. */
+  .logo-sub {
+    font-size: 8px;
+    letter-spacing: 0.5px;
+  }
   .container-navbar {
     gap: 8px;
     justify-content: space-between;
   }
   .nav-right {
-    gap: 6px;
+    gap: 8px;
   }
-  .nav-auth-link {
-    padding: 9px 12px;
-    font-size: 12px;
-    max-width: 110px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .navbar .menu-toggle {
-    padding: 10px;
-    font-size: 22px;
-  }
-  /* "СПЕЦТЕХНИКА ИЗ КИТАЯ" at 2px letter-spacing is wider than the "China
-     Motors" title above it and was the single biggest driver of navbar
-     overflow -- tighten it down instead of hiding it outright. */
-  .logo-sub {
-    font-size: 8px;
-    letter-spacing: 0.5px;
-  }
-  .nav-mobile-extra {
-    width: 100%;
-    display: flex;
-  }
-  .nav-mobile-extra .lang-switch {
-    width: 100%;
-  }
-  .nav-mobile-extra .lang-toggle,
-  .nav-mobile-extra #themeToggle {
-    width: 100%;
-    justify-content: flex-start;
-    gap: 10px;
-  }
+}
+
+.menu-toggle {
+  display: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid #e4e6eb;
+  background: #fff;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+  padding: 0;
+  flex-shrink: 0;
+}
+html.dark .menu-toggle { background: #2a2a2a; border-color: rgba(255,255,255,.12); }
+.menu-toggle span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  border-radius: 2px;
+  background: #12172a;
+}
+html.dark .menu-toggle span { background: #f5f5f5; }
+
+.nav-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(13,17,32,0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .25s ease, visibility .25s ease;
+}
+.nav-drawer-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.nav-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 201;
+  width: min(84vw, 320px);
+  background: #fff;
+  box-shadow: -12px 0 40px rgba(13,17,32,0.2);
+  transform: translateX(100%);
+  transition: transform .28s cubic-bezier(.4,0,.2,1);
+  display: flex;
+  flex-direction: column;
+}
+.nav-drawer.active {
+  transform: translateX(0);
+}
+html.dark .nav-drawer { background: #1e1e1e; }
+
+.nav-drawer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  border-bottom: 1px solid #e4e6eb;
+  flex-shrink: 0;
+}
+html.dark .nav-drawer__header { border-color: rgba(255,255,255,.08); }
+
+.nav-drawer__logo {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 17px;
+  color: #12172a;
+}
+html.dark .nav-drawer__logo { color: #f5f5f5; }
+.nav-drawer__logo .logo-china { color: #E12821; }
+
+.nav-drawer__close {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid #e4e6eb;
+  background: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 1;
+  color: #12172a;
+}
+html.dark .nav-drawer__close { background: #2a2a2a; border-color: rgba(255,255,255,.12); color: #f5f5f5; }
+
+.nav-drawer__nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  overflow-y: auto;
+  gap: 2px;
+}
+.nav-drawer__nav a {
+  padding: 14px 12px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #12172a;
+  text-decoration: none;
+}
+html.dark .nav-drawer__nav a { color: #f5f5f5; }
+.nav-drawer__nav a.active {
+  font-weight: 600;
+  color: #E12821;
+  background: #f5f6f8;
+}
+html.dark .nav-drawer__nav a.active { background: rgba(225,40,33,0.15); }
+
+.nav-drawer__footer {
+  padding: 16px 20px;
+  border-top: 1px solid #e4e6eb;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-shrink: 0;
+}
+html.dark .nav-drawer__footer { border-color: rgba(255,255,255,.08); }
+
+.nav-drawer__phone {
+  text-align: center;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #12172a;
+  text-decoration: none;
+}
+html.dark .nav-drawer__phone { color: #f5f5f5; }
+
+/* langSwitch/themeToggle/auth-link get relocated in here by JS on mobile
+   (initMobileDrawer in common.js) -- same live nodes, full-width now. */
+.nav-drawer__footer #langSwitch,
+.nav-drawer__footer #themeToggle,
+.nav-drawer__footer .nav-auth-link {
+  display: flex !important;
+  width: 100%;
+}
+.nav-drawer__footer .lang-toggle {
+  width: 100%;
+  justify-content: space-between;
+}
+.nav-drawer__footer .nav-auth-link {
+  justify-content: center;
+  padding: 14px;
+  max-width: none;
+}
+.nav-drawer__footer #themeToggle {
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 10px 4px;
 }
 .nav-logo {
   flex: 0 0 auto;
