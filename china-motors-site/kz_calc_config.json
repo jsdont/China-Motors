@@ -38,5 +38,29 @@
     "TRAL": 0.09,
     "DEFAULT": 0.10
   },
+  "car": {
+    "duty_petrol": 0.15,
+    "duty_electric_hybrid": 0,
+    "util_coef": {
+      "electric": 0,
+      "cc1000": 1.5,
+      "cc2000": 3.5,
+      "cc3000": 5.0,
+      "ccMax": 11.5
+    },
+    "sbkts": 60000,
+    "sos": 130000,
+    "epts": 40000,
+    "customs_fee": 25950,
+    "broker_svh": 75000,
+    "svh": 25000,
+    "declarant_usd": 200,
+    "declarant_extra": 75000,
+    "export_decl_usd": 200,
+    "export_decl_extra": 75000,
+    "transport_almaty": 70000,
+    "first_reg_coef": 0.25,
+    "plate_reg_coef": 4.05
+  },
   "current_year": 2026
 }
