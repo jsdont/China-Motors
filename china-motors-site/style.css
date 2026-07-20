@@ -2570,6 +2570,162 @@ html.dark .fav-empty__sub { color: #aab4c5; }
 html.dark .fav-card__price { color: #f5f5f5; }
 
 /* =========================================================
+   BLOG
+   ========================================================= */
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.blog-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(18,23,42,0.06);
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: #12172a;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.blog-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 28px rgba(18,23,42,0.15);
+}
+html.dark .blog-card { background: #1e1e1e; color: #f5f5f5; }
+
+.blog-card__icon {
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #12172a, #1c2440);
+  color: #E12821;
+  font-size: 32px;
+}
+
+.blog-card__body {
+  padding: 20px 22px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.blog-card__date {
+  font-size: 11.5px;
+  color: #8a8f9c;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.blog-card__title {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.3;
+}
+
+.blog-card__excerpt {
+  font-size: 14px;
+  color: #4b5165;
+  line-height: 1.55;
+}
+html.dark .blog-card__excerpt { color: #aab4c5; }
+
+.blog-card__cta {
+  margin-top: auto;
+  padding-top: 8px;
+  color: #E12821;
+  font-weight: 600;
+  font-size: 13.5px;
+}
+
+.blog-article {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+.blog-article__meta {
+  font-size: 13px;
+  color: #8a8f9c;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.blog-article h1 {
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(26px, 4vw, 34px);
+  font-weight: 700;
+  line-height: 1.25;
+  margin-bottom: 24px;
+  color: #12172a;
+}
+html.dark .blog-article h1 { color: #f5f5f5; }
+
+.blog-article h2 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 21px;
+  font-weight: 600;
+  margin: 32px 0 12px;
+  color: #12172a;
+}
+html.dark .blog-article h2 { color: #f5f5f5; }
+
+.blog-article p {
+  font-size: 16px;
+  line-height: 1.75;
+  color: #333;
+  margin-bottom: 16px;
+}
+html.dark .blog-article p { color: #e0e0e0; }
+
+.blog-article ul {
+  margin: 0 0 16px 20px;
+}
+.blog-article li {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #333;
+  margin-bottom: 8px;
+}
+html.dark .blog-article li { color: #e0e0e0; }
+.blog-article li strong { color: #12172a; }
+html.dark .blog-article li strong { color: #f5f5f5; }
+
+.blog-article__cta {
+  background: #12172a;
+  border-radius: 16px;
+  padding: 28px;
+  margin-top: 40px;
+  text-align: center;
+}
+.blog-article__cta p {
+  color: #fff;
+  margin-bottom: 16px;
+}
+.blog-article__cta .btn {
+  display: inline-block;
+}
+
+.blog-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #8a8f9c;
+  text-decoration: none;
+  margin-bottom: 20px;
+}
+.blog-back-link:hover { color: #E12821; }
+
+/* =========================================================
    HOMEPAGE REDESIGN (hp-*) — hero, process, vehicle preview, stats
    ========================================================= */
 .logo-link {
