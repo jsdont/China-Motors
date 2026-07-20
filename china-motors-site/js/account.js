@@ -101,6 +101,98 @@ document.addEventListener('DOMContentLoaded', async () => {
     return wrap;
   }
 
+  const nfKzt = new Intl.NumberFormat('ru-RU');
+  function fmtMoney(v) {
+    const n = Number(v);
+    return (Number.isFinite(n) ? nfKzt.format(Math.round(n)) : v) + ' ₸';
+  }
+
+  const DOC_ICONS = {
+    CONTRACT: 'fa-file-contract',
+    GTD: 'fa-file-invoice',
+    CMR: 'fa-truck',
+    ACCEPTANCE: 'fa-file-signature',
+    PHOTO: 'fa-image',
+  };
+
+  // === Платежи по сделке (только просмотр; создаёт менеджер в админке) ===
+  async function loadPayments(dealId, container) {
+    try {
+      const payments = await window.CMAuth.apiAuthed('GET', `/api/deals/${dealId}/payments/`);
+      if (!payments.length) {
+        container.innerHTML = '<p class="dc-empty">Платежей пока нет.</p>';
+        return;
+      }
+      const total = payments.reduce((s, p) => s + Number(p.amount || 0), 0);
+      const confirmed = payments
+        .filter(p => p.is_confirmed)
+        .reduce((s, p) => s + Number(p.amount || 0), 0);
+      container.innerHTML = `
+        <ul class="dc-list">
+          ${payments.map(p => `
+            <li class="dc-row">
+              <span class="dc-amount">${fmtMoney(p.amount)}</span>
+              <span class="dc-pill ${p.is_confirmed ? 'ok' : 'wait'}">
+                ${p.is_confirmed ? 'Подтверждён' : 'Ожидает'}
+              </span>
+              <span class="dc-date">${fmtDate(p.created_at)}</span>
+            </li>`).join('')}
+        </ul>
+        <div class="dc-total">
+          Оплачено: <b>${fmtMoney(confirmed)}</b> из <b>${fmtMoney(total)}</b>
+        </div>`;
+    } catch (e) {
+      container.innerHTML = `<p class="dc-empty" style="color:#e74c3c">Ошибка загрузки: ${escapeHtml(e.message)}</p>`;
+    }
+  }
+
+  function buildPaymentsBlock(dealId) {
+    const wrap = document.createElement('div');
+    wrap.className = 'dc-block';
+    wrap.innerHTML = '<div class="dc-block__head"><i class="fa-solid fa-wallet"></i> Платежи</div><div class="dc-body"></div>';
+    loadPayments(dealId, wrap.querySelector('.dc-body'));
+    return wrap;
+  }
+
+  // === Документы по сделке (просмотр/скачивание; загружает менеджер) ===
+  async function loadDocuments(dealId, container) {
+    try {
+      const docs = await window.CMAuth.apiAuthed('GET', `/api/deals/${dealId}/documents/`);
+      if (!docs.length) {
+        container.innerHTML = '<p class="dc-empty">Документов пока нет.</p>';
+        return;
+      }
+      container.innerHTML = `
+        <ul class="dc-list">
+          ${docs.map(d => {
+            const icon = DOC_ICONS[d.type] || 'fa-file';
+            const label = escapeHtml(d.type_display || d.type || 'Документ');
+            const link = d.file_url
+              ? `<a class="dc-download" href="${encodeURI(d.file_url)}" target="_blank" rel="noopener">
+                   <i class="fa-solid fa-download"></i> Скачать
+                 </a>`
+              : '<span class="dc-date" style="opacity:.6">нет файла</span>';
+            return `
+              <li class="dc-row">
+                <span class="dc-doc"><i class="fa-solid ${icon}"></i> ${label}</span>
+                ${link}
+                <span class="dc-date">${fmtDate(d.created_at)}</span>
+              </li>`;
+          }).join('')}
+        </ul>`;
+    } catch (e) {
+      container.innerHTML = `<p class="dc-empty" style="color:#e74c3c">Ошибка загрузки: ${escapeHtml(e.message)}</p>`;
+    }
+  }
+
+  function buildDocumentsBlock(dealId) {
+    const wrap = document.createElement('div');
+    wrap.className = 'dc-block';
+    wrap.innerHTML = '<div class="dc-block__head"><i class="fa-solid fa-folder-open"></i> Документы</div><div class="dc-body"></div>';
+    loadDocuments(dealId, wrap.querySelector('.dc-body'));
+    return wrap;
+  }
+
   function buildDealCard(deal, { editableRole } = {}) {
     const card = document.createElement('div');
     card.className = 'deal-card';
@@ -163,6 +255,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     });
 
+    card.appendChild(buildPaymentsBlock(deal.id));
+    card.appendChild(buildDocumentsBlock(deal.id));
     card.appendChild(buildCommentsBlock(deal.id));
     return card;
   }

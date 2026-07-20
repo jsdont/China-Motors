@@ -140,6 +140,72 @@
     .my-assignment-form .btn { border-radius: 999px; padding: 9px 16px; font-size: 12.5px; }
 
     /* CHAT */
+    /* Платежи / документы по сделке — белая панель внутри тёмной карточки,
+       в том же стиле, что и блок чата (.comments-block). */
+    .dc-block {
+      background: #fff;
+      border-radius: 16px;
+      margin-top: 12px;
+      box-shadow: 0 4px 24px rgba(18,23,42,0.06);
+      overflow: hidden;
+    }
+    .dc-block__head {
+      padding: 16px 22px;
+      border-bottom: 1px solid #eef0f4;
+      font-family: 'Oswald', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: #12172a;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .dc-block__head i { color: #E12821; }
+    .dc-body { padding: 8px 22px 16px; }
+    .dc-list { list-style: none; margin: 0; padding: 0; }
+    .dc-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 0;
+      border-bottom: 1px solid #eef0f4;
+    }
+    .dc-row:last-child { border-bottom: none; }
+    .dc-amount { font-weight: 700; color: #12172a; font-size: 15px; }
+    .dc-doc { font-weight: 600; color: #12172a; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+    .dc-doc i { color: #E12821; }
+    .dc-date { font-size: 12px; color: #8a90a2; margin-left: auto; }
+    .dc-pill {
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .dc-pill.ok { background: rgba(22,163,74,0.15); color: #16a34a; }
+    .dc-pill.wait { background: rgba(226,35,26,0.12); color: #c8322b; }
+    .dc-download {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #E12821;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dc-download:hover { text-decoration: underline; }
+    .dc-total { margin-top: 12px; font-size: 13px; color: #12172a; }
+    .dc-total b { font-weight: 700; }
+    .dc-empty { padding: 6px 0; font-size: 13px; color: #8a90a2; }
+
+    html.dark .dc-block { background: #1e1e1e; }
+    html.dark .dc-block__head { color: #f5f5f5; border-color: rgba(255,255,255,.08); }
+    html.dark .dc-row { border-color: rgba(255,255,255,.08); }
+    html.dark .dc-amount, html.dark .dc-doc, html.dark .dc-total { color: #f5f5f5; }
+    html.dark .dc-date, html.dark .dc-empty { color: rgba(255,255,255,.5); }
+
     .comments-block {
       background: #fff;
       border-radius: 16px;
