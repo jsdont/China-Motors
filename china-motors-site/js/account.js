@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const CUSTOMER_ROLES = ['CUSTOMER_PERSON', 'CUSTOMER_COMPANY'];
   const ASSIGNEE_ROLES = ['SERVICE_BROKER', 'SERVICE_SVH', 'SERVICE_LAB', 'SERVICE_LOGISTIC', 'SERVICE_DECLARANT', 'BANK'];
+  const MANAGER_ROLES = ['MANAGER', 'ADMIN'];
+  const LEAD_STATUS_LABELS = { new: 'Новая', in_progress: 'В работе', won: 'Выиграна', lost: 'Проиграна' };
 
   const roleLine = document.getElementById('accountRoleLine');
   const dealListEl = document.getElementById('dealList');
@@ -240,7 +242,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     return wrap;
   }
 
-  function buildDealCard(deal, { editableRole } = {}) {
+  function buildDealCard(deal, { editableRole, editableStatus } = {}) {
     const card = document.createElement('div');
     card.className = 'deal-card';
 
@@ -275,10 +277,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         }).join('')
       : '<p style="opacity:.7;color:rgba(255,255,255,0.6)">Пока никто не назначен</p>';
 
+    const statusControl = editableStatus
+      ? `<select class="deal-status-select">
+           ${DEAL_STAGES.map(([k, l]) => `<option value="${k}" ${k === deal.status ? 'selected' : ''}>${l}</option>`).join('')}
+         </select>`
+      : `<span class="deal-status-pill">${escapeHtml(dealStatusLabel(deal.status))}</span>`;
+
     card.innerHTML = `
       <div class="deal-card__head">
         <h3>${deal.vehicle_title || deal.title || ('Сделка #' + deal.id)}</h3>
-        <span class="deal-status-pill">${escapeHtml(dealStatusLabel(deal.status))}</span>
+        ${statusControl}
       </div>
       <div class="deal-meta">
         Создана: ${fmtDate(deal.created_at)}
@@ -287,6 +295,27 @@ document.addEventListener('DOMContentLoaded', async () => {
       ${buildTimelineHtml(deal.status)}
       <div class="assignments-block">${assignmentsHtml}</div>
     `;
+
+    // Менеджер меняет этап сделки прямо из карточки — обновляем и timeline.
+    if (editableStatus) {
+      const sel = card.querySelector('.deal-status-select');
+      sel?.addEventListener('change', async () => {
+        const newStatus = sel.value;
+        const prev = deal.status;
+        sel.disabled = true;
+        try {
+          await window.CMAuth.apiAuthed('PATCH', `/api/manager/deals/${deal.id}/status/`, { status: newStatus });
+          deal.status = newStatus;
+          const tl = card.querySelector('.tl-block');
+          if (tl) tl.outerHTML = buildTimelineHtml(newStatus);
+        } catch (err) {
+          alert('Ошибка: ' + err.message);
+          sel.value = prev;
+        } finally {
+          sel.disabled = false;
+        }
+      });
+    }
 
     card.querySelectorAll('.my-assignment-form').forEach(form => {
       form.addEventListener('submit', async (e) => {
@@ -389,6 +418,58 @@ document.addEventListener('DOMContentLoaded', async () => {
     loadMyListings();
   }
 
+  // === Кабинет менеджера: дашборд-счётчики + инбокс заявок ===
+  async function loadManagerStats() {
+    const el = document.getElementById('managerStats');
+    if (!el) return;
+    try {
+      const s = await window.CMAuth.apiAuthed('GET', '/api/manager/stats/');
+      const tiles = [
+        ['Всего сделок', s.deals_total],
+        ['Активные', s.deals_active],
+        ['Завершённые', s.deals_completed],
+        ['Заявки (открытые)', s.leads_open],
+      ];
+      el.innerHTML = tiles.map(([label, val]) => `
+        <div class="mgr-tile">
+          <div class="mgr-tile__val">${val ?? 0}</div>
+          <div class="mgr-tile__label">${label}</div>
+        </div>`).join('');
+    } catch (e) {
+      el.innerHTML = `<p class="empty-note" style="color:#e74c3c">Ошибка загрузки сводки: ${escapeHtml(e.message)}</p>`;
+    }
+  }
+
+  async function loadManagerLeads() {
+    const el = document.getElementById('managerLeads');
+    if (!el) return;
+    try {
+      const leads = await window.CMAuth.apiAuthed('GET', '/api/manager/leads/');
+      if (!leads.length) {
+        el.innerHTML = '<p class="empty-note">Заявок пока нет.</p>';
+        return;
+      }
+      el.innerHTML = `
+        <ul class="lead-list">
+          ${leads.map(l => `
+            <li class="lead-row">
+              <div class="lead-main">
+                <span class="lead-name">${escapeHtml(l.name || 'Без имени')}</span>
+                <a class="lead-phone" href="tel:${escapeHtml(l.phone || '')}">${escapeHtml(l.phone || '—')}</a>
+                <span class="lead-source">${escapeHtml(l.source || '')}</span>
+              </div>
+              ${l.message ? `<div class="lead-msg">${escapeHtml(l.message)}</div>` : ''}
+              <div class="lead-foot">
+                <span class="lead-status s-${escapeHtml(l.status)}">${escapeHtml(l.status_display || LEAD_STATUS_LABELS[l.status] || l.status)}</span>
+                <span class="lead-date">${fmtDate(l.created_at)}</span>
+              </div>
+            </li>`).join('')}
+        </ul>`;
+    } catch (e) {
+      el.innerHTML = `<p class="empty-note" style="color:#e74c3c">Ошибка загрузки заявок: ${escapeHtml(e.message)}</p>`;
+    }
+  }
+
   async function render() {
     dealListEl.innerHTML = '<p class="empty-note">Загрузка...</p>';
     try {
@@ -410,6 +491,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         // роль в DealAssignment (BROKER/SVH/...) без префикса SERVICE_
         const shortRole = session.role.startsWith('SERVICE_') ? session.role.replace('SERVICE_', '') : session.role;
         deals.forEach(d => dealListEl.appendChild(buildDealCard(d, { editableRole: shortRole })));
+      } else if (MANAGER_ROLES.includes(session.role)) {
+        document.getElementById('managerStatsSection').style.display = '';
+        document.getElementById('managerLeadsSection').style.display = '';
+        loadManagerStats();
+        loadManagerLeads();
+        const deals = await window.CMAuth.apiAuthed('GET', '/api/manager/deals/');
+        dealListEl.innerHTML = '';
+        if (!deals.length) {
+          dealListEl.innerHTML = '<p class="empty-note">Сделок пока нет.</p>';
+          return;
+        }
+        deals.forEach(d => dealListEl.appendChild(buildDealCard(d, { editableStatus: true })));
       } else {
         dealListEl.innerHTML = '<p class="empty-note">Личный кабинет для этой роли пока в разработке.</p>';
       }

@@ -418,6 +418,69 @@
     html.dark .comment-form { border-color: rgba(255,255,255,.08); }
     html.dark .comment-form input { background: #171717; color: #fff; border-color: #333; }
     html.dark .empty-note { color: #aab4c5; }
+
+    /* ===== Кабинет менеджера ===== */
+    .mgr-section h2 {
+      color: #12172a;
+      font-family: 'Oswald', sans-serif;
+      font-weight: 600;
+      font-size: 19px;
+      margin: 0;
+    }
+    html.dark .mgr-section h2 { color: #f5f5f5; }
+
+    .mgr-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+    .mgr-tile {
+      background: #f4f6fa;
+      border-radius: 12px;
+      padding: 18px 16px;
+      text-align: center;
+    }
+    .mgr-tile__val { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 30px; color: #E12821; line-height: 1; }
+    .mgr-tile__label { margin-top: 6px; font-size: 12.5px; color: #4b5165; }
+    html.dark .mgr-tile { background: #171717; }
+    html.dark .mgr-tile__label { color: #aab4c5; }
+    @media (max-width: 640px) { .mgr-stats { grid-template-columns: repeat(2, 1fr); } }
+
+    .lead-list { list-style: none; margin: 0; padding: 0; }
+    .lead-row { padding: 14px 0; border-bottom: 1px solid #eef0f4; }
+    .lead-row:last-child { border-bottom: none; }
+    .lead-main { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+    .lead-name { font-weight: 700; color: #12172a; font-size: 15px; }
+    .lead-phone { color: #E12821; text-decoration: none; font-size: 13.5px; font-weight: 600; }
+    .lead-phone:hover { text-decoration: underline; }
+    .lead-source { font-size: 11.5px; color: #8a90a2; text-transform: uppercase; letter-spacing: .5px; }
+    .lead-msg { margin-top: 6px; font-size: 13px; color: #4b5165; white-space: pre-wrap; }
+    .lead-foot { margin-top: 8px; display: flex; align-items: center; gap: 12px; }
+    .lead-date { font-size: 12px; color: #8a90a2; margin-left: auto; }
+    .lead-status {
+      font-size: 11.5px; font-weight: 700; padding: 4px 11px; border-radius: 999px;
+      background: rgba(255,255,255,0.08); color: #4b5165;
+    }
+    .lead-status.s-new { background: rgba(226,35,26,0.12); color: #c8322b; }
+    .lead-status.s-in_progress { background: rgba(37,99,235,0.14); color: #2563eb; }
+    .lead-status.s-won { background: rgba(22,163,74,0.15); color: #16a34a; }
+    .lead-status.s-lost { background: rgba(120,120,120,0.18); color: #6b7280; }
+    html.dark .lead-row { border-color: rgba(255,255,255,.08); }
+    html.dark .lead-name { color: #f5f5f5; }
+    html.dark .lead-msg { color: #cbd2df; }
+
+    /* Выпадающий выбор этапа сделки (для менеджера) в шапке карточки */
+    .deal-status-select {
+      background: #12172a;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 999px;
+      padding: 7px 14px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .deal-status-select:disabled { opacity: .6; cursor: default; }
   </style>
 </head>
 <body>
@@ -523,6 +586,17 @@
         </form>
 
         <div id="myListingsList"></div>
+      </div>
+
+      <!-- Кабинет менеджера: дашборд + инбокс заявок (показываются JS для роли MANAGER/ADMIN) -->
+      <div id="managerStatsSection" class="cab-card mgr-section" style="display:none">
+        <div class="cab-card-head"><h2>Сводка</h2></div>
+        <div id="managerStats" class="mgr-stats"></div>
+      </div>
+
+      <div id="managerLeadsSection" class="cab-card mgr-section" style="display:none">
+        <div class="cab-card-head"><h2>Заявки с сайта</h2></div>
+        <div id="managerLeads"></div>
       </div>
 
       <div id="dealList" class="deal-list">
