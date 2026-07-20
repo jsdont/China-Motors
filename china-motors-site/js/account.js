@@ -40,6 +40,53 @@ document.addEventListener('DOMContentLoaded', async () => {
     LOGISTIC: 'Логист', DECLARANT: 'Декларант', BANK: 'Банк',
   };
 
+  // Этапы сделки по порядку — совпадают с Deal.STATUS_CHOICES на бэкенде.
+  // Порядок важен: по индексу текущего статуса строится дорожная карта.
+  const DEAL_STAGES = [
+    ['AGREEMENT', 'Согласование', 'fa-handshake'],
+    ['CONTRACT', 'Договор', 'fa-file-signature'],
+    ['PURCHASE_CHINA', 'Покупка в Китае', 'fa-cart-shopping'],
+    ['DELIVERY_KZ', 'Доставка в КЗ', 'fa-truck-fast'],
+    ['SVH', 'СВХ', 'fa-warehouse'],
+    ['CUSTOMS', 'Таможня', 'fa-stamp'],
+    ['DELIVERY_CLIENT', 'Доставка клиенту', 'fa-truck-ramp-box'],
+    ['COMPLETED', 'Завершена', 'fa-flag-checkered'],
+  ];
+  const DEAL_STAGE_INDEX = Object.fromEntries(DEAL_STAGES.map(([k], i) => [k, i]));
+
+  function dealStatusLabel(status) {
+    const stage = DEAL_STAGES.find(([k]) => k === status);
+    return stage ? stage[1] : (status || '');
+  }
+
+  // Дорожная карта сделки: этапы до текущего — «пройдено», текущий —
+  // «активен», после — «предстоит». Для COMPLETED все этапы пройдены.
+  function buildTimelineHtml(status) {
+    const curIdx = status in DEAL_STAGE_INDEX ? DEAL_STAGE_INDEX[status] : 0;
+    const isCompleted = status === 'COMPLETED';
+
+    const steps = DEAL_STAGES.map(([key, label, icon], i) => {
+      let state;
+      if (isCompleted || i < curIdx) state = 'done';
+      else if (i === curIdx) state = 'active';
+      else state = 'todo';
+      const mark = state === 'done'
+        ? '<i class="fa-solid fa-check"></i>'
+        : `<i class="fa-solid ${icon}"></i>`;
+      return `
+        <li class="tl-step tl-${state}">
+          <span class="tl-dot">${mark}</span>
+          <span class="tl-label">${label}</span>
+        </li>`;
+    }).join('');
+
+    return `
+      <div class="tl-block">
+        <div class="tl-block__head"><i class="fa-solid fa-route"></i> Этапы сделки</div>
+        <ol class="tl-steps">${steps}</ol>
+      </div>`;
+  }
+
   function fmtDate(iso) {
     return new Date(iso).toLocaleString('ru-RU');
   }
@@ -231,12 +278,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     card.innerHTML = `
       <div class="deal-card__head">
         <h3>${deal.vehicle_title || deal.title || ('Сделка #' + deal.id)}</h3>
-        <span class="deal-status-pill">${escapeHtml(deal.status || '')}</span>
+        <span class="deal-status-pill">${escapeHtml(dealStatusLabel(deal.status))}</span>
       </div>
       <div class="deal-meta">
         Создана: ${fmtDate(deal.created_at)}
         ${editableRole ? '' : `· Клиент: ${deal.customer_info?.name || deal.customer_info?.phone || '—'}`}
       </div>
+      ${buildTimelineHtml(deal.status)}
       <div class="assignments-block">${assignmentsHtml}</div>
     `;
 
