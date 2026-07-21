@@ -440,6 +440,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  // Конвертация заявки в сделку. На успехе — создаётся (или находится по
+  // телефону) клиент и новая сделка; перезагружаем заявки, сделки и сводку.
+  async function convertLead(leadId, btn) {
+    if (!confirm('Создать сделку из этой заявки? Клиент будет найден по телефону или создан автоматически.')) return;
+    btn.disabled = true;
+    const prevText = btn.textContent;
+    btn.textContent = 'Создаём…';
+    try {
+      const res = await window.CMAuth.apiAuthed('POST', `/api/manager/leads/${leadId}/convert/`, {});
+      const note = res.created_customer
+        ? `\nСоздан новый клиент по номеру ${res.customer_phone}.`
+        : `\nКлиент найден по номеру ${res.customer_phone}.`;
+      alert(`Сделка создана: «${res.deal_title}» (№${res.deal_id}).${note}`);
+      loadManagerLeads();
+      loadManagerDeals();
+      loadManagerStats();
+    } catch (e) {
+      alert('Ошибка: ' + e.message);
+      btn.disabled = false;
+      btn.textContent = prevText;
+    }
+  }
+
   async function loadManagerLeads() {
     const el = document.getElementById('managerLeads');
     if (!el) return;
@@ -451,7 +474,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
       el.innerHTML = `
         <ul class="lead-list">
-          ${leads.map(l => `
+          ${leads.map(l => {
+            const action = l.converted_deal
+              ? `<span class="lead-converted"><i class="fa-solid fa-check"></i> Сделка №${l.converted_deal}</span>`
+              : (l.phone
+                  ? `<button type="button" class="lead-convert-btn" data-lead-id="${l.id}">Создать сделку</button>`
+                  : '');
+            return `
             <li class="lead-row">
               <div class="lead-main">
                 <span class="lead-name">${escapeHtml(l.name || 'Без имени')}</span>
@@ -461,12 +490,31 @@ document.addEventListener('DOMContentLoaded', async () => {
               ${l.message ? `<div class="lead-msg">${escapeHtml(l.message)}</div>` : ''}
               <div class="lead-foot">
                 <span class="lead-status s-${escapeHtml(l.status)}">${escapeHtml(l.status_display || LEAD_STATUS_LABELS[l.status] || l.status)}</span>
+                ${action}
                 <span class="lead-date">${fmtDate(l.created_at)}</span>
               </div>
-            </li>`).join('')}
+            </li>`;
+          }).join('')}
         </ul>`;
+      el.querySelectorAll('.lead-convert-btn').forEach(btn => {
+        btn.addEventListener('click', () => convertLead(btn.dataset.leadId, btn));
+      });
     } catch (e) {
       el.innerHTML = `<p class="empty-note" style="color:#e74c3c">Ошибка загрузки заявок: ${escapeHtml(e.message)}</p>`;
+    }
+  }
+
+  async function loadManagerDeals() {
+    try {
+      const deals = await window.CMAuth.apiAuthed('GET', '/api/manager/deals/');
+      dealListEl.innerHTML = '';
+      if (!deals.length) {
+        dealListEl.innerHTML = '<p class="empty-note">Сделок пока нет.</p>';
+        return;
+      }
+      deals.forEach(d => dealListEl.appendChild(buildDealCard(d, { editableStatus: true })));
+    } catch (e) {
+      dealListEl.innerHTML = `<p class="empty-note" style="color:#e74c3c">Ошибка загрузки сделок: ${escapeHtml(e.message)}</p>`;
     }
   }
 
@@ -496,13 +544,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('managerLeadsSection').style.display = '';
         loadManagerStats();
         loadManagerLeads();
-        const deals = await window.CMAuth.apiAuthed('GET', '/api/manager/deals/');
-        dealListEl.innerHTML = '';
-        if (!deals.length) {
-          dealListEl.innerHTML = '<p class="empty-note">Сделок пока нет.</p>';
-          return;
-        }
-        deals.forEach(d => dealListEl.appendChild(buildDealCard(d, { editableStatus: true })));
+        await loadManagerDeals();
       } else {
         dealListEl.innerHTML = '<p class="empty-note">Личный кабинет для этой роли пока в разработке.</p>';
       }
