@@ -1011,6 +1011,57 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  // === Уведомления: колокольчик со счётчиком новых событий по сделкам ===
+  function initNotifications() {
+    const bell = document.getElementById('notifBell');
+    const panel = document.getElementById('notifPanel');
+    const badge = document.getElementById('notifBadge');
+    if (!bell || !panel || !badge) return;
+
+    async function refresh() {
+      try {
+        const data = await window.CMAuth.apiAuthed('GET', '/api/notifications/');
+        panel.innerHTML = data.items.length
+          ? data.items.map(n => {
+              const who = n.actor?.name || n.actor?.phone || 'Система';
+              return `
+                <div class="notif-item${n.unread ? ' unread' : ''}">
+                  <div class="notif-item__deal">${escapeHtml(n.deal_title)}</div>
+                  <div class="notif-item__text">${escapeHtml(n.text)}</div>
+                  <div class="notif-item__meta">${escapeHtml(who)} · ${fmtDate(n.created_at)}</div>
+                </div>`;
+            }).join('')
+          : '<div class="notif-empty">Пока нет уведомлений</div>';
+        if (data.unread_count > 0) {
+          badge.textContent = data.unread_count > 99 ? '99+' : String(data.unread_count);
+          badge.style.display = '';
+        } else {
+          badge.style.display = 'none';
+        }
+      } catch (e) { /* тихо: уведомления не критичны */ }
+    }
+
+    bell.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      if (panel.style.display !== 'none') { panel.style.display = 'none'; return; }
+      await refresh();
+      panel.style.display = 'block';
+      try {
+        await window.CMAuth.apiAuthed('POST', '/api/notifications/mark-read/', {});
+        badge.style.display = 'none';
+      } catch (e) { /* тихо */ }
+    });
+    document.addEventListener('click', (e) => {
+      if (panel.style.display !== 'none' && !panel.contains(e.target) && !bell.contains(e.target)) {
+        panel.style.display = 'none';
+      }
+    });
+
+    refresh();
+    setInterval(refresh, 60000);
+  }
+
   initMyListings();
+  initNotifications();
   render();
 });
