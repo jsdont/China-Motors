@@ -140,6 +140,265 @@
     .my-assignment-form .btn { border-radius: 999px; padding: 9px 16px; font-size: 12.5px; }
 
     /* CHAT */
+    /* Дорожная карта сделки (timeline) — горизонтальный степпер на десктопе,
+       вертикальный на телефоне. Та же белая панель, что у платежей/чата. */
+    .tl-block {
+      background: #fff;
+      border-radius: 16px;
+      margin-top: 12px;
+      box-shadow: 0 4px 24px rgba(18,23,42,0.06);
+      overflow: hidden;
+    }
+    .tl-block__head {
+      padding: 16px 22px;
+      border-bottom: 1px solid #eef0f4;
+      font-family: 'Oswald', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: #12172a;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .tl-block__head i { color: #E12821; }
+    .tl-steps {
+      list-style: none;
+      margin: 0;
+      padding: 22px 18px 20px;
+      display: flex;
+    }
+    .tl-step {
+      flex: 1;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      min-width: 0;
+    }
+    /* соединительная линия слева (к предыдущему шагу) */
+    .tl-step::before {
+      content: '';
+      position: absolute;
+      top: 17px;
+      left: -50%;
+      width: 100%;
+      height: 3px;
+      background: #e2e5ec;
+      z-index: 0;
+    }
+    .tl-step:first-child::before { display: none; }
+    .tl-done::before, .tl-active::before { background: #16a34a; }
+    .tl-dot {
+      position: relative;
+      z-index: 1;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      background: #e2e5ec;
+      color: #8a90a2;
+      border: 3px solid #fff;
+    }
+    .tl-done .tl-dot { background: #16a34a; color: #fff; }
+    .tl-active .tl-dot { background: #E12821; color: #fff; box-shadow: 0 0 0 4px rgba(225,40,33,0.18); }
+    .tl-label {
+      margin-top: 8px;
+      font-size: 11px;
+      line-height: 1.25;
+      color: #8a90a2;
+      max-width: 86px;
+    }
+    .tl-done .tl-label, .tl-active .tl-label { color: #12172a; font-weight: 600; }
+
+    @media (max-width: 600px) {
+      .tl-steps { flex-direction: column; align-items: flex-start; padding: 16px 22px; }
+      .tl-step { flex-direction: row; width: 100%; align-items: center; gap: 14px; padding: 7px 0; text-align: left; }
+      .tl-step::before { top: -50%; left: 16px; width: 3px; height: 100%; }
+      .tl-label { margin-top: 0; max-width: none; font-size: 13.5px; }
+    }
+
+    html.dark .tl-block { background: #1e1e1e; }
+    html.dark .tl-block__head { color: #f5f5f5; border-color: rgba(255,255,255,.08); }
+    html.dark .tl-step::before { background: rgba(255,255,255,.12); }
+    html.dark .tl-done::before, html.dark .tl-active::before { background: #16a34a; }
+    html.dark .tl-dot { background: #2a2a2a; color: rgba(255,255,255,.4); border-color: #1e1e1e; }
+    html.dark .tl-done .tl-dot { background: #16a34a; color: #fff; }
+    html.dark .tl-active .tl-dot { background: #E12821; color: #fff; }
+    html.dark .tl-label { color: rgba(255,255,255,.45); }
+    html.dark .tl-done .tl-label, html.dark .tl-active .tl-label { color: #f5f5f5; }
+
+    /* Платежи / документы по сделке — белая панель внутри тёмной карточки,
+       в том же стиле, что и блок чата (.comments-block). */
+    .dc-block {
+      background: #fff;
+      border-radius: 16px;
+      margin-top: 12px;
+      box-shadow: 0 4px 24px rgba(18,23,42,0.06);
+      overflow: hidden;
+    }
+    .dc-block__head {
+      padding: 16px 22px;
+      border-bottom: 1px solid #eef0f4;
+      font-family: 'Oswald', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: #12172a;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .dc-block__head i { color: #E12821; }
+    .dc-body { padding: 8px 22px 16px; }
+    .dc-list { list-style: none; margin: 0; padding: 0; }
+    .dc-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 0;
+      border-bottom: 1px solid #eef0f4;
+    }
+    .dc-row:last-child { border-bottom: none; }
+    .dc-amount { font-weight: 700; color: #12172a; font-size: 15px; }
+    .dc-doc { font-weight: 600; color: #12172a; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+    .dc-doc i { color: #E12821; }
+    .dc-date { font-size: 12px; color: #8a90a2; margin-left: auto; }
+    .dc-pill {
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .dc-pill.ok { background: rgba(22,163,74,0.15); color: #16a34a; }
+    .dc-pill.wait { background: rgba(226,35,26,0.12); color: #c8322b; }
+    .dc-download {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #E12821;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dc-download:hover { text-decoration: underline; }
+    .dc-total { margin-top: 12px; font-size: 13px; color: #12172a; }
+    .dc-total b { font-weight: 700; }
+    .dc-empty { padding: 6px 0; font-size: 13px; color: #8a90a2; }
+    .dc-internal { font-size: 11px; font-weight: 400; color: #c8322b; letter-spacing: 0; }
+
+    /* Лог изменений */
+    .act-list { list-style: none; margin: 0; padding: 4px 0; }
+    .act-row { display: flex; gap: 12px; padding: 9px 0; }
+    .act-dot { flex-shrink: 0; width: 9px; height: 9px; border-radius: 50%; background: #E12821; margin-top: 5px; }
+    .act-internal .act-dot { background: #8a90a2; }
+    .act-text { font-size: 13.5px; color: #12172a; }
+    .act-meta { font-size: 11.5px; color: #8a90a2; margin-top: 2px; }
+    .act-tag { font-size: 10px; font-weight: 700; color: #8a90a2; background: rgba(138,144,162,.15); padding: 1px 6px; border-radius: 999px; vertical-align: middle; }
+    html.dark .act-text { color: #f5f5f5; }
+    html.dark .act-meta { color: rgba(255,255,255,.45); }
+
+    /* Конструктор сценариев / план сделки */
+    .stage-list { list-style: none; margin: 0; padding: 0; }
+    .stage-row { display: flex; align-items: center; gap: 11px; padding: 10px 0; border-bottom: 1px solid #eef0f4; }
+    .stage-row:last-child { border-bottom: none; }
+    .stage-mark i { color: #cbd2df; font-size: 15px; }
+    .stage-row.done .stage-mark i { color: #16a34a; }
+    .stage-check input { width: 17px; height: 17px; cursor: pointer; accent-color: #16a34a; }
+    .stage-title { font-size: 14px; color: #12172a; flex: 1; }
+    .stage-row.done .stage-title { text-decoration: line-through; color: #8a90a2; }
+    .stage-actions { display: flex; align-items: center; gap: 4px; }
+    .stage-actions button {
+      background: none; border: 1px solid #e2e5ec; border-radius: 6px; cursor: pointer;
+      width: 26px; height: 26px; font-size: 11px; color: #4b5165; line-height: 1;
+    }
+    .stage-actions .stage-del { color: #c8322b; border-color: #f0d4d2; }
+    .stage-actions button:hover:not(:disabled) { background: #f4f6fa; }
+    .stage-actions button:disabled { opacity: .35; cursor: default; }
+    html.dark .stage-row { border-color: rgba(255,255,255,.08); }
+    html.dark .stage-title { color: #f5f5f5; }
+    html.dark .stage-row.done .stage-title { color: rgba(255,255,255,.45); }
+    html.dark .stage-actions button { background: #171717; border-color: #333; color: #cbd2df; }
+    html.dark .stage-actions button:hover:not(:disabled) { background: #222; }
+    .stage-input { flex: 1; min-width: 180px; padding: 9px 12px; border-radius: 8px; border: 1px solid #dfe3ea; font-size: 13px; background: #fff; color: #12172a; }
+    html.dark .stage-input { background: #171717; color: #fff; border-color: #333; }
+    .exp-note { color: #8a90a2; font-weight: 400; font-size: 12.5px; }
+    .exp-del {
+      background: none; border: none; color: #c8322b; cursor: pointer;
+      font-size: 14px; line-height: 1; padding: 4px 6px; margin-left: auto;
+    }
+    .exp-del:hover { color: #e12821; }
+    .exp-del:disabled { opacity: .5; }
+    html.dark .exp-note { color: rgba(255,255,255,.5); }
+    .fin-hint { margin-top: 12px; font-size: 12px; color: #8a90a2; }
+
+    /* Галерея сделки (фото/видео) */
+    .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; padding: 4px 0; }
+    .media-item { position: relative; display: flex; flex-direction: column; gap: 5px; }
+    .media-thumb {
+      display: block; border-radius: 10px; overflow: hidden; aspect-ratio: 1 / 1;
+      background: #f0f2f6; border: 1px solid #eef0f4;
+    }
+    .media-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .media-thumb--video {
+      display: flex; align-items: center; justify-content: center;
+      background: #12172a; color: #fff; font-size: 26px; text-decoration: none;
+    }
+    .media-thumb--video:hover { background: #1b2540; }
+    .media-cap { font-size: 12px; color: #4b5165; line-height: 1.3; }
+    .media-del {
+      position: absolute; top: 6px; right: 6px; width: 24px; height: 24px;
+      border: none; border-radius: 50%; background: rgba(18,23,42,0.75); color: #fff;
+      cursor: pointer; font-size: 11px; line-height: 1;
+    }
+    .media-del:hover { background: #c8322b; }
+    html.dark .media-thumb { background: #171717; border-color: #333; }
+    html.dark .media-cap { color: #cbd2df; }
+    .media-add-form { flex-direction: row; flex-wrap: wrap; }
+    .media-add-form .media-caption, .media-add-form .media-video { flex: 1; min-width: 160px; padding: 9px 12px; border-radius: 8px; border: 1px solid #dfe3ea; font-size: 13px; background: #fff; color: #12172a; }
+    .media-add-form .media-or { font-size: 12px; color: #8a90a2; }
+    html.dark .media-add-form .media-caption, html.dark .media-add-form .media-video { background: #171717; color: #fff; border-color: #333; }
+    html.dark .media-add-form .media-or { color: #aab4c5; }
+
+    /* Форма добавления платежа/документа (только для менеджера) */
+    .dc-add-form {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 22px 18px;
+      border-top: 1px solid #eef0f4;
+    }
+    .dc-add-form input[type="number"],
+    .dc-add-form select,
+    .dc-add-form input[type="file"] {
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: 1px solid #dfe3ea;
+      font-size: 13px;
+      background: #fff;
+      color: #12172a;
+    }
+    .dc-add-form input[type="number"] { width: 150px; }
+    .dc-add-form .dc-check { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #4b5165; }
+    .dc-add-form .btn { border-radius: 999px; padding: 9px 18px; font-size: 12.5px; }
+    html.dark .dc-add-form { border-color: rgba(255,255,255,.08); }
+    html.dark .dc-add-form input[type="number"],
+    html.dark .dc-add-form select,
+    html.dark .dc-add-form input[type="file"] { background: #171717; color: #fff; border-color: #333; }
+    html.dark .dc-add-form .dc-check { color: #cbd2df; }
+
+    html.dark .dc-block { background: #1e1e1e; }
+    html.dark .dc-block__head { color: #f5f5f5; border-color: rgba(255,255,255,.08); }
+    html.dark .dc-row { border-color: rgba(255,255,255,.08); }
+    html.dark .dc-amount, html.dark .dc-doc, html.dark .dc-total { color: #f5f5f5; }
+    html.dark .dc-date, html.dark .dc-empty { color: rgba(255,255,255,.5); }
+
     .comments-block {
       background: #fff;
       border-radius: 16px;
@@ -261,6 +520,112 @@
     html.dark .comment-form { border-color: rgba(255,255,255,.08); }
     html.dark .comment-form input { background: #171717; color: #fff; border-color: #333; }
     html.dark .empty-note { color: #aab4c5; }
+
+    /* ===== Кабинет менеджера ===== */
+    .mgr-section h2 {
+      color: #12172a;
+      font-family: 'Oswald', sans-serif;
+      font-weight: 600;
+      font-size: 19px;
+      margin: 0;
+    }
+    html.dark .mgr-section h2 { color: #f5f5f5; }
+
+    .mgr-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+    .mgr-tile {
+      background: #f4f6fa;
+      border-radius: 12px;
+      padding: 18px 16px;
+      text-align: center;
+    }
+    .mgr-tile__val { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 30px; color: #E12821; line-height: 1; }
+    .mgr-tile__label { margin-top: 6px; font-size: 12.5px; color: #4b5165; }
+    html.dark .mgr-tile { background: #171717; }
+    html.dark .mgr-tile__label { color: #aab4c5; }
+    @media (max-width: 640px) { .mgr-stats { grid-template-columns: repeat(2, 1fr); } }
+
+    .lead-list { list-style: none; margin: 0; padding: 0; }
+    .lead-row { padding: 14px 0; border-bottom: 1px solid #eef0f4; }
+    .lead-row:last-child { border-bottom: none; }
+    .lead-main { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+    .lead-name { font-weight: 700; color: #12172a; font-size: 15px; }
+    .lead-phone { color: #E12821; text-decoration: none; font-size: 13.5px; font-weight: 600; }
+    .lead-phone:hover { text-decoration: underline; }
+    .lead-source { font-size: 11.5px; color: #8a90a2; text-transform: uppercase; letter-spacing: .5px; }
+    .lead-msg { margin-top: 6px; font-size: 13px; color: #4b5165; white-space: pre-wrap; }
+    .lead-foot { margin-top: 8px; display: flex; align-items: center; gap: 12px; }
+    .lead-date { font-size: 12px; color: #8a90a2; margin-left: auto; }
+    .lead-status {
+      font-size: 11.5px; font-weight: 700; padding: 4px 11px; border-radius: 999px;
+      background: rgba(255,255,255,0.08); color: #4b5165;
+    }
+    .lead-status.s-new { background: rgba(226,35,26,0.12); color: #c8322b; }
+    .lead-status.s-in_progress { background: rgba(37,99,235,0.14); color: #2563eb; }
+    .lead-status.s-won { background: rgba(22,163,74,0.15); color: #16a34a; }
+    .lead-status.s-lost { background: rgba(120,120,120,0.18); color: #6b7280; }
+    .lead-convert-btn {
+      background: #E12821;
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 7px 16px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .lead-convert-btn:hover { background: #c8322b; }
+    .lead-convert-btn:disabled { opacity: .6; cursor: default; }
+    .lead-converted { font-size: 12.5px; font-weight: 600; color: #16a34a; display: inline-flex; align-items: center; gap: 6px; }
+    html.dark .lead-row { border-color: rgba(255,255,255,.08); }
+    html.dark .lead-name { color: #f5f5f5; }
+    html.dark .lead-msg { color: #cbd2df; }
+
+    /* Выпадающий выбор этапа сделки (для менеджера) в шапке карточки */
+    .deal-status-select {
+      background: #12172a;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 999px;
+      padding: 7px 14px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .deal-status-select:disabled { opacity: .6; cursor: default; }
+
+    /* ===== Финансовый отчёт ===== */
+    .fin-tile-val { font-size: 20px !important; }
+    .fin-table-wrap { margin-top: 18px; overflow-x: auto; }
+    .fin-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    .fin-table th, .fin-table td { padding: 11px 12px; text-align: left; border-bottom: 1px solid #eef0f4; white-space: nowrap; }
+    .fin-table th { font-size: 11.5px; text-transform: uppercase; letter-spacing: .5px; color: #8a90a2; font-weight: 700; }
+    .fin-table td { color: #12172a; }
+    .fin-table .fin-num { text-align: right; }
+    .fin-due { color: #c8322b; font-weight: 600; }
+    .fin-ok { color: #16a34a; font-weight: 600; }
+    html.dark .fin-table th { color: #aab4c5; }
+    html.dark .fin-table td { color: #f5f5f5; }
+    html.dark .fin-table th, html.dark .fin-table td { border-color: rgba(255,255,255,.08); }
+
+    .dc-value-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 14px 22px 4px; font-size: 13px; color: #4b5165; }
+    .dc-value-row .dc-value-input { width: 170px; padding: 9px 12px; border-radius: 8px; border: 1px solid #dfe3ea; font-size: 13px; background: #fff; color: #12172a; }
+    .dc-value-row .btn { border-radius: 999px; padding: 9px 16px; font-size: 12.5px; }
+    html.dark .dc-value-row { color: #cbd2df; }
+    html.dark .dc-value-row .dc-value-input { background: #171717; color: #fff; border-color: #333; }
+
+    @media (max-width: 700px) {
+      .fin-table thead { display: none; }
+      .fin-table, .fin-table tbody, .fin-table tr, .fin-table td { display: block; width: 100%; }
+      .fin-table tr { border: 1px solid #eef0f4; border-radius: 10px; margin-bottom: 10px; padding: 4px 0; }
+      .fin-table td { border: none; display: flex; justify-content: space-between; gap: 16px; white-space: normal; text-align: right; }
+      .fin-table td::before { content: attr(data-label); font-weight: 600; color: #8a90a2; text-align: left; }
+      .fin-table .fin-num { text-align: right; }
+      html.dark .fin-table tr { border-color: rgba(255,255,255,.1); }
+    }
   </style>
 </head>
 <body>
@@ -366,6 +731,22 @@
         </form>
 
         <div id="myListingsList"></div>
+      </div>
+
+      <!-- Кабинет менеджера: дашборд + инбокс заявок (показываются JS для роли MANAGER/ADMIN) -->
+      <div id="managerStatsSection" class="cab-card mgr-section" style="display:none">
+        <div class="cab-card-head"><h2>Сводка</h2></div>
+        <div id="managerStats" class="mgr-stats"></div>
+      </div>
+
+      <div id="managerFinanceSection" class="cab-card mgr-section" style="display:none">
+        <div class="cab-card-head"><h2>Финансы по сделкам</h2></div>
+        <div id="managerFinance"></div>
+      </div>
+
+      <div id="managerLeadsSection" class="cab-card mgr-section" style="display:none">
+        <div class="cab-card-head"><h2>Заявки с сайта</h2></div>
+        <div id="managerLeads"></div>
       </div>
 
       <div id="dealList" class="deal-list">

@@ -283,11 +283,17 @@
   // ===============================
   // ✅ Пошлина по профилю техники
   // ===============================
-  function getCarDuty(engineCC) {
-    if (engineCC <= 1000) return 0.15;
-    if (engineCC <= 1500) return 0.17;
-    if (engineCC <= 3000) return 0.20;
-    return 0.25;
+  // Пошлина для легковых (M1) — плоская ставка по типу топлива
+  // (подтверждено таможенными расчётами заказчика, 22.01.2026):
+  //   бензин/дизель — 15%, электро/гибрид — 0%.
+  // НЕ зависит от объёма двигателя (прежняя ступенчатая сетка 15/17/20/25%
+  // была ошибочной догадкой).
+  function getCarDuty(fuelType) {
+    const c = CALC_CONFIG.car || {};
+    if (fuelType === 'electric' || fuelType === 'hybrid') {
+      return c.duty_electric_hybrid ?? 0;
+    }
+    return c.duty_petrol ?? 0.15;
   }
 
   function getDutyRate(profile, typeText) {
@@ -336,6 +342,34 @@
   function getExpensePackage(profile, rate) {
     const fees = CALC_CONFIG.fees;
 
+    // 🚗 Легковые авто (M1) — свой пакет расходов, подтверждённый расчётами
+    // заказчика (22.01.2026). Отличия от спецтехники N3: меньше СБКТС/SOS/ЭПТС,
+    // НЕТ досмотра ТС (красный коридор), а доставка по КЗ — это эвакуатор
+    // (фиксированная сумма), а не «своим ходом» (водитель/топливо/страховка).
+    if (profile === "CAR") {
+      const c = CALC_CONFIG.car || {};
+      const declarantSum =
+        (c.declarant_usd ?? 200) * rate + (c.declarant_extra ?? 75000);
+      const exportDeclSum =
+        (c.export_decl_usd ?? 200) * rate + (c.export_decl_extra ?? 75000);
+
+      return {
+        mandatory: [
+          ['calc_item_sbkts', c.sbkts ?? 60000],
+          ['calc_item_sos', c.sos ?? 130000],
+          ['calc_item_epts', c.epts ?? 40000],
+          ['calc_item_customs_fee', c.customs_fee ?? 25950],
+          ['calc_item_broker_service', c.broker_svh ?? 75000],
+          ['calc_item_svh', c.svh ?? 25000],
+          ['calc_item_border_broker', declarantSum],
+          ['calc_item_export_decl', exportDeclSum]
+        ],
+        delivery: [
+          ['calc_item_transport_almaty', c.transport_almaty ?? 70000]
+        ]
+      };
+    }
+
     // Дизель и AdBlue — отдельные строки (как в реальных счетах на растаможку)
     const dieselLiters = CALC_CONFIG.diesel?.liters || 200;
     const dieselPrice = CALC_CONFIG.diesel?.price_kzt_per_l || 335;
@@ -382,11 +416,26 @@
       ]
     };
   }
-  function getCarUtil(engineCC) {
-    if (engineCC <= 1000) return 300000;
-    if (engineCC <= 2000) return 600000;
-    if (engineCC <= 3000) return 1000000;
-    return 2000000;
+  // Утильсбор для легковых (M1) = 50 × МРП(тек. год) × коэффициент по объёму
+  // двигателя (официальная сетка 2026, подтверждена расчётами заказчика):
+  //   до 1000 см³ — 1.5 (324 375 ₸ при МРП 4325)
+  //   1001–2000  — 3.5 (756 875 ₸)
+  //   2001–3000  — 5.0 (1 081 250 ₸)
+  //   свыше 3000 — 11.5 (2 486 875 ₸)
+  // ⚠️ Ноль только для ЧИСТО электрических авто. Гибрид имеет ДВС и платит
+  // утильсбор по объёму двигателя (подтверждено примером BYD Destroyer:
+  // пошлина 0% как гибрид, но утильсбор 756 875 ₸ по объёму 3.5).
+  function getCarUtil(engineCC, fuelType) {
+    if (fuelType === 'electric') return 0;
+
+    const coef = CALC_CONFIG.car?.util_coef || {};
+    let k;
+    if (engineCC <= 1000) k = coef.cc1000 ?? 1.5;
+    else if (engineCC <= 2000) k = coef.cc2000 ?? 3.5;
+    else if (engineCC <= 3000) k = coef.cc3000 ?? 5.0;
+    else k = coef.ccMax ?? 11.5;
+
+    return 50 * getCurrentMRP() * k;
   }
 
   /* =========================================================
@@ -406,12 +455,6 @@
     return motorKW > engineKW;
   }
 
-  function getExcise(engineCC) {
-    if (engineCC <= 2000) return 0;
-    if (engineCC <= 3000) return 100000;
-    return 300000;
-  }
- 
   function recalc() {
     clearList('#list-util');
     updateVehicleProfile();
@@ -426,10 +469,11 @@
       document.getElementById("type")?.selectedOptions[0]?.textContent
 
     );
-    // ✅ Легковые авто — отдельная пошлина
+    const fuelType = document.getElementById("fuelType")?.value || "petrol";
+
+    // ✅ Легковые авто — плоская пошлина по типу топлива (15% / 0%)
     if (CURRENT_VEHICLE_PROFILE === "CAR") {
-      const cc = Number(document.getElementById("engineCC")?.value || 0);
-      DUTY = getCarDuty(cc);
+      DUTY = getCarDuty(fuelType);
     }
 
     // ✅ Гибрид ВТО (только легковые)
@@ -465,12 +509,10 @@
     const baseKZT = priceUSD * rate;
     const dutyKZT = baseKZT * DUTY;
     const customsFee = CALC_CONFIG.fees?.customs_fee || 25950;
-    // ✅ Акциз (только легковые)
+    // Акциз не включается в расчёт для легковых (M1): в подтверждённых
+    // таможенных расчётах заказчика отдельной строки акциза нет, и он не
+    // входит в базу НДС. База НДS = тамож. стоимость + пошлина + тамож. сбор.
     let exciseKZT = 0;
-    if (CURRENT_VEHICLE_PROFILE === "CAR") {
-      const cc = Number(document.getElementById("engineCC")?.value || 0);
-      exciseKZT = getExcise(cc);
-    }
 
     const vatBase = baseKZT + dutyKZT + customsFee + exciseKZT;
 
@@ -552,7 +594,7 @@
 
     if (CURRENT_VEHICLE_PROFILE === "CAR") {
       const cc = Number(document.getElementById("engineCC")?.value || 0);
-      utilByWeight = getCarUtil(cc);
+      utilByWeight = getCarUtil(cc, fuelType);
     }
 
 
@@ -573,6 +615,17 @@
     let srtcSum = 0;
     if (CURRENT_VEHICLE_PROFILE !== "TRAILER") {
       srtcSum = CALC_CONFIG.fees.srtc || 0;
+    }
+
+    // 🚗 Легковые (M1) — регистрация считается по МРП, а не по грузовым
+    // ставкам: первичка 0.25 × МРП (для авто до 2 лет), и ОДНА объединённая
+    // строка «Госномер и техпаспорт» 4.05 × МРП (= 17 516 ₸ при МРП 4325).
+    // Отдельная строка СРТС для легковых не выделяется (входит в эту сумму).
+    if (CURRENT_VEHICLE_PROFILE === "CAR") {
+      const c = CALC_CONFIG.car || {};
+      regSum = Math.round((c.first_reg_coef ?? 0.25) * mrp);
+      plateSum = Math.round((c.plate_reg_coef ?? 4.05) * mrp);
+      srtcSum = 0;
     }
 
 
@@ -761,23 +814,8 @@
     prefillFromURL();
     updateVehicleProfile();
     toggleTractorBlock();
+    applyTypeVisibility();
     recalc(); // уже пересчитает с новым годом и весом
-    // ✅ показать hybridBlock сразу при загрузке
-    const isCar = document.getElementById("type").value === "CAR";
-
-    document.getElementById("carTitle").style.display =
-      isCar ? "block" : "none";
-
-    const carBox = document.getElementById("carFields");
-    if (carBox) {
-      carBox.style.display = isCar ? "block" : "none";
-    }
-
-    const hybridBox = document.getElementById("hybridBlock");
-    if (hybridBox) {
-      hybridBox.style.display = isCar ? "block" : "none";
-    }
-
 
     $('#year')?.addEventListener('input', recalc);
     
@@ -799,33 +837,41 @@
     });
 
     document.getElementById("type")?.addEventListener("change", () => {
-
-      const isCar = document.getElementById("type").value === "CAR";
-
-      document.getElementById("carTitle").style.display =
-        isCar ? "block" : "none";
-
-      const carBox = document.getElementById("carFields");
-      if (carBox) {
-        carBox.style.display = isCar ? "block" : "none";
-      }
-
-      const hybridBlock = document.getElementById("hybridBlock");
-      if (hybridBlock) {
-        hybridBlock.style.display = isCar ? "block" : "none";
-      }
-
-      if (!isCar) {
-        document.getElementById("flagHybridWTO").checked = false;
-        document.getElementById("hybridFields").style.display = "none";
-      }
-
+      applyTypeVisibility();
       toggleTractorBlock();
-
       recalc();
     });
 
 
+  }
+
+  // Показ/скрытие полей в зависимости от типа техники:
+  //   Легковые (CAR) — показываем «Легковые параметры» (объём двигателя,
+  //     тип топлива) и блок гибрида, а поле «Вес» скрываем (для легковых
+  //     утильсбор считается по объёму двигателя, а не по массе).
+  //   Спецтехника/грузовые — наоборот: показываем «Вес», скрываем легковые
+  //     поля и сбрасываем чекбокс гибрида ВТО.
+  function applyTypeVisibility() {
+    const isCar = document.getElementById("type")?.value === "CAR";
+
+    const carTitle = document.getElementById("carTitle");
+    if (carTitle) carTitle.style.display = isCar ? "block" : "none";
+
+    const carBox = document.getElementById("carFields");
+    if (carBox) carBox.style.display = isCar ? "block" : "none";
+
+    const hybridBox = document.getElementById("hybridBlock");
+    if (hybridBox) hybridBox.style.display = isCar ? "block" : "none";
+
+    const weightField = document.getElementById("weightField");
+    if (weightField) weightField.style.display = isCar ? "none" : "block";
+
+    if (!isCar) {
+      const wto = document.getElementById("flagHybridWTO");
+      if (wto) wto.checked = false;
+      const hybridFields = document.getElementById("hybridFields");
+      if (hybridFields) hybridFields.style.display = "none";
+    }
   }
 
   // Чекбокс "удостоверение международного перевозчика" актуален только
