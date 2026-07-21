@@ -418,6 +418,109 @@ document.addEventListener('DOMContentLoaded', async () => {
     return wrap;
   }
 
+  // === Конструктор сценариев: кастомный план сделки ===
+  // Менеджер читает/пишет через /api/manager/..., клиент читает через
+  // /api/deals/<id>/stages/ (он не «участник» в смысле менеджерских ручек).
+  async function loadStages(dealId, container, manager, wrap) {
+    const readUrl = manager ? `/api/manager/deals/${dealId}/stages/` : `/api/deals/${dealId}/stages/`;
+    try {
+      const stages = await window.CMAuth.apiAuthed('GET', readUrl);
+      if (!stages.length) {
+        if (manager) {
+          container.innerHTML = '<p class="dc-empty">План ещё не составлен. Добавьте этапы ниже.</p>';
+        } else if (wrap) {
+          wrap.style.display = 'none'; // клиенту пустой план не показываем
+        }
+        return;
+      }
+      if (wrap) wrap.style.display = '';
+      container.innerHTML = `<ul class="stage-list">${stages.map((st, i) => {
+        const done = st.is_done;
+        if (!manager) {
+          return `
+            <li class="stage-row ${done ? 'done' : ''}">
+              <span class="stage-mark">${done ? '<i class="fa-solid fa-circle-check"></i>' : '<i class="fa-regular fa-circle"></i>'}</span>
+              <span class="stage-title">${escapeHtml(st.title)}</span>
+            </li>`;
+        }
+        return `
+          <li class="stage-row ${done ? 'done' : ''}" data-id="${st.id}">
+            <label class="stage-check"><input type="checkbox" ${done ? 'checked' : ''}></label>
+            <span class="stage-title">${escapeHtml(st.title)}</span>
+            <span class="stage-actions">
+              <button type="button" class="stage-up" ${i === 0 ? 'disabled' : ''} title="Выше">▲</button>
+              <button type="button" class="stage-down" ${i === stages.length - 1 ? 'disabled' : ''} title="Ниже">▼</button>
+              <button type="button" class="stage-del" title="Удалить">✕</button>
+            </span>
+          </li>`;
+      }).join('')}</ul>`;
+
+      if (!manager) return;
+
+      const reload = () => loadStages(dealId, container, manager, wrap);
+      container.querySelectorAll('.stage-row').forEach((row, i) => {
+        const id = row.dataset.id;
+        row.querySelector('input[type="checkbox"]').addEventListener('change', async (e) => {
+          try {
+            await window.CMAuth.apiAuthed('PATCH', `/api/manager/stages/${id}/`, { is_done: e.target.checked });
+            row.classList.toggle('done', e.target.checked);
+          } catch (err) { alert('Ошибка: ' + err.message); e.target.checked = !e.target.checked; }
+        });
+        row.querySelector('.stage-del').addEventListener('click', async () => {
+          if (!confirm('Удалить этап?')) return;
+          try { await window.CMAuth.apiAuthed('DELETE', `/api/manager/stages/${id}/`); reload(); }
+          catch (err) { alert('Ошибка: ' + err.message); }
+        });
+        const swap = async (j) => {
+          const a = stages[i], b = stages[j];
+          try {
+            await window.CMAuth.apiAuthed('PATCH', `/api/manager/stages/${a.id}/`, { order: b.order });
+            await window.CMAuth.apiAuthed('PATCH', `/api/manager/stages/${b.id}/`, { order: a.order });
+            reload();
+          } catch (err) { alert('Ошибка: ' + err.message); }
+        };
+        row.querySelector('.stage-up').addEventListener('click', () => { if (i > 0) swap(i - 1); });
+        row.querySelector('.stage-down').addEventListener('click', () => { if (i < stages.length - 1) swap(i + 1); });
+      });
+    } catch (e) {
+      container.innerHTML = `<p class="dc-empty" style="color:#e74c3c">Ошибка загрузки: ${escapeHtml(e.message)}</p>`;
+    }
+  }
+
+  function buildStagesBlock(dealId, manager) {
+    const wrap = document.createElement('div');
+    wrap.className = 'dc-block';
+    const badge = manager ? '' : '';
+    wrap.innerHTML = `<div class="dc-block__head"><i class="fa-solid fa-list-check"></i> План сделки${badge}</div><div class="dc-body"></div>`;
+    const body = wrap.querySelector('.dc-body');
+    loadStages(dealId, body, manager, wrap);
+
+    if (manager) {
+      const form = document.createElement('form');
+      form.className = 'dc-add-form';
+      form.innerHTML = `
+        <input type="text" class="stage-input" placeholder="Название этапа" required>
+        <button type="submit" class="btn">Добавить этап</button>
+      `;
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const input = form.querySelector('.stage-input');
+        const title = input.value.trim();
+        if (!title) return;
+        const btn = form.querySelector('button');
+        btn.disabled = true;
+        try {
+          await window.CMAuth.apiAuthed('POST', `/api/manager/deals/${dealId}/stages/`, { title });
+          input.value = '';
+          loadStages(dealId, body, manager, wrap);
+        } catch (err) { alert('Ошибка: ' + err.message); }
+        finally { btn.disabled = false; }
+      });
+      wrap.appendChild(form);
+    }
+    return wrap;
+  }
+
   function buildDealCard(deal, { editableRole, editableStatus } = {}) {
     const card = document.createElement('div');
     card.className = 'deal-card';
@@ -508,6 +611,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     });
 
+    card.appendChild(buildStagesBlock(deal.id, editableStatus));
     card.appendChild(buildPaymentsBlock(deal.id, editableStatus, deal.total_price));
     card.appendChild(buildDocumentsBlock(deal.id, editableStatus));
     if (editableStatus) card.appendChild(buildExpensesBlock(deal.id));

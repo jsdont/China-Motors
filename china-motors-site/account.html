@@ -291,6 +291,31 @@
     .dc-total b { font-weight: 700; }
     .dc-empty { padding: 6px 0; font-size: 13px; color: #8a90a2; }
     .dc-internal { font-size: 11px; font-weight: 400; color: #c8322b; letter-spacing: 0; }
+
+    /* Конструктор сценариев / план сделки */
+    .stage-list { list-style: none; margin: 0; padding: 0; }
+    .stage-row { display: flex; align-items: center; gap: 11px; padding: 10px 0; border-bottom: 1px solid #eef0f4; }
+    .stage-row:last-child { border-bottom: none; }
+    .stage-mark i { color: #cbd2df; font-size: 15px; }
+    .stage-row.done .stage-mark i { color: #16a34a; }
+    .stage-check input { width: 17px; height: 17px; cursor: pointer; accent-color: #16a34a; }
+    .stage-title { font-size: 14px; color: #12172a; flex: 1; }
+    .stage-row.done .stage-title { text-decoration: line-through; color: #8a90a2; }
+    .stage-actions { display: flex; align-items: center; gap: 4px; }
+    .stage-actions button {
+      background: none; border: 1px solid #e2e5ec; border-radius: 6px; cursor: pointer;
+      width: 26px; height: 26px; font-size: 11px; color: #4b5165; line-height: 1;
+    }
+    .stage-actions .stage-del { color: #c8322b; border-color: #f0d4d2; }
+    .stage-actions button:hover:not(:disabled) { background: #f4f6fa; }
+    .stage-actions button:disabled { opacity: .35; cursor: default; }
+    html.dark .stage-row { border-color: rgba(255,255,255,.08); }
+    html.dark .stage-title { color: #f5f5f5; }
+    html.dark .stage-row.done .stage-title { color: rgba(255,255,255,.45); }
+    html.dark .stage-actions button { background: #171717; border-color: #333; color: #cbd2df; }
+    html.dark .stage-actions button:hover:not(:disabled) { background: #222; }
+    .stage-input { flex: 1; min-width: 180px; padding: 9px 12px; border-radius: 8px; border: 1px solid #dfe3ea; font-size: 13px; background: #fff; color: #12172a; }
+    html.dark .stage-input { background: #171717; color: #fff; border-color: #333; }
     .exp-note { color: #8a90a2; font-weight: 400; font-size: 12.5px; }
     .exp-del {
       background: none; border: none; color: #c8322b; cursor: pointer;
