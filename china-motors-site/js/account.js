@@ -487,6 +487,102 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  // === Галерея сделки (фото/видео): клиент видит, менеджер добавляет/удаляет ===
+  async function loadMedia(dealId, container, manager, wrap) {
+    const readUrl = manager ? `/api/manager/deals/${dealId}/media/` : `/api/deals/${dealId}/media/`;
+    try {
+      const items = await window.CMAuth.apiAuthed('GET', readUrl);
+      if (!items.length) {
+        if (manager) container.innerHTML = '<p class="dc-empty">Фото и видео пока не добавлены.</p>';
+        else if (wrap) wrap.style.display = 'none';
+        return;
+      }
+      if (wrap) wrap.style.display = '';
+      container.innerHTML = `<div class="media-grid">${items.map(m => {
+        const cap = m.caption ? `<span class="media-cap">${escapeHtml(m.caption)}</span>` : '';
+        const del = manager ? `<button type="button" class="media-del" data-id="${m.id}" title="Удалить">✕</button>` : '';
+        if (m.media_type === 'video') {
+          return `
+            <div class="media-item media-item--video">
+              <a href="${encodeURI(m.url || '#')}" target="_blank" rel="noopener" class="media-thumb media-thumb--video">
+                <i class="fa-solid fa-play"></i>
+              </a>
+              ${cap || '<span class="media-cap">Видео</span>'}
+              ${del}
+            </div>`;
+        }
+        const thumb = window.cmOptimizeImage ? window.cmOptimizeImage(m.url, { width: 400 }) : m.url;
+        return `
+          <div class="media-item">
+            <a href="${encodeURI(m.url || '#')}" target="_blank" rel="noopener" class="media-thumb">
+              <img src="${encodeURI(thumb || '')}" alt="${escapeHtml(m.caption || 'Фото сделки')}" loading="lazy">
+            </a>
+            ${cap}
+            ${del}
+          </div>`;
+      }).join('')}</div>`;
+
+      if (!manager) return;
+      container.querySelectorAll('.media-del').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!confirm('Удалить этот файл из галереи?')) return;
+          btn.disabled = true;
+          try {
+            await window.CMAuth.apiAuthed('DELETE', `/api/manager/media/${btn.dataset.id}/`);
+            loadMedia(dealId, container, manager, wrap);
+          } catch (err) { alert('Ошибка: ' + err.message); btn.disabled = false; }
+        });
+      });
+    } catch (e) {
+      container.innerHTML = `<p class="dc-empty" style="color:#e74c3c">Ошибка загрузки: ${escapeHtml(e.message)}</p>`;
+    }
+  }
+
+  function buildMediaBlock(dealId, manager) {
+    const wrap = document.createElement('div');
+    wrap.className = 'dc-block';
+    wrap.innerHTML = '<div class="dc-block__head"><i class="fa-solid fa-images"></i> Фото и видео</div><div class="dc-body"></div>';
+    const body = wrap.querySelector('.dc-body');
+    loadMedia(dealId, body, manager, wrap);
+
+    if (manager) {
+      const form = document.createElement('form');
+      form.className = 'dc-add-form media-add-form';
+      form.innerHTML = `
+        <input type="text" class="media-caption" placeholder="Подпись (необязательно)">
+        <input type="file" class="media-file" accept="image/*">
+        <span class="media-or">или ссылка на видео:</span>
+        <input type="url" class="media-video" placeholder="https://youtu.be/...">
+        <button type="submit" class="btn">Добавить</button>
+      `;
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const caption = form.querySelector('.media-caption').value;
+        const fileInput = form.querySelector('.media-file');
+        const videoUrl = form.querySelector('.media-video').value.trim();
+        const btn = form.querySelector('button');
+        if (!fileInput.files.length && !videoUrl) { alert('Приложите фото или укажите ссылку на видео.'); return; }
+        if (fileInput.files.length && videoUrl) { alert('Что-то одно: либо фото, либо ссылка на видео.'); return; }
+        btn.disabled = true;
+        try {
+          if (fileInput.files.length) {
+            const fd = new FormData();
+            fd.append('image', fileInput.files[0]);
+            if (caption) fd.append('caption', caption);
+            await window.CMAuth.apiAuthedUpload('POST', `/api/manager/deals/${dealId}/media/`, fd);
+          } else {
+            await window.CMAuth.apiAuthed('POST', `/api/manager/deals/${dealId}/media/`, { video_url: videoUrl, caption });
+          }
+          form.reset();
+          loadMedia(dealId, body, manager, wrap);
+        } catch (err) { alert('Ошибка: ' + err.message); }
+        finally { btn.disabled = false; }
+      });
+      wrap.appendChild(form);
+    }
+    return wrap;
+  }
+
   function buildStagesBlock(dealId, manager) {
     const wrap = document.createElement('div');
     wrap.className = 'dc-block';
@@ -614,6 +710,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     card.appendChild(buildStagesBlock(deal.id, editableStatus));
     card.appendChild(buildPaymentsBlock(deal.id, editableStatus, deal.total_price));
     card.appendChild(buildDocumentsBlock(deal.id, editableStatus));
+    card.appendChild(buildMediaBlock(deal.id, editableStatus));
     if (editableStatus) card.appendChild(buildExpensesBlock(deal.id));
     card.appendChild(buildCommentsBlock(deal.id));
     return card;

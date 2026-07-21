@@ -326,6 +326,34 @@
     html.dark .exp-note { color: rgba(255,255,255,.5); }
     .fin-hint { margin-top: 12px; font-size: 12px; color: #8a90a2; }
 
+    /* Галерея сделки (фото/видео) */
+    .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; padding: 4px 0; }
+    .media-item { position: relative; display: flex; flex-direction: column; gap: 5px; }
+    .media-thumb {
+      display: block; border-radius: 10px; overflow: hidden; aspect-ratio: 1 / 1;
+      background: #f0f2f6; border: 1px solid #eef0f4;
+    }
+    .media-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .media-thumb--video {
+      display: flex; align-items: center; justify-content: center;
+      background: #12172a; color: #fff; font-size: 26px; text-decoration: none;
+    }
+    .media-thumb--video:hover { background: #1b2540; }
+    .media-cap { font-size: 12px; color: #4b5165; line-height: 1.3; }
+    .media-del {
+      position: absolute; top: 6px; right: 6px; width: 24px; height: 24px;
+      border: none; border-radius: 50%; background: rgba(18,23,42,0.75); color: #fff;
+      cursor: pointer; font-size: 11px; line-height: 1;
+    }
+    .media-del:hover { background: #c8322b; }
+    html.dark .media-thumb { background: #171717; border-color: #333; }
+    html.dark .media-cap { color: #cbd2df; }
+    .media-add-form { flex-direction: row; flex-wrap: wrap; }
+    .media-add-form .media-caption, .media-add-form .media-video { flex: 1; min-width: 160px; padding: 9px 12px; border-radius: 8px; border: 1px solid #dfe3ea; font-size: 13px; background: #fff; color: #12172a; }
+    .media-add-form .media-or { font-size: 12px; color: #8a90a2; }
+    html.dark .media-add-form .media-caption, html.dark .media-add-form .media-video { background: #171717; color: #fff; border-color: #333; }
+    html.dark .media-add-form .media-or { color: #aab4c5; }
+
     /* Форма добавления платежа/документа (только для менеджера) */
     .dc-add-form {
       display: flex;
