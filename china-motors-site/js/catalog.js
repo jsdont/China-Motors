@@ -102,13 +102,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <div class="cm-card__body">
           <h3 class="cm-card__title">
-            ${item.title}${item.year ? `, ${item.year}` : ''}
+            ${item.body_type}
           </h3>
 
           <div class="cm-card__specs">
             <div class="spec">
               <span data-i18n="card_body_label">Тип транспорта</span>
-              <strong>${item.bodyType}</strong>
+              <strong>${item.category}</strong>
             </div>
             ${item.raw?.wheel_formula ? `
             <div class="spec">
