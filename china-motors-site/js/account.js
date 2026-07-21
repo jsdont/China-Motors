@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  function buildPaymentsBlock(dealId, manager) {
+  function buildPaymentsBlock(dealId, manager, currentPrice) {
     const wrap = document.createElement('div');
     wrap.className = 'dc-block';
     wrap.innerHTML = '<div class="dc-block__head"><i class="fa-solid fa-wallet"></i> Платежи</div><div class="dc-body"></div>';
@@ -203,6 +203,31 @@ document.addEventListener('DOMContentLoaded', async () => {
     loadPayments(dealId, body);
 
     if (manager) {
+      // Стоимость сделки — нужна для финансового отчёта (остаток к оплате).
+      const valueRow = document.createElement('div');
+      valueRow.className = 'dc-value-row';
+      valueRow.innerHTML = `
+        <span>Стоимость сделки, ₸:</span>
+        <input type="number" step="0.01" min="0" class="dc-value-input" value="${currentPrice != null ? currentPrice : ''}" placeholder="не указана">
+        <button type="button" class="dc-value-save btn">Сохранить</button>
+      `;
+      const valueInput = valueRow.querySelector('.dc-value-input');
+      const valueBtn = valueRow.querySelector('.dc-value-save');
+      valueBtn.addEventListener('click', async () => {
+        valueBtn.disabled = true;
+        try {
+          await window.CMAuth.apiAuthed('PATCH', `/api/manager/deals/${dealId}/status/`, { total_price: valueInput.value || null });
+          valueBtn.textContent = 'Сохранено';
+          setTimeout(() => { valueBtn.textContent = 'Сохранить'; }, 1500);
+          loadManagerFinance();
+        } catch (err) {
+          alert('Ошибка: ' + err.message);
+        } finally {
+          valueBtn.disabled = false;
+        }
+      });
+      wrap.appendChild(valueRow);
+
       const form = document.createElement('form');
       form.className = 'dc-add-form';
       form.innerHTML = `
@@ -398,7 +423,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     });
 
-    card.appendChild(buildPaymentsBlock(deal.id, editableStatus));
+    card.appendChild(buildPaymentsBlock(deal.id, editableStatus, deal.total_price));
     card.appendChild(buildDocumentsBlock(deal.id, editableStatus));
     card.appendChild(buildCommentsBlock(deal.id));
     return card;
@@ -529,6 +554,47 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  // === Финансовый отчёт по сделкам: стоимость против полученных денег ===
+  async function loadManagerFinance() {
+    const el = document.getElementById('managerFinance');
+    if (!el) return;
+    try {
+      const data = await window.CMAuth.apiAuthed('GET', '/api/manager/finance/');
+      const s = data.summary;
+      const tiles = [
+        ['Стоимость сделок', s.total_value],
+        ['Получено', s.total_received],
+        ['Ожидается', s.total_pending],
+        ['Остаток к оплате', s.total_outstanding],
+      ];
+      const rows = data.deals.map(d => `
+        <tr>
+          <td data-label="Сделка">${escapeHtml(d.title)}</td>
+          <td data-label="Клиент">${escapeHtml(d.customer?.name || d.customer?.phone || '—')}</td>
+          <td data-label="Этап">${escapeHtml(d.status_display)}</td>
+          <td data-label="Стоимость" class="fin-num">${Number(d.total_price) ? fmtMoney(d.total_price) : '—'}</td>
+          <td data-label="Получено" class="fin-num">${fmtMoney(d.received)}</td>
+          <td data-label="Остаток" class="fin-num ${Number(d.balance) > 0 ? 'fin-due' : 'fin-ok'}">${fmtMoney(d.balance)}</td>
+        </tr>`).join('');
+      el.innerHTML = `
+        <div class="mgr-stats">
+          ${tiles.map(([label, val]) => `
+            <div class="mgr-tile">
+              <div class="mgr-tile__val fin-tile-val">${fmtMoney(val)}</div>
+              <div class="mgr-tile__label">${label}</div>
+            </div>`).join('')}
+        </div>
+        <div class="fin-table-wrap">
+          <table class="fin-table">
+            <thead><tr><th>Сделка</th><th>Клиент</th><th>Этап</th><th class="fin-num">Стоимость</th><th class="fin-num">Получено</th><th class="fin-num">Остаток</th></tr></thead>
+            <tbody>${rows || '<tr><td colspan="6" class="dc-empty">Сделок пока нет.</td></tr>'}</tbody>
+          </table>
+        </div>`;
+    } catch (e) {
+      el.innerHTML = `<p class="empty-note" style="color:#e74c3c">Ошибка загрузки финансов: ${escapeHtml(e.message)}</p>`;
+    }
+  }
+
   async function loadManagerLeads() {
     const el = document.getElementById('managerLeads');
     if (!el) return;
@@ -607,8 +673,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         deals.forEach(d => dealListEl.appendChild(buildDealCard(d, { editableRole: shortRole })));
       } else if (MANAGER_ROLES.includes(session.role)) {
         document.getElementById('managerStatsSection').style.display = '';
+        document.getElementById('managerFinanceSection').style.display = '';
         document.getElementById('managerLeadsSection').style.display = '';
         loadManagerStats();
+        loadManagerFinance();
         loadManagerLeads();
         await loadManagerDeals();
       } else {

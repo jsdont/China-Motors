@@ -522,6 +522,36 @@
       cursor: pointer;
     }
     .deal-status-select:disabled { opacity: .6; cursor: default; }
+
+    /* ===== Финансовый отчёт ===== */
+    .fin-tile-val { font-size: 20px !important; }
+    .fin-table-wrap { margin-top: 18px; overflow-x: auto; }
+    .fin-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    .fin-table th, .fin-table td { padding: 11px 12px; text-align: left; border-bottom: 1px solid #eef0f4; white-space: nowrap; }
+    .fin-table th { font-size: 11.5px; text-transform: uppercase; letter-spacing: .5px; color: #8a90a2; font-weight: 700; }
+    .fin-table td { color: #12172a; }
+    .fin-table .fin-num { text-align: right; }
+    .fin-due { color: #c8322b; font-weight: 600; }
+    .fin-ok { color: #16a34a; font-weight: 600; }
+    html.dark .fin-table th { color: #aab4c5; }
+    html.dark .fin-table td { color: #f5f5f5; }
+    html.dark .fin-table th, html.dark .fin-table td { border-color: rgba(255,255,255,.08); }
+
+    .dc-value-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 14px 22px 4px; font-size: 13px; color: #4b5165; }
+    .dc-value-row .dc-value-input { width: 170px; padding: 9px 12px; border-radius: 8px; border: 1px solid #dfe3ea; font-size: 13px; background: #fff; color: #12172a; }
+    .dc-value-row .btn { border-radius: 999px; padding: 9px 16px; font-size: 12.5px; }
+    html.dark .dc-value-row { color: #cbd2df; }
+    html.dark .dc-value-row .dc-value-input { background: #171717; color: #fff; border-color: #333; }
+
+    @media (max-width: 700px) {
+      .fin-table thead { display: none; }
+      .fin-table, .fin-table tbody, .fin-table tr, .fin-table td { display: block; width: 100%; }
+      .fin-table tr { border: 1px solid #eef0f4; border-radius: 10px; margin-bottom: 10px; padding: 4px 0; }
+      .fin-table td { border: none; display: flex; justify-content: space-between; gap: 16px; white-space: normal; text-align: right; }
+      .fin-table td::before { content: attr(data-label); font-weight: 600; color: #8a90a2; text-align: left; }
+      .fin-table .fin-num { text-align: right; }
+      html.dark .fin-table tr { border-color: rgba(255,255,255,.1); }
+    }
   </style>
 </head>
 <body>
@@ -633,6 +663,11 @@
       <div id="managerStatsSection" class="cab-card mgr-section" style="display:none">
         <div class="cab-card-head"><h2>Сводка</h2></div>
         <div id="managerStats" class="mgr-stats"></div>
+      </div>
+
+      <div id="managerFinanceSection" class="cab-card mgr-section" style="display:none">
+        <div class="cab-card-head"><h2>Финансы по сделкам</h2></div>
+        <div id="managerFinance"></div>
       </div>
 
       <div id="managerLeadsSection" class="cab-card mgr-section" style="display:none">
