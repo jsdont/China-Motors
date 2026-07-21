@@ -292,6 +292,17 @@
     .dc-empty { padding: 6px 0; font-size: 13px; color: #8a90a2; }
     .dc-internal { font-size: 11px; font-weight: 400; color: #c8322b; letter-spacing: 0; }
 
+    /* Лог изменений */
+    .act-list { list-style: none; margin: 0; padding: 4px 0; }
+    .act-row { display: flex; gap: 12px; padding: 9px 0; }
+    .act-dot { flex-shrink: 0; width: 9px; height: 9px; border-radius: 50%; background: #E12821; margin-top: 5px; }
+    .act-internal .act-dot { background: #8a90a2; }
+    .act-text { font-size: 13.5px; color: #12172a; }
+    .act-meta { font-size: 11.5px; color: #8a90a2; margin-top: 2px; }
+    .act-tag { font-size: 10px; font-weight: 700; color: #8a90a2; background: rgba(138,144,162,.15); padding: 1px 6px; border-radius: 999px; vertical-align: middle; }
+    html.dark .act-text { color: #f5f5f5; }
+    html.dark .act-meta { color: rgba(255,255,255,.45); }
+
     /* Конструктор сценариев / план сделки */
     .stage-list { list-style: none; margin: 0; padding: 0; }
     .stage-row { display: flex; align-items: center; gap: 11px; padding: 10px 0; border-bottom: 1px solid #eef0f4; }

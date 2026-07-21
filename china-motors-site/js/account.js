@@ -583,6 +583,40 @@ document.addEventListener('DOMContentLoaded', async () => {
     return wrap;
   }
 
+  // === Лог изменений по сделке (аудит) — только чтение ===
+  async function loadActivity(dealId, container, manager, wrap) {
+    const readUrl = manager ? `/api/manager/deals/${dealId}/activity/` : `/api/deals/${dealId}/activity/`;
+    try {
+      const items = await window.CMAuth.apiAuthed('GET', readUrl);
+      if (!items.length) {
+        if (wrap) wrap.style.display = 'none';
+        return;
+      }
+      if (wrap) wrap.style.display = '';
+      container.innerHTML = `<ul class="act-list">${items.map(a => {
+        const who = a.actor_info?.name || a.actor_info?.phone || 'Система';
+        return `
+          <li class="act-row${a.internal ? ' act-internal' : ''}">
+            <span class="act-dot"></span>
+            <div class="act-body">
+              <div class="act-text">${escapeHtml(a.text)}${a.internal ? ' <span class="act-tag">внутр.</span>' : ''}</div>
+              <div class="act-meta">${escapeHtml(who)} · ${fmtDate(a.created_at)}</div>
+            </div>
+          </li>`;
+      }).join('')}</ul>`;
+    } catch (e) {
+      container.innerHTML = `<p class="dc-empty" style="color:#e74c3c">Ошибка загрузки: ${escapeHtml(e.message)}</p>`;
+    }
+  }
+
+  function buildActivityBlock(dealId, manager) {
+    const wrap = document.createElement('div');
+    wrap.className = 'dc-block';
+    wrap.innerHTML = '<div class="dc-block__head"><i class="fa-solid fa-clock-rotate-left"></i> История изменений</div><div class="dc-body"></div>';
+    loadActivity(dealId, wrap.querySelector('.dc-body'), manager, wrap);
+    return wrap;
+  }
+
   function buildStagesBlock(dealId, manager) {
     const wrap = document.createElement('div');
     wrap.className = 'dc-block';
@@ -713,6 +747,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     card.appendChild(buildMediaBlock(deal.id, editableStatus));
     if (editableStatus) card.appendChild(buildExpensesBlock(deal.id));
     card.appendChild(buildCommentsBlock(deal.id));
+    card.appendChild(buildActivityBlock(deal.id, editableStatus));
     return card;
   }
 
