@@ -291,6 +291,34 @@
     .dc-total b { font-weight: 700; }
     .dc-empty { padding: 6px 0; font-size: 13px; color: #8a90a2; }
 
+    /* Форма добавления платежа/документа (только для менеджера) */
+    .dc-add-form {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 22px 18px;
+      border-top: 1px solid #eef0f4;
+    }
+    .dc-add-form input[type="number"],
+    .dc-add-form select,
+    .dc-add-form input[type="file"] {
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: 1px solid #dfe3ea;
+      font-size: 13px;
+      background: #fff;
+      color: #12172a;
+    }
+    .dc-add-form input[type="number"] { width: 150px; }
+    .dc-add-form .dc-check { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #4b5165; }
+    .dc-add-form .btn { border-radius: 999px; padding: 9px 18px; font-size: 12.5px; }
+    html.dark .dc-add-form { border-color: rgba(255,255,255,.08); }
+    html.dark .dc-add-form input[type="number"],
+    html.dark .dc-add-form select,
+    html.dark .dc-add-form input[type="file"] { background: #171717; color: #fff; border-color: #333; }
+    html.dark .dc-add-form .dc-check { color: #cbd2df; }
+
     html.dark .dc-block { background: #1e1e1e; }
     html.dark .dc-block__head { color: #f5f5f5; border-color: rgba(255,255,255,.08); }
     html.dark .dc-row { border-color: rgba(255,255,255,.08); }

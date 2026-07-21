@@ -195,11 +195,39 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  function buildPaymentsBlock(dealId) {
+  function buildPaymentsBlock(dealId, manager) {
     const wrap = document.createElement('div');
     wrap.className = 'dc-block';
     wrap.innerHTML = '<div class="dc-block__head"><i class="fa-solid fa-wallet"></i> Платежи</div><div class="dc-body"></div>';
-    loadPayments(dealId, wrap.querySelector('.dc-body'));
+    const body = wrap.querySelector('.dc-body');
+    loadPayments(dealId, body);
+
+    if (manager) {
+      const form = document.createElement('form');
+      form.className = 'dc-add-form';
+      form.innerHTML = `
+        <input type="number" step="0.01" min="0" placeholder="Сумма, ₸" required>
+        <label class="dc-check"><input type="checkbox"> подтверждён</label>
+        <button type="submit" class="btn">Добавить платёж</button>
+      `;
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const amount = form.querySelector('input[type="number"]').value;
+        const is_confirmed = form.querySelector('input[type="checkbox"]').checked;
+        const btn = form.querySelector('button');
+        btn.disabled = true;
+        try {
+          await window.CMAuth.apiAuthed('POST', `/api/manager/deals/${dealId}/payments/`, { amount, is_confirmed });
+          form.reset();
+          loadPayments(dealId, body);
+        } catch (err) {
+          alert('Ошибка: ' + err.message);
+        } finally {
+          btn.disabled = false;
+        }
+      });
+      wrap.appendChild(form);
+    }
     return wrap;
   }
 
@@ -234,11 +262,49 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  function buildDocumentsBlock(dealId) {
+  function buildDocumentsBlock(dealId, manager) {
     const wrap = document.createElement('div');
     wrap.className = 'dc-block';
     wrap.innerHTML = '<div class="dc-block__head"><i class="fa-solid fa-folder-open"></i> Документы</div><div class="dc-body"></div>';
-    loadDocuments(dealId, wrap.querySelector('.dc-body'));
+    const body = wrap.querySelector('.dc-body');
+    loadDocuments(dealId, body);
+
+    if (manager) {
+      const form = document.createElement('form');
+      form.className = 'dc-add-form';
+      form.innerHTML = `
+        <select class="doc-type">
+          <option value="CONTRACT">Договор</option>
+          <option value="GTD">ГТД</option>
+          <option value="CMR">CMR</option>
+          <option value="ACCEPTANCE">Акт приёма</option>
+          <option value="PHOTO">Фото</option>
+        </select>
+        <input type="file" class="doc-file" required>
+        <button type="submit" class="btn">Загрузить</button>
+      `;
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const type = form.querySelector('.doc-type').value;
+        const fileInput = form.querySelector('.doc-file');
+        if (!fileInput.files.length) return;
+        const btn = form.querySelector('button');
+        btn.disabled = true;
+        try {
+          const fd = new FormData();
+          fd.append('type', type);
+          fd.append('file', fileInput.files[0]);
+          await window.CMAuth.apiAuthedUpload('POST', `/api/manager/deals/${dealId}/documents/`, fd);
+          form.reset();
+          loadDocuments(dealId, body);
+        } catch (err) {
+          alert('Ошибка: ' + err.message);
+        } finally {
+          btn.disabled = false;
+        }
+      });
+      wrap.appendChild(form);
+    }
     return wrap;
   }
 
@@ -332,8 +398,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     });
 
-    card.appendChild(buildPaymentsBlock(deal.id));
-    card.appendChild(buildDocumentsBlock(deal.id));
+    card.appendChild(buildPaymentsBlock(deal.id, editableStatus));
+    card.appendChild(buildDocumentsBlock(deal.id, editableStatus));
     card.appendChild(buildCommentsBlock(deal.id));
     return card;
   }
