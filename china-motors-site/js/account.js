@@ -12,6 +12,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   const ASSIGNEE_ROLES = ['SERVICE_BROKER', 'SERVICE_SVH', 'SERVICE_LAB', 'SERVICE_LOGISTIC', 'SERVICE_DECLARANT', 'BANK'];
   const MANAGER_ROLES = ['MANAGER', 'ADMIN'];
   const LEAD_STATUS_LABELS = { new: 'Новая', in_progress: 'В работе', won: 'Выиграна', lost: 'Проиграна' };
+  const EXPENSE_CATEGORIES = [
+    ['PURCHASE', 'Закупка в Китае'],
+    ['LOGISTICS', 'Логистика / доставка'],
+    ['CUSTOMS', 'Растаможка'],
+    ['CERTIFICATION', 'Сертификация (СБКТС/ЭПТС)'],
+    ['SVH', 'СВХ / хранение'],
+    ['OTHER', 'Прочее'],
+  ];
 
   const roleLine = document.getElementById('accountRoleLine');
   const dealListEl = document.getElementById('dealList');
@@ -333,6 +341,83 @@ document.addEventListener('DOMContentLoaded', async () => {
     return wrap;
   }
 
+  // === Расходы по сделке (ТОЛЬКО менеджер; клиенту не показываются) ===
+  async function loadExpenses(dealId, container) {
+    try {
+      const items = await window.CMAuth.apiAuthed('GET', `/api/manager/deals/${dealId}/expenses/`);
+      if (!items.length) {
+        container.innerHTML = '<p class="dc-empty">Расходов пока нет.</p>';
+        return;
+      }
+      const total = items.reduce((s, x) => s + Number(x.amount || 0), 0);
+      container.innerHTML = `
+        <ul class="dc-list">
+          ${items.map(x => `
+            <li class="dc-row">
+              <span class="dc-doc">${escapeHtml(x.category_display || x.category)}${x.note ? ` <span class="exp-note">— ${escapeHtml(x.note)}</span>` : ''}</span>
+              <span class="dc-amount">${fmtMoney(x.amount)}</span>
+              <button type="button" class="exp-del" data-exp-id="${x.id}" title="Удалить">✕</button>
+            </li>`).join('')}
+        </ul>
+        <div class="dc-total">Итого расходов: <b>${fmtMoney(total)}</b></div>`;
+      container.querySelectorAll('.exp-del').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!confirm('Удалить этот расход?')) return;
+          btn.disabled = true;
+          try {
+            await window.CMAuth.apiAuthed('DELETE', `/api/manager/expenses/${btn.dataset.expId}/`);
+            loadExpenses(dealId, container);
+            loadManagerFinance();
+          } catch (err) {
+            alert('Ошибка: ' + err.message);
+            btn.disabled = false;
+          }
+        });
+      });
+    } catch (e) {
+      container.innerHTML = `<p class="dc-empty" style="color:#e74c3c">Ошибка загрузки: ${escapeHtml(e.message)}</p>`;
+    }
+  }
+
+  function buildExpensesBlock(dealId) {
+    const wrap = document.createElement('div');
+    wrap.className = 'dc-block';
+    wrap.innerHTML = '<div class="dc-block__head"><i class="fa-solid fa-coins"></i> Расходы <span class="dc-internal">(видит только менеджер)</span></div><div class="dc-body"></div>';
+    const body = wrap.querySelector('.dc-body');
+    loadExpenses(dealId, body);
+
+    const form = document.createElement('form');
+    form.className = 'dc-add-form';
+    form.innerHTML = `
+      <select class="exp-cat">
+        ${EXPENSE_CATEGORIES.map(([v, l]) => `<option value="${v}">${l}</option>`).join('')}
+      </select>
+      <input type="number" step="0.01" min="0" class="exp-amount" placeholder="Сумма, ₸" required>
+      <input type="text" class="exp-note-input" placeholder="Комментарий (необязательно)">
+      <button type="submit" class="btn">Добавить расход</button>
+    `;
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const category = form.querySelector('.exp-cat').value;
+      const amount = form.querySelector('.exp-amount').value;
+      const note = form.querySelector('.exp-note-input').value;
+      const btn = form.querySelector('button');
+      btn.disabled = true;
+      try {
+        await window.CMAuth.apiAuthed('POST', `/api/manager/deals/${dealId}/expenses/`, { category, amount, note });
+        form.reset();
+        loadExpenses(dealId, body);
+        loadManagerFinance();
+      } catch (err) {
+        alert('Ошибка: ' + err.message);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+    wrap.appendChild(form);
+    return wrap;
+  }
+
   function buildDealCard(deal, { editableRole, editableStatus } = {}) {
     const card = document.createElement('div');
     card.className = 'deal-card';
@@ -425,6 +510,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     card.appendChild(buildPaymentsBlock(deal.id, editableStatus, deal.total_price));
     card.appendChild(buildDocumentsBlock(deal.id, editableStatus));
+    if (editableStatus) card.appendChild(buildExpensesBlock(deal.id));
     card.appendChild(buildCommentsBlock(deal.id));
     return card;
   }
@@ -564,17 +650,18 @@ document.addEventListener('DOMContentLoaded', async () => {
       const tiles = [
         ['Стоимость сделок', s.total_value],
         ['Получено', s.total_received],
-        ['Ожидается', s.total_pending],
-        ['Остаток к оплате', s.total_outstanding],
+        ['Расходы', s.total_expenses],
+        ['Прибыль', s.total_profit],
       ];
       const rows = data.deals.map(d => `
         <tr>
           <td data-label="Сделка">${escapeHtml(d.title)}</td>
-          <td data-label="Клиент">${escapeHtml(d.customer?.name || d.customer?.phone || '—')}</td>
           <td data-label="Этап">${escapeHtml(d.status_display)}</td>
           <td data-label="Стоимость" class="fin-num">${Number(d.total_price) ? fmtMoney(d.total_price) : '—'}</td>
           <td data-label="Получено" class="fin-num">${fmtMoney(d.received)}</td>
           <td data-label="Остаток" class="fin-num ${Number(d.balance) > 0 ? 'fin-due' : 'fin-ok'}">${fmtMoney(d.balance)}</td>
+          <td data-label="Расходы" class="fin-num">${fmtMoney(d.expenses)}</td>
+          <td data-label="Прибыль" class="fin-num ${d.profit == null ? '' : (Number(d.profit) >= 0 ? 'fin-ok' : 'fin-due')}">${d.profit == null ? '—' : fmtMoney(d.profit)}</td>
         </tr>`).join('');
       el.innerHTML = `
         <div class="mgr-stats">
@@ -586,10 +673,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         </div>
         <div class="fin-table-wrap">
           <table class="fin-table">
-            <thead><tr><th>Сделка</th><th>Клиент</th><th>Этап</th><th class="fin-num">Стоимость</th><th class="fin-num">Получено</th><th class="fin-num">Остаток</th></tr></thead>
-            <tbody>${rows || '<tr><td colspan="6" class="dc-empty">Сделок пока нет.</td></tr>'}</tbody>
+            <thead><tr><th>Сделка</th><th>Этап</th><th class="fin-num">Стоимость</th><th class="fin-num">Получено</th><th class="fin-num">Остаток</th><th class="fin-num">Расходы</th><th class="fin-num">Прибыль</th></tr></thead>
+            <tbody>${rows || '<tr><td colspan="7" class="dc-empty">Сделок пока нет.</td></tr>'}</tbody>
           </table>
-        </div>`;
+        </div>
+        <p class="fin-hint">Прибыль = стоимость сделки − расходы. Показывается только для сделок с указанной стоимостью.</p>`;
     } catch (e) {
       el.innerHTML = `<p class="empty-note" style="color:#e74c3c">Ошибка загрузки финансов: ${escapeHtml(e.message)}</p>`;
     }

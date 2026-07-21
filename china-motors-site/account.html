@@ -290,6 +290,16 @@
     .dc-total { margin-top: 12px; font-size: 13px; color: #12172a; }
     .dc-total b { font-weight: 700; }
     .dc-empty { padding: 6px 0; font-size: 13px; color: #8a90a2; }
+    .dc-internal { font-size: 11px; font-weight: 400; color: #c8322b; letter-spacing: 0; }
+    .exp-note { color: #8a90a2; font-weight: 400; font-size: 12.5px; }
+    .exp-del {
+      background: none; border: none; color: #c8322b; cursor: pointer;
+      font-size: 14px; line-height: 1; padding: 4px 6px; margin-left: auto;
+    }
+    .exp-del:hover { color: #e12821; }
+    .exp-del:disabled { opacity: .5; }
+    html.dark .exp-note { color: rgba(255,255,255,.5); }
+    .fin-hint { margin-top: 12px; font-size: 12px; color: #8a90a2; }
 
     /* Форма добавления платежа/документа (только для менеджера) */
     .dc-add-form {
