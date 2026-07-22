@@ -1,6 +1,7 @@
 // js/account.js — личный кабинет: клиент видит свои сделки,
 // исполнитель (брокер/СВХ/лаборатория/логист/декларант/банк) видит
 // назначенные ему сделки и обновляет статус своего этапа.
+// Все видимые строки идут через window.t() → мультиязычность (RU/KK/EN/ZH).
 document.addEventListener('DOMContentLoaded', async () => {
   const session = window.CMAuth?.getSession();
   if (!session) {
@@ -8,65 +9,50 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
+  const t = (k) => (window.t ? window.t(k) : k);
+
   const CUSTOMER_ROLES = ['CUSTOMER_PERSON', 'CUSTOMER_COMPANY'];
   const ASSIGNEE_ROLES = ['SERVICE_BROKER', 'SERVICE_SVH', 'SERVICE_LAB', 'SERVICE_LOGISTIC', 'SERVICE_DECLARANT', 'BANK'];
   const MANAGER_ROLES = ['MANAGER', 'ADMIN'];
-  const LEAD_STATUS_LABELS = { new: 'Новая', in_progress: 'В работе', won: 'Выиграна', lost: 'Проиграна' };
-  const EXPENSE_CATEGORIES = [
-    ['PURCHASE', 'Закупка в Китае'],
-    ['LOGISTICS', 'Логистика / доставка'],
-    ['CUSTOMS', 'Растаможка'],
-    ['CERTIFICATION', 'Сертификация (СБКТС/ЭПТС)'],
-    ['SVH', 'СВХ / хранение'],
-    ['OTHER', 'Прочее'],
-  ];
+
+  const EXPENSE_KEYS = ['PURCHASE', 'LOGISTICS', 'CUSTOMS', 'CERTIFICATION', 'SVH', 'OTHER'];
+  const DOC_KEYS = ['CONTRACT', 'GTD', 'CMR', 'ACCEPTANCE', 'PHOTO'];
 
   const roleLine = document.getElementById('accountRoleLine');
   const dealListEl = document.getElementById('dealList');
-  const roleLabels = {
-    CUSTOMER_PERSON: 'Клиент (физ. лицо)',
-    CUSTOMER_COMPANY: 'Клиент (юр. лицо)',
-    SERVICE_BROKER: 'Брокер (СВХ)',
-    SERVICE_SVH: 'СВХ',
-    SERVICE_LAB: 'Лаборатория',
-    SERVICE_LOGISTIC: 'Логист',
-    SERVICE_DECLARANT: 'Декларант (граница)',
-    BANK: 'Банк',
-    PARTNER: 'Партнёр-продавец',
-  };
-  const verifiedBadge = session.isVerified
-    ? '<span class="account-badge verified">подтверждён</span>'
-    : '<span class="account-badge not-verified">не подтверждён</span>';
-  roleLine.innerHTML = `${roleLabels[session.role] || session.role} ${verifiedBadge}`;
+
+  function roleLabel(role) { return t('cab_rolefull_' + role) !== 'cab_rolefull_' + role ? t('cab_rolefull_' + role) : role; }
+  function renderRoleLine() {
+    const badge = session.isVerified
+      ? `<span class="account-badge verified">${t('cab_verified')}</span>`
+      : `<span class="account-badge not-verified">${t('cab_not_verified')}</span>`;
+    roleLine.innerHTML = `${roleLabel(session.role)} ${badge}`;
+  }
+  renderRoleLine();
 
   document.getElementById('btnLogout')?.addEventListener('click', () => {
     window.CMAuth.logout();
     location.href = 'index.html';
   });
 
-  const STATUS_LABELS = { PENDING: 'Ожидает', IN_PROGRESS: 'В работе', DONE: 'Завершено' };
-  const ROLE_LABELS_SHORT = {
-    BROKER: 'Брокер (СВХ)', SVH: 'СВХ', LAB: 'Лаборатория',
-    LOGISTIC: 'Логист', DECLARANT: 'Декларант', BANK: 'Банк',
-  };
+  function assignmentStatusLabel(s) { return t('cab_astatus_' + s); }
+  function roleShort(r) { return t('cab_role_' + r); }
 
   // Этапы сделки по порядку — совпадают с Deal.STATUS_CHOICES на бэкенде.
-  // Порядок важен: по индексу текущего статуса строится дорожная карта.
   const DEAL_STAGES = [
-    ['AGREEMENT', 'Согласование', 'fa-handshake'],
-    ['CONTRACT', 'Договор', 'fa-file-signature'],
-    ['PURCHASE_CHINA', 'Покупка в Китае', 'fa-cart-shopping'],
-    ['DELIVERY_KZ', 'Доставка в КЗ', 'fa-truck-fast'],
-    ['SVH', 'СВХ', 'fa-warehouse'],
-    ['CUSTOMS', 'Таможня', 'fa-stamp'],
-    ['DELIVERY_CLIENT', 'Доставка клиенту', 'fa-truck-ramp-box'],
-    ['COMPLETED', 'Завершена', 'fa-flag-checkered'],
+    ['AGREEMENT', 'fa-handshake'],
+    ['CONTRACT', 'fa-file-signature'],
+    ['PURCHASE_CHINA', 'fa-cart-shopping'],
+    ['DELIVERY_KZ', 'fa-truck-fast'],
+    ['SVH', 'fa-warehouse'],
+    ['CUSTOMS', 'fa-stamp'],
+    ['DELIVERY_CLIENT', 'fa-truck-ramp-box'],
+    ['COMPLETED', 'fa-flag-checkered'],
   ];
   const DEAL_STAGE_INDEX = Object.fromEntries(DEAL_STAGES.map(([k], i) => [k, i]));
-
+  function stageLabel(key) { return t('cab_stage_' + key); }
   function dealStatusLabel(status) {
-    const stage = DEAL_STAGES.find(([k]) => k === status);
-    return stage ? stage[1] : (status || '');
+    return DEAL_STAGE_INDEX[status] !== undefined ? stageLabel(status) : (status || '');
   }
 
   // Дорожная карта сделки: этапы до текущего — «пройдено», текущий —
@@ -75,7 +61,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const curIdx = status in DEAL_STAGE_INDEX ? DEAL_STAGE_INDEX[status] : 0;
     const isCompleted = status === 'COMPLETED';
 
-    const steps = DEAL_STAGES.map(([key, label, icon], i) => {
+    const steps = DEAL_STAGES.map(([key, icon], i) => {
       let state;
       if (isCompleted || i < curIdx) state = 'done';
       else if (i === curIdx) state = 'active';
@@ -86,19 +72,31 @@ document.addEventListener('DOMContentLoaded', async () => {
       return `
         <li class="tl-step tl-${state}">
           <span class="tl-dot">${mark}</span>
-          <span class="tl-label">${label}</span>
+          <span class="tl-label">${stageLabel(key)}</span>
         </li>`;
     }).join('');
 
     return `
       <div class="tl-block">
-        <div class="tl-block__head"><i class="fa-solid fa-route"></i> Этапы сделки</div>
+        <div class="tl-block__head"><i class="fa-solid fa-route"></i> ${t('cab_timeline_head')}</div>
         <ol class="tl-steps">${steps}</ol>
       </div>`;
   }
 
   function fmtDate(iso) {
     return new Date(iso).toLocaleString('ru-RU');
+  }
+
+  function escapeHtml(s) {
+    const div = document.createElement('div');
+    div.textContent = s;
+    return div.innerHTML;
+  }
+
+  const nfKzt = new Intl.NumberFormat('ru-RU');
+  function fmtMoney(v) {
+    const n = Number(v);
+    return (Number.isFinite(n) ? nfKzt.format(Math.round(n)) : v) + ' ₸';
   }
 
   async function loadComments(dealId, container) {
@@ -114,28 +112,22 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <div class="bubble">${escapeHtml(c.text)}</div>
               </div>`;
           }).join('')
-        : '<div class="comment-item other"><div class="bubble" style="opacity:.6">Пока нет сообщений</div></div>';
+        : `<div class="comment-item other"><div class="bubble" style="opacity:.6">${t('cab_chat_empty')}</div></div>`;
       container.scrollTop = container.scrollHeight;
     } catch (e) {
-      container.innerHTML = `<div class="comment-item other"><div class="bubble" style="color:#e74c3c">Ошибка загрузки: ${e.message}</div></div>`;
+      container.innerHTML = `<div class="comment-item other"><div class="bubble" style="color:#e74c3c">${t('cab_load_error')}: ${escapeHtml(e.message)}</div></div>`;
     }
-  }
-
-  function escapeHtml(s) {
-    const div = document.createElement('div');
-    div.textContent = s;
-    return div.innerHTML;
   }
 
   function buildCommentsBlock(dealId) {
     const wrap = document.createElement('div');
     wrap.className = 'comments-block';
     wrap.innerHTML = `
-      <div class="comments-block__head">Чат по сделке</div>
+      <div class="comments-block__head">${t('cab_chat_head')}</div>
       <div class="comments-list"></div>
       <form class="comment-form">
-        <input type="text" placeholder="Написать сообщение..." required>
-        <button type="submit" class="btn">Отправить</button>
+        <input type="text" placeholder="${t('cab_chat_ph')}" required>
+        <button type="submit" class="btn">${t('cab_send')}</button>
       </form>
     `;
     const list = wrap.querySelector('.comments-list');
@@ -151,17 +143,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         input.value = '';
         loadComments(dealId, list);
       } catch (err) {
-        alert('Ошибка: ' + err.message);
+        alert(t('cab_error') + ': ' + err.message);
       }
     });
 
     return wrap;
-  }
-
-  const nfKzt = new Intl.NumberFormat('ru-RU');
-  function fmtMoney(v) {
-    const n = Number(v);
-    return (Number.isFinite(n) ? nfKzt.format(Math.round(n)) : v) + ' ₸';
   }
 
   const DOC_ICONS = {
@@ -172,52 +158,49 @@ document.addEventListener('DOMContentLoaded', async () => {
     PHOTO: 'fa-image',
   };
 
-  // === Платежи по сделке (только просмотр; создаёт менеджер в админке) ===
+  // === Платежи по сделке ===
   async function loadPayments(dealId, container) {
     try {
       const payments = await window.CMAuth.apiAuthed('GET', `/api/deals/${dealId}/payments/`);
       if (!payments.length) {
-        container.innerHTML = '<p class="dc-empty">Платежей пока нет.</p>';
+        container.innerHTML = `<p class="dc-empty">${t('cab_payments_empty')}</p>`;
         return;
       }
       const total = payments.reduce((s, p) => s + Number(p.amount || 0), 0);
-      const confirmed = payments
-        .filter(p => p.is_confirmed)
-        .reduce((s, p) => s + Number(p.amount || 0), 0);
+      const confirmed = payments.filter(p => p.is_confirmed).reduce((s, p) => s + Number(p.amount || 0), 0);
       container.innerHTML = `
         <ul class="dc-list">
           ${payments.map(p => `
             <li class="dc-row">
               <span class="dc-amount">${fmtMoney(p.amount)}</span>
               <span class="dc-pill ${p.is_confirmed ? 'ok' : 'wait'}">
-                ${p.is_confirmed ? 'Подтверждён' : 'Ожидает'}
+                ${p.is_confirmed ? t('cab_confirmed') : t('cab_pending')}
               </span>
               <span class="dc-date">${fmtDate(p.created_at)}</span>
             </li>`).join('')}
         </ul>
         <div class="dc-total">
-          Оплачено: <b>${fmtMoney(confirmed)}</b> из <b>${fmtMoney(total)}</b>
+          ${t('cab_paid')}: <b>${fmtMoney(confirmed)}</b> ${t('cab_of')} <b>${fmtMoney(total)}</b>
         </div>`;
     } catch (e) {
-      container.innerHTML = `<p class="dc-empty" style="color:#e74c3c">Ошибка загрузки: ${escapeHtml(e.message)}</p>`;
+      container.innerHTML = `<p class="dc-empty" style="color:#e74c3c">${t('cab_load_error')}: ${escapeHtml(e.message)}</p>`;
     }
   }
 
   function buildPaymentsBlock(dealId, manager, currentPrice) {
     const wrap = document.createElement('div');
     wrap.className = 'dc-block';
-    wrap.innerHTML = '<div class="dc-block__head"><i class="fa-solid fa-wallet"></i> Платежи</div><div class="dc-body"></div>';
+    wrap.innerHTML = `<div class="dc-block__head"><i class="fa-solid fa-wallet"></i> ${t('cab_payments_head')}</div><div class="dc-body"></div>`;
     const body = wrap.querySelector('.dc-body');
     loadPayments(dealId, body);
 
     if (manager) {
-      // Стоимость сделки — нужна для финансового отчёта (остаток к оплате).
       const valueRow = document.createElement('div');
       valueRow.className = 'dc-value-row';
       valueRow.innerHTML = `
-        <span>Стоимость сделки, ₸:</span>
-        <input type="number" step="0.01" min="0" class="dc-value-input" value="${currentPrice != null ? currentPrice : ''}" placeholder="не указана">
-        <button type="button" class="dc-value-save btn">Сохранить</button>
+        <span>${t('cab_deal_value')}</span>
+        <input type="number" step="0.01" min="0" class="dc-value-input" value="${currentPrice != null ? currentPrice : ''}" placeholder="${t('cab_not_set')}">
+        <button type="button" class="dc-value-save btn">${t('cab_save')}</button>
       `;
       const valueInput = valueRow.querySelector('.dc-value-input');
       const valueBtn = valueRow.querySelector('.dc-value-save');
@@ -225,11 +208,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         valueBtn.disabled = true;
         try {
           await window.CMAuth.apiAuthed('PATCH', `/api/manager/deals/${dealId}/status/`, { total_price: valueInput.value || null });
-          valueBtn.textContent = 'Сохранено';
-          setTimeout(() => { valueBtn.textContent = 'Сохранить'; }, 1500);
+          valueBtn.textContent = t('cab_saved');
+          setTimeout(() => { valueBtn.textContent = t('cab_save'); }, 1500);
           loadManagerFinance();
         } catch (err) {
-          alert('Ошибка: ' + err.message);
+          alert(t('cab_error') + ': ' + err.message);
         } finally {
           valueBtn.disabled = false;
         }
@@ -239,9 +222,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       const form = document.createElement('form');
       form.className = 'dc-add-form';
       form.innerHTML = `
-        <input type="number" step="0.01" min="0" placeholder="Сумма, ₸" required>
-        <label class="dc-check"><input type="checkbox"> подтверждён</label>
-        <button type="submit" class="btn">Добавить платёж</button>
+        <input type="number" step="0.01" min="0" placeholder="${t('cab_sum_ph')}" required>
+        <label class="dc-check"><input type="checkbox"> ${t('cab_confirmed_lc')}</label>
+        <button type="submit" class="btn">${t('cab_add_payment')}</button>
       `;
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -254,7 +237,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           form.reset();
           loadPayments(dealId, body);
         } catch (err) {
-          alert('Ошибка: ' + err.message);
+          alert(t('cab_error') + ': ' + err.message);
         } finally {
           btn.disabled = false;
         }
@@ -264,24 +247,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     return wrap;
   }
 
-  // === Документы по сделке (просмотр/скачивание; загружает менеджер) ===
+  // === Документы по сделке ===
   async function loadDocuments(dealId, container) {
     try {
       const docs = await window.CMAuth.apiAuthed('GET', `/api/deals/${dealId}/documents/`);
       if (!docs.length) {
-        container.innerHTML = '<p class="dc-empty">Документов пока нет.</p>';
+        container.innerHTML = `<p class="dc-empty">${t('cab_docs_empty')}</p>`;
         return;
       }
       container.innerHTML = `
         <ul class="dc-list">
           ${docs.map(d => {
             const icon = DOC_ICONS[d.type] || 'fa-file';
-            const label = escapeHtml(d.type_display || d.type || 'Документ');
+            const label = escapeHtml(DOC_KEYS.includes(d.type) ? t('cab_doc_' + d.type) : (d.type_display || d.type || t('cab_doc_generic')));
             const link = d.file_url
               ? `<a class="dc-download" href="${encodeURI(d.file_url)}" target="_blank" rel="noopener">
-                   <i class="fa-solid fa-download"></i> Скачать
+                   <i class="fa-solid fa-download"></i> ${t('cab_download')}
                  </a>`
-              : '<span class="dc-date" style="opacity:.6">нет файла</span>';
+              : `<span class="dc-date" style="opacity:.6">${t('cab_no_file')}</span>`;
             return `
               <li class="dc-row">
                 <span class="dc-doc"><i class="fa-solid ${icon}"></i> ${label}</span>
@@ -291,14 +274,14 @@ document.addEventListener('DOMContentLoaded', async () => {
           }).join('')}
         </ul>`;
     } catch (e) {
-      container.innerHTML = `<p class="dc-empty" style="color:#e74c3c">Ошибка загрузки: ${escapeHtml(e.message)}</p>`;
+      container.innerHTML = `<p class="dc-empty" style="color:#e74c3c">${t('cab_load_error')}: ${escapeHtml(e.message)}</p>`;
     }
   }
 
   function buildDocumentsBlock(dealId, manager) {
     const wrap = document.createElement('div');
     wrap.className = 'dc-block';
-    wrap.innerHTML = '<div class="dc-block__head"><i class="fa-solid fa-folder-open"></i> Документы</div><div class="dc-body"></div>';
+    wrap.innerHTML = `<div class="dc-block__head"><i class="fa-solid fa-folder-open"></i> ${t('cab_docs_head')}</div><div class="dc-body"></div>`;
     const body = wrap.querySelector('.dc-body');
     loadDocuments(dealId, body);
 
@@ -307,14 +290,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       form.className = 'dc-add-form';
       form.innerHTML = `
         <select class="doc-type">
-          <option value="CONTRACT">Договор</option>
-          <option value="GTD">ГТД</option>
-          <option value="CMR">CMR</option>
-          <option value="ACCEPTANCE">Акт приёма</option>
-          <option value="PHOTO">Фото</option>
+          ${DOC_KEYS.map(k => `<option value="${k}">${t('cab_doc_' + k)}</option>`).join('')}
         </select>
         <input type="file" class="doc-file" required>
-        <button type="submit" class="btn">Загрузить</button>
+        <button type="submit" class="btn">${t('cab_upload')}</button>
       `;
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -331,7 +310,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           form.reset();
           loadDocuments(dealId, body);
         } catch (err) {
-          alert('Ошибка: ' + err.message);
+          alert(t('cab_error') + ': ' + err.message);
         } finally {
           btn.disabled = false;
         }
@@ -341,48 +320,51 @@ document.addEventListener('DOMContentLoaded', async () => {
     return wrap;
   }
 
-  // === Расходы по сделке (ТОЛЬКО менеджер; клиенту не показываются) ===
+  // === Расходы по сделке (ТОЛЬКО менеджер) ===
   async function loadExpenses(dealId, container) {
     try {
       const items = await window.CMAuth.apiAuthed('GET', `/api/manager/deals/${dealId}/expenses/`);
       if (!items.length) {
-        container.innerHTML = '<p class="dc-empty">Расходов пока нет.</p>';
+        container.innerHTML = `<p class="dc-empty">${t('cab_expenses_empty')}</p>`;
         return;
       }
       const total = items.reduce((s, x) => s + Number(x.amount || 0), 0);
       container.innerHTML = `
         <ul class="dc-list">
-          ${items.map(x => `
+          ${items.map(x => {
+            const cat = EXPENSE_KEYS.includes(x.category) ? t('cab_exp_' + x.category) : (x.category_display || x.category);
+            return `
             <li class="dc-row">
-              <span class="dc-doc">${escapeHtml(x.category_display || x.category)}${x.note ? ` <span class="exp-note">— ${escapeHtml(x.note)}</span>` : ''}</span>
+              <span class="dc-doc">${escapeHtml(cat)}${x.note ? ` <span class="exp-note">— ${escapeHtml(x.note)}</span>` : ''}</span>
               <span class="dc-amount">${fmtMoney(x.amount)}</span>
-              <button type="button" class="exp-del" data-exp-id="${x.id}" title="Удалить">✕</button>
-            </li>`).join('')}
+              <button type="button" class="exp-del" data-exp-id="${x.id}" title="${t('cab_delete')}">✕</button>
+            </li>`;
+          }).join('')}
         </ul>
-        <div class="dc-total">Итого расходов: <b>${fmtMoney(total)}</b></div>`;
+        <div class="dc-total">${t('cab_exp_total')}: <b>${fmtMoney(total)}</b></div>`;
       container.querySelectorAll('.exp-del').forEach(btn => {
         btn.addEventListener('click', async () => {
-          if (!confirm('Удалить этот расход?')) return;
+          if (!confirm(t('cab_del_expense_confirm'))) return;
           btn.disabled = true;
           try {
             await window.CMAuth.apiAuthed('DELETE', `/api/manager/expenses/${btn.dataset.expId}/`);
             loadExpenses(dealId, container);
             loadManagerFinance();
           } catch (err) {
-            alert('Ошибка: ' + err.message);
+            alert(t('cab_error') + ': ' + err.message);
             btn.disabled = false;
           }
         });
       });
     } catch (e) {
-      container.innerHTML = `<p class="dc-empty" style="color:#e74c3c">Ошибка загрузки: ${escapeHtml(e.message)}</p>`;
+      container.innerHTML = `<p class="dc-empty" style="color:#e74c3c">${t('cab_load_error')}: ${escapeHtml(e.message)}</p>`;
     }
   }
 
   function buildExpensesBlock(dealId) {
     const wrap = document.createElement('div');
     wrap.className = 'dc-block';
-    wrap.innerHTML = '<div class="dc-block__head"><i class="fa-solid fa-coins"></i> Расходы <span class="dc-internal">(видит только менеджер)</span></div><div class="dc-body"></div>';
+    wrap.innerHTML = `<div class="dc-block__head"><i class="fa-solid fa-coins"></i> ${t('cab_expenses_head')} <span class="dc-internal">${t('cab_expenses_internal')}</span></div><div class="dc-body"></div>`;
     const body = wrap.querySelector('.dc-body');
     loadExpenses(dealId, body);
 
@@ -390,11 +372,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     form.className = 'dc-add-form';
     form.innerHTML = `
       <select class="exp-cat">
-        ${EXPENSE_CATEGORIES.map(([v, l]) => `<option value="${v}">${l}</option>`).join('')}
+        ${EXPENSE_KEYS.map(k => `<option value="${k}">${t('cab_exp_' + k)}</option>`).join('')}
       </select>
-      <input type="number" step="0.01" min="0" class="exp-amount" placeholder="Сумма, ₸" required>
-      <input type="text" class="exp-note-input" placeholder="Комментарий (необязательно)">
-      <button type="submit" class="btn">Добавить расход</button>
+      <input type="number" step="0.01" min="0" class="exp-amount" placeholder="${t('cab_sum_ph')}" required>
+      <input type="text" class="exp-note-input" placeholder="${t('cab_exp_note_ph')}">
+      <button type="submit" class="btn">${t('cab_add_expense')}</button>
     `;
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -409,7 +391,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         loadExpenses(dealId, body);
         loadManagerFinance();
       } catch (err) {
-        alert('Ошибка: ' + err.message);
+        alert(t('cab_error') + ': ' + err.message);
       } finally {
         btn.disabled = false;
       }
@@ -419,18 +401,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // === Конструктор сценариев: кастомный план сделки ===
-  // Менеджер читает/пишет через /api/manager/..., клиент читает через
-  // /api/deals/<id>/stages/ (он не «участник» в смысле менеджерских ручек).
   async function loadStages(dealId, container, manager, wrap) {
     const readUrl = manager ? `/api/manager/deals/${dealId}/stages/` : `/api/deals/${dealId}/stages/`;
     try {
       const stages = await window.CMAuth.apiAuthed('GET', readUrl);
       if (!stages.length) {
-        if (manager) {
-          container.innerHTML = '<p class="dc-empty">План ещё не составлен. Добавьте этапы ниже.</p>';
-        } else if (wrap) {
-          wrap.style.display = 'none'; // клиенту пустой план не показываем
-        }
+        if (manager) container.innerHTML = `<p class="dc-empty">${t('cab_plan_empty')}</p>`;
+        else if (wrap) wrap.style.display = 'none';
         return;
       }
       if (wrap) wrap.style.display = '';
@@ -448,9 +425,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             <label class="stage-check"><input type="checkbox" ${done ? 'checked' : ''}></label>
             <span class="stage-title">${escapeHtml(st.title)}</span>
             <span class="stage-actions">
-              <button type="button" class="stage-up" ${i === 0 ? 'disabled' : ''} title="Выше">▲</button>
-              <button type="button" class="stage-down" ${i === stages.length - 1 ? 'disabled' : ''} title="Ниже">▼</button>
-              <button type="button" class="stage-del" title="Удалить">✕</button>
+              <button type="button" class="stage-up" ${i === 0 ? 'disabled' : ''} title="${t('cab_up')}">▲</button>
+              <button type="button" class="stage-down" ${i === stages.length - 1 ? 'disabled' : ''} title="${t('cab_down')}">▼</button>
+              <button type="button" class="stage-del" title="${t('cab_delete')}">✕</button>
             </span>
           </li>`;
       }).join('')}</ul>`;
@@ -464,12 +441,12 @@ document.addEventListener('DOMContentLoaded', async () => {
           try {
             await window.CMAuth.apiAuthed('PATCH', `/api/manager/stages/${id}/`, { is_done: e.target.checked });
             row.classList.toggle('done', e.target.checked);
-          } catch (err) { alert('Ошибка: ' + err.message); e.target.checked = !e.target.checked; }
+          } catch (err) { alert(t('cab_error') + ': ' + err.message); e.target.checked = !e.target.checked; }
         });
         row.querySelector('.stage-del').addEventListener('click', async () => {
-          if (!confirm('Удалить этап?')) return;
+          if (!confirm(t('cab_del_stage_confirm'))) return;
           try { await window.CMAuth.apiAuthed('DELETE', `/api/manager/stages/${id}/`); reload(); }
-          catch (err) { alert('Ошибка: ' + err.message); }
+          catch (err) { alert(t('cab_error') + ': ' + err.message); }
         });
         const swap = async (j) => {
           const a = stages[i], b = stages[j];
@@ -477,151 +454,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             await window.CMAuth.apiAuthed('PATCH', `/api/manager/stages/${a.id}/`, { order: b.order });
             await window.CMAuth.apiAuthed('PATCH', `/api/manager/stages/${b.id}/`, { order: a.order });
             reload();
-          } catch (err) { alert('Ошибка: ' + err.message); }
+          } catch (err) { alert(t('cab_error') + ': ' + err.message); }
         };
         row.querySelector('.stage-up').addEventListener('click', () => { if (i > 0) swap(i - 1); });
         row.querySelector('.stage-down').addEventListener('click', () => { if (i < stages.length - 1) swap(i + 1); });
       });
     } catch (e) {
-      container.innerHTML = `<p class="dc-empty" style="color:#e74c3c">Ошибка загрузки: ${escapeHtml(e.message)}</p>`;
+      container.innerHTML = `<p class="dc-empty" style="color:#e74c3c">${t('cab_load_error')}: ${escapeHtml(e.message)}</p>`;
     }
-  }
-
-  // === Галерея сделки (фото/видео): клиент видит, менеджер добавляет/удаляет ===
-  async function loadMedia(dealId, container, manager, wrap) {
-    const readUrl = manager ? `/api/manager/deals/${dealId}/media/` : `/api/deals/${dealId}/media/`;
-    try {
-      const items = await window.CMAuth.apiAuthed('GET', readUrl);
-      if (!items.length) {
-        if (manager) container.innerHTML = '<p class="dc-empty">Фото и видео пока не добавлены.</p>';
-        else if (wrap) wrap.style.display = 'none';
-        return;
-      }
-      if (wrap) wrap.style.display = '';
-      container.innerHTML = `<div class="media-grid">${items.map(m => {
-        const cap = m.caption ? `<span class="media-cap">${escapeHtml(m.caption)}</span>` : '';
-        const del = manager ? `<button type="button" class="media-del" data-id="${m.id}" title="Удалить">✕</button>` : '';
-        if (m.media_type === 'video') {
-          return `
-            <div class="media-item media-item--video">
-              <a href="${encodeURI(m.url || '#')}" target="_blank" rel="noopener" class="media-thumb media-thumb--video">
-                <i class="fa-solid fa-play"></i>
-              </a>
-              ${cap || '<span class="media-cap">Видео</span>'}
-              ${del}
-            </div>`;
-        }
-        const thumb = window.cmOptimizeImage ? window.cmOptimizeImage(m.url, { width: 400 }) : m.url;
-        return `
-          <div class="media-item">
-            <a href="${encodeURI(m.url || '#')}" target="_blank" rel="noopener" class="media-thumb">
-              <img src="${encodeURI(thumb || '')}" alt="${escapeHtml(m.caption || 'Фото сделки')}" loading="lazy">
-            </a>
-            ${cap}
-            ${del}
-          </div>`;
-      }).join('')}</div>`;
-
-      if (!manager) return;
-      container.querySelectorAll('.media-del').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          if (!confirm('Удалить этот файл из галереи?')) return;
-          btn.disabled = true;
-          try {
-            await window.CMAuth.apiAuthed('DELETE', `/api/manager/media/${btn.dataset.id}/`);
-            loadMedia(dealId, container, manager, wrap);
-          } catch (err) { alert('Ошибка: ' + err.message); btn.disabled = false; }
-        });
-      });
-    } catch (e) {
-      container.innerHTML = `<p class="dc-empty" style="color:#e74c3c">Ошибка загрузки: ${escapeHtml(e.message)}</p>`;
-    }
-  }
-
-  function buildMediaBlock(dealId, manager) {
-    const wrap = document.createElement('div');
-    wrap.className = 'dc-block';
-    wrap.innerHTML = '<div class="dc-block__head"><i class="fa-solid fa-images"></i> Фото и видео</div><div class="dc-body"></div>';
-    const body = wrap.querySelector('.dc-body');
-    loadMedia(dealId, body, manager, wrap);
-
-    if (manager) {
-      const form = document.createElement('form');
-      form.className = 'dc-add-form media-add-form';
-      form.innerHTML = `
-        <input type="text" class="media-caption" placeholder="Подпись (необязательно)">
-        <input type="file" class="media-file" accept="image/*">
-        <span class="media-or">или ссылка на видео:</span>
-        <input type="url" class="media-video" placeholder="https://youtu.be/...">
-        <button type="submit" class="btn">Добавить</button>
-      `;
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const caption = form.querySelector('.media-caption').value;
-        const fileInput = form.querySelector('.media-file');
-        const videoUrl = form.querySelector('.media-video').value.trim();
-        const btn = form.querySelector('button');
-        if (!fileInput.files.length && !videoUrl) { alert('Приложите фото или укажите ссылку на видео.'); return; }
-        if (fileInput.files.length && videoUrl) { alert('Что-то одно: либо фото, либо ссылка на видео.'); return; }
-        btn.disabled = true;
-        try {
-          if (fileInput.files.length) {
-            const fd = new FormData();
-            fd.append('image', fileInput.files[0]);
-            if (caption) fd.append('caption', caption);
-            await window.CMAuth.apiAuthedUpload('POST', `/api/manager/deals/${dealId}/media/`, fd);
-          } else {
-            await window.CMAuth.apiAuthed('POST', `/api/manager/deals/${dealId}/media/`, { video_url: videoUrl, caption });
-          }
-          form.reset();
-          loadMedia(dealId, body, manager, wrap);
-        } catch (err) { alert('Ошибка: ' + err.message); }
-        finally { btn.disabled = false; }
-      });
-      wrap.appendChild(form);
-    }
-    return wrap;
-  }
-
-  // === Лог изменений по сделке (аудит) — только чтение ===
-  async function loadActivity(dealId, container, manager, wrap) {
-    const readUrl = manager ? `/api/manager/deals/${dealId}/activity/` : `/api/deals/${dealId}/activity/`;
-    try {
-      const items = await window.CMAuth.apiAuthed('GET', readUrl);
-      if (!items.length) {
-        if (wrap) wrap.style.display = 'none';
-        return;
-      }
-      if (wrap) wrap.style.display = '';
-      container.innerHTML = `<ul class="act-list">${items.map(a => {
-        const who = a.actor_info?.name || a.actor_info?.phone || 'Система';
-        return `
-          <li class="act-row${a.internal ? ' act-internal' : ''}">
-            <span class="act-dot"></span>
-            <div class="act-body">
-              <div class="act-text">${escapeHtml(a.text)}${a.internal ? ' <span class="act-tag">внутр.</span>' : ''}</div>
-              <div class="act-meta">${escapeHtml(who)} · ${fmtDate(a.created_at)}</div>
-            </div>
-          </li>`;
-      }).join('')}</ul>`;
-    } catch (e) {
-      container.innerHTML = `<p class="dc-empty" style="color:#e74c3c">Ошибка загрузки: ${escapeHtml(e.message)}</p>`;
-    }
-  }
-
-  function buildActivityBlock(dealId, manager) {
-    const wrap = document.createElement('div');
-    wrap.className = 'dc-block';
-    wrap.innerHTML = '<div class="dc-block__head"><i class="fa-solid fa-clock-rotate-left"></i> История изменений</div><div class="dc-body"></div>';
-    loadActivity(dealId, wrap.querySelector('.dc-body'), manager, wrap);
-    return wrap;
   }
 
   function buildStagesBlock(dealId, manager) {
     const wrap = document.createElement('div');
     wrap.className = 'dc-block';
-    const badge = manager ? '' : '';
-    wrap.innerHTML = `<div class="dc-block__head"><i class="fa-solid fa-list-check"></i> План сделки${badge}</div><div class="dc-body"></div>`;
+    wrap.innerHTML = `<div class="dc-block__head"><i class="fa-solid fa-list-check"></i> ${t('cab_plan_head')}</div><div class="dc-body"></div>`;
     const body = wrap.querySelector('.dc-body');
     loadStages(dealId, body, manager, wrap);
 
@@ -629,8 +475,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       const form = document.createElement('form');
       form.className = 'dc-add-form';
       form.innerHTML = `
-        <input type="text" class="stage-input" placeholder="Название этапа" required>
-        <button type="submit" class="btn">Добавить этап</button>
+        <input type="text" class="stage-input" placeholder="${t('cab_stage_name_ph')}" required>
+        <button type="submit" class="btn">${t('cab_add_stage')}</button>
       `;
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -643,11 +489,141 @@ document.addEventListener('DOMContentLoaded', async () => {
           await window.CMAuth.apiAuthed('POST', `/api/manager/deals/${dealId}/stages/`, { title });
           input.value = '';
           loadStages(dealId, body, manager, wrap);
-        } catch (err) { alert('Ошибка: ' + err.message); }
+        } catch (err) { alert(t('cab_error') + ': ' + err.message); }
         finally { btn.disabled = false; }
       });
       wrap.appendChild(form);
     }
+    return wrap;
+  }
+
+  // === Галерея сделки (фото/видео) ===
+  async function loadMedia(dealId, container, manager, wrap) {
+    const readUrl = manager ? `/api/manager/deals/${dealId}/media/` : `/api/deals/${dealId}/media/`;
+    try {
+      const items = await window.CMAuth.apiAuthed('GET', readUrl);
+      if (!items.length) {
+        if (manager) container.innerHTML = `<p class="dc-empty">${t('cab_media_empty')}</p>`;
+        else if (wrap) wrap.style.display = 'none';
+        return;
+      }
+      if (wrap) wrap.style.display = '';
+      container.innerHTML = `<div class="media-grid">${items.map(m => {
+        const cap = m.caption ? `<span class="media-cap">${escapeHtml(m.caption)}</span>` : '';
+        const del = manager ? `<button type="button" class="media-del" data-id="${m.id}" title="${t('cab_delete')}">✕</button>` : '';
+        if (m.media_type === 'video') {
+          return `
+            <div class="media-item media-item--video">
+              <a href="${encodeURI(m.url || '#')}" target="_blank" rel="noopener" class="media-thumb media-thumb--video">
+                <i class="fa-solid fa-play"></i>
+              </a>
+              ${cap || `<span class="media-cap">${t('cab_video')}</span>`}
+              ${del}
+            </div>`;
+        }
+        const thumb = window.cmOptimizeImage ? window.cmOptimizeImage(m.url, { width: 400 }) : m.url;
+        return `
+          <div class="media-item">
+            <a href="${encodeURI(m.url || '#')}" target="_blank" rel="noopener" class="media-thumb">
+              <img src="${encodeURI(thumb || '')}" alt="${escapeHtml(m.caption || t('cab_photo_alt'))}" loading="lazy">
+            </a>
+            ${cap}
+            ${del}
+          </div>`;
+      }).join('')}</div>`;
+
+      if (!manager) return;
+      container.querySelectorAll('.media-del').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!confirm(t('cab_del_media_confirm'))) return;
+          btn.disabled = true;
+          try {
+            await window.CMAuth.apiAuthed('DELETE', `/api/manager/media/${btn.dataset.id}/`);
+            loadMedia(dealId, container, manager, wrap);
+          } catch (err) { alert(t('cab_error') + ': ' + err.message); btn.disabled = false; }
+        });
+      });
+    } catch (e) {
+      container.innerHTML = `<p class="dc-empty" style="color:#e74c3c">${t('cab_load_error')}: ${escapeHtml(e.message)}</p>`;
+    }
+  }
+
+  function buildMediaBlock(dealId, manager) {
+    const wrap = document.createElement('div');
+    wrap.className = 'dc-block';
+    wrap.innerHTML = `<div class="dc-block__head"><i class="fa-solid fa-images"></i> ${t('cab_media_head')}</div><div class="dc-body"></div>`;
+    const body = wrap.querySelector('.dc-body');
+    loadMedia(dealId, body, manager, wrap);
+
+    if (manager) {
+      const form = document.createElement('form');
+      form.className = 'dc-add-form media-add-form';
+      form.innerHTML = `
+        <input type="text" class="media-caption" placeholder="${t('cab_media_caption_ph')}">
+        <input type="file" class="media-file" accept="image/*">
+        <span class="media-or">${t('cab_media_or')}</span>
+        <input type="url" class="media-video" placeholder="https://youtu.be/...">
+        <button type="submit" class="btn">${t('cab_add')}</button>
+      `;
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const caption = form.querySelector('.media-caption').value;
+        const fileInput = form.querySelector('.media-file');
+        const videoUrl = form.querySelector('.media-video').value.trim();
+        const btn = form.querySelector('button');
+        if (!fileInput.files.length && !videoUrl) { alert(t('cab_media_need_one')); return; }
+        if (fileInput.files.length && videoUrl) { alert(t('cab_media_only_one')); return; }
+        btn.disabled = true;
+        try {
+          if (fileInput.files.length) {
+            const fd = new FormData();
+            fd.append('image', fileInput.files[0]);
+            if (caption) fd.append('caption', caption);
+            await window.CMAuth.apiAuthedUpload('POST', `/api/manager/deals/${dealId}/media/`, fd);
+          } else {
+            await window.CMAuth.apiAuthed('POST', `/api/manager/deals/${dealId}/media/`, { video_url: videoUrl, caption });
+          }
+          form.reset();
+          loadMedia(dealId, body, manager, wrap);
+        } catch (err) { alert(t('cab_error') + ': ' + err.message); }
+        finally { btn.disabled = false; }
+      });
+      wrap.appendChild(form);
+    }
+    return wrap;
+  }
+
+  // === Лог изменений по сделке (аудит) ===
+  async function loadActivity(dealId, container, manager, wrap) {
+    const readUrl = manager ? `/api/manager/deals/${dealId}/activity/` : `/api/deals/${dealId}/activity/`;
+    try {
+      const items = await window.CMAuth.apiAuthed('GET', readUrl);
+      if (!items.length) {
+        if (wrap) wrap.style.display = 'none';
+        return;
+      }
+      if (wrap) wrap.style.display = '';
+      container.innerHTML = `<ul class="act-list">${items.map(a => {
+        const who = a.actor_info?.name || a.actor_info?.phone || t('cab_system');
+        return `
+          <li class="act-row${a.internal ? ' act-internal' : ''}">
+            <span class="act-dot"></span>
+            <div class="act-body">
+              <div class="act-text">${escapeHtml(a.text)}${a.internal ? ` <span class="act-tag">${t('cab_internal_tag')}</span>` : ''}</div>
+              <div class="act-meta">${escapeHtml(who)} · ${fmtDate(a.created_at)}</div>
+            </div>
+          </li>`;
+      }).join('')}</ul>`;
+    } catch (e) {
+      container.innerHTML = `<p class="dc-empty" style="color:#e74c3c">${t('cab_load_error')}: ${escapeHtml(e.message)}</p>`;
+    }
+  }
+
+  function buildActivityBlock(dealId, manager) {
+    const wrap = document.createElement('div');
+    wrap.className = 'dc-block';
+    wrap.innerHTML = `<div class="dc-block__head"><i class="fa-solid fa-clock-rotate-left"></i> ${t('cab_activity_head')}</div><div class="dc-body"></div>`;
+    loadActivity(dealId, wrap.querySelector('.dc-body'), manager, wrap);
     return wrap;
   }
 
@@ -666,46 +642,45 @@ document.addEventListener('DOMContentLoaded', async () => {
             return `
               <div class="assignment-row">
                 ${statusIcon(a.status)}
-                <span class="assignment-role">${ROLE_LABELS_SHORT[a.role] || a.role}</span>
-                <span class="assignment-role">${a.assigned_user_info?.name || a.assigned_user_info?.phone || '— не назначен'}</span>
-                <span class="assignment-status ${a.status}">${STATUS_LABELS[a.status] || a.status}</span>
+                <span class="assignment-role">${roleShort(a.role) || a.role}</span>
+                <span class="assignment-role">${a.assigned_user_info?.name || a.assigned_user_info?.phone || t('cab_not_assigned')}</span>
+                <span class="assignment-status ${a.status}">${assignmentStatusLabel(a.status) || a.status}</span>
               </div>`;
           }
           return `
             <div class="assignment-row">
               ${statusIcon(a.status)}
-              <span class="assignment-role">${ROLE_LABELS_SHORT[a.role] || a.role} (вы)</span>
+              <span class="assignment-role">${roleShort(a.role) || a.role} ${t('cab_you')}</span>
               <form class="my-assignment-form" data-assignment-id="${a.id}">
                 <select name="status">
-                  ${Object.entries(STATUS_LABELS).map(([v, l]) => `<option value="${v}" ${v === a.status ? 'selected' : ''}>${l}</option>`).join('')}
+                  ${['PENDING', 'IN_PROGRESS', 'DONE'].map(v => `<option value="${v}" ${v === a.status ? 'selected' : ''}>${assignmentStatusLabel(v)}</option>`).join('')}
                 </select>
-                <input type="text" name="note" placeholder="Заметка" value="${escapeHtml(a.note || '')}">
-                <button type="submit" class="btn">Сохранить</button>
+                <input type="text" name="note" placeholder="${t('cab_note_ph')}" value="${escapeHtml(a.note || '')}">
+                <button type="submit" class="btn">${t('cab_save')}</button>
               </form>
             </div>`;
         }).join('')
-      : '<p style="opacity:.7;color:rgba(255,255,255,0.6)">Пока никто не назначен</p>';
+      : `<p style="opacity:.7;color:rgba(255,255,255,0.6)">${t('cab_no_assignee')}</p>`;
 
     const statusControl = editableStatus
       ? `<select class="deal-status-select">
-           ${DEAL_STAGES.map(([k, l]) => `<option value="${k}" ${k === deal.status ? 'selected' : ''}>${l}</option>`).join('')}
+           ${DEAL_STAGES.map(([k]) => `<option value="${k}" ${k === deal.status ? 'selected' : ''}>${stageLabel(k)}</option>`).join('')}
          </select>`
       : `<span class="deal-status-pill">${escapeHtml(dealStatusLabel(deal.status))}</span>`;
 
     card.innerHTML = `
       <div class="deal-card__head">
-        <h3>${deal.vehicle_title || deal.title || ('Сделка #' + deal.id)}</h3>
+        <h3>${deal.vehicle_title || deal.title || (t('cab_deal_num') + ' #' + deal.id)}</h3>
         ${statusControl}
       </div>
       <div class="deal-meta">
-        Создана: ${fmtDate(deal.created_at)}
-        ${editableRole ? '' : `· Клиент: ${deal.customer_info?.name || deal.customer_info?.phone || '—'}`}
+        ${t('cab_created')}: ${fmtDate(deal.created_at)}
+        ${editableRole ? '' : `· ${t('cab_client')}: ${deal.customer_info?.name || deal.customer_info?.phone || '—'}`}
       </div>
       ${buildTimelineHtml(deal.status)}
       <div class="assignments-block">${assignmentsHtml}</div>
     `;
 
-    // Менеджер меняет этап сделки прямо из карточки — обновляем и timeline.
     if (editableStatus) {
       const sel = card.querySelector('.deal-status-select');
       sel?.addEventListener('change', async () => {
@@ -718,7 +693,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           const tl = card.querySelector('.tl-block');
           if (tl) tl.outerHTML = buildTimelineHtml(newStatus);
         } catch (err) {
-          alert('Ошибка: ' + err.message);
+          alert(t('cab_error') + ': ' + err.message);
           sel.value = prev;
         } finally {
           sel.disabled = false;
@@ -734,9 +709,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         const note = form.querySelector('[name="note"]').value;
         try {
           await window.CMAuth.apiAuthed('PATCH', `/api/deals/assignments/${id}/`, { status, note });
-          alert('Сохранено');
+          alert(t('cab_saved'));
         } catch (err) {
-          alert('Ошибка: ' + err.message);
+          alert(t('cab_error') + ': ' + err.message);
         }
       });
     });
@@ -751,7 +726,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     return card;
   }
 
-  // === "Мои объявления" — только для клиентов (физ./юр. лицо) ===
+  // === "Мои объявления" — только для клиентов ===
+  let reloadMyListings = null;
   function initMyListings() {
     if (!CUSTOMER_ROLES.includes(session.role)) return;
 
@@ -774,16 +750,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         listEl.innerHTML = listings.length
           ? listings.map(l => `
               <div class="my-listing-card">
-                <span>${[l.brand, l.model, l.body_type].filter(Boolean).join(' ') || ('Объявление #' + l.id)}${l.year ? ', ' + l.year : ''}</span>
+                <span>${[l.brand, l.model, l.body_type].filter(Boolean).join(' ') || (t('cab_listing_num') + ' #' + l.id)}${l.year ? ', ' + l.year : ''}</span>
                 <span class="listing-approval ${l.is_approved ? 'approved' : 'pending'}">
-                  ${l.is_approved ? 'Одобрено, видно в каталоге' : 'На модерации'}
+                  ${l.is_approved ? t('cab_listing_approved') : t('cab_listing_pending')}
                 </span>
               </div>`).join('')
-          : '<p class="empty-note">Объявлений пока нет.</p>';
+          : `<p class="empty-note">${t('cab_listings_empty')}</p>`;
       } catch (e) {
-        listEl.innerHTML = `<p class="empty-note" style="color:#e74c3c">Ошибка загрузки: ${e.message}</p>`;
+        listEl.innerHTML = `<p class="empty-note" style="color:#e74c3c">${t('cab_load_error')}: ${e.message}</p>`;
       }
     }
+    reloadMyListings = loadMyListings;
 
     form?.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -814,14 +791,14 @@ document.addEventListener('DOMContentLoaded', async () => {
           await window.CMAuth.apiAuthedUpload('POST', `/api/vehicles/my-listings/${created.id}/photos/`, formData);
         }
 
-        statusEl.textContent = 'Объявление отправлено на модерацию';
+        statusEl.textContent = t('cab_listing_sent');
         statusEl.className = 'success';
         statusEl.style.display = 'block';
         form.reset();
         form.classList.remove('open');
         loadMyListings();
       } catch (err) {
-        statusEl.textContent = 'Ошибка: ' + err.message;
+        statusEl.textContent = t('cab_error') + ': ' + err.message;
         statusEl.className = 'error';
         statusEl.style.display = 'block';
       }
@@ -838,10 +815,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       const s = await window.CMAuth.apiAuthed('GET', '/api/manager/stats/');
       const tiles = [
-        ['Всего сделок', s.deals_total],
-        ['Активные', s.deals_active],
-        ['Завершённые', s.deals_completed],
-        ['Заявки (открытые)', s.leads_open],
+        [t('cab_tile_total'), s.deals_total],
+        [t('cab_tile_active'), s.deals_active],
+        [t('cab_tile_completed'), s.deals_completed],
+        [t('cab_tile_leads_open'), s.leads_open],
       ];
       el.innerHTML = tiles.map(([label, val]) => `
         <div class="mgr-tile">
@@ -849,34 +826,32 @@ document.addEventListener('DOMContentLoaded', async () => {
           <div class="mgr-tile__label">${label}</div>
         </div>`).join('');
     } catch (e) {
-      el.innerHTML = `<p class="empty-note" style="color:#e74c3c">Ошибка загрузки сводки: ${escapeHtml(e.message)}</p>`;
+      el.innerHTML = `<p class="empty-note" style="color:#e74c3c">${t('cab_load_error_summary')}: ${escapeHtml(e.message)}</p>`;
     }
   }
 
-  // Конвертация заявки в сделку. На успехе — создаётся (или находится по
-  // телефону) клиент и новая сделка; перезагружаем заявки, сделки и сводку.
   async function convertLead(leadId, btn) {
-    if (!confirm('Создать сделку из этой заявки? Клиент будет найден по телефону или создан автоматически.')) return;
+    if (!confirm(t('cab_convert_confirm'))) return;
     btn.disabled = true;
     const prevText = btn.textContent;
-    btn.textContent = 'Создаём…';
+    btn.textContent = t('cab_creating');
     try {
       const res = await window.CMAuth.apiAuthed('POST', `/api/manager/leads/${leadId}/convert/`, {});
       const note = res.created_customer
-        ? `\nСоздан новый клиент по номеру ${res.customer_phone}.`
-        : `\nКлиент найден по номеру ${res.customer_phone}.`;
-      alert(`Сделка создана: «${res.deal_title}» (№${res.deal_id}).${note}`);
+        ? `\n${t('cab_convert_new_client')} ${res.customer_phone}.`
+        : `\n${t('cab_convert_found_client')} ${res.customer_phone}.`;
+      alert(`${t('cab_deal_created')}: «${res.deal_title}» (№${res.deal_id}).${note}`);
       loadManagerLeads();
       loadManagerDeals();
       loadManagerStats();
     } catch (e) {
-      alert('Ошибка: ' + e.message);
+      alert(t('cab_error') + ': ' + e.message);
       btn.disabled = false;
       btn.textContent = prevText;
     }
   }
 
-  // === Финансовый отчёт по сделкам: стоимость против полученных денег ===
+  // === Финансовый отчёт по сделкам ===
   async function loadManagerFinance() {
     const el = document.getElementById('managerFinance');
     if (!el) return;
@@ -884,20 +859,20 @@ document.addEventListener('DOMContentLoaded', async () => {
       const data = await window.CMAuth.apiAuthed('GET', '/api/manager/finance/');
       const s = data.summary;
       const tiles = [
-        ['Стоимость сделок', s.total_value],
-        ['Получено', s.total_received],
-        ['Расходы', s.total_expenses],
-        ['Прибыль', s.total_profit],
+        [t('cab_fin_value'), s.total_value],
+        [t('cab_fin_received'), s.total_received],
+        [t('cab_fin_expenses'), s.total_expenses],
+        [t('cab_fin_profit'), s.total_profit],
       ];
       const rows = data.deals.map(d => `
         <tr>
-          <td data-label="Сделка">${escapeHtml(d.title)}</td>
-          <td data-label="Этап">${escapeHtml(d.status_display)}</td>
-          <td data-label="Стоимость" class="fin-num">${Number(d.total_price) ? fmtMoney(d.total_price) : '—'}</td>
-          <td data-label="Получено" class="fin-num">${fmtMoney(d.received)}</td>
-          <td data-label="Остаток" class="fin-num ${Number(d.balance) > 0 ? 'fin-due' : 'fin-ok'}">${fmtMoney(d.balance)}</td>
-          <td data-label="Расходы" class="fin-num">${fmtMoney(d.expenses)}</td>
-          <td data-label="Прибыль" class="fin-num ${d.profit == null ? '' : (Number(d.profit) >= 0 ? 'fin-ok' : 'fin-due')}">${d.profit == null ? '—' : fmtMoney(d.profit)}</td>
+          <td data-label="${t('cab_fcol_deal')}">${escapeHtml(d.title)}</td>
+          <td data-label="${t('cab_fcol_stage')}">${escapeHtml(d.status_display)}</td>
+          <td data-label="${t('cab_fcol_value')}" class="fin-num">${Number(d.total_price) ? fmtMoney(d.total_price) : '—'}</td>
+          <td data-label="${t('cab_fcol_received')}" class="fin-num">${fmtMoney(d.received)}</td>
+          <td data-label="${t('cab_fcol_balance')}" class="fin-num ${Number(d.balance) > 0 ? 'fin-due' : 'fin-ok'}">${fmtMoney(d.balance)}</td>
+          <td data-label="${t('cab_fcol_expenses')}" class="fin-num">${fmtMoney(d.expenses)}</td>
+          <td data-label="${t('cab_fcol_profit')}" class="fin-num ${d.profit == null ? '' : (Number(d.profit) >= 0 ? 'fin-ok' : 'fin-due')}">${d.profit == null ? '—' : fmtMoney(d.profit)}</td>
         </tr>`).join('');
       el.innerHTML = `
         <div class="mgr-stats">
@@ -909,13 +884,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         </div>
         <div class="fin-table-wrap">
           <table class="fin-table">
-            <thead><tr><th>Сделка</th><th>Этап</th><th class="fin-num">Стоимость</th><th class="fin-num">Получено</th><th class="fin-num">Остаток</th><th class="fin-num">Расходы</th><th class="fin-num">Прибыль</th></tr></thead>
-            <tbody>${rows || '<tr><td colspan="7" class="dc-empty">Сделок пока нет.</td></tr>'}</tbody>
+            <thead><tr><th>${t('cab_fcol_deal')}</th><th>${t('cab_fcol_stage')}</th><th class="fin-num">${t('cab_fcol_value')}</th><th class="fin-num">${t('cab_fcol_received')}</th><th class="fin-num">${t('cab_fcol_balance')}</th><th class="fin-num">${t('cab_fcol_expenses')}</th><th class="fin-num">${t('cab_fcol_profit')}</th></tr></thead>
+            <tbody>${rows || `<tr><td colspan="7" class="dc-empty">${t('cab_deals_empty_mgr')}</td></tr>`}</tbody>
           </table>
         </div>
-        <p class="fin-hint">Прибыль = стоимость сделки − расходы. Показывается только для сделок с указанной стоимостью.</p>`;
+        <p class="fin-hint">${t('cab_fin_hint')}</p>`;
     } catch (e) {
-      el.innerHTML = `<p class="empty-note" style="color:#e74c3c">Ошибка загрузки финансов: ${escapeHtml(e.message)}</p>`;
+      el.innerHTML = `<p class="empty-note" style="color:#e74c3c">${t('cab_load_error_finance')}: ${escapeHtml(e.message)}</p>`;
     }
   }
 
@@ -925,27 +900,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       const leads = await window.CMAuth.apiAuthed('GET', '/api/manager/leads/');
       if (!leads.length) {
-        el.innerHTML = '<p class="empty-note">Заявок пока нет.</p>';
+        el.innerHTML = `<p class="empty-note">${t('cab_leads_empty')}</p>`;
         return;
       }
       el.innerHTML = `
         <ul class="lead-list">
           ${leads.map(l => {
             const action = l.converted_deal
-              ? `<span class="lead-converted"><i class="fa-solid fa-check"></i> Сделка №${l.converted_deal}</span>`
+              ? `<span class="lead-converted"><i class="fa-solid fa-check"></i> ${t('cab_lead_deal_num')} №${l.converted_deal}</span>`
               : (l.phone
-                  ? `<button type="button" class="lead-convert-btn" data-lead-id="${l.id}">Создать сделку</button>`
+                  ? `<button type="button" class="lead-convert-btn" data-lead-id="${l.id}">${t('cab_create_deal')}</button>`
                   : '');
+            const leadStatus = t('cab_lead_' + l.status) !== 'cab_lead_' + l.status ? t('cab_lead_' + l.status) : (l.status_display || l.status);
             return `
             <li class="lead-row">
               <div class="lead-main">
-                <span class="lead-name">${escapeHtml(l.name || 'Без имени')}</span>
+                <span class="lead-name">${escapeHtml(l.name || t('cab_no_name'))}</span>
                 <a class="lead-phone" href="tel:${escapeHtml(l.phone || '')}">${escapeHtml(l.phone || '—')}</a>
                 <span class="lead-source">${escapeHtml(l.source || '')}</span>
               </div>
               ${l.message ? `<div class="lead-msg">${escapeHtml(l.message)}</div>` : ''}
               <div class="lead-foot">
-                <span class="lead-status s-${escapeHtml(l.status)}">${escapeHtml(l.status_display || LEAD_STATUS_LABELS[l.status] || l.status)}</span>
+                <span class="lead-status s-${escapeHtml(l.status)}">${escapeHtml(leadStatus)}</span>
                 ${action}
                 <span class="lead-date">${fmtDate(l.created_at)}</span>
               </div>
@@ -956,7 +932,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         btn.addEventListener('click', () => convertLead(btn.dataset.leadId, btn));
       });
     } catch (e) {
-      el.innerHTML = `<p class="empty-note" style="color:#e74c3c">Ошибка загрузки заявок: ${escapeHtml(e.message)}</p>`;
+      el.innerHTML = `<p class="empty-note" style="color:#e74c3c">${t('cab_load_error_leads')}: ${escapeHtml(e.message)}</p>`;
     }
   }
 
@@ -965,23 +941,23 @@ document.addEventListener('DOMContentLoaded', async () => {
       const deals = await window.CMAuth.apiAuthed('GET', '/api/manager/deals/');
       dealListEl.innerHTML = '';
       if (!deals.length) {
-        dealListEl.innerHTML = '<p class="empty-note">Сделок пока нет.</p>';
+        dealListEl.innerHTML = `<p class="empty-note">${t('cab_deals_empty_mgr')}</p>`;
         return;
       }
       deals.forEach(d => dealListEl.appendChild(buildDealCard(d, { editableStatus: true })));
     } catch (e) {
-      dealListEl.innerHTML = `<p class="empty-note" style="color:#e74c3c">Ошибка загрузки сделок: ${escapeHtml(e.message)}</p>`;
+      dealListEl.innerHTML = `<p class="empty-note" style="color:#e74c3c">${t('cab_load_error_deals')}: ${escapeHtml(e.message)}</p>`;
     }
   }
 
   async function render() {
-    dealListEl.innerHTML = '<p class="empty-note">Загрузка...</p>';
+    dealListEl.innerHTML = `<p class="empty-note">${t('cab_loading')}</p>`;
     try {
       if (CUSTOMER_ROLES.includes(session.role)) {
         const deals = await window.CMAuth.apiAuthed('GET', '/api/deals/my/');
         dealListEl.innerHTML = '';
         if (!deals.length) {
-          dealListEl.innerHTML = '<p class="empty-note">У вас пока нет сделок. Оформить сделку можно со страницы конкретной техники в каталоге — кнопка «Оформить сделку».</p>';
+          dealListEl.innerHTML = `<p class="empty-note">${t('cab_deals_empty_customer')}</p>`;
           return;
         }
         deals.forEach(d => dealListEl.appendChild(buildDealCard(d)));
@@ -989,10 +965,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         const deals = await window.CMAuth.apiAuthed('GET', '/api/deals/assigned/');
         dealListEl.innerHTML = '';
         if (!deals.length) {
-          dealListEl.innerHTML = '<p class="empty-note">Вам пока не назначили ни одной сделки.</p>';
+          dealListEl.innerHTML = `<p class="empty-note">${t('cab_deals_empty_assignee')}</p>`;
           return;
         }
-        // роль в DealAssignment (BROKER/SVH/...) без префикса SERVICE_
         const shortRole = session.role.startsWith('SERVICE_') ? session.role.replace('SERVICE_', '') : session.role;
         deals.forEach(d => dealListEl.appendChild(buildDealCard(d, { editableRole: shortRole })));
       } else if (MANAGER_ROLES.includes(session.role)) {
@@ -1004,10 +979,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         loadManagerLeads();
         await loadManagerDeals();
       } else {
-        dealListEl.innerHTML = '<p class="empty-note">Личный кабинет для этой роли пока в разработке.</p>';
+        dealListEl.innerHTML = `<p class="empty-note">${t('cab_role_wip')}</p>`;
       }
     } catch (e) {
-      dealListEl.innerHTML = `<p class="empty-note" style="color:#e74c3c">Ошибка загрузки: ${e.message}</p>`;
+      dealListEl.innerHTML = `<p class="empty-note" style="color:#e74c3c">${t('cab_load_error')}: ${e.message}</p>`;
     }
   }
 
@@ -1023,7 +998,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const data = await window.CMAuth.apiAuthed('GET', '/api/notifications/');
         panel.innerHTML = data.items.length
           ? data.items.map(n => {
-              const who = n.actor?.name || n.actor?.phone || 'Система';
+              const who = n.actor?.name || n.actor?.phone || t('cab_system');
               return `
                 <div class="notif-item${n.unread ? ' unread' : ''}">
                   <div class="notif-item__deal">${escapeHtml(n.deal_title)}</div>
@@ -1031,7 +1006,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                   <div class="notif-item__meta">${escapeHtml(who)} · ${fmtDate(n.created_at)}</div>
                 </div>`;
             }).join('')
-          : '<div class="notif-empty">Пока нет уведомлений</div>';
+          : `<div class="notif-empty">${t('cab_notif_empty')}</div>`;
         if (data.unread_count > 0) {
           badge.textContent = data.unread_count > 99 ? '99+' : String(data.unread_count);
           badge.style.display = '';
@@ -1060,6 +1035,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     refresh();
     setInterval(refresh, 60000);
   }
+
+  // Смена языка: перерисовываем динамические части кабинета (data-i18n
+  // статику обновляет common.js сам).
+  document.addEventListener('langchange', () => {
+    renderRoleLine();
+    if (reloadMyListings) reloadMyListings();
+    render();
+  });
 
   initMyListings();
   initNotifications();

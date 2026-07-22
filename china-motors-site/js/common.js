@@ -7,6 +7,33 @@
      ===================== */
   const translations = {
     ru: {
+      // ЛИЧНЫЙ КАБИНЕТ (cab_*)
+      cab_verified: 'подтверждён', cab_not_verified: 'не подтверждён',
+      cab_rolefull_CUSTOMER_PERSON: 'Клиент (физ. лицо)', cab_rolefull_CUSTOMER_COMPANY: 'Клиент (юр. лицо)',
+      cab_rolefull_SERVICE_BROKER: 'Брокер (СВХ)', cab_rolefull_SERVICE_SVH: 'СВХ', cab_rolefull_SERVICE_LAB: 'Лаборатория',
+      cab_rolefull_SERVICE_LOGISTIC: 'Логист', cab_rolefull_SERVICE_DECLARANT: 'Декларант (граница)', cab_rolefull_BANK: 'Банк',
+      cab_rolefull_PARTNER: 'Партнёр-продавец', cab_rolefull_MANAGER: 'Менеджер', cab_rolefull_ADMIN: 'Администратор',
+      cab_role_BROKER: 'Брокер (СВХ)', cab_role_SVH: 'СВХ', cab_role_LAB: 'Лаборатория', cab_role_LOGISTIC: 'Логист', cab_role_DECLARANT: 'Декларант', cab_role_BANK: 'Банк',
+      cab_astatus_PENDING: 'Ожидает', cab_astatus_IN_PROGRESS: 'В работе', cab_astatus_DONE: 'Завершено',
+      cab_stage_AGREEMENT: 'Согласование', cab_stage_CONTRACT: 'Договор', cab_stage_PURCHASE_CHINA: 'Покупка в Китае', cab_stage_DELIVERY_KZ: 'Доставка в КЗ', cab_stage_SVH: 'СВХ', cab_stage_CUSTOMS: 'Таможня', cab_stage_DELIVERY_CLIENT: 'Доставка клиенту', cab_stage_COMPLETED: 'Завершена',
+      cab_timeline_head: 'Этапы сделки', cab_plan_head: 'План сделки', cab_payments_head: 'Платежи', cab_docs_head: 'Документы', cab_media_head: 'Фото и видео', cab_expenses_head: 'Расходы', cab_expenses_internal: '(видит только менеджер)', cab_activity_head: 'История изменений', cab_chat_head: 'Чат по сделке',
+      cab_loading: 'Загрузка...', cab_payments_empty: 'Платежей пока нет.', cab_docs_empty: 'Документов пока нет.', cab_expenses_empty: 'Расходов пока нет.', cab_media_empty: 'Фото и видео пока не добавлены.', cab_plan_empty: 'План ещё не составлен. Добавьте этапы ниже.', cab_chat_empty: 'Пока нет сообщений', cab_notif_empty: 'Пока нет уведомлений', cab_leads_empty: 'Заявок пока нет.', cab_listings_empty: 'Объявлений пока нет.',
+      cab_deals_empty_mgr: 'Сделок пока нет.', cab_deals_empty_customer: 'У вас пока нет сделок. Оформить сделку можно со страницы конкретной техники в каталоге — кнопка «Оформить сделку».', cab_deals_empty_assignee: 'Вам пока не назначили ни одной сделки.', cab_role_wip: 'Личный кабинет для этой роли пока в разработке.',
+      cab_load_error: 'Ошибка загрузки', cab_load_error_summary: 'Ошибка загрузки сводки', cab_load_error_finance: 'Ошибка загрузки финансов', cab_load_error_leads: 'Ошибка загрузки заявок', cab_load_error_deals: 'Ошибка загрузки сделок', cab_error: 'Ошибка',
+      cab_confirmed: 'Подтверждён', cab_pending: 'Ожидает', cab_paid: 'Оплачено', cab_of: 'из', cab_deal_value: 'Стоимость сделки, ₸:', cab_not_set: 'не указана', cab_save: 'Сохранить', cab_saved: 'Сохранено', cab_sum_ph: 'Сумма, ₸', cab_confirmed_lc: 'подтверждён', cab_add_payment: 'Добавить платёж',
+      cab_download: 'Скачать', cab_no_file: 'нет файла', cab_doc_generic: 'Документ', cab_upload: 'Загрузить', cab_doc_CONTRACT: 'Договор', cab_doc_GTD: 'ГТД', cab_doc_CMR: 'CMR', cab_doc_ACCEPTANCE: 'Акт приёма', cab_doc_PHOTO: 'Фото',
+      cab_exp_total: 'Итого расходов', cab_exp_note_ph: 'Комментарий (необязательно)', cab_add_expense: 'Добавить расход', cab_del_expense_confirm: 'Удалить этот расход?', cab_exp_PURCHASE: 'Закупка в Китае', cab_exp_LOGISTICS: 'Логистика / доставка', cab_exp_CUSTOMS: 'Растаможка', cab_exp_CERTIFICATION: 'Сертификация (СБКТС/ЭПТС)', cab_exp_SVH: 'СВХ / хранение', cab_exp_OTHER: 'Прочее',
+      cab_stage_name_ph: 'Название этапа', cab_add_stage: 'Добавить этап', cab_del_stage_confirm: 'Удалить этап?', cab_up: 'Выше', cab_down: 'Ниже', cab_delete: 'Удалить',
+      cab_media_caption_ph: 'Подпись (необязательно)', cab_media_or: 'или ссылка на видео:', cab_add: 'Добавить', cab_video: 'Видео', cab_photo_alt: 'Фото сделки', cab_del_media_confirm: 'Удалить этот файл из галереи?', cab_media_need_one: 'Приложите фото или укажите ссылку на видео.', cab_media_only_one: 'Что-то одно: либо фото, либо ссылка на видео.',
+      cab_internal_tag: 'внутр.', cab_system: 'Система', cab_chat_ph: 'Написать сообщение...', cab_send: 'Отправить',
+      cab_created: 'Создана', cab_client: 'Клиент', cab_deal_num: 'Сделка', cab_no_assignee: 'Пока никто не назначен', cab_not_assigned: '— не назначен', cab_you: '(вы)', cab_note_ph: 'Заметка',
+      cab_tile_total: 'Всего сделок', cab_tile_active: 'Активные', cab_tile_completed: 'Завершённые', cab_tile_leads_open: 'Заявки (открытые)',
+      cab_convert_confirm: 'Создать сделку из этой заявки? Клиент будет найден по телефону или создан автоматически.', cab_creating: 'Создаём…', cab_convert_new_client: 'Создан новый клиент по номеру', cab_convert_found_client: 'Клиент найден по номеру', cab_deal_created: 'Сделка создана',
+      cab_no_name: 'Без имени', cab_create_deal: 'Создать сделку', cab_lead_deal_num: 'Сделка', cab_lead_new: 'Новая', cab_lead_in_progress: 'В работе', cab_lead_won: 'Выиграна', cab_lead_lost: 'Проиграна',
+      cab_fin_value: 'Стоимость сделок', cab_fin_received: 'Получено', cab_fin_expenses: 'Расходы', cab_fin_profit: 'Прибыль', cab_fcol_deal: 'Сделка', cab_fcol_stage: 'Этап', cab_fcol_value: 'Стоимость', cab_fcol_received: 'Получено', cab_fcol_balance: 'Остаток', cab_fcol_expenses: 'Расходы', cab_fcol_profit: 'Прибыль', cab_fin_hint: 'Прибыль = стоимость сделки − расходы. Показывается только для сделок с указанной стоимостью.',
+      cab_listing_sent: 'Объявление отправлено на модерацию', cab_listing_num: 'Объявление', cab_listing_approved: 'Одобрено, видно в каталоге', cab_listing_pending: 'На модерации',
+      cab_summary: 'Сводка', cab_finance_head: 'Финансы по сделкам', cab_leads_head: 'Заявки с сайта',
+
       // NAV
       nav_home: 'Главная',
       nav_catalog: 'Каталог',
@@ -389,6 +416,33 @@
     },
 
     kk: {
+      // ЖЕКЕ КАБИНЕТ (cab_*)
+      cab_verified: 'расталған', cab_not_verified: 'расталмаған',
+      cab_rolefull_CUSTOMER_PERSON: 'Клиент (жеке тұлға)', cab_rolefull_CUSTOMER_COMPANY: 'Клиент (заңды тұлға)',
+      cab_rolefull_SERVICE_BROKER: 'Брокер (УСҚ)', cab_rolefull_SERVICE_SVH: 'УСҚ', cab_rolefull_SERVICE_LAB: 'Зертхана',
+      cab_rolefull_SERVICE_LOGISTIC: 'Логист', cab_rolefull_SERVICE_DECLARANT: 'Декларант (шекара)', cab_rolefull_BANK: 'Банк',
+      cab_rolefull_PARTNER: 'Серіктес-сатушы', cab_rolefull_MANAGER: 'Менеджер', cab_rolefull_ADMIN: 'Әкімші',
+      cab_role_BROKER: 'Брокер (УСҚ)', cab_role_SVH: 'УСҚ', cab_role_LAB: 'Зертхана', cab_role_LOGISTIC: 'Логист', cab_role_DECLARANT: 'Декларант', cab_role_BANK: 'Банк',
+      cab_astatus_PENDING: 'Күтуде', cab_astatus_IN_PROGRESS: 'Жұмыста', cab_astatus_DONE: 'Аяқталды',
+      cab_stage_AGREEMENT: 'Келісу', cab_stage_CONTRACT: 'Шарт', cab_stage_PURCHASE_CHINA: 'Қытайда сатып алу', cab_stage_DELIVERY_KZ: 'ҚР-ға жеткізу', cab_stage_SVH: 'УСҚ', cab_stage_CUSTOMS: 'Кеден', cab_stage_DELIVERY_CLIENT: 'Клиентке жеткізу', cab_stage_COMPLETED: 'Аяқталды',
+      cab_timeline_head: 'Мәміле кезеңдері', cab_plan_head: 'Мәміле жоспары', cab_payments_head: 'Төлемдер', cab_docs_head: 'Құжаттар', cab_media_head: 'Фото және видео', cab_expenses_head: 'Шығыстар', cab_expenses_internal: '(тек менеджер көреді)', cab_activity_head: 'Өзгерістер тарихы', cab_chat_head: 'Мәміле бойынша чат',
+      cab_loading: 'Жүктелуде...', cab_payments_empty: 'Әзірге төлемдер жоқ.', cab_docs_empty: 'Әзірге құжаттар жоқ.', cab_expenses_empty: 'Әзірге шығыстар жоқ.', cab_media_empty: 'Фото және видео әлі қосылмаған.', cab_plan_empty: 'Жоспар әлі құрылмаған. Төменнен кезеңдер қосыңыз.', cab_chat_empty: 'Әзірге хабарлама жоқ', cab_notif_empty: 'Әзірге хабарландыру жоқ', cab_leads_empty: 'Әзірге өтінімдер жоқ.', cab_listings_empty: 'Әзірге хабарландырулар жоқ.',
+      cab_deals_empty_mgr: 'Әзірге мәмілелер жоқ.', cab_deals_empty_customer: 'Сізде әзірге мәмілелер жоқ. Мәмілені каталогтағы нақты техника бетінен «Мәміле рәсімдеу» батырмасымен рәсімдеуге болады.', cab_deals_empty_assignee: 'Сізге әзірге бірде-бір мәміле тағайындалмаған.', cab_role_wip: 'Бұл рөл үшін жеке кабинет әзірленуде.',
+      cab_load_error: 'Жүктеу қатесі', cab_load_error_summary: 'Жиынтықты жүктеу қатесі', cab_load_error_finance: 'Қаржыны жүктеу қатесі', cab_load_error_leads: 'Өтінімдерді жүктеу қатесі', cab_load_error_deals: 'Мәмілелерді жүктеу қатесі', cab_error: 'Қате',
+      cab_confirmed: 'Расталды', cab_pending: 'Күтуде', cab_paid: 'Төленді', cab_of: '/', cab_deal_value: 'Мәміле құны, ₸:', cab_not_set: 'көрсетілмеген', cab_save: 'Сақтау', cab_saved: 'Сақталды', cab_sum_ph: 'Сома, ₸', cab_confirmed_lc: 'расталды', cab_add_payment: 'Төлем қосу',
+      cab_download: 'Жүктеп алу', cab_no_file: 'файл жоқ', cab_doc_generic: 'Құжат', cab_upload: 'Жүктеу', cab_doc_CONTRACT: 'Шарт', cab_doc_GTD: 'ГТД', cab_doc_CMR: 'CMR', cab_doc_ACCEPTANCE: 'Қабылдау актісі', cab_doc_PHOTO: 'Фото',
+      cab_exp_total: 'Шығыстар жиыны', cab_exp_note_ph: 'Түсініктеме (міндетті емес)', cab_add_expense: 'Шығыс қосу', cab_del_expense_confirm: 'Осы шығысты жою керек пе?', cab_exp_PURCHASE: 'Қытайда сатып алу', cab_exp_LOGISTICS: 'Логистика / жеткізу', cab_exp_CUSTOMS: 'Кедендік рәсімдеу', cab_exp_CERTIFICATION: 'Сертификаттау (СБКТС/ЭПТС)', cab_exp_SVH: 'УСҚ / сақтау', cab_exp_OTHER: 'Басқа',
+      cab_stage_name_ph: 'Кезең атауы', cab_add_stage: 'Кезең қосу', cab_del_stage_confirm: 'Кезеңді жою керек пе?', cab_up: 'Жоғары', cab_down: 'Төмен', cab_delete: 'Жою',
+      cab_media_caption_ph: 'Қолтаңба (міндетті емес)', cab_media_or: 'немесе видео сілтемесі:', cab_add: 'Қосу', cab_video: 'Видео', cab_photo_alt: 'Мәміле фотосы', cab_del_media_confirm: 'Осы файлды галереядан жою керек пе?', cab_media_need_one: 'Фото тіркеңіз немесе видео сілтемесін көрсетіңіз.', cab_media_only_one: 'Біреуін ғана: не фото, не видео сілтемесі.',
+      cab_internal_tag: 'ішкі', cab_system: 'Жүйе', cab_chat_ph: 'Хабарлама жазу...', cab_send: 'Жіберу',
+      cab_created: 'Құрылды', cab_client: 'Клиент', cab_deal_num: 'Мәміле', cab_no_assignee: 'Әзірге ешкім тағайындалмаған', cab_not_assigned: '— тағайындалмаған', cab_you: '(сіз)', cab_note_ph: 'Ескертпе',
+      cab_tile_total: 'Барлық мәмілелер', cab_tile_active: 'Белсенді', cab_tile_completed: 'Аяқталған', cab_tile_leads_open: 'Өтінімдер (ашық)',
+      cab_convert_confirm: 'Осы өтінімнен мәміле құру керек пе? Клиент телефон бойынша табылады немесе автоматты түрде құрылады.', cab_creating: 'Құрылуда…', cab_convert_new_client: 'Нөмір бойынша жаңа клиент құрылды:', cab_convert_found_client: 'Нөмір бойынша клиент табылды:', cab_deal_created: 'Мәміле құрылды',
+      cab_no_name: 'Атауы жоқ', cab_create_deal: 'Мәміле құру', cab_lead_deal_num: 'Мәміле', cab_lead_new: 'Жаңа', cab_lead_in_progress: 'Жұмыста', cab_lead_won: 'Ұтылды', cab_lead_lost: 'Жеңілді',
+      cab_fin_value: 'Мәмілелер құны', cab_fin_received: 'Түсті', cab_fin_expenses: 'Шығыстар', cab_fin_profit: 'Пайда', cab_fcol_deal: 'Мәміле', cab_fcol_stage: 'Кезең', cab_fcol_value: 'Құны', cab_fcol_received: 'Түсті', cab_fcol_balance: 'Қалдық', cab_fcol_expenses: 'Шығыстар', cab_fcol_profit: 'Пайда', cab_fin_hint: 'Пайда = мәміле құны − шығыстар. Тек құны көрсетілген мәмілелер үшін көрсетіледі.',
+      cab_listing_sent: 'Хабарландыру модерацияға жіберілді', cab_listing_num: 'Хабарландыру', cab_listing_approved: 'Мақұлданды, каталогта көрінеді', cab_listing_pending: 'Модерацияда',
+      cab_summary: 'Жиынтық', cab_finance_head: 'Мәмілелер бойынша қаржы', cab_leads_head: 'Сайттан келген өтінімдер',
+
       reviews_title1: 'Клиент орнындағы жабдық',
       reviews_title2: 'Жаңа көлігі бар тұтынушы',
       reviews_title3: 'Жүк көлігін жеткізу туралы тұтынушылардың кері байланысы',
@@ -1131,6 +1185,33 @@
     },
 
     en: {
+      // CLIENT CABINET (cab_*)
+      cab_verified: 'verified', cab_not_verified: 'not verified',
+      cab_rolefull_CUSTOMER_PERSON: 'Customer (individual)', cab_rolefull_CUSTOMER_COMPANY: 'Customer (company)',
+      cab_rolefull_SERVICE_BROKER: 'Broker (TSW)', cab_rolefull_SERVICE_SVH: 'TSW', cab_rolefull_SERVICE_LAB: 'Lab',
+      cab_rolefull_SERVICE_LOGISTIC: 'Logistics', cab_rolefull_SERVICE_DECLARANT: 'Declarant (border)', cab_rolefull_BANK: 'Bank',
+      cab_rolefull_PARTNER: 'Partner / seller', cab_rolefull_MANAGER: 'Manager', cab_rolefull_ADMIN: 'Administrator',
+      cab_role_BROKER: 'Broker (TSW)', cab_role_SVH: 'TSW', cab_role_LAB: 'Lab', cab_role_LOGISTIC: 'Logistics', cab_role_DECLARANT: 'Declarant', cab_role_BANK: 'Bank',
+      cab_astatus_PENDING: 'Pending', cab_astatus_IN_PROGRESS: 'In progress', cab_astatus_DONE: 'Done',
+      cab_stage_AGREEMENT: 'Agreement', cab_stage_CONTRACT: 'Contract', cab_stage_PURCHASE_CHINA: 'Purchase in China', cab_stage_DELIVERY_KZ: 'Delivery to KZ', cab_stage_SVH: 'TSW', cab_stage_CUSTOMS: 'Customs', cab_stage_DELIVERY_CLIENT: 'Delivery to client', cab_stage_COMPLETED: 'Completed',
+      cab_timeline_head: 'Deal stages', cab_plan_head: 'Deal plan', cab_payments_head: 'Payments', cab_docs_head: 'Documents', cab_media_head: 'Photos & videos', cab_expenses_head: 'Expenses', cab_expenses_internal: '(manager only)', cab_activity_head: 'Change log', cab_chat_head: 'Deal chat',
+      cab_loading: 'Loading...', cab_payments_empty: 'No payments yet.', cab_docs_empty: 'No documents yet.', cab_expenses_empty: 'No expenses yet.', cab_media_empty: 'No photos or videos yet.', cab_plan_empty: 'No plan yet. Add stages below.', cab_chat_empty: 'No messages yet', cab_notif_empty: 'No notifications yet', cab_leads_empty: 'No leads yet.', cab_listings_empty: 'No listings yet.',
+      cab_deals_empty_mgr: 'No deals yet.', cab_deals_empty_customer: 'You have no deals yet. You can start a deal from a vehicle page in the catalog — the “Create a deal” button.', cab_deals_empty_assignee: 'No deals assigned to you yet.', cab_role_wip: 'The cabinet for this role is under development.',
+      cab_load_error: 'Load error', cab_load_error_summary: 'Failed to load summary', cab_load_error_finance: 'Failed to load finance', cab_load_error_leads: 'Failed to load leads', cab_load_error_deals: 'Failed to load deals', cab_error: 'Error',
+      cab_confirmed: 'Confirmed', cab_pending: 'Pending', cab_paid: 'Paid', cab_of: 'of', cab_deal_value: 'Deal value, ₸:', cab_not_set: 'not set', cab_save: 'Save', cab_saved: 'Saved', cab_sum_ph: 'Amount, ₸', cab_confirmed_lc: 'confirmed', cab_add_payment: 'Add payment',
+      cab_download: 'Download', cab_no_file: 'no file', cab_doc_generic: 'Document', cab_upload: 'Upload', cab_doc_CONTRACT: 'Contract', cab_doc_GTD: 'Customs decl.', cab_doc_CMR: 'CMR', cab_doc_ACCEPTANCE: 'Acceptance act', cab_doc_PHOTO: 'Photo',
+      cab_exp_total: 'Total expenses', cab_exp_note_ph: 'Comment (optional)', cab_add_expense: 'Add expense', cab_del_expense_confirm: 'Delete this expense?', cab_exp_PURCHASE: 'Purchase in China', cab_exp_LOGISTICS: 'Logistics / delivery', cab_exp_CUSTOMS: 'Customs clearance', cab_exp_CERTIFICATION: 'Certification (SBKTS/EPTS)', cab_exp_SVH: 'TSW / storage', cab_exp_OTHER: 'Other',
+      cab_stage_name_ph: 'Stage name', cab_add_stage: 'Add stage', cab_del_stage_confirm: 'Delete stage?', cab_up: 'Up', cab_down: 'Down', cab_delete: 'Delete',
+      cab_media_caption_ph: 'Caption (optional)', cab_media_or: 'or video link:', cab_add: 'Add', cab_video: 'Video', cab_photo_alt: 'Deal photo', cab_del_media_confirm: 'Delete this file from the gallery?', cab_media_need_one: 'Attach a photo or provide a video link.', cab_media_only_one: 'One only: either a photo or a video link.',
+      cab_internal_tag: 'internal', cab_system: 'System', cab_chat_ph: 'Write a message...', cab_send: 'Send',
+      cab_created: 'Created', cab_client: 'Client', cab_deal_num: 'Deal', cab_no_assignee: 'No one assigned yet', cab_not_assigned: '— not assigned', cab_you: '(you)', cab_note_ph: 'Note',
+      cab_tile_total: 'Total deals', cab_tile_active: 'Active', cab_tile_completed: 'Completed', cab_tile_leads_open: 'Leads (open)',
+      cab_convert_confirm: 'Create a deal from this lead? The customer will be found by phone or created automatically.', cab_creating: 'Creating…', cab_convert_new_client: 'New customer created for number', cab_convert_found_client: 'Customer found by number', cab_deal_created: 'Deal created',
+      cab_no_name: 'No name', cab_create_deal: 'Create deal', cab_lead_deal_num: 'Deal', cab_lead_new: 'New', cab_lead_in_progress: 'In progress', cab_lead_won: 'Won', cab_lead_lost: 'Lost',
+      cab_fin_value: 'Deals value', cab_fin_received: 'Received', cab_fin_expenses: 'Expenses', cab_fin_profit: 'Profit', cab_fcol_deal: 'Deal', cab_fcol_stage: 'Stage', cab_fcol_value: 'Value', cab_fcol_received: 'Received', cab_fcol_balance: 'Balance', cab_fcol_expenses: 'Expenses', cab_fcol_profit: 'Profit', cab_fin_hint: 'Profit = deal value − expenses. Shown only for deals with a value set.',
+      cab_listing_sent: 'Listing submitted for moderation', cab_listing_num: 'Listing', cab_listing_approved: 'Approved, visible in catalog', cab_listing_pending: 'Under moderation',
+      cab_summary: 'Summary', cab_finance_head: 'Deal finance', cab_leads_head: 'Website leads',
+
       reviews_title1: 'Equipment at the clients place',
       reviews_title2: 'Customer with a new car',
       reviews_title3: 'Customer feedback on truck delivery',
@@ -1533,6 +1614,10 @@
     });
 
     localStorage.setItem('lang', lang);
+
+    // Сообщаем странице о смене языка, чтобы динамически отрисованные части
+    // (кабинет, калькулятор) могли перерисоваться через window.t().
+    document.dispatchEvent(new CustomEvent('langchange', { detail: { lang } }));
   }
 
 
@@ -1826,7 +1911,12 @@
   });
   window.t = function (key) {
     const lang = localStorage.getItem('lang') || 'ru';
-    return window.translations?.[lang]?.[key] || key;
+    // Если перевода нет в текущем языке — откатываемся на русский, а не на
+    // сырой ключ (полезно для длинных разделов вроде кабинета, где часть
+    // строк может быть не переведена на все языки).
+    return window.translations?.[lang]?.[key]
+        || window.translations?.ru?.[key]
+        || key;
   };
   function getLang() {
     const l = localStorage.getItem(LS_LANG);
