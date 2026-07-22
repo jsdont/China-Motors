@@ -538,6 +538,16 @@
     .listing-approval { font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 999px; white-space: nowrap; }
     .listing-approval.pending { background: rgba(217,119,6,0.12); color: #d97706; }
     .listing-approval.approved { background: rgba(22,163,74,0.1); color: #16a34a; }
+    .listing-summary { font-size: 13px; color: #4b5165; margin-bottom: 12px; }
+    .listing-summary b { color: #12172a; }
+    .listing-del {
+      background: none; border: none; color: #c8322b; cursor: pointer; font-size: 14px;
+      line-height: 1; padding: 4px 6px; border-radius: 6px;
+    }
+    .listing-del:hover { background: rgba(200,50,43,.1); }
+    .listing-del:disabled { opacity: .5; }
+    html.dark .listing-summary { color: #aab4c5; }
+    html.dark .listing-summary b { color: #f5f5f5; }
 
     html.dark .account-header h1 { color: #f5f5f5; }
     html.dark #btnLogout { background: #1e1e1e; color: #ccc; border-color: #333; }

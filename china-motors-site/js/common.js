@@ -33,6 +33,7 @@
       cab_fin_value: 'Стоимость сделок', cab_fin_received: 'Получено', cab_fin_expenses: 'Расходы', cab_fin_profit: 'Прибыль', cab_fcol_deal: 'Сделка', cab_fcol_stage: 'Этап', cab_fcol_value: 'Стоимость', cab_fcol_received: 'Получено', cab_fcol_balance: 'Остаток', cab_fcol_expenses: 'Расходы', cab_fcol_profit: 'Прибыль', cab_fin_hint: 'Прибыль = стоимость сделки − расходы. Показывается только для сделок с указанной стоимостью.',
       cab_listing_sent: 'Объявление отправлено на модерацию', cab_listing_num: 'Объявление', cab_listing_approved: 'Одобрено, видно в каталоге', cab_listing_pending: 'На модерации',
       cab_summary: 'Сводка', cab_finance_head: 'Финансы по сделкам', cab_leads_head: 'Заявки с сайта',
+      cab_partner_intro: 'Партнёр-продавец ведёт не сделки, а свой каталог товаров — управляйте объявлениями в разделе выше. Одобренные товары показываются в общем каталоге.', cab_listing_delete_confirm: 'Удалить это объявление?', cab_lst_total: 'Товаров', cab_lst_approved: 'Одобрено', cab_lst_moderation: 'На модерации',
 
       // NAV
       nav_home: 'Главная',
@@ -442,6 +443,7 @@
       cab_fin_value: 'Мәмілелер құны', cab_fin_received: 'Түсті', cab_fin_expenses: 'Шығыстар', cab_fin_profit: 'Пайда', cab_fcol_deal: 'Мәміле', cab_fcol_stage: 'Кезең', cab_fcol_value: 'Құны', cab_fcol_received: 'Түсті', cab_fcol_balance: 'Қалдық', cab_fcol_expenses: 'Шығыстар', cab_fcol_profit: 'Пайда', cab_fin_hint: 'Пайда = мәміле құны − шығыстар. Тек құны көрсетілген мәмілелер үшін көрсетіледі.',
       cab_listing_sent: 'Хабарландыру модерацияға жіберілді', cab_listing_num: 'Хабарландыру', cab_listing_approved: 'Мақұлданды, каталогта көрінеді', cab_listing_pending: 'Модерацияда',
       cab_summary: 'Жиынтық', cab_finance_head: 'Мәмілелер бойынша қаржы', cab_leads_head: 'Сайттан келген өтінімдер',
+      cab_partner_intro: 'Серіктес-сатушы мәміле емес, өз тауар каталогын жүргізеді — хабарландыруларды жоғарыдағы бөлімнен басқарыңыз. Мақұлданған тауарлар жалпы каталогта көрсетіледі.', cab_listing_delete_confirm: 'Осы хабарландыруды жою керек пе?', cab_lst_total: 'Тауарлар', cab_lst_approved: 'Мақұлданған', cab_lst_moderation: 'Модерацияда',
 
       reviews_title1: 'Клиент орнындағы жабдық',
       reviews_title2: 'Жаңа көлігі бар тұтынушы',
@@ -1211,6 +1213,7 @@
       cab_fin_value: 'Deals value', cab_fin_received: 'Received', cab_fin_expenses: 'Expenses', cab_fin_profit: 'Profit', cab_fcol_deal: 'Deal', cab_fcol_stage: 'Stage', cab_fcol_value: 'Value', cab_fcol_received: 'Received', cab_fcol_balance: 'Balance', cab_fcol_expenses: 'Expenses', cab_fcol_profit: 'Profit', cab_fin_hint: 'Profit = deal value − expenses. Shown only for deals with a value set.',
       cab_listing_sent: 'Listing submitted for moderation', cab_listing_num: 'Listing', cab_listing_approved: 'Approved, visible in catalog', cab_listing_pending: 'Under moderation',
       cab_summary: 'Summary', cab_finance_head: 'Deal finance', cab_leads_head: 'Website leads',
+      cab_partner_intro: 'As a partner/seller you manage your product catalog rather than deals — use the listings section above. Approved items appear in the public catalog.', cab_listing_delete_confirm: 'Delete this listing?', cab_lst_total: 'Listings', cab_lst_approved: 'Approved', cab_lst_moderation: 'Under moderation',
 
       reviews_title1: 'Equipment at the clients place',
       reviews_title2: 'Customer with a new car',

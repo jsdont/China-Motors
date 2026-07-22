@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const CUSTOMER_ROLES = ['CUSTOMER_PERSON', 'CUSTOMER_COMPANY'];
   const ASSIGNEE_ROLES = ['SERVICE_BROKER', 'SERVICE_SVH', 'SERVICE_LAB', 'SERVICE_LOGISTIC', 'SERVICE_DECLARANT', 'BANK'];
   const MANAGER_ROLES = ['MANAGER', 'ADMIN'];
+  // Кто может размещать товары/объявления: клиенты + партнёры-продавцы.
+  const SELLER_ROLES = [...CUSTOMER_ROLES, 'PARTNER'];
 
   const EXPENSE_KEYS = ['PURCHASE', 'LOGISTICS', 'CUSTOMS', 'CERTIFICATION', 'SVH', 'OTHER'];
   const DOC_KEYS = ['CONTRACT', 'GTD', 'CMR', 'ACCEPTANCE', 'PHOTO'];
@@ -726,10 +728,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     return card;
   }
 
-  // === "Мои объявления" — только для клиентов ===
+  // === "Мои объявления/товары" — для клиентов и партнёров-продавцов ===
   let reloadMyListings = null;
   function initMyListings() {
-    if (!CUSTOMER_ROLES.includes(session.role)) return;
+    if (!SELLER_ROLES.includes(session.role)) return;
 
     const section = document.getElementById('myListingsSection');
     const form = document.getElementById('listingForm');
@@ -747,15 +749,36 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function loadMyListings() {
       try {
         const listings = await window.CMAuth.apiAuthed('GET', '/api/vehicles/my-listings/');
-        listEl.innerHTML = listings.length
-          ? listings.map(l => `
-              <div class="my-listing-card">
-                <span>${[l.brand, l.model, l.body_type].filter(Boolean).join(' ') || (t('cab_listing_num') + ' #' + l.id)}${l.year ? ', ' + l.year : ''}</span>
-                <span class="listing-approval ${l.is_approved ? 'approved' : 'pending'}">
-                  ${l.is_approved ? t('cab_listing_approved') : t('cab_listing_pending')}
-                </span>
-              </div>`).join('')
-          : `<p class="empty-note">${t('cab_listings_empty')}</p>`;
+        if (!listings.length) {
+          listEl.innerHTML = `<p class="empty-note">${t('cab_listings_empty')}</p>`;
+          return;
+        }
+        const approved = listings.filter(l => l.is_approved).length;
+        const pending = listings.length - approved;
+        const summary = `
+          <div class="listing-summary">
+            ${t('cab_lst_total')}: <b>${listings.length}</b> ·
+            ${t('cab_lst_approved')}: <b>${approved}</b> ·
+            ${t('cab_lst_moderation')}: <b>${pending}</b>
+          </div>`;
+        listEl.innerHTML = summary + listings.map(l => `
+            <div class="my-listing-card">
+              <span>${escapeHtml([l.brand, l.model, l.body_type].filter(Boolean).join(' ') || (t('cab_listing_num') + ' #' + l.id))}${l.year ? ', ' + l.year : ''}</span>
+              <span class="listing-approval ${l.is_approved ? 'approved' : 'pending'}">
+                ${l.is_approved ? t('cab_listing_approved') : t('cab_listing_pending')}
+              </span>
+              <button type="button" class="listing-del" data-id="${l.id}" title="${t('cab_delete')}">✕</button>
+            </div>`).join('');
+        listEl.querySelectorAll('.listing-del').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            if (!confirm(t('cab_listing_delete_confirm'))) return;
+            btn.disabled = true;
+            try {
+              await window.CMAuth.apiAuthed('DELETE', `/api/vehicles/my-listings/${btn.dataset.id}/`);
+              loadMyListings();
+            } catch (err) { alert(t('cab_error') + ': ' + err.message); btn.disabled = false; }
+          });
+        });
       } catch (e) {
         listEl.innerHTML = `<p class="empty-note" style="color:#e74c3c">${t('cab_load_error')}: ${e.message}</p>`;
       }
@@ -978,6 +1001,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         loadManagerFinance();
         loadManagerLeads();
         await loadManagerDeals();
+      } else if (session.role === 'PARTNER') {
+        // Партнёр-продавец ведёт не сделки, а свой каталог товаров (выше).
+        dealListEl.innerHTML = `<p class="empty-note">${t('cab_partner_intro')}</p>`;
       } else {
         dealListEl.innerHTML = `<p class="empty-note">${t('cab_role_wip')}</p>`;
       }
