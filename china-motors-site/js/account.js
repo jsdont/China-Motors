@@ -973,6 +973,31 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  // Сводка по задачам исполнителя-партнёра (СВХ/брокер/…): считаем этапы,
+  // назначенные именно этому аккаунту, по статусам.
+  function renderAssigneeSummary(deals) {
+    const section = document.getElementById('assigneeSummarySection');
+    const el = document.getElementById('assigneeSummary');
+    if (!section || !el) return;
+    let pending = 0, inProgress = 0, done = 0;
+    deals.forEach(d => {
+      const mine = (d.assignments || []).find(a => a.assigned_user === session.userId);
+      if (!mine) return;
+      if (mine.status === 'DONE') done++;
+      else if (mine.status === 'IN_PROGRESS') inProgress++;
+      else pending++;
+    });
+    const tiles = [
+      [t('cab_tile_total'), deals.length],
+      [t('cab_astatus_PENDING'), pending],
+      [t('cab_astatus_IN_PROGRESS'), inProgress],
+      [t('cab_astatus_DONE'), done],
+    ];
+    el.innerHTML = tiles.map(([label, val]) => `
+      <div class="mgr-tile"><div class="mgr-tile__val">${val}</div><div class="mgr-tile__label">${label}</div></div>`).join('');
+    section.style.display = '';
+  }
+
   async function render() {
     dealListEl.innerHTML = `<p class="empty-note">${t('cab_loading')}</p>`;
     try {
@@ -992,6 +1017,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           return;
         }
         const shortRole = session.role.startsWith('SERVICE_') ? session.role.replace('SERVICE_', '') : session.role;
+        renderAssigneeSummary(deals);
         deals.forEach(d => dealListEl.appendChild(buildDealCard(d, { editableRole: shortRole })));
       } else if (MANAGER_ROLES.includes(session.role)) {
         document.getElementById('managerStatsSection').style.display = '';
