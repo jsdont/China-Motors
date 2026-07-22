@@ -160,6 +160,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     PHOTO: 'fa-image',
   };
 
+  // Инструкция «как оплатить» (реквизиты) — грузим один раз и кэшируем.
+  let _paymentInfo; // undefined = ещё не грузили; строка = загружено
+  async function getPaymentInfo() {
+    if (_paymentInfo !== undefined) return _paymentInfo;
+    try {
+      const d = await window.CMAuth.apiAuthed('GET', '/api/payment-info/');
+      _paymentInfo = d.instructions || '';
+    } catch (e) { _paymentInfo = ''; }
+    return _paymentInfo;
+  }
+
   // === Платежи по сделке ===
   async function loadPayments(dealId, container) {
     try {
@@ -184,6 +195,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         <div class="dc-total">
           ${t('cab_paid')}: <b>${fmtMoney(confirmed)}</b> ${t('cab_of')} <b>${fmtMoney(total)}</b>
         </div>`;
+
+      // Клиенту с неоплаченным остатком показываем «как оплатить» (реквизиты).
+      if (CUSTOMER_ROLES.includes(session.role) && confirmed < total) {
+        const info = await getPaymentInfo();
+        if (info) {
+          container.insertAdjacentHTML('beforeend', `
+            <div class="pay-how">
+              <div class="pay-how__head"><i class="fa-solid fa-circle-info"></i> ${t('cab_how_to_pay')}</div>
+              <div class="pay-how__body">${escapeHtml(info)}</div>
+            </div>`);
+        }
+      }
     } catch (e) {
       container.innerHTML = `<p class="dc-empty" style="color:#e74c3c">${t('cab_load_error')}: ${escapeHtml(e.message)}</p>`;
     }

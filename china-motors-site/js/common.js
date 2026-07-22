@@ -34,6 +34,7 @@
       cab_listing_sent: 'Объявление отправлено на модерацию', cab_listing_num: 'Объявление', cab_listing_approved: 'Одобрено, видно в каталоге', cab_listing_pending: 'На модерации',
       cab_summary: 'Сводка', cab_finance_head: 'Финансы по сделкам', cab_leads_head: 'Заявки с сайта',
       cab_partner_intro: 'Партнёр-продавец ведёт не сделки, а свой каталог товаров — управляйте объявлениями в разделе выше. Одобренные товары показываются в общем каталоге.', cab_listing_delete_confirm: 'Удалить это объявление?', cab_lst_total: 'Товаров', cab_lst_approved: 'Одобрено', cab_lst_moderation: 'На модерации', cab_asum_head: 'Мои задачи',
+      cab_how_to_pay: 'Как оплатить',
 
       // NAV
       nav_home: 'Главная',
@@ -445,6 +446,7 @@
       cab_summary: 'Жиынтық', cab_finance_head: 'Мәмілелер бойынша қаржы', cab_leads_head: 'Сайттан келген өтінімдер',
       cab_partner_intro: 'Серіктес-сатушы мәміле емес, өз тауар каталогын жүргізеді — хабарландыруларды жоғарыдағы бөлімнен басқарыңыз. Мақұлданған тауарлар жалпы каталогта көрсетіледі.', cab_listing_delete_confirm: 'Осы хабарландыруды жою керек пе?', cab_lst_total: 'Тауарлар', cab_lst_approved: 'Мақұлданған', cab_lst_moderation: 'Модерацияда',
       cab_asum_head: 'Менің тапсырмаларым',
+      cab_how_to_pay: 'Қалай төлеу керек',
 
       reviews_title1: 'Клиент орнындағы жабдық',
       reviews_title2: 'Жаңа көлігі бар тұтынушы',
@@ -1216,6 +1218,7 @@
       cab_summary: 'Summary', cab_finance_head: 'Deal finance', cab_leads_head: 'Website leads',
       cab_partner_intro: 'As a partner/seller you manage your product catalog rather than deals — use the listings section above. Approved items appear in the public catalog.', cab_listing_delete_confirm: 'Delete this listing?', cab_lst_total: 'Listings', cab_lst_approved: 'Approved', cab_lst_moderation: 'Under moderation',
       cab_asum_head: 'My tasks',
+      cab_how_to_pay: 'How to pay',
 
       reviews_title1: 'Equipment at the clients place',
       reviews_title2: 'Customer with a new car',
