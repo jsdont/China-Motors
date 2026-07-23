@@ -85,6 +85,9 @@
 
   let CALC_CONFIG = structuredClone(CALC_DEFAULT_CONFIG);
 
+  // Последняя посчитанная детализация — уходит с заявкой и попадает в КП.
+  let LAST_CALC_BREAKDOWN = null;
+
   async function loadCalcConfig() {
     try {
       const res = await fetch('/kz_calc_config.json', { cache: 'no-store' });
@@ -690,6 +693,34 @@
       deliveryTotal +
       utilTotal;
 
+    // Собираем детализацию расчёта (те же строки/суммы, что видит клиент) для
+    // передачи в заявку и вывода отдельным блоком в КП.
+    const utilRows = [];
+    if (plateSum > 0) utilRows.push([t('calc_item_plate'), Math.round(plateSum)]);
+    if (regSum > 0) utilRows.push([t('calc_item_first_reg'), Math.round(regSum)]);
+    if (utilByWeight > 0) {
+      const utilLabel = CURRENT_VEHICLE_PROFILE === 'CAR'
+        ? 'Утилизационный сбор (по объёму двигателя)'
+        : `Утилизационный сбор (${getWeight()} т)`;
+      utilRows.push([utilLabel, Math.round(utilByWeight)]);
+    }
+    LAST_CALC_BREAKDOWN = {
+      currency: { usd_kzt: rate, cny_kzt: LIVE_CNY_KZT_RATE },
+      groups: [
+        { title: 'Таможенная стоимость и платежи', rows: [
+          ['ТС в тенге', Math.round(baseKZT)],
+          [`Пошлина (${Math.round(DUTY * 100)}%)`, Math.round(dutyKZT)],
+          ['НДС', Math.round(vatKZT)],
+        ] },
+        { title: 'Дополнительные расходы',
+          rows: pkg.mandatory.map(([label, sum]) => [t(label), Math.round(sum)]) },
+        { title: 'Доставка и граница',
+          rows: pkg.delivery.map(([label, sum]) => [t(label), Math.round(sum)]) },
+        { title: 'Утильсбор и регистрация', rows: utilRows },
+      ],
+      total: Math.round(totalKZT),
+    };
+
     $('#sTotalKZT').textContent = fmt(totalKZT) + ' ₸';
     $('#sTotalUSD').textContent = '≈ ' + fmt(totalKZT / rate) + ' USD';
     if ($('#sTotalCNY')) {
@@ -793,6 +824,15 @@
     e.preventDefault();
 
     window.cmGoal?.('calc_to_contacts_click');
+
+    // Передаём детализацию расчёта на страницу контактов через sessionStorage —
+    // оттуда она уйдёт с заявкой и попадёт в КП.
+    try {
+      recalc();
+      if (LAST_CALC_BREAKDOWN) {
+        sessionStorage.setItem('cm_calc_breakdown', JSON.stringify(LAST_CALC_BREAKDOWN));
+      }
+    } catch (_) {}
 
     const msg = buildContactsMessage();
     const url = `/contacts.html?message=${encodeURIComponent(msg)}`;

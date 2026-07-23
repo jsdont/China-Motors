@@ -23,6 +23,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 2) отправка в Telegram через backend
   async function sendToBackend(name, phone, message, productId) {
+    // Детализация расчёта из калькулятора (если пришли со страницы калькулятора)
+    let calcBreakdown = null;
+    try {
+      const raw = sessionStorage.getItem('cm_calc_breakdown');
+      if (raw) calcBreakdown = JSON.parse(raw);
+    } catch (_) {}
+
     const resp = await fetch(`${API_BASE}/api/contacts/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -33,6 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
         page: window.location.href,
         product_id: productId || null,
         company: companyEl?.value || '', // honeypot, бэкенд отклонит непустое значение
+        calc_breakdown: calcBreakdown,
       }),
 
 
@@ -47,6 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   function showSuccessAndReset() {
+    // расчёт уже ушёл с заявкой — чистим, чтобы не прицепился к следующей
+    try { sessionStorage.removeItem('cm_calc_breakdown'); } catch (_) {}
     sendBtn.textContent = '✅ Отправлено';
     if (statusEl) {
       statusEl.textContent = 'Заявка успешно отправлена!';
