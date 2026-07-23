@@ -130,6 +130,7 @@
   const URL_PARAMS = (() => {
     const p = new URLSearchParams(location.search);
     return {
+      id: p.get('id') ? Number(p.get('id')) : null,
       title: p.get('title') || p.get('name') || '',
       price: p.get('price') ? Number(p.get('price')) : null,
       priceCny: p.get('price_cny') ? Number(p.get('price_cny')) : null,
@@ -835,7 +836,12 @@
     } catch (_) {}
 
     const msg = buildContactsMessage();
-    const url = `/contacts.html?message=${encodeURIComponent(msg)}`;
+    let url = `/contacts.html?message=${encodeURIComponent(msg)}`;
+    // Передаём id техники в заявку — тогда у сделки будет привязанная техника
+    // (фото/характеристики/цена в КП).
+    if (URL_PARAMS.id) {
+      url += `&product_id=${encodeURIComponent(URL_PARAMS.id)}`;
+    }
     window.location.href = url;
   });
 

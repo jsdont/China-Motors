@@ -24,7 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnCalc = document.getElementById('btnCalc');
   const btnCalcBanner = document.getElementById('btnCalcBanner');
   const btnReq  = document.getElementById('btnRequest');
-  const btnCreateDeal = document.getElementById('btnCreateDeal');
   const btnFav = document.getElementById('btnFav');
 
   function syncFavBtn() {
@@ -47,28 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const availabilityBadgeEl = document.getElementById('availabilityBadge');
   const cityBadgeEl = document.getElementById('cityBadge');
 
-  const CUSTOMER_ROLES = ['CUSTOMER_PERSON', 'CUSTOMER_COMPANY'];
-
-  btnCreateDeal?.addEventListener('click', async () => {
-    const session = window.CMAuth?.getSession();
-    if (!session) {
-      location.href = `login.html?next=${encodeURIComponent(location.href)}`;
-      return;
-    }
-    if (!CUSTOMER_ROLES.includes(session.role)) {
-      alert('Оформить сделку может только клиент (физ. или юр. лицо).');
-      return;
-    }
-    btnCreateDeal.disabled = true;
-    try {
-      await window.CMAuth.apiAuthed('POST', '/api/deals/my/', { vehicle_id: Number(id) });
-      window.cmGoal?.('deal_created');
-      location.href = 'account.html';
-    } catch (e) {
-      alert('Ошибка: ' + e.message);
-      btnCreateDeal.disabled = false;
-    }
-  });
+  // Сделки создаёт менеджер из заявки — прямое создание сделки клиентом убрано.
 
   function buildTikTokEmbed(url) {
     if (!videoEl || !url) return;
@@ -371,7 +349,8 @@ document.addEventListener('DOMContentLoaded', () => {
       // === buttons ===
       const calcHref =
         `calculator.html?` +
-        `title=${encodeURIComponent(title)}` +
+        `id=${encodeURIComponent(v.id ?? '')}` +
+        `&title=${encodeURIComponent(title)}` +
         `&price=${encodeURIComponent(priceUsdForCalc ?? '')}` +
         `&price_cny=${encodeURIComponent(price.currency === 'cny' ? (price.amount ?? '') : '')}` +
         `&body=${encodeURIComponent(bodyCanon)}` +
