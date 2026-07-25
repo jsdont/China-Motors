@@ -675,6 +675,35 @@
       .fin-table .fin-num { text-align: right; }
       html.dark .fin-table tr { border-color: rgba(255,255,255,.1); }
     }
+
+    /* --- Профиль --- */
+    .profile-grid { display: grid; grid-template-columns: 180px 1fr; gap: 10px 14px; align-items: center; max-width: 560px; }
+    .profile-grid label { color: #6b7280; font-size: 14px; }
+    .profile-grid input { padding: 9px 12px; border: 1px solid #d8dbe2; border-radius: 8px; font-size: 14px; width: 100%; }
+    .pf-actions { display: flex; align-items: center; gap: 12px; margin-top: 14px; }
+    .pf-subhead { margin: 22px 0 12px; font-size: 16px; }
+    .pf-status { font-size: 13px; }
+    .pf-status.ok { color: #16a34a; }
+    .pf-status.err { color: #e74c3c; }
+    html.dark .profile-grid label { color: rgba(255,255,255,.55); }
+    html.dark .profile-grid input { background: #1e1e1e; border-color: rgba(255,255,255,.14); color: #f5f5f5; }
+    @media (max-width: 560px) { .profile-grid { grid-template-columns: 1fr; gap: 4px 0; } }
+
+    /* --- Управление сделкой (менеджер): назначения + удаление --- */
+    .mgr-controls .assign-cur-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 5px 0; font-size: 14px; }
+    .mgr-controls .assign-remove { border: none; background: transparent; color: #e74c3c; cursor: pointer; font-size: 15px; line-height: 1; }
+    .assign-form { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+    .assign-form select { padding: 8px 10px; border: 1px solid #d8dbe2; border-radius: 8px; font-size: 14px; }
+    .dc-delete-deal { background: #fdecec; color: #c0392b; border: 1px solid #f5c6cb; }
+    html.dark .assign-form select { background: #1e1e1e; border-color: rgba(255,255,255,.14); color: #f5f5f5; }
+    html.dark .dc-delete-deal { background: rgba(231,76,60,.12); border-color: rgba(231,76,60,.4); color: #ff8a80; }
+
+    /* --- Вкладки сделок --- */
+    .deal-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+    .deal-tab { padding: 8px 16px; border: 1px solid #d8dbe2; background: #fff; border-radius: 20px; cursor: pointer; font-size: 14px; color: #6b7280; }
+    .deal-tab.active { background: #111827; color: #fff; border-color: #111827; }
+    html.dark .deal-tab { background: #1e1e1e; border-color: rgba(255,255,255,.14); color: rgba(255,255,255,.6); }
+    html.dark .deal-tab.active { background: #f5f5f5; color: #111; border-color: #f5f5f5; }
   </style>
 </head>
 <body>
@@ -700,6 +729,33 @@
     </div>
 
     <div class="account-grid">
+      <div id="profileSection" class="cab-card" style="display:none">
+        <div class="cab-card-head"><h2 data-i18n="cab_profile_head">Мои данные</h2></div>
+        <div class="profile-grid">
+          <label data-i18n="cab_profile_name">Имя / компания</label>
+          <input type="text" id="pf-name" autocomplete="name">
+          <label data-i18n="cab_profile_phone">Телефон (логин)</label>
+          <input type="text" id="pf-phone" autocomplete="tel">
+          <label data-i18n="cab_profile_email">E-mail</label>
+          <input type="email" id="pf-email" autocomplete="email">
+        </div>
+        <div class="pf-actions">
+          <button type="button" id="pf-save" class="btn btn--primary" data-i18n="cab_save">Сохранить</button>
+          <span id="pf-status" class="pf-status"></span>
+        </div>
+        <h3 class="pf-subhead" data-i18n="cab_profile_pw_head">Смена пароля</h3>
+        <div class="profile-grid">
+          <label data-i18n="cab_profile_old_pw">Текущий пароль</label>
+          <input type="password" id="pf-old" autocomplete="current-password">
+          <label data-i18n="cab_profile_new_pw">Новый пароль</label>
+          <input type="password" id="pf-new" autocomplete="new-password">
+        </div>
+        <div class="pf-actions">
+          <button type="button" id="pf-pw-save" class="btn" data-i18n="cab_profile_change_pw">Сменить пароль</button>
+          <span id="pf-pw-status" class="pf-status"></span>
+        </div>
+      </div>
+
       <div id="myListingsSection" class="my-listings-section cab-card" style="display:none">
         <div class="cab-card-head">
           <h2 data-i18n="account_my_listings_title">Мои объявления</h2>

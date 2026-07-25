@@ -748,7 +748,118 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (editableStatus) card.appendChild(buildExpensesBlock(deal.id));
     card.appendChild(buildCommentsBlock(deal.id));
     card.appendChild(buildActivityBlock(deal.id, editableStatus));
+    if (editableStatus) card.appendChild(buildManagerDealControls(deal, card));
     return card;
+  }
+
+  // Управление сделкой для менеджера: назначение сервисов на этапы + удаление.
+  const ASSIGN_ROLES = [
+    ['BROKER', 'Брокер (СВХ)'], ['SVH', 'СВХ'], ['LAB', 'Лаборатория'],
+    ['LOGISTIC', 'Логист'], ['DECLARANT', 'Декларант (граница)'], ['BANK', 'Банк'],
+  ];
+  function buildManagerDealControls(deal, card) {
+    const block = document.createElement('div');
+    block.className = 'dc-block mgr-controls';
+    block.innerHTML = `
+      <h4 class="dc-head">${t('cab_assign_head')}</h4>
+      <div class="assign-current"></div>
+      <div class="assign-form dc-add-form">
+        <select class="assign-role">${ASSIGN_ROLES.map(([k, l]) => `<option value="${k}">${l}</option>`).join('')}</select>
+        <select class="assign-user"><option value="">${t('cab_loading')}</option></select>
+        <button type="button" class="btn assign-btn">${t('cab_assign_btn')}</button>
+      </div>
+      <button type="button" class="btn dc-delete-deal">${t('cab_delete_deal')}</button>
+    `;
+    const roleSel = block.querySelector('.assign-role');
+    const userSel = block.querySelector('.assign-user');
+    const currentEl = block.querySelector('.assign-current');
+
+    function renderCurrent() {
+      currentEl.innerHTML = (deal.assignments || []).length
+        ? deal.assignments.map(a => `
+            <div class="assign-cur-row">
+              <span>${roleShort(a.role) || a.role}: ${escapeHtml(a.assigned_user_info?.name || a.assigned_user_info?.phone || t('cab_not_assigned'))}</span>
+              <button type="button" class="assign-remove" data-id="${a.id}" title="${t('cab_unassign')}">✕</button>
+            </div>`).join('')
+        : `<p style="opacity:.6">${t('cab_no_assignee')}</p>`;
+    }
+    renderCurrent();
+
+    async function loadUsers() {
+      userSel.innerHTML = `<option value="">${t('cab_loading')}</option>`;
+      try {
+        const users = await window.CMAuth.apiAuthed('GET', `/api/manager/service-users/?role=${roleSel.value}`);
+        userSel.innerHTML = users.length
+          ? users.map(u => `<option value="${u.id}">${escapeHtml(u.label)}</option>`).join('')
+          : `<option value="">${t('cab_no_service_users')}</option>`;
+      } catch { userSel.innerHTML = `<option value="">—</option>`; }
+    }
+    roleSel.addEventListener('change', loadUsers);
+    loadUsers();
+
+    block.querySelector('.assign-btn').addEventListener('click', async () => {
+      const role = roleSel.value, assigned_user = userSel.value;
+      if (!assigned_user) { alert(t('cab_pick_user')); return; }
+      try {
+        const a = await window.CMAuth.apiAuthed('POST', `/api/manager/deals/${deal.id}/assignments/`, { role, assigned_user: Number(assigned_user) });
+        deal.assignments = deal.assignments || [];
+        const idx = deal.assignments.findIndex(x => x.role === role);
+        if (idx >= 0) deal.assignments[idx] = a; else deal.assignments.push(a);
+        renderCurrent();
+      } catch (e) { alert(t('cab_error') + ': ' + e.message); }
+    });
+
+    currentEl.addEventListener('click', async (e) => {
+      const btn = e.target.closest('.assign-remove');
+      if (!btn) return;
+      if (!confirm(t('cab_confirm_unassign'))) return;
+      try {
+        await window.CMAuth.apiAuthed('DELETE', `/api/manager/assignments/${btn.dataset.id}/`);
+        deal.assignments = (deal.assignments || []).filter(x => String(x.id) !== String(btn.dataset.id));
+        renderCurrent();
+      } catch (e) { alert(t('cab_error') + ': ' + e.message); }
+    });
+
+    block.querySelector('.dc-delete-deal').addEventListener('click', async () => {
+      if (!confirm(t('cab_confirm_delete_deal'))) return;
+      try {
+        await window.CMAuth.apiAuthed('DELETE', `/api/manager/deals/${deal.id}/`);
+        card.remove();
+      } catch (e) { alert(t('cab_error') + ': ' + e.message); }
+    });
+
+    return block;
+  }
+
+  // Список сделок с вкладками «Активные / Завершённые».
+  function renderDealList(deals, opts) {
+    dealListEl.innerHTML = '';
+    const active = deals.filter(d => d.status !== 'COMPLETED');
+    const done = deals.filter(d => d.status === 'COMPLETED');
+    const tabs = document.createElement('div');
+    tabs.className = 'deal-tabs';
+    tabs.innerHTML = `
+      <button type="button" class="deal-tab active" data-tab="active">${t('cab_tab_active')} (${active.length})</button>
+      <button type="button" class="deal-tab" data-tab="done">${t('cab_tab_done')} (${done.length})</button>`;
+    const listWrap = document.createElement('div');
+    dealListEl.appendChild(tabs);
+    dealListEl.appendChild(listWrap);
+    function show(which) {
+      const set = which === 'done' ? done : active;
+      listWrap.innerHTML = '';
+      if (!set.length) {
+        listWrap.innerHTML = `<p class="empty-note">${which === 'done' ? t('cab_no_done') : t('cab_deals_empty_customer')}</p>`;
+        return;
+      }
+      set.forEach(d => listWrap.appendChild(buildDealCard(d, opts)));
+    }
+    tabs.addEventListener('click', (e) => {
+      const b = e.target.closest('.deal-tab');
+      if (!b) return;
+      tabs.querySelectorAll('.deal-tab').forEach(x => x.classList.toggle('active', x === b));
+      show(b.dataset.tab);
+    });
+    show('active');
   }
 
   // === "Мои объявления/товары" — для клиентов и партнёров-продавцов ===
@@ -985,12 +1096,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   async function loadManagerDeals() {
     try {
       const deals = await window.CMAuth.apiAuthed('GET', '/api/manager/deals/');
-      dealListEl.innerHTML = '';
       if (!deals.length) {
         dealListEl.innerHTML = `<p class="empty-note">${t('cab_deals_empty_mgr')}</p>`;
         return;
       }
-      deals.forEach(d => dealListEl.appendChild(buildDealCard(d, { editableStatus: true })));
+      renderDealList(deals, { editableStatus: true });
     } catch (e) {
       dealListEl.innerHTML = `<p class="empty-note" style="color:#e74c3c">${t('cab_load_error_deals')}: ${escapeHtml(e.message)}</p>`;
     }
@@ -1026,12 +1136,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       if (CUSTOMER_ROLES.includes(session.role)) {
         const deals = await window.CMAuth.apiAuthed('GET', '/api/deals/my/');
-        dealListEl.innerHTML = '';
         if (!deals.length) {
           dealListEl.innerHTML = `<p class="empty-note">${t('cab_deals_empty_customer')}</p>`;
           return;
         }
-        deals.forEach(d => dealListEl.appendChild(buildDealCard(d)));
+        renderDealList(deals, {});
       } else if (ASSIGNEE_ROLES.includes(session.role)) {
         const deals = await window.CMAuth.apiAuthed('GET', '/api/deals/assigned/');
         dealListEl.innerHTML = '';
@@ -1119,7 +1228,47 @@ document.addEventListener('DOMContentLoaded', async () => {
     render();
   });
 
+  // === Профиль: мои данные + смена пароля ===
+  async function initProfile() {
+    const section = document.getElementById('profileSection');
+    if (!section) return;
+    const nameEl = document.getElementById('pf-name');
+    const phoneEl = document.getElementById('pf-phone');
+    const emailEl = document.getElementById('pf-email');
+    try {
+      const me = await window.CMAuth.apiAuthed('GET', '/api/me/');
+      nameEl.value = me.name || '';
+      phoneEl.value = me.phone || '';
+      emailEl.value = me.email || '';
+      section.style.display = '';
+    } catch { return; }
+
+    document.getElementById('pf-save')?.addEventListener('click', async () => {
+      const st = document.getElementById('pf-status');
+      try {
+        await window.CMAuth.apiAuthed('PATCH', '/api/me/', {
+          name: nameEl.value, email: emailEl.value, phone: phoneEl.value,
+        });
+        st.textContent = t('cab_saved'); st.className = 'pf-status ok';
+      } catch (e) { st.textContent = e.message; st.className = 'pf-status err'; }
+    });
+
+    document.getElementById('pf-pw-save')?.addEventListener('click', async () => {
+      const st = document.getElementById('pf-pw-status');
+      const oldEl = document.getElementById('pf-old');
+      const newEl = document.getElementById('pf-new');
+      try {
+        await window.CMAuth.apiAuthed('POST', '/api/me/password/', {
+          old_password: oldEl.value, new_password: newEl.value,
+        });
+        st.textContent = t('cab_pw_changed'); st.className = 'pf-status ok';
+        oldEl.value = ''; newEl.value = '';
+      } catch (e) { st.textContent = e.message; st.className = 'pf-status err'; }
+    });
+  }
+
   initMyListings();
   initNotifications();
+  initProfile();
   render();
 });
