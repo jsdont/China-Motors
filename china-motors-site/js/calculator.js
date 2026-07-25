@@ -89,24 +89,27 @@
   let LAST_CALC_BREAKDOWN = null;
 
   async function loadCalcConfig() {
-    try {
-      const res = await fetch('/kz_calc_config.json', { cache: 'no-store' });
-      if (!res.ok) throw new Error();
-      const data = await res.json();
-
-      CALC_CONFIG = {
-        ...CALC_DEFAULT_CONFIG,
-        ...data,
-        currency: { ...CALC_DEFAULT_CONFIG.currency, ...data.currency },
-        diesel: { ...CALC_DEFAULT_CONFIG.diesel, ...data.diesel },
-        taxes: { ...CALC_DEFAULT_CONFIG.taxes, ...data.taxes },
-        fees: { ...CALC_DEFAULT_CONFIG.fees, ...data.fees }
-      };
-
-      console.log('[CALC] config loaded');
-    } catch {
-      console.warn('[CALC] using default config');
+    // Сначала — настройки из админки (бэкенд), затем статический JSON, затем
+    // встроенные значения. Так админ может менять сборы без деплоя фронта.
+    const sources = [`${API_BASE}/api/calc-config/`, '/kz_calc_config.json'];
+    for (const url of sources) {
+      try {
+        const res = await fetch(url, { cache: 'no-store' });
+        if (!res.ok) continue;
+        const data = await res.json();
+        CALC_CONFIG = {
+          ...CALC_DEFAULT_CONFIG,
+          ...data,
+          currency: { ...CALC_DEFAULT_CONFIG.currency, ...data.currency },
+          diesel: { ...CALC_DEFAULT_CONFIG.diesel, ...data.diesel },
+          taxes: { ...CALC_DEFAULT_CONFIG.taxes, ...data.taxes },
+          fees: { ...CALC_DEFAULT_CONFIG.fees, ...data.fees }
+        };
+        console.log('[CALC] config loaded from', url);
+        return;
+      } catch (_) { /* пробуем следующий источник */ }
     }
+    console.warn('[CALC] using default config');
   }
 
   /* =========================================================
