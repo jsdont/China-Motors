@@ -47,6 +47,9 @@
       nav_contacts: 'Контакты',
       nav_calculator: 'Калькулятор',
       help_call: 'Позвонить', help_whatsapp: 'WhatsApp', help_font_title: 'Увеличить размер текста',
+      product_cta_request: 'Оставить заявку на эту технику',
+      cat_empty_t: 'По этому запросу ничего не нашлось', cat_empty_d: 'Попробуйте выбрать другую задачу или посмотреть всё. Либо позвоните — подберём под вашу задачу и бюджет.', cat_error_t: 'Не удалось загрузить каталог', cat_error_d: 'Обновите страницу или позвоните — расскажем, что есть в наличии.', contact_ok_t: 'Заявка отправлена!', contact_ok_d: 'Менеджер перезвонит в рабочее время и уточнит детали. Если нужно срочно — позвоните сами.', contact_ok_catalog: 'Посмотреть каталог',
+      route_title: 'С чего начать — по шагам', route_sub: 'Если впервые на сайте, просто идите по порядку. На любом шаге можно позвонить — поможем.', route1_t: 'Посмотрите технику', route1_d: 'В каталоге выберите, что вам нужно делать — возить песок, грузы или поднимать на стройке. Покажем подходящие машины.', route1_go: 'Открыть каталог →', route2_t: 'Узнайте цену «под ключ»', route2_d: 'Калькулятор покажет итоговую сумму с растаможкой и доставкой. Не хотите считать — ответьте на три вопроса, посчитаем сами.', route2_go: 'Рассчитать стоимость →', route3_t: 'Оставьте заявку', route3_d: 'Достаточно имени и телефона. Менеджер перезвонит, уточнит детали и пришлёт коммерческое предложение.', route3_go: 'Оставить заявку →', route4_t: 'Следите за сделкой', route4_d: 'После заключения договора в личном кабинете видно, где сейчас ваша машина: оплата, доставка, таможня, выдача.', route4_go: 'Личный кабинет →', task_head: 'Что вам нужно делать?', task_all: 'Показать всё', task_dump: 'Возить песок, щебень, грунт', task_tractor: 'Возить грузы на дальние расстояния', task_semi: 'Перевозить технику и длинные грузы', task_trailer: 'Добавить прицеп к тягачу', task_crane: 'Поднимать грузы на стройке', task_more: 'Уточнить: марка, колёсная формула, сортировка', task_less: 'Скрыть уточнения',
       card_no_name: 'Техника',
       trust1_t: 'Официальный договор', trust1_d: 'Все условия и сроки прописаны на бумаге. Никаких скрытых доплат.', trust2_t: 'Оплата через банк', trust2_d: 'Деньги идут на расчётный счёт компании по договору — не на карту частному лицу.', trust3_t: 'Полный пакет документов', trust3_d: 'ЭПТС, СБКТС и таможенные документы оформляем сами — вы получаете технику готовой к учёту.', trust4_t: 'Живой менеджер', trust4_d: 'Не нужно разбираться самому — позвоните, и мы подберём технику и посчитаем стоимость.',
       calc_total_plain: 'Это цена «под ключ» в Алматы — уже включает растаможку, документы, сертификацию и доставку. Доплачивать сверху ничего не нужно.',
@@ -473,6 +476,9 @@
       nav_contacts: 'Байланыс',
       nav_calculator: 'Калькулятор',
       help_call: 'Қоңырау шалу', help_whatsapp: 'WhatsApp', help_font_title: 'Мәтін өлшемін ұлғайту',
+      product_cta_request: 'Осы техникаға өтінім қалдыру',
+      cat_empty_t: 'Бұл сұраныс бойынша ештеңе табылмады', cat_empty_d: 'Басқа тапсырманы таңдап көріңіз немесе барлығын қараңыз. Не қоңырау шалыңыз — тапсырмаңыз бен бюджетіңізге сай таңдаймыз.', cat_error_t: 'Каталогты жүктеу мүмкін болмады', cat_error_d: 'Бетті жаңартыңыз немесе қоңырау шалыңыз — қолда не бар екенін айтамыз.', contact_ok_t: 'Өтінім жіберілді!', contact_ok_d: 'Менеджер жұмыс уақытында қоңырау шалып, толықтырады. Шұғыл болса — өзіңіз қоңырау шалыңыз.', contact_ok_catalog: 'Каталогты қарау',
+      route_title: 'Неден бастау керек — қадам-қадаммен', route_sub: 'Сайтта алғаш рет болсаңыз, ретімен жүріңіз. Кез келген қадамда қоңырау шалуға болады — көмектесеміз.', route1_t: 'Техниканы қараңыз', route1_d: 'Каталогта не істеу керегін таңдаңыз — құм, жүк тасу немесе құрылыста көтеру. Қолайлы көліктерді көрсетеміз.', route1_go: 'Каталогты ашу →', route2_t: '«Кілтті бұрап мінетін» бағаны біліңіз', route2_d: 'Калькулятор кедендік рәсімдеу мен жеткізуді қоса қорытынды соманы көрсетеді. Есептегіңіз келмесе — үш сұраққа жауап беріңіз, өзіміз есептейміз.', route2_go: 'Құнын есептеу →', route3_t: 'Өтінім қалдырыңыз', route3_d: 'Аты-жөні мен телефон жеткілікті. Менеджер қоңырау шалып, толықтырып, коммерциялық ұсыныс жібереді.', route3_go: 'Өтінім қалдыру →', route4_t: 'Мәмілені бақылаңыз', route4_d: 'Шарт жасалғаннан кейін жеке кабинетте көлігіңіздің қайда екені көрінеді: төлем, жеткізу, кеден, беру.', route4_go: 'Жеке кабинет →', task_head: 'Сізге не істеу керек?', task_all: 'Барлығын көрсету', task_dump: 'Құм, қиыршықтас, топырақ тасу', task_tractor: 'Алыс қашықтыққа жүк тасу', task_semi: 'Техника мен ұзын жүк тасу', task_trailer: 'Тартқышқа тіркеме қосу', task_crane: 'Құрылыста жүк көтеру', task_more: 'Нақтылау: марка, дөңгелек формуласы, сұрыптау', task_less: 'Нақтылауды жасыру',
       card_no_name: 'Техника',
       trust1_t: 'Ресми шарт', trust1_d: 'Барлық шарттар мен мерзімдер қағазда жазылған. Жасырын қосымша төлемдер жоқ.', trust2_t: 'Банк арқылы төлем', trust2_d: 'Ақша шарт бойынша компанияның есепшотына түседі — жеке тұлғаның картасына емес.', trust3_t: 'Құжаттардың толық топтамасы', trust3_d: 'ЭПТС, СБКТС және кеден құжаттарын өзіміз рәсімдейміз — техниканы есепке қоюға дайын күйде аласыз.', trust4_t: 'Тірі менеджер', trust4_d: 'Өзіңіз түсінудің қажеті жоқ — қоңырау шалыңыз, техниканы таңдап, құнын есептеп береміз.',
       calc_total_plain: 'Бұл — Алматыдағы «кілтті бұрап мінетін» баға: кедендік рәсімдеу, құжаттар, сертификаттау және жеткізу кіреді. Үстіне қосымша төлеудің қажеті жоқ.',
@@ -852,6 +858,9 @@
       nav_contacts: '联系',
       nav_calculator: '计算器',
       help_call: '致电我们', help_whatsapp: 'WhatsApp', help_font_title: '放大文字',
+      product_cta_request: '就这台车提交申请',
+      cat_empty_t: '没有找到符合条件的车辆', cat_empty_d: '请换一个用途，或查看全部。也可以来电——我们按您的用途和预算推荐。', cat_error_t: '目录加载失败', cat_error_d: '请刷新页面或来电——我们会告诉您现有车源。', contact_ok_t: '申请已提交！', contact_ok_d: '经理将在工作时间回电确认细节。如有急事，您也可以直接致电。', contact_ok_catalog: '查看目录',
+      route_title: '从哪里开始——分步指引', route_sub: '第一次访问本站，按顺序操作即可。任何一步都可以来电，我们会帮您。', route1_t: '查看车辆', route1_d: '在目录中选择您要做什么——运沙石、长途运货还是工地吊装。我们会为您推荐合适的车型。', route1_go: '打开目录 →', route2_t: '了解「交钥匙」价格', route2_d: '计算器会给出含清关和运输的总价。不想自己算——回答三个问题，我们替您算。', route2_go: '计算费用 →', route3_t: '提交申请', route3_d: '只需姓名和电话。经理会回电确认细节并发送报价单。', route3_go: '提交申请 →', route4_t: '跟踪订单', route4_d: '签约后可在个人中心查看车辆当前状态：付款、运输、清关、交付。', route4_go: '个人中心 →', task_head: '您需要做什么？', task_all: '显示全部', task_dump: '运输沙子、碎石、土方', task_tractor: '长途货物运输', task_semi: '运输设备和超长货物', task_trailer: '为牵引车加挂车', task_crane: '工地吊装货物', task_more: '细化：品牌、驱动形式、排序', task_less: '收起细化选项',
       card_no_name: '车辆',
       trust1_t: '正式合同', trust1_d: '所有条件和期限均以书面形式约定，没有隐藏费用。', trust2_t: '银行付款', trust2_d: '款项按合同汇入公司对公账户，而非个人银行卡。', trust3_t: '完整文件包', trust3_d: 'ЭПТС、СБКТС 和海关文件由我们办理——交付时车辆即可上牌。', trust4_t: '专人对接', trust4_d: '无需自己研究——来电即可，我们为您选车并核算费用。',
       calc_total_plain: '这是阿拉木图的「交钥匙」价格，已包含清关、文件、认证和运输费用，无需额外付款。',
@@ -1269,6 +1278,9 @@
       nav_contacts: 'Contacts',
       nav_calculator: 'Calculator',
       help_call: 'Call us', help_whatsapp: 'WhatsApp', help_font_title: 'Increase text size',
+      product_cta_request: 'Request this vehicle',
+      cat_empty_t: 'Nothing matches this search', cat_empty_d: 'Try another task or show everything. Or call us — we will find something for your job and budget.', cat_error_t: 'The catalogue could not be loaded', cat_error_d: 'Refresh the page or call us — we will tell you what is in stock.', contact_ok_t: 'Request sent!', contact_ok_d: 'A manager will call during working hours to confirm the details. If it is urgent, call us yourself.', contact_ok_catalog: 'Browse the catalogue',
+      route_title: 'Where to start — step by step', route_sub: 'First time here? Just follow the order. You can call us at any step.', route1_t: 'Look at the vehicles', route1_d: 'In the catalogue pick what you need to do — haul sand, carry freight or lift on site. We will show the right machines.', route1_go: 'Open the catalogue →', route2_t: 'Find the turnkey price', route2_d: 'The calculator gives the final figure including customs and delivery. Rather not calculate? Answer three questions and we will do it.', route2_go: 'Calculate the cost →', route3_t: 'Leave a request', route3_d: 'A name and phone number are enough. A manager will call, confirm the details and send a proposal.', route3_go: 'Leave a request →', route4_t: 'Follow your deal', route4_d: 'Once the contract is signed, your cabinet shows where the vehicle is: payment, delivery, customs, handover.', route4_go: 'Personal cabinet →', task_head: 'What do you need to do?', task_all: 'Show everything', task_dump: 'Haul sand, gravel, soil', task_tractor: 'Carry freight long distance', task_semi: 'Move machinery and long loads', task_trailer: 'Add a trailer to a tractor unit', task_crane: 'Lift loads on a construction site', task_more: 'Refine: brand, wheel formula, sorting', task_less: 'Hide the extra filters',
       card_no_name: 'Vehicle',
       trust1_t: 'A formal contract', trust1_d: 'Every term and deadline is put in writing. No hidden extras.', trust2_t: 'Payment through a bank', trust2_d: 'Funds go to the company account under the contract — never to a private card.', trust3_t: 'Full document package', trust3_d: 'We arrange the EPTS, SBKTS and customs paperwork — the vehicle arrives ready to register.', trust4_t: 'A real manager', trust4_d: 'You do not have to work it out yourself — call us and we will pick the vehicle and do the maths.',
       calc_total_plain: 'This is the turnkey price in Almaty — customs clearance, paperwork, certification and delivery are already included. Nothing extra to pay on top.',
@@ -1850,10 +1862,14 @@
     function open() {
       drawer.classList.add('active');
       overlay.classList.add('active');
+      // Пока шторка открыта, убираем плавающие кнопки и чат — иначе они
+      // перекрывают пункты меню («Личный кабинет» и т.п.).
+      document.documentElement.classList.add('cm-drawer-open');
     }
     function close() {
       drawer.classList.remove('active');
       overlay.classList.remove('active');
+      document.documentElement.classList.remove('cm-drawer-open');
     }
 
     burger.addEventListener('click', open);
@@ -1999,12 +2015,68 @@
   window.cmInitHelpWidget = initHelpWidget;
 
   /* =====================
+     ПОДСКАЗКИ ПО ТЕРМИНАМ
+     На телефоне подсказка из атрибута title не показывается (нет наведения),
+     поэтому по нажатию на «?» открываем всплывающее окошко с текстом.
+     ===================== */
+  function initHintPopover() {
+    let pop = null;
+
+    function closePop() {
+      pop?.remove();
+      pop = null;
+    }
+
+    document.addEventListener('click', (e) => {
+      const hint = e.target.closest('.cm-hint');
+      if (!hint) { closePop(); return; }
+
+      e.preventDefault();
+      e.stopPropagation();
+      const text = hint.getAttribute('title') || hint.dataset.hint || '';
+      if (!text) return;
+
+      // Второе нажатие по той же подсказке — закрыть.
+      if (pop && pop.dataset.owner === (hint.dataset.hintId || '')) { closePop(); return; }
+      closePop();
+
+      // title показывал бы ещё и системную подсказку поверх нашей — прячем его.
+      if (!hint.dataset.hint) {
+        hint.dataset.hint = text;
+        hint.dataset.hintId = 'h' + Math.random().toString(36).slice(2, 8);
+      }
+      hint.removeAttribute('title');
+
+      pop = document.createElement('div');
+      pop.className = 'cm-hint-pop';
+      pop.dataset.owner = hint.dataset.hintId;
+      pop.innerHTML = `<span>${hint.dataset.hint}</span>
+        <button type="button" class="cm-hint-pop__x" aria-label="Закрыть">✕</button>`;
+      document.body.appendChild(pop);
+
+      const r = hint.getBoundingClientRect();
+      const w = Math.min(300, window.innerWidth - 24);
+      pop.style.width = w + 'px';
+      let left = r.left + window.scrollX + r.width / 2 - w / 2;
+      left = Math.max(12, Math.min(left, window.innerWidth - w - 12));
+      pop.style.left = left + 'px';
+      pop.style.top = (r.bottom + window.scrollY + 8) + 'px';
+
+      pop.querySelector('.cm-hint-pop__x')?.addEventListener('click', closePop);
+    });
+
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePop(); });
+    window.addEventListener('scroll', closePop, { passive: true });
+  }
+
+  /* =====================
      INIT
      ===================== */
   document.addEventListener('DOMContentLoaded', () => {
 
     initGoalTracking();
     initHelpWidget();
+    initHintPopover();
 
     loadPartial('siteHeader', './partials/navbar.html', () => {
     initTheme();

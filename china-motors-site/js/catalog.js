@@ -137,7 +137,29 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ================= RENDER ================= */
 
   function render(list) {
-    grid.innerHTML = list.map(cardHTML).join('');
+    if (!list.length) {
+      // Пустой список — не тупик: подсказываем, что делать дальше.
+      grid.innerHTML = `
+        <div class="cat-empty">
+          <h3>${window.t ? window.t('cat_empty_t') : 'По этому запросу ничего не нашлось'}</h3>
+          <p>${window.t ? window.t('cat_empty_d') : 'Попробуйте выбрать другую задачу или посмотреть всё. Либо позвоните — подберём под вашу задачу и бюджет.'}</p>
+          <div class="cat-empty__actions">
+            <button type="button" class="btn btn--primary" id="catShowAll">${window.t ? window.t('task_all') : 'Показать всё'}</button>
+            <a class="btn" href="tel:+77776133731">${window.t ? window.t('help_call') : 'Позвонить'}: +7 777 613 37 31</a>
+          </div>
+        </div>`;
+      document.getElementById('catShowAll')?.addEventListener('click', () => {
+        if (bodyEl) bodyEl.value = '';
+        if (searchEl) searchEl.value = '';
+        if (brandEl) brandEl.value = '';
+        if (wheelEl) wheelEl.value = '';
+        document.querySelectorAll('#taskFilter .task-btn')
+          .forEach(b => b.classList.toggle('active', !b.dataset.body));
+        refilter();
+      });
+    } else {
+      grid.innerHTML = list.map(cardHTML).join('');
+    }
     const countEl = document.getElementById('resultsCount');
     if (countEl) countEl.textContent = list.length;
   }
@@ -240,6 +262,39 @@ document.addEventListener('DOMContentLoaded', () => {
   wheelEl?.addEventListener('change', refilter);
   sourceEl?.addEventListener('change', refilter);
 
+  // Подбор по задаче — крупные кнопки вместо технического «типа кузова».
+  // Каждая кнопка просто выставляет соответствующий тип в обычном фильтре.
+  document.getElementById('taskFilter')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('.task-btn');
+    if (!btn) return;
+    document.querySelectorAll('#taskFilter .task-btn')
+      .forEach(b => b.classList.toggle('active', b === btn));
+    if (bodyEl) bodyEl.value = btn.dataset.body || '';
+    refilter();
+    document.getElementById('grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  // Уточняющие фильтры скрыты по умолчанию — не пугаем лишними полями.
+  document.getElementById('toggleAdvFilters')?.addEventListener('click', (e) => {
+    const adv = document.getElementById('advFilters');
+    if (!adv) return;
+    const open = adv.style.display === 'none';
+    adv.style.display = open ? '' : 'none';
+    e.currentTarget.textContent = open
+      ? (window.t ? window.t('task_less') : 'Скрыть уточнения')
+      : (window.t ? window.t('task_more') : 'Уточнить: марка, колёсная формула, сортировка');
+  });
+
+  // Если выбранного типа нет в каталоге — прячем кнопку, чтобы не вести
+  // человека в пустой список.
+  function syncTaskButtons() {
+    const present = new Set(all.map(x => x.bodyType).filter(Boolean));
+    document.querySelectorAll('#taskFilter .task-btn').forEach(b => {
+      const v = b.dataset.body;
+      b.style.display = (!v || present.has(v)) ? '' : 'none';
+    });
+  }
+
   /* ================= LOAD ================= */
 
   async function load() {
@@ -252,13 +307,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
       all = list.map(normalize).filter(Boolean);
       populateQuickFilters();
+      syncTaskButtons();
       refilter();
       applyItemListSeo(all);
 
     } catch (e) {
       console.error(e);
-      grid.innerHTML = 'Ошибка загрузки каталога';
-      
+      // Не оставляем человека с голой ошибкой — даём способ связаться.
+      grid.innerHTML = `
+        <div class="cat-empty">
+          <h3>${window.t ? window.t('cat_error_t') : 'Не удалось загрузить каталог'}</h3>
+          <p>${window.t ? window.t('cat_error_d') : 'Обновите страницу или позвоните — расскажем, что есть в наличии.'}</p>
+          <div class="cat-empty__actions">
+            <a class="btn btn--primary" href="tel:+77776133731">${window.t ? window.t('help_call') : 'Позвонить'}: +7 777 613 37 31</a>
+          </div>
+        </div>`;
     }
   }
 

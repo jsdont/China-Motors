@@ -82,15 +82,49 @@
     <div class="hp-page-head__count"><span data-i18n="catalog_found">Найдено</span>: <span id="resultsCount">0</span></div>
   </section>
 
+  <!-- Подбор по задаче: понятнее, чем «тип кузова» — человек выбирает,
+       ЧТО ему нужно делать, а не как это называется у перевозчиков. -->
+  <div class="task-filter">
+    <div class="task-filter__head" data-i18n="task_head">Что вам нужно делать?</div>
+    <div class="task-filter__row" id="taskFilter">
+      <button type="button" class="task-btn active" data-body="" data-i18n="task_all">Показать всё</button>
+      <button type="button" class="task-btn" data-body="Самосвал">
+        <i class="fa-solid fa-truck-ramp-box" aria-hidden="true"></i>
+        <span data-i18n="task_dump">Возить песок, щебень, грунт</span>
+      </button>
+      <button type="button" class="task-btn" data-body="Тягач">
+        <i class="fa-solid fa-truck-fast" aria-hidden="true"></i>
+        <span data-i18n="task_tractor">Возить грузы на дальние расстояния</span>
+      </button>
+      <button type="button" class="task-btn" data-body="Полуприцеп">
+        <i class="fa-solid fa-trailer" aria-hidden="true"></i>
+        <span data-i18n="task_semi">Перевозить технику и длинные грузы</span>
+      </button>
+      <button type="button" class="task-btn" data-body="Прицеп">
+        <i class="fa-solid fa-caravan" aria-hidden="true"></i>
+        <span data-i18n="task_trailer">Добавить прицеп к тягачу</span>
+      </button>
+      <button type="button" class="task-btn" data-body="Кран">
+        <i class="fa-solid fa-truck-monster" aria-hidden="true"></i>
+        <span data-i18n="task_crane">Поднимать грузы на стройке</span>
+      </button>
+    </div>
+    <button type="button" id="toggleAdvFilters" class="task-filter__more" data-i18n="task_more">
+      Уточнить: марка, колёсная формула, сортировка
+    </button>
+  </div>
+
   <div class="hp-filter-card">
     <div class="hp-filter-card__inner">
       <div class="f-search">
         <input id="search" type="text" data-i18n-placeholder="search_placeholder" placeholder="Поиск...">
       </div>
+    </div>
+    <div class="hp-filter-card__inner" id="advFilters" style="display:none">
       <div class="f">
         <label for="body" data-i18n="filter_body_label">Тип транспорта</label>
         <select id="body">
-          <option value="" data-i18n="body_all">{Все}</option>
+          <option value="" data-i18n="body_all">Все типы</option>
         </select>
       </div>
       <div class="f">

@@ -59,8 +59,17 @@ document.addEventListener('DOMContentLoaded', () => {
     try { sessionStorage.removeItem('cm_calc_breakdown'); } catch (_) {}
     sendBtn.textContent = '✅ Отправлено';
     if (statusEl) {
-      statusEl.textContent = 'Заявка успешно отправлена!';
-      statusEl.className = 'success';
+      // Говорим, что будет дальше, и предлагаем следующий шаг — иначе после
+      // отправки человек остаётся на странице и не понимает, что делать.
+      const t = (k, d) => (window.t ? window.t(k) : d) || d;
+      statusEl.innerHTML = `
+        <strong>${t('contact_ok_t', 'Заявка отправлена!')}</strong>
+        <span>${t('contact_ok_d', 'Менеджер перезвонит в рабочее время и уточнит детали. Если нужно срочно — позвоните сами.')}</span>
+        <span class="contact-ok__actions">
+          <a class="btn btn--primary" href="tel:+77776133731">${t('help_call', 'Позвонить')}: +7 777 613 37 31</a>
+          <a class="btn" href="catalog.html">${t('contact_ok_catalog', 'Посмотреть каталог')}</a>
+        </span>`;
+      statusEl.className = 'success contact-ok';
       statusEl.style.display = 'block';
     }
     nameEl && (nameEl.value = '');
@@ -128,12 +137,14 @@ document.addEventListener('DOMContentLoaded', () => {
     sendBtn.disabled = false;
     sendBtn.textContent = prev;
 
+    // Сообщение об успехе оставляем на экране: в нём написано, что будет
+    // дальше, и есть кнопки. Скрываем только сообщение об ошибке.
     setTimeout(() => {
-      if (statusEl) {
+      if (statusEl && !statusEl.classList.contains('contact-ok')) {
         statusEl.style.display = 'none';
         statusEl.textContent = '';
         statusEl.className = '';
       }
-    }, 4000);
+    }, 6000);
   });
 });
