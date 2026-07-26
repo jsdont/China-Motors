@@ -3437,3 +3437,124 @@ html.dark .hp-service-card { background: #1e1e1e; }
 html.dark .hp-service-card__title { color: #f5f5f5; }
 html.dark .hp-services__title { color: #f5f5f5; }
 html.dark .hp-services__sub { color: #aab4c5; }
+
+/* =======================================================================
+   Быстрая связь и крупный текст
+   Плавающий блок «Позвонить / WhatsApp» + переключатель размера текста.
+   Вставляется скриптом (js/common.js) на всех страницах.
+   ======================================================================= */
+.cm-help {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 9998;              /* ниже модалок, но выше контента */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.cm-help__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 22px;
+  border-radius: 999px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .25);
+  min-height: 52px;           /* крупная зона нажатия */
+}
+
+.cm-help__btn i { font-size: 20px; }
+.cm-help__call { background: linear-gradient(90deg, #E12821, #b81f19); }
+.cm-help__wa { background: linear-gradient(90deg, #25D366, #1ebe5d); }
+.cm-help__btn:hover { filter: brightness(1.07); }
+
+.cm-help__font {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid #d8dbe2;
+  background: #fff;
+  color: #1F1F1F;
+  font-size: 19px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .18);
+}
+.cm-help__font sup { font-size: 12px; }
+html.dark .cm-help__font { background: #1e1e1e; color: #f5f5f5; border-color: rgba(255, 255, 255, .18); }
+
+/* Ступени увеличения текста. Вёрстка в px, поэтому масштабируем через zoom —
+   так растёт весь интерфейс целиком, а не только шрифт. */
+html.cm-font-lg body { zoom: 1.15; }
+html.cm-font-xl body { zoom: 1.30; }
+
+/* Сам виджет не раздуваем вместе со страницей: он и так крупный, а при
+   увеличенном тексте начинал перекрывать поля формы. */
+html.cm-font-lg .cm-help { zoom: 0.87; }
+html.cm-font-xl .cm-help { zoom: 0.77; }
+
+@media (max-width: 640px) {
+  /* Оставляем место справа под чат-виджет, чтобы кнопки не перекрывались. */
+  .cm-help { left: 10px; right: 92px; bottom: 10px; flex-direction: row; flex-wrap: wrap; }
+  .cm-help__btn { flex: 1 1 auto; justify-content: center; padding: 13px 14px; font-size: 16px; }
+  .cm-help__font { width: 48px; height: 48px; flex: 0 0 auto; }
+}
+
+@media print { .cm-help { display: none; } }
+
+/* =======================================================================
+   Простой режим калькулятора — три вопроса вместо большой формы
+   ======================================================================= */
+.simple-calc { max-width: 720px; margin: 0 auto 28px; }
+.simple-calc__title { font-size: 26px; margin: 0 0 6px; }
+.simple-calc__sub { color: #6b7280; margin: 0 0 22px; font-size: 17px; }
+.simple-calc__label { display: block; font-weight: 700; font-size: 17px; margin: 20px 0 10px; }
+.simple-calc__choices { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.sc-choice {
+  padding: 14px 20px;
+  border: 2px solid #d8dbe2;
+  background: #fff;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  min-height: 52px;
+}
+.sc-choice:hover { border-color: #E12821; }
+.sc-choice.active { background: #E12821; border-color: #E12821; color: #fff; font-weight: 700; }
+
+.simple-calc__input {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 17px;
+  border: 2px solid #d8dbe2;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  min-height: 52px;
+}
+.simple-calc__send { width: 100%; padding: 16px; font-size: 18px; margin-top: 10px; min-height: 56px; }
+.simple-calc__status { margin-top: 12px; font-size: 16px; }
+.simple-calc__status.ok { color: #16a34a; }
+.simple-calc__status.err { color: #e74c3c; }
+.simple-calc__or { text-align: center; margin-top: 22px; }
+
+.simple-calc__link {
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 16px;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 10px;
+}
+.simple-calc__link:hover { color: #E12821; }
+
+html.dark .simple-calc__sub { color: #aab4c5; }
+html.dark .sc-choice { background: #1e1e1e; border-color: rgba(255, 255, 255, .16); color: #f5f5f5; }
+html.dark .simple-calc__input { background: #1e1e1e; border-color: rgba(255, 255, 255, .16); color: #f5f5f5; }
+html.dark .simple-calc__link { color: #aab4c5; }

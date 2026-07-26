@@ -77,19 +77,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // simple validation — телефон разрешает +, цифры, пробелы, дефисы
     // и скобки (плейсхолдер показывает формат "+7 (___) ___-__-__",
     // так что скобки должны проходить, а не блокировать отправку).
-    let valid = true;
+    // Обязателен только телефон: чтобы оставить заявку, достаточно имени и
+    // номера — менеджер перезвонит и уточнит остальное сам.
     phoneEl?.style.removeProperty('border-color');
-    msgEl?.style.removeProperty('border-color');
     if (!phone || !/^\+?[0-9()\s-]{6,}$/.test(phone)) {
       phoneEl?.style.setProperty('border-color', 'red');
-      valid = false;
-    }
-    if (!msg) {
-      msgEl?.style.setProperty('border-color', 'red');
-      valid = false;
-    }
-    if (!valid) {
-      alert('Пожалуйста, корректно заполните телефон и сообщение');
+      alert(window.t ? window.t('contact_need_phone') : 'Пожалуйста, укажите телефон — мы перезвоним');
       return;
     }
 
@@ -118,7 +111,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      await sendToBackend(name, phone, msg, productId);
+      // Сообщение необязательно — если пусто, отправляем понятную заглушку,
+      // чтобы менеджер видел, что человек просто просит перезвонить.
+      await sendToBackend(name, phone, msg || 'Заявка с сайта: просьба перезвонить', productId);
       showSuccessAndReset();
       window.cmGoal?.('contact_form_success');
     } catch (err) {

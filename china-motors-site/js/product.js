@@ -371,8 +371,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     } catch (e) {
       console.error(e);
-      document.body.innerHTML =
-        '<h2 style="padding:40px">Ошибка загрузки техники</h2>';
+      // Оставляем человеку способ связаться, а не пустой экран с ошибкой.
+      document.body.innerHTML = `
+        <div style="padding:40px;text-align:center">
+          <h2>Не удалось загрузить технику</h2>
+          <p style="font-size:17px;color:#6b7280;margin:12px 0 24px">
+            Попробуйте обновить страницу или позвоните — подберём и расскажем всё сами.
+          </p>
+          <a class="btn btn--primary" href="tel:+77776133731" style="font-size:18px;padding:14px 26px">
+            Позвонить: +7 777 613 37 31
+          </a>
+        </div>`;
+      window.cmInitHelpWidget?.();
     }
   }
 

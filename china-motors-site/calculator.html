@@ -68,7 +68,41 @@
 
   <!-- Main -->
   <main class="container" style="padding-top:24px;padding-bottom:60px">
-    <div id="calcGrid" class="grid-2">
+
+    <!-- Простой режим: три вопроса вместо большой формы. Показывается по
+         умолчанию; подробный калькулятор открывается по кнопке ниже. -->
+    <section id="simpleCalc" class="calc-card simple-calc">
+      <h2 class="simple-calc__title" data-i18n="scalc_title">Не хотите разбираться в расчётах?</h2>
+      <p class="simple-calc__sub" data-i18n="scalc_sub">Ответьте на три вопроса — мы посчитаем всё сами и перезвоним.</p>
+
+      <label class="simple-calc__label" data-i18n="scalc_q1">1. Какая техника нужна?</label>
+      <div class="simple-calc__choices" id="scNeed">
+        <button type="button" class="sc-choice" data-val="Тягач" data-i18n="scalc_need_tractor">Тягач</button>
+        <button type="button" class="sc-choice" data-val="Самосвал" data-i18n="scalc_need_dump">Самосвал</button>
+        <button type="button" class="sc-choice" data-val="Кран" data-i18n="scalc_need_crane">Кран</button>
+        <button type="button" class="sc-choice" data-val="Прицеп / трал" data-i18n="scalc_need_trailer">Прицеп / трал</button>
+        <button type="button" class="sc-choice" data-val="Легковое авто" data-i18n="scalc_need_car">Легковое авто</button>
+        <button type="button" class="sc-choice" data-val="Пока не знаю" data-i18n="scalc_need_unsure">Пока не знаю</button>
+      </div>
+
+      <label class="simple-calc__label" for="scBudget" data-i18n="scalc_q2">2. На какую сумму рассчитываете? (необязательно)</label>
+      <input type="text" id="scBudget" class="simple-calc__input" data-i18n-placeholder="scalc_budget_ph" placeholder="например, до 35 млн ₸">
+
+      <label class="simple-calc__label" for="scPhone" data-i18n="scalc_q3">3. Ваш телефон — перезвоним и всё объясним</label>
+      <input type="tel" id="scPhone" class="simple-calc__input" placeholder="+7 (___) ___-__-__">
+      <input type="text" id="scName" class="simple-calc__input" data-i18n-placeholder="scalc_name_ph" placeholder="Ваше имя (необязательно)">
+
+      <button type="button" id="scSend" class="btn btn--primary simple-calc__send" data-i18n="scalc_send">Получить расчёт</button>
+      <p id="scStatus" class="simple-calc__status"></p>
+
+      <div class="simple-calc__or">
+        <button type="button" id="scToggleDetailed" class="simple-calc__link" data-i18n="scalc_show_detailed">
+          Показать подробный расчёт
+        </button>
+      </div>
+    </section>
+
+    <div id="calcGrid" class="grid-2" style="display:none">
       <form id="calcForm" class="calc-sections">
         <!-- 1. Входные данные -->
         <section class="calc-card">

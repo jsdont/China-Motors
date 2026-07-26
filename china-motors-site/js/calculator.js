@@ -937,6 +937,91 @@
 
   document.getElementById('btnRecalcAside')
     ?.addEventListener('click', recalc);
+
+  /* =========================================================
+     ПРОСТОЙ РЕЖИМ — три вопроса вместо большой формы.
+     Для посетителей, которым проще оставить телефон, чем разбираться
+     в характеристиках. Отправляет обычную заявку (как страница контактов).
+     ========================================================= */
+  function initSimpleMode() {
+    const simple = document.getElementById('simpleCalc');
+    const grid = document.getElementById('calcGrid');
+    const toggle = document.getElementById('scToggleDetailed');
+    if (!simple || !grid) return;
+
+    // Пришли с карточки техники (есть параметры) — человек уже выбрал
+    // машину и ждёт подробный расчёт, простой режим ему не нужен.
+    const cameFromProduct = !!(URL_PARAMS.id || URL_PARAMS.price || URL_PARAMS.priceCny || URL_PARAMS.title);
+    if (cameFromProduct) {
+      simple.style.display = 'none';
+      grid.style.display = '';
+    }
+
+    toggle?.addEventListener('click', () => {
+      const showDetailed = grid.style.display === 'none';
+      grid.style.display = showDetailed ? '' : 'none';
+      toggle.textContent = showDetailed ? t('scalc_hide_detailed') : t('scalc_show_detailed');
+      if (showDetailed) {
+        recalc();
+        grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    let need = '';
+    simple.querySelectorAll('.sc-choice').forEach(btn => {
+      btn.addEventListener('click', () => {
+        simple.querySelectorAll('.sc-choice').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        need = btn.dataset.val || '';
+      });
+    });
+
+    const statusEl = document.getElementById('scStatus');
+    document.getElementById('scSend')?.addEventListener('click', async () => {
+      const phone = (document.getElementById('scPhone')?.value || '').trim();
+      const name = (document.getElementById('scName')?.value || '').trim() || '—';
+      const budget = (document.getElementById('scBudget')?.value || '').trim();
+
+      if (!phone || !/^\+?[0-9()\s-]{6,}$/.test(phone)) {
+        statusEl.textContent = t('scalc_need_phone');
+        statusEl.className = 'simple-calc__status err';
+        return;
+      }
+
+      const message = [
+        '🧮 Быстрая заявка с калькулятора',
+        need ? `Техника: ${need}` : '',
+        budget ? `Бюджет: ${budget}` : '',
+        'Клиент просит перезвонить и посчитать.',
+      ].filter(Boolean).join('\n');
+
+      const btn = document.getElementById('scSend');
+      btn.disabled = true;
+      statusEl.textContent = '';
+      try {
+        const res = await fetch(`${API_BASE}/api/contacts/`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, phone, message, page: location.href, company: '' }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || data.status !== 'ok') throw new Error(data.error || `HTTP ${res.status}`);
+        statusEl.textContent = t('scalc_sent');
+        statusEl.className = 'simple-calc__status ok';
+        window.cmGoal?.('simple_calc_lead');
+        document.getElementById('scPhone').value = '';
+        document.getElementById('scName').value = '';
+        document.getElementById('scBudget').value = '';
+      } catch (err) {
+        statusEl.textContent = t('scalc_error') + ': ' + err.message;
+        statusEl.className = 'simple-calc__status err';
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  }
+
+  initSimpleMode();
   window.recalc = recalc;
   init();
 

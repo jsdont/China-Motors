@@ -46,6 +46,9 @@
       nav_services: 'Услуги',
       nav_contacts: 'Контакты',
       nav_calculator: 'Калькулятор',
+      help_call: 'Позвонить', help_whatsapp: 'WhatsApp', help_font_title: 'Увеличить размер текста',
+      scalc_title: 'Не хотите разбираться в расчётах?', scalc_sub: 'Ответьте на три вопроса — мы посчитаем всё сами и перезвоним.', scalc_q1: '1. Какая техника нужна?', scalc_q2: '2. На какую сумму рассчитываете? (необязательно)', scalc_q3: '3. Ваш телефон — перезвоним и всё объясним', scalc_need_tractor: 'Тягач', scalc_need_dump: 'Самосвал', scalc_need_crane: 'Кран', scalc_need_trailer: 'Прицеп / трал', scalc_need_car: 'Легковое авто', scalc_need_unsure: 'Пока не знаю', scalc_budget_ph: 'например, до 35 млн ₸', scalc_name_ph: 'Ваше имя (необязательно)', scalc_send: 'Получить расчёт', scalc_sent: 'Спасибо! Мы перезвоним в ближайшее время.', scalc_need_phone: 'Пожалуйста, укажите телефон — мы перезвоним', scalc_error: 'Ошибка', scalc_show_detailed: 'Показать подробный расчёт', scalc_hide_detailed: 'Скрыть подробный расчёт',
+      contact_msg_label_opt: 'Сообщение (необязательно)', contact_need_phone: 'Пожалуйста, укажите телефон — мы перезвоним',
       brand_subtitle: 'СПЕЦТЕХНИКА ИЗ КИТАЯ',
       nav_how_it_works: 'Как это работает',
       nav_favorites: 'Избранное',
@@ -464,6 +467,9 @@
       nav_services: 'Қызметтер',
       nav_contacts: 'Байланыс',
       nav_calculator: 'Калькулятор',
+      help_call: 'Қоңырау шалу', help_whatsapp: 'WhatsApp', help_font_title: 'Мәтін өлшемін ұлғайту',
+      scalc_title: 'Есептеулерді өзіңіз шешкіңіз келмей ме?', scalc_sub: 'Үш сұраққа жауап беріңіз — біз бәрін есептеп, қоңырау шаламыз.', scalc_q1: '1. Қандай техника қажет?', scalc_q2: '2. Қандай сомаға есептеп отырсыз? (міндетті емес)', scalc_q3: '3. Телефоныңыз — қоңырау шалып, бәрін түсіндіреміз', scalc_need_tractor: 'Тартқыш', scalc_need_dump: 'Өзі аударғыш', scalc_need_crane: 'Кран', scalc_need_trailer: 'Тіркеме / трал', scalc_need_car: 'Жеңіл автокөлік', scalc_need_unsure: 'Әзірге білмеймін', scalc_budget_ph: 'мысалы, 35 млн ₸ дейін', scalc_name_ph: 'Атыңыз (міндетті емес)', scalc_send: 'Есептеу алу', scalc_sent: 'Рақмет! Жақын арада қоңырау шаламыз.', scalc_need_phone: 'Телефон нөміріңізді жазыңыз — біз қоңырау шаламыз', scalc_error: 'Қате', scalc_show_detailed: 'Толық есептеуді көрсету', scalc_hide_detailed: 'Толық есептеуді жасыру',
+      contact_msg_label_opt: 'Хабарлама (міндетті емес)', contact_need_phone: 'Телефон нөміріңізді жазыңыз — біз қоңырау шаламыз',
       brand_subtitle: 'ҚЫТАЙДАН АРНАЙЫ ТЕХНИКА',
       nav_how_it_works: 'Бұл қалай жұмыс істейді',
       nav_favorites: 'Таңдаулылар',
@@ -835,6 +841,9 @@
       nav_services: '服务',
       nav_contacts: '联系',
       nav_calculator: '计算器',
+      help_call: '致电我们', help_whatsapp: 'WhatsApp', help_font_title: '放大文字',
+      scalc_title: '不想研究复杂的计算？', scalc_sub: '回答三个问题——我们会算好并给您回电。', scalc_q1: '1. 您需要哪种车辆？', scalc_q2: '2. 您的预算是多少？（选填）', scalc_q3: '3. 您的电话——我们会回电并详细说明', scalc_need_tractor: '牵引车', scalc_need_dump: '自卸车', scalc_need_crane: '起重机', scalc_need_trailer: '挂车 / 低平板', scalc_need_car: '乘用车', scalc_need_unsure: '还不确定', scalc_budget_ph: '例如：3500万坚戈以内', scalc_name_ph: '您的姓名（选填）', scalc_send: '获取报价', scalc_sent: '谢谢！我们会尽快与您联系。', scalc_need_phone: '请填写电话号码，我们会给您回电', scalc_error: '错误', scalc_show_detailed: '显示详细计算', scalc_hide_detailed: '隐藏详细计算',
+      contact_msg_label_opt: '留言（选填）', contact_need_phone: '请填写电话号码，我们会给您回电',
       cab_assign_head: '为阶段指派服务方', cab_assign_btn: '指派', cab_delete_deal: '删除交易', cab_unassign: '取消指派', cab_no_service_users: '没有合适的账户', cab_pick_user: '请选择执行人', cab_confirm_unassign: '要取消此阶段的指派吗？', cab_confirm_delete_deal: '确定删除整个交易？此操作无法撤销。',
       cab_tab_active: '进行中', cab_tab_done: '已完成', cab_no_done: '暂无已完成的交易',
       cab_profile_head: '我的资料', cab_profile_name: '姓名 / 公司', cab_profile_phone: '电话（登录名）', cab_profile_email: '电子邮箱', cab_profile_pw_head: '修改密码', cab_profile_old_pw: '当前密码', cab_profile_new_pw: '新密码', cab_profile_change_pw: '修改密码', cab_pw_changed: '密码已修改',
@@ -1244,6 +1253,9 @@
       nav_services: 'Services',
       nav_contacts: 'Contacts',
       nav_calculator: 'Calculator',
+      help_call: 'Call us', help_whatsapp: 'WhatsApp', help_font_title: 'Increase text size',
+      scalc_title: 'Would you rather not deal with the numbers?', scalc_sub: 'Answer three questions — we will do the maths and call you back.', scalc_q1: '1. What kind of vehicle do you need?', scalc_q2: '2. What budget do you have in mind? (optional)', scalc_q3: '3. Your phone — we will call and explain everything', scalc_need_tractor: 'Tractor unit', scalc_need_dump: 'Dump truck', scalc_need_crane: 'Crane', scalc_need_trailer: 'Trailer / lowboy', scalc_need_car: 'Passenger car', scalc_need_unsure: 'Not sure yet', scalc_budget_ph: 'e.g. up to 35M ₸', scalc_name_ph: 'Your name (optional)', scalc_send: 'Get a quote', scalc_sent: 'Thank you! We will call you back shortly.', scalc_need_phone: 'Please enter your phone number — we will call you back', scalc_error: 'Error', scalc_show_detailed: 'Show the detailed calculation', scalc_hide_detailed: 'Hide the detailed calculation',
+      contact_msg_label_opt: 'Message (optional)', contact_need_phone: 'Please enter your phone number — we will call you back',
       brand_subtitle: 'SPECIAL EQUIPMENT FROM CHINA',
       nav_how_it_works: 'How it works',
       nav_favorites: 'Favorites',
@@ -1911,11 +1923,68 @@
   }
 
   /* =====================
+     ДОСТУПНОСТЬ И БЫСТРАЯ СВЯЗЬ
+     Плавающие кнопки «Позвонить» / WhatsApp и увеличение шрифта — на всех
+     страницах сразу (вставляются скриптом, а не копируются в каждый HTML).
+     Рассчитано на посетителей, которым проще позвонить, чем разбираться
+     в характеристиках и формах.
+     ===================== */
+  const CONTACT_PHONE = '+77776133731';     // как на странице «Контакты»
+  const CONTACT_WA = '77776133731';
+  const LS_FONT = 'cm_font_scale';
+
+  function applyFontScale(scale) {
+    const html = document.documentElement;
+    html.classList.remove('cm-font-lg', 'cm-font-xl');
+    if (scale === 'lg') html.classList.add('cm-font-lg');
+    if (scale === 'xl') html.classList.add('cm-font-xl');
+  }
+
+  function initHelpWidget() {
+    if (document.getElementById('cmHelpWidget')) return;
+
+    applyFontScale(localStorage.getItem(LS_FONT) || '');
+
+    const box = document.createElement('div');
+    box.id = 'cmHelpWidget';
+    box.className = 'cm-help';
+    box.innerHTML = `
+      <button type="button" class="cm-help__font" id="cmFontToggle"
+              data-i18n-title="help_font_title" title="Увеличить текст">
+        <span aria-hidden="true">A<sup>+</sup></span>
+      </button>
+      <a class="cm-help__btn cm-help__call" href="tel:${CONTACT_PHONE}">
+        <i class="fas fa-phone" aria-hidden="true"></i>
+        <span data-i18n="help_call">Позвонить</span>
+      </a>
+      <a class="cm-help__btn cm-help__wa" href="https://wa.me/${CONTACT_WA}"
+         target="_blank" rel="noopener">
+        <i class="fab fa-whatsapp" aria-hidden="true"></i>
+        <span data-i18n="help_whatsapp">WhatsApp</span>
+      </a>
+    `;
+    document.body.appendChild(box);
+
+    // Три ступени размера текста: обычный → крупный → очень крупный.
+    document.getElementById('cmFontToggle')?.addEventListener('click', () => {
+      const cur = localStorage.getItem(LS_FONT) || '';
+      const next = cur === '' ? 'lg' : (cur === 'lg' ? 'xl' : '');
+      localStorage.setItem(LS_FONT, next);
+      applyFontScale(next);
+    });
+  }
+
+  // Страницы, которые перерисовывают body (например, экран ошибки на карточке
+  // техники), могут стереть виджет — тогда его нужно вернуть.
+  window.cmInitHelpWidget = initHelpWidget;
+
+  /* =====================
      INIT
      ===================== */
   document.addEventListener('DOMContentLoaded', () => {
 
     initGoalTracking();
+    initHelpWidget();
 
     loadPartial('siteHeader', './partials/navbar.html', () => {
     initTheme();
