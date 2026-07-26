@@ -191,8 +191,42 @@
     return data;
   }
 
+  // Скачать файл по авторизованному запросу (нельзя просто дать <a href>,
+  // потому что нужен Bearer-токен). Сохраняет ответ как файл.
+  async function apiAuthedDownload(path, filename) {
+    let session = getSession();
+    if (!session) throw new Error('NOT_AUTHENTICATED');
+
+    async function doFetch(token) {
+      return fetch(`${API_BASE}${path}`, {
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+    }
+
+    let res = await doFetch(session.access);
+    if (res.status === 401) {
+      const newAccess = await refreshAccess();
+      if (!newAccess) {
+        clearSession();
+        throw new Error('SESSION_EXPIRED');
+      }
+      res = await doFetch(newAccess);
+    }
+    if (!res.ok) throw new Error(`Ошибка ${res.status}`);
+
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename || 'file';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
   window.CMAuth = {
     API_BASE, registerPerson, registerCompany, registerService, registerBank, registerPartner,
-    login, logout, getSession, apiAuthed, apiAuthedUpload,
+    login, logout, getSession, apiAuthed, apiAuthedUpload, apiAuthedDownload,
   };
 })();

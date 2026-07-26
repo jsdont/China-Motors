@@ -768,6 +768,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         <select class="assign-user"><option value="">${t('cab_loading')}</option></select>
         <button type="button" class="btn assign-btn">${t('cab_assign_btn')}</button>
       </div>
+      <div class="kp-actions">
+        <button type="button" class="btn dc-kp-download">${t('cab_download_kp')}</button>
+        <button type="button" class="btn dc-kp-send">${t('cab_send_kp')}</button>
+        <span class="kp-status"></span>
+      </div>
       <button type="button" class="btn dc-delete-deal">${t('cab_delete_deal')}</button>
     `;
     const roleSel = block.querySelector('.assign-role');
@@ -818,6 +823,30 @@ document.addEventListener('DOMContentLoaded', async () => {
         deal.assignments = (deal.assignments || []).filter(x => String(x.id) !== String(btn.dataset.id));
         renderCurrent();
       } catch (e) { alert(t('cab_error') + ': ' + e.message); }
+    });
+
+    const kpStatus = block.querySelector('.kp-status');
+    block.querySelector('.dc-kp-download').addEventListener('click', async (e) => {
+      const btn = e.currentTarget;
+      btn.disabled = true;
+      kpStatus.textContent = '';
+      try {
+        await window.CMAuth.apiAuthedDownload(`/api/manager/deals/${deal.id}/kp/`, `KP_deal_${deal.id}.pdf`);
+      } catch (err) {
+        kpStatus.textContent = t('cab_error') + ': ' + err.message;
+      } finally { btn.disabled = false; }
+    });
+
+    block.querySelector('.dc-kp-send').addEventListener('click', async (e) => {
+      const btn = e.currentTarget;
+      btn.disabled = true;
+      kpStatus.textContent = '';
+      try {
+        const r = await window.CMAuth.apiAuthed('POST', `/api/manager/deals/${deal.id}/kp/`, {});
+        kpStatus.textContent = t('cab_kp_sent') + ': ' + (r.recipients || []).join(', ');
+      } catch (err) {
+        kpStatus.textContent = err.message;
+      } finally { btn.disabled = false; }
     });
 
     block.querySelector('.dc-delete-deal').addEventListener('click', async () => {
