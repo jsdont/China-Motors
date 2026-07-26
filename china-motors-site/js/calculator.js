@@ -29,13 +29,40 @@
     if (el) el.innerHTML = '';
   }
 
+  // Расшифровки специальных терминов: рядом со строкой появляется «?»,
+  // по наведению/нажатию — объяснение простыми словами. Нужны тем, кто
+  // впервые слышит про СБКТС, ЭПТС и СВХ.
+  const GLOSSARY = {
+    calc_item_epts: 'hint_epts',
+    calc_item_sbkts: 'hint_sbkts',
+    calc_item_sos: 'hint_sos',
+    calc_item_customs_fee: 'hint_customs_fee',
+    calc_item_broker_service: 'hint_broker',
+    calc_item_broker_svh: 'hint_broker',
+    calc_item_svh: 'hint_svh',
+    calc_item_red_corridor: 'hint_red_corridor',
+    calc_item_border_broker: 'hint_declarant',
+    calc_item_export_decl: 'hint_export_decl',
+    calc_item_plate: 'hint_plate',
+    calc_item_first_reg: 'hint_first_reg',
+    calc_item_adblue: 'hint_adblue',
+  };
+
+  function hintFor(labelKey) {
+    const hintKey = GLOSSARY[labelKey];
+    if (!hintKey) return '';
+    const text = t(hintKey);
+    if (!text || text === hintKey) return '';
+    return ` <span class="cm-hint" tabindex="0" title="${String(text).replace(/"/g, '&quot;')}">?</span>`;
+  }
+
   function addRow(selector, labelKey, value) {
     const el = document.querySelector(selector);
     if (!el) return;
 
     const li = document.createElement('li');
     li.innerHTML = `
-      <span>${t(labelKey)}</span>
+      <span>${t(labelKey)}${hintFor(labelKey)}</span>
       <span class="sum">${fmt(value)} ₸</span>
     `;
     el.appendChild(li);
@@ -555,7 +582,7 @@
 
         const li = document.createElement('li');
         li.innerHTML = `
-          <span>${t(label)}</span>
+          <span>${t(label)}${hintFor(label)}</span>
           <span class="sum">${fmt(sum)} ₸</span>
         `;
         mandatoryList.appendChild(li);
@@ -586,7 +613,7 @@
 
         const li = document.createElement('li');
         li.innerHTML = `
-          <span>${t(label)}</span>
+          <span>${t(label)}${hintFor(label)}</span>
           <span class="sum">${fmt(sum)} ₸</span>
         `;
         deliveryList.appendChild(li);

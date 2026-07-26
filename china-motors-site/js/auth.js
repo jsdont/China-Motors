@@ -225,8 +225,51 @@
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
+  // Как apiAuthedDownload, но с телом запроса (POST) — например, когда файл
+  // собирается по данным формы, а не по адресу.
+  async function apiAuthedDownloadPost(path, body, filename) {
+    let session = getSession();
+    if (!session) throw new Error('NOT_AUTHENTICATED');
+
+    async function doFetch(token) {
+      return fetch(`${API_BASE}${path}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(body || {}),
+      });
+    }
+
+    let res = await doFetch(session.access);
+    if (res.status === 401) {
+      const newAccess = await refreshAccess();
+      if (!newAccess) {
+        clearSession();
+        throw new Error('SESSION_EXPIRED');
+      }
+      res = await doFetch(newAccess);
+    }
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.error || data.detail || `Ошибка ${res.status}`);
+    }
+
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename || 'file';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
   window.CMAuth = {
     API_BASE, registerPerson, registerCompany, registerService, registerBank, registerPartner,
     login, logout, getSession, apiAuthed, apiAuthedUpload, apiAuthedDownload,
+    apiAuthedDownloadPost,
   };
 })();

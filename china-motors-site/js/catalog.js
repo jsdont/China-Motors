@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <div class="cm-card__body">
           <h3 class="cm-card__title">
-            ${item.raw.body_type}
+            ${item.raw.body_type || item.title || (window.t ? window.t('card_no_name') : 'Техника')}
           </h3>
 
           <div class="cm-card__specs">

@@ -701,6 +701,20 @@
     html.dark .assign-form select { background: #1e1e1e; border-color: rgba(255,255,255,.14); color: #f5f5f5; }
     html.dark .dc-delete-deal { background: rgba(231,76,60,.12); border-color: rgba(231,76,60,.4); color: #ff8a80; }
 
+    /* --- Конструктор КП --- */
+    .kpb-body { display: block; }
+    .kpb-label { display: block; font-weight: 600; font-size: 14px; margin: 14px 0 6px; color: #4b5563; }
+    .kpb-input { width: 100%; padding: 10px 12px; border: 1px solid #d8dbe2; border-radius: 8px; font-size: 14px; font-family: inherit; }
+    .kpb-row { display: flex; flex-wrap: wrap; gap: 12px; }
+    .kpb-row > div { flex: 1 1 150px; }
+    .kpb-row > .kpb-input { flex: 1 1 220px; }
+    .kpb-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 18px; }
+    .kpb-status { font-size: 13px; }
+    .kpb-status.ok { color: #16a34a; }
+    .kpb-status.err { color: #e74c3c; }
+    html.dark .kpb-label { color: rgba(255,255,255,.65); }
+    html.dark .kpb-input { background: #1e1e1e; border-color: rgba(255,255,255,.14); color: #f5f5f5; }
+
     /* --- Вкладки сделок --- */
     .deal-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
     .deal-tab { padding: 8px 16px; border: 1px solid #d8dbe2; background: #fff; border-radius: 20px; cursor: pointer; font-size: 14px; color: #6b7280; }
@@ -858,6 +872,53 @@
       </div>
 
       <!-- Кабинет менеджера: дашборд + инбокс заявок (показываются JS для роли MANAGER/ADMIN) -->
+      <div id="kpBuilderSection" class="cab-card mgr-section" style="display:none">
+        <div class="cab-card-head">
+          <h2 data-i18n="kpb_head">Создать КП вручную</h2>
+          <button id="kpbToggle" type="button" data-i18n="kpb_toggle">Открыть</button>
+        </div>
+        <div id="kpbBody" class="kpb-body" style="display:none">
+          <label class="kpb-label" data-i18n="kpb_pick">Техника из каталога (необязательно)</label>
+          <div class="kpb-row">
+            <input type="text" id="kpbSearch" class="kpb-input" data-i18n-placeholder="kpb_search_ph" placeholder="Поиск: shacman, самосвал…">
+            <select id="kpbVehicle" class="kpb-input"><option value="" data-i18n="kpb_manual">— ввести вручную —</option></select>
+          </div>
+
+          <label class="kpb-label" data-i18n="kpb_title">Наименование техники</label>
+          <input type="text" id="kpbTitle" class="kpb-input" placeholder="Тягач SHACMAN X3000, 6x4, 2025">
+
+          <label class="kpb-label" data-i18n="kpb_desc">Описание / комплектация</label>
+          <textarea id="kpbDesc" class="kpb-input" rows="5" data-i18n-placeholder="kpb_desc_ph" placeholder="Двигатель, мощность, масса, оснащение…"></textarea>
+
+          <div class="kpb-row">
+            <div><label class="kpb-label" data-i18n="kpb_price_usd">Цена, USD</label><input type="number" id="kpbUsd" class="kpb-input" step="0.01"></div>
+            <div><label class="kpb-label" data-i18n="kpb_price_cny">Цена, CNY</label><input type="number" id="kpbCny" class="kpb-input" step="0.01"></div>
+            <div><label class="kpb-label" data-i18n="kpb_price_kzt">Сумма, ₸</label><input type="number" id="kpbKzt" class="kpb-input" step="0.01"></div>
+            <div><label class="kpb-label" data-i18n="kpb_qty">Кол-во</label><input type="number" id="kpbQty" class="kpb-input" value="1" min="1"></div>
+          </div>
+
+          <div class="kpb-row">
+            <div><label class="kpb-label" data-i18n="kpb_buyer">Покупатель</label><input type="text" id="kpbBuyer" class="kpb-input"></div>
+            <div><label class="kpb-label" data-i18n="kpb_number">Номер КП</label><input type="text" id="kpbNumber" class="kpb-input" placeholder="КП-17"></div>
+          </div>
+
+          <label class="kpb-label" data-i18n="kpb_avail">Наличие</label>
+          <input type="text" id="kpbAvail" class="kpb-input" data-i18n-placeholder="kpb_avail_ph" placeholder="Техника в наличии 15 единиц в городе Хоргос, Китай.">
+
+          <label class="kpb-label" data-i18n="kpb_timeline">Сроки поставки (по пункту на строку, пусто — взять из шаблона)</label>
+          <textarea id="kpbTimeline" class="kpb-input" rows="5" data-i18n-placeholder="kpb_timeline_ph" placeholder="Экспортная декларация — 2 дня."></textarea>
+
+          <label class="kpb-label" data-i18n="kpb_email">E-mail получателя (для отправки)</label>
+          <input type="text" id="kpbEmail" class="kpb-input" placeholder="client@example.com">
+
+          <div class="kpb-actions">
+            <button type="button" id="kpbDownload" class="btn btn--primary" data-i18n="kpb_download">Скачать PDF</button>
+            <button type="button" id="kpbSend" class="btn" data-i18n="kpb_send">Отправить на почту</button>
+            <span id="kpbStatus" class="kpb-status"></span>
+          </div>
+        </div>
+      </div>
+
       <div id="managerStatsSection" class="cab-card mgr-section" style="display:none">
         <div class="cab-card-head"><h2 data-i18n="cab_summary">Сводка</h2></div>
         <div id="managerStats" class="mgr-stats"></div>

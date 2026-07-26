@@ -1257,6 +1257,107 @@ document.addEventListener('DOMContentLoaded', async () => {
     render();
   });
 
+  // === Конструктор КП: менеджер собирает предложение вручную ===
+  function initKpBuilder() {
+    if (!MANAGER_ROLES.includes(session.role)) return;
+    const section = document.getElementById('kpBuilderSection');
+    if (!section) return;
+    section.style.display = '';
+
+    const body = document.getElementById('kpbBody');
+    const statusEl = document.getElementById('kpbStatus');
+    const $id = (id) => document.getElementById(id);
+
+    document.getElementById('kpbToggle')?.addEventListener('click', (e) => {
+      const open = body.style.display === 'none';
+      body.style.display = open ? '' : 'none';
+      e.currentTarget.textContent = open ? t('kpb_hide') : t('kpb_toggle');
+    });
+
+    // Поиск техники в каталоге -> выпадающий список
+    let searchTimer = null;
+    const vehicleSel = $id('kpbVehicle');
+    async function search(q) {
+      try {
+        const list = await window.CMAuth.apiAuthed('GET', `/api/manager/vehicles/search/?q=${encodeURIComponent(q)}`);
+        vehicleSel.innerHTML = `<option value="">${t('kpb_manual')}</option>` +
+          list.map(v => `<option value="${v.id}">${escapeHtml(v.label)}</option>`).join('');
+      } catch { /* поиск необязателен */ }
+    }
+    $id('kpbSearch')?.addEventListener('input', (e) => {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => search(e.target.value.trim()), 350);
+    });
+    search('');
+
+    // Выбрали технику — подставляем её данные в форму
+    vehicleSel?.addEventListener('change', async () => {
+      if (!vehicleSel.value) return;
+      try {
+        const v = await window.CMAuth.apiAuthed('GET', `/api/manager/kp/build/?vehicle_id=${vehicleSel.value}`);
+        $id('kpbTitle').value = v.title || [v.brand, v.model].filter(Boolean).join(' ');
+        $id('kpbDesc').value = v.description || '';
+        $id('kpbUsd').value = v.price_usd || '';
+        $id('kpbCny').value = v.price_cny || '';
+        $id('kpbKzt').value = v.price_kzt || '';
+      } catch (e) {
+        statusEl.textContent = e.message;
+        statusEl.className = 'kpb-status err';
+      }
+    });
+
+    function collect() {
+      return {
+        vehicle_id: vehicleSel.value ? Number(vehicleSel.value) : null,
+        title: $id('kpbTitle').value.trim(),
+        description: $id('kpbDesc').value.trim(),
+        price_usd: $id('kpbUsd').value || null,
+        price_cny: $id('kpbCny').value || null,
+        price_kzt: $id('kpbKzt').value || null,
+        quantity: Number($id('kpbQty').value || 1),
+        buyer_name: $id('kpbBuyer').value.trim(),
+        number: $id('kpbNumber').value.trim(),
+        availability_note: $id('kpbAvail').value.trim(),
+        timeline: $id('kpbTimeline').value.trim(),
+      };
+    }
+
+    $id('kpbDownload')?.addEventListener('click', async (e) => {
+      const btn = e.currentTarget;
+      btn.disabled = true;
+      statusEl.textContent = '';
+      try {
+        await window.CMAuth.apiAuthedDownloadPost('/api/manager/kp/build/', collect(), 'KP.pdf');
+      } catch (err) {
+        statusEl.textContent = t('cab_error') + ': ' + err.message;
+        statusEl.className = 'kpb-status err';
+      } finally { btn.disabled = false; }
+    });
+
+    $id('kpbSend')?.addEventListener('click', async (e) => {
+      const btn = e.currentTarget;
+      const email = $id('kpbEmail').value.trim();
+      if (!email) {
+        statusEl.textContent = t('kpb_need_email');
+        statusEl.className = 'kpb-status err';
+        return;
+      }
+      btn.disabled = true;
+      statusEl.textContent = '';
+      try {
+        const spec = collect();
+        spec.send = true;
+        spec.recipients = email;
+        const r = await window.CMAuth.apiAuthed('POST', '/api/manager/kp/build/', spec);
+        statusEl.textContent = t('cab_kp_sent') + ': ' + (r.recipients || []).join(', ');
+        statusEl.className = 'kpb-status ok';
+      } catch (err) {
+        statusEl.textContent = err.message;
+        statusEl.className = 'kpb-status err';
+      } finally { btn.disabled = false; }
+    });
+  }
+
   // === Профиль: мои данные + смена пароля ===
   async function initProfile() {
     const section = document.getElementById('profileSection');
@@ -1299,5 +1400,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   initMyListings();
   initNotifications();
   initProfile();
+  initKpBuilder();
   render();
 });

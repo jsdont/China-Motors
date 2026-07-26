@@ -2285,9 +2285,11 @@ html.dark .product-title {
 }
 
 .price {
-  font-size: 20px;
-  font-weight: 700;
+  /* Цена — главное, что ищут в карточке, поэтому крупно и контрастно. */
+  font-size: 23px;
+  font-weight: 800;
   color: #1f1f1f;
+  line-height: 1.25;
 }
 html.dark .cm-card {
   background: #1f1f1f;
@@ -3558,3 +3560,40 @@ html.dark .simple-calc__sub { color: #aab4c5; }
 html.dark .sc-choice { background: #1e1e1e; border-color: rgba(255, 255, 255, .16); color: #f5f5f5; }
 html.dark .simple-calc__input { background: #1e1e1e; border-color: rgba(255, 255, 255, .16); color: #f5f5f5; }
 html.dark .simple-calc__link { color: #aab4c5; }
+
+/* Расшифровка терминов: «?» рядом со строкой расчёта */
+.cm-hint {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin-left: 6px;
+  border-radius: 50%;
+  background: #6b7280;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: help;
+  vertical-align: middle;
+}
+.cm-hint:hover, .cm-hint:focus { background: #E12821; outline: none; }
+
+/* Блок доверия на главной — простыми словами, без терминов */
+.hp-trust { max-width: 1200px; margin: 0 auto; padding: 10px 20px 40px; }
+.hp-trust__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
+.hp-trust__item { background: #fff; border: 1px solid #eceef3; border-radius: 14px; padding: 22px; }
+.hp-trust__item i { font-size: 24px; color: #E12821; }
+.hp-trust__item h4 { margin: 12px 0 8px; font-size: 18px; }
+.hp-trust__item p { margin: 0; color: #6b7280; font-size: 15px; line-height: 1.55; }
+html.dark .hp-trust__item { background: #1e1e1e; border-color: rgba(255, 255, 255, .08); }
+html.dark .hp-trust__item h4 { color: #f5f5f5; }
+html.dark .hp-trust__item p { color: #aab4c5; }
+
+/* Пояснение к итоговой сумме простыми словами */
+.summary-plain {
+  margin: 10px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, .75);
+}
