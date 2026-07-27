@@ -1,0 +1,1212 @@
+/* ============================================================================
+   China Motors — дизайн-система v2 «Груз в пути»
+   ----------------------------------------------------------------------------
+   Живёт РЯДОМ со style.css, не вместо него: страницы переезжают по одной
+   (см. guidelines/prod-migration-plan.md). Пока переехал не весь сайт, оба
+   файла подключены одновременно — это временно и снимается на шаге 7.
+
+   Страница включает v2, добавляя class="v2" на <body>: тогда применяется
+   v2-фон и типографика, а common.js грузит partials/navbar-v2.html и
+   partials/footer-v2.html вместо v1-партиалов.
+
+   Шрифты (подключаются <link>'ом на странице):
+     Oswald            — уже на проде, гарнитура не меняется, меняется роль
+     IBM Plex Sans     400/500/600  · текст
+     IBM Plex Mono     400/500/600  · ВСЕ числа, табличные цифры
+   Archivo НЕ подключается — вариант B отклонён.
+   ============================================================================ */
+
+/* ============================================================================
+   1. ТОКЕНЫ · цвет
+   Источник: tokens/v2-colors.css
+   ============================================================================ */
+:root {
+  /* --- АСФАЛЬТ · холодный бетон и дорожное покрытие ---------------------- */
+  --asphalt-900: #16181C;   /* тёмная земля: hero, футер, панель статуса */
+  --asphalt-800: #1E2126;
+  --asphalt-700: #2A2E35;   /* тёмные панели, шапка таблицы */
+  --asphalt-500: #5A616B;   /* вторичный текст */
+  --asphalt-400: #868D97;   /* подписи, единицы измерения */
+  --asphalt-200: #D5D8DD;   /* ВСЕ линейки и разделители */
+  --asphalt-100: #E6E8EB;
+  --asphalt-050: #F2F3F5;   /* фон страницы — бетон, не крем */
+  --paper: #FFFFFF;
+
+  /* Намеренно тёмная поверхность (шапка, футер, панель статуса).
+     ОТДЕЛЬНО от --asphalt-900: та ступень работает ещё и как цвет текста
+     и в тёмной теме обязана светлеть — а поверхность обязана остаться тёмной. */
+  --surface-inverse: #16181C;
+  --on-inverse: #FFFFFF;
+
+  /* --- СИГНАЛ · «действие / вы здесь». Максимум два в кадре -------------- */
+  --signal-500: #E1281F;
+  --signal-600: #B81F19;
+  /* Заливка кнопки отдельно: --signal-500 в тёмной теме светлеет ради
+     читаемости текста, а заливка обязана остаться фирменной. */
+  --signal-fill: #E1281F;
+  --signal-fill-hover: #B81F19;
+  --on-signal: #FFFFFF;
+  --signal-tint: rgba(225, 40, 33, 0.10);
+
+  /* --- ОПАСНОСТЬ / В ПУТИ · «не закрыто, требует внимания» --------------- */
+  --hazard-400: #F5A524;
+  --hazard-tint: rgba(245, 165, 36, 0.14);
+
+  /* --- ЧЕРНИЛА · «официальное и завершённое» ----------------------------- */
+  --ink-700: #1E2A5A;
+  --ink-500: #33448C;
+  --ink-tint: rgba(30, 42, 90, 0.08);
+
+  /* --- ОЧИЩЕНО · «закрыто успешно» -------------------------------------- */
+  --clear-600: #157A4A;
+  --clear-400: #3ECB86;   /* светлая ступень — для текста на тёмной плашке */
+  --clear-tint: rgba(21, 122, 74, 0.12);
+
+  /* --- Семантика --------------------------------------------------------- */
+  --v2-page: var(--asphalt-050);
+  --v2-panel: var(--paper);
+  --v2-panel-dark: var(--asphalt-900);
+  --v2-text: var(--asphalt-900);
+  --v2-text-secondary: var(--asphalt-500);
+  --v2-text-label: var(--asphalt-400);
+  --v2-text-on-dark: var(--paper);
+  --v2-text-on-dark-secondary: rgba(255, 255, 255, 0.62);
+
+  /* Линейки. Теней в системе нет — глубина передаётся линейкой и тоном. */
+  --rule-hair: 1px solid var(--asphalt-200);
+  --rule-hair-dark: 1px solid rgba(255, 255, 255, 0.14);
+  --rule-heavy: 2px solid var(--asphalt-900);
+  --rule-rail: 2px;
+
+  --v2-scrim: linear-gradient(90deg, rgba(22,24,28,.94) 0%, rgba(22,24,28,.86) 46%, rgba(22,24,28,.55) 100%);
+  --hazard-chevron: repeating-linear-gradient(45deg, var(--hazard-400) 0 6px, var(--asphalt-900) 6px 12px);
+
+  /* --- ТОКЕНЫ · типографика (tokens/v2-typography.css) ------------------- */
+  --type-display: 'Oswald', sans-serif;
+  --type-body: 'IBM Plex Sans', sans-serif;
+  --type-mono: 'IBM Plex Mono', monospace;
+  /* Oswald сжатый сам и оси ширины не имеет. Значение оставлено, чтобы
+     Archivo можно было подставить без правок разметки. */
+  --display-stretch: 100%;
+
+  --fs-13: 13px;
+  --fs-15: 15px;
+  --fs-17: 17px;
+  --fs-20: 20px;
+  --fs-28: 28px;
+  --fs-36: 36px;
+  --fs-40: 40px;
+  --fs-56: 56px;
+
+  --ls-display: 0.005em;
+  --ls-mono-label: 0.08em;
+  --ls-mono-btn: 0.06em;
+
+  --v2-hero: 700 var(--fs-56)/1.02 var(--type-display);
+  --v2-page-title: 700 var(--fs-36)/1.05 var(--type-display);
+  --v2-section: 700 var(--fs-28)/1.1 var(--type-display);
+  --v2-card-title: 600 var(--fs-20)/1.15 var(--type-display);
+  --v2-body-lg: 400 var(--fs-17)/1.6 var(--type-body);
+  --v2-body: 400 var(--fs-15)/1.6 var(--type-body);
+  --v2-small: 400 var(--fs-13)/1.5 var(--type-body);
+  --v2-label: 500 11px/1.4 var(--type-mono);
+  --v2-data: 400 var(--fs-15)/1.4 var(--type-mono);
+  --v2-price: 600 30px/1.1 var(--type-mono);
+
+  /* --- ТОКЕНЫ · отступы (tokens/v2-space.css) --------------------------- */
+  --space-48: 48px;
+  --space-64: 64px;
+  --space-96: 96px;
+  --space-128: 128px;
+
+  --radius-0: 0px;
+  --radius-2: 2px;
+  --radius-4: 4px;
+
+  --v2-grid-max: 1240px;
+  --v2-gutter: 24px;
+  --v2-section-y: 96px;
+
+  --v2-btn-h: 52px;
+  --v2-btn-h-sm: 40px;
+  --v2-dial: 56px;
+
+  --rail-node: 10px;
+  --rail-node-active: 12px;
+  --rail-tick: 6px;
+}
+
+/* ============================================================================
+   2. ТЁМНАЯ ТЕМА
+   Источник: tokens/v2-dark.css. Отдельных тёмных макетов нет — тема
+   работает на тех же компонентах через токены.
+
+   Асфальтовая шкала — это ШКАЛА, а не семантика, поэтому вслепую она не
+   инвертируется: иначе намеренно тёмные поверхности стали бы светлыми.
+   ============================================================================ */
+html.dark {
+  --v2-page: #0E1013;        /* глубже asphalt-900: панели должны читаться поверх */
+  --v2-panel: #181B20;
+  --v2-panel-dark: #0A0C0F;
+  --paper: #181B20;          /* «бумага» в тёмной теме — панель, не белый */
+
+  --surface-inverse: #1F2329; /* чуть светлее фона, иначе сливается в пятно */
+  --on-inverse: #F2F3F5;
+
+  --v2-text: #F2F3F5;
+  --v2-text-secondary: #A8AFB9;
+  --v2-text-label: #7C848F;
+  --v2-text-on-dark: #F2F3F5;
+  --v2-text-on-dark-secondary: rgba(255, 255, 255, 0.62);
+
+  /* Компоненты ссылаются на шкалу напрямую — переопределяем «текстовые»
+     ступени, чтобы тема применилась без правок разметки. */
+  --asphalt-900: #F2F3F5;
+  --asphalt-700: #C9CED6;
+  --asphalt-500: #A8AFB9;
+  --asphalt-400: #7C848F;
+  --asphalt-200: #2C3138;
+  --asphalt-100: #232830;
+  --asphalt-050: #0E1013;
+
+  /* #E1281F на #0E1013 даёт 3,9:1 — мало для текста. Светлее — 5,9:1. */
+  --signal-500: #FF5A4F;
+  --signal-600: #FF7A70;   /* hover на тёмном светлеет, а не темнеет */
+  --signal-tint: rgba(255, 90, 79, 0.16);
+  /* Заливка кнопки НЕ светлеет — остаётся фирменной в обеих темах. */
+  --signal-fill: #E1281F;
+  --signal-fill-hover: #B81F19;
+  --on-signal: #FFFFFF;
+
+  --hazard-tint: rgba(245, 165, 36, 0.20);   /* сам hazard на тёмном 8,9:1 — как есть */
+
+  --ink-700: #8DA0E0;      /* чернильный #1E2A5A на тёмном нечитаем */
+  --ink-500: #A5B4EA;
+  --ink-tint: rgba(141, 160, 224, 0.14);
+
+  --clear-600: #3ECB86;
+  --clear-tint: rgba(62, 203, 134, 0.16);
+
+  --rule-hair: 1px solid #2C3138;
+  --rule-hair-dark: 1px solid rgba(255, 255, 255, 0.10);
+  --rule-heavy: 2px solid #4A515B;
+  --v2-scrim: linear-gradient(90deg, rgba(8,9,11,.96) 0%, rgba(8,9,11,.90) 46%, rgba(8,9,11,.62) 100%);
+  --hazard-chevron: repeating-linear-gradient(45deg, var(--hazard-400) 0 6px, #0A0C0F 6px 12px);
+}
+
+/* ============================================================================
+   3. ТАБЛИЧНЫЕ ЦИФРЫ
+   Половина визуального эффекта v2 и самая дешёвая его часть. Вешается на
+   все цены, массы, годы, курс.
+   ============================================================================ */
+.num,
+.v2-num,
+[data-v2-num] {
+  font-family: var(--type-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* ============================================================================
+   4. ОСНОВАНИЕ СТРАНИЦЫ v2
+   Включается классом .v2 на <body> — только на переехавших страницах.
+   ============================================================================ */
+body.v2 {
+  background: var(--v2-page);
+  color: var(--v2-text);
+  font-family: var(--type-body);
+  font-size: var(--fs-15);
+  line-height: 1.6;
+}
+
+/* v1 держит `html.dark body{background:#121212}` — по специфичности (0,1,2)
+   это сильнее, чем `body.v2` (0,1,1), и тёмная страница уезжала в v1-серый.
+   Пока оба файла живут рядом, перебиваем явно; на шаге 7 правило уйдёт
+   вместе со style.css. */
+html.dark body.v2 {
+  background: var(--v2-page);
+  color: var(--v2-text);
+}
+
+body.v2 .v2-wrap {
+  max-width: var(--v2-grid-max);
+  margin: 0 auto;
+  padding: 0 var(--v2-gutter);
+}
+
+/* Заголовки страницы — Oswald капсом, с трекингом и разрядкой слов:
+   сжатый шрифт съедает межсловные пробелы на кириллице. */
+body.v2 .v2-page-title {
+  font: var(--v2-page-title);
+  letter-spacing: var(--ls-display);
+  word-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+body.v2 .v2-section-title {
+  font: var(--v2-section);
+  letter-spacing: var(--ls-display);
+  word-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* Моно-ярлык капсом — деталь, которая переводит интерфейс из «сайта»
+   в «документ». */
+.v2-label {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--v2-text-label);
+}
+
+/* Служебная линейка раздела: индекс + название + справка справа */
+.v2-rule {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 10px;
+  border-bottom: var(--rule-heavy);
+}
+
+.v2-rule__index {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  color: var(--signal-500);
+}
+
+.v2-rule__title {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--v2-text);
+}
+
+.v2-rule__aside {
+  font: var(--v2-label);
+  font-weight: 400;
+  letter-spacing: var(--ls-mono-label);
+  color: var(--v2-text-label);
+  margin-left: auto;
+}
+
+/* ============================================================================
+   5. ШАПКА v2 (partials/navbar-v2.html)
+   Тёмная, асфальтовая. ID элементов те же, что в v1 — на них завязаны
+   темизация, язык, авторизация, избранное и мобильная шторка в common.js.
+   ============================================================================ */
+body.v2 .v2-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--surface-inverse);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.v2 .v2-nav__inner {
+  max-width: var(--v2-grid-max);
+  margin: 0 auto;
+  padding: 0 var(--v2-gutter);
+  height: 78px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+/* --- Логотип: «CM» стоит на отрезке маршрута с тремя узлами -------------- */
+.v2-logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.v2-logo__mark {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.v2-logo__cm {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--type-display);
+  font-weight: 700;
+  font-size: 27px;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--on-inverse);
+}
+
+.v2-logo__rail {
+  position: absolute;
+  top: 34px;
+  left: 0;
+  right: 0;
+  height: var(--rule-rail);
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.v2-logo__node {
+  position: absolute;
+  top: 33px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+
+.v2-logo__node--1 { left: calc(18% - 2.5px); background: rgba(255, 255, 255, 0.45); }
+.v2-logo__node--2 { left: calc(50% - 2.5px); background: var(--ink-500); }
+.v2-logo__node--3 { left: calc(82% - 2.5px); background: var(--signal-500); }
+
+.v2-logo__text {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.v2-logo__name {
+  font-family: var(--type-display);
+  font-weight: 700;
+  font-size: 21px;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--on-inverse);
+}
+
+.v2-logo__sub {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* --- Пункты меню: моно капсом, активный подчёркнут сигнальным ------------ */
+body.v2 .v2-nav .nav-links {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+body.v2 .v2-nav .nav-links a {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  padding-bottom: 3px;
+  color: rgba(255, 255, 255, 0.55);
+  border-bottom: 2px solid transparent;
+  transition: color .15s ease, border-color .15s ease;
+}
+
+.v2-nav .nav-links a:hover { color: var(--on-inverse); }
+
+body.v2 .v2-nav .nav-links a.active {
+  color: var(--on-inverse);
+  border-bottom-color: var(--signal-500);
+}
+
+body.v2 .v2-nav__right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* Кабинет — secondary на тёмном: не красный, не конкурирует с primary CTA */
+body.v2 .v2-nav .nav-auth-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--v2-btn-h-sm);
+  padding: 0 18px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: var(--radius-4);
+  background: transparent;
+  color: var(--on-inverse);
+  text-decoration: none;
+  font-family: var(--type-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: var(--ls-mono-btn);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.v2-nav .nav-auth-link:hover { border-color: var(--on-inverse); }
+
+/* Язык, тема, избранное, бургер — единая тёмная кнопка */
+body.v2 .v2-nav .lang-toggle,
+body.v2 .v2-nav .theme-toggle,
+body.v2 .v2-nav .nav-icon-btn,
+body.v2 .v2-nav .menu-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 10px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: var(--radius-4);
+  background: transparent;
+  color: var(--on-inverse);
+  cursor: pointer;
+  font-family: var(--type-mono);
+  font-size: 12px;
+  letter-spacing: var(--ls-mono-btn);
+  text-decoration: none;
+  position: relative;
+}
+
+body.v2 .v2-nav .menu-toggle {
+  flex-direction: column;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  display: none;
+}
+
+body.v2 .v2-nav .menu-toggle span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--on-inverse);
+}
+
+body.v2 .v2-nav .nav-fav-count {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--signal-fill);
+  color: var(--on-signal);
+  font-family: var(--type-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Курс — моно, табличные цифры; тихая справка, не акцент */
+body.v2 .v2-nav__rate {
+  font: var(--v2-label);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.45);
+  white-space: nowrap;
+}
+
+/* Выпадающий список языка */
+.v2-nav .lang-switch { position: relative; }
+
+body.v2 .v2-nav .lang-switch__menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 168px;
+  background: var(--surface-inverse);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: var(--radius-4);
+  padding: 6px;
+  display: none;
+  flex-direction: column;
+  z-index: 120;
+}
+
+.v2-nav .lang-switch.open .lang-switch__menu { display: flex; }
+
+body.v2 .v2-nav .lang-switch__menu button {
+  padding: 10px 12px;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.82);
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--type-body);
+  font-size: var(--fs-15);
+  border-radius: var(--radius-2);
+}
+
+.v2-nav .lang-switch__menu button:hover { background: rgba(255, 255, 255, 0.08); }
+
+/* ============================================================================
+   6. МОБИЛЬНАЯ ШТОРКА v2
+   Брейкпойнт 920px — тот же, что в v1, и на него завязан
+   initMobileNavControls (переносит язык/тему/вход в подвал шторки).
+   ============================================================================ */
+@media (max-width: 920px) {
+  .v2-nav__inner { height: 66px; gap: 12px; }
+  .v2-nav .nav-links { display: none; }
+  .v2-nav .menu-toggle { display: flex; }
+  .v2-nav__rate { display: none; }
+  .v2-logo__sub { display: none; }
+  .v2-logo__mark { width: 38px; height: 38px; }
+  .v2-logo__cm { height: 29px; font-size: 23px; }
+  .v2-logo__rail { top: 29px; }
+  .v2-logo__node { top: 28px; }
+  .v2-logo__name { font-size: 18px; }
+}
+
+body.v2 .nav-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(8, 9, 11, 0.72);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .15s ease, visibility .15s ease;
+}
+
+body.v2 .nav-drawer-overlay.active { opacity: 1; visibility: visible; }
+
+body.v2 .nav-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 201;
+  width: min(86vw, 340px);
+  background: var(--surface-inverse);
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  transform: translateX(100%);
+  transition: transform .28s cubic-bezier(.4, 0, .2, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+body.v2 .nav-drawer.active { transform: translateX(0); }
+
+body.v2 .nav-drawer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  flex-shrink: 0;
+}
+
+body.v2 .nav-drawer__logo {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  color: rgba(255, 255, 255, 0.45);
+}
+
+body.v2 .nav-drawer__close {
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: var(--radius-4);
+  background: transparent;
+  color: var(--on-inverse);
+  cursor: pointer;
+  font-size: 15px;
+}
+
+body.v2 .nav-drawer__nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+body.v2 .nav-drawer__nav a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 12px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+body.v2 .nav-drawer__nav a.active { color: var(--signal-500); }
+
+body.v2 .nav-drawer__footer {
+  padding: 16px 20px 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+body.v2 .nav-drawer__phone {
+  flex: 1 1 100%;
+  order: 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: var(--v2-btn-h);
+  background: var(--signal-fill);
+  color: var(--on-signal);
+  text-decoration: none;
+  border-radius: var(--radius-4);
+  font-family: var(--type-mono);
+  font-size: 13px;
+  letter-spacing: var(--ls-mono-btn);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================================
+   7. ФУТЕР v2 (partials/footer-v2.html)
+   По верхней кромке — волосяная рейка с двумя конечными узлами:
+   ХОРГОС ● ── ● АЛМАТЫ. Тихая подпись, не декор.
+   ============================================================================ */
+.v2-footer {
+  background: var(--surface-inverse);
+  color: var(--on-inverse);
+}
+
+.v2-footer__inner {
+  max-width: var(--v2-grid-max);
+  margin: 0 auto;
+  padding: 0 var(--v2-gutter);
+}
+
+/* --- Рейка «Хоргос — Алматы» -------------------------------------------- */
+.v2-rail {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  padding-top: 28px;
+}
+
+.v2-rail__seg {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+}
+
+.v2-rail__line {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: var(--rail-node-active);
+}
+
+.v2-rail__line::before,
+.v2-rail__line::after {
+  content: "";
+  flex: 1;
+  height: var(--rule-rail);
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.v2-rail__seg:first-child .v2-rail__line::before,
+.v2-rail__seg:last-child .v2-rail__line::after { background: transparent; }
+
+.v2-rail__node {
+  width: var(--rail-node);
+  height: var(--rail-node);
+  border-radius: 50%;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  background: transparent;
+}
+
+.v2-rail__label {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 8px;
+}
+
+.v2-footer__grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1fr;
+  gap: 32px;
+  padding: 48px 0;
+}
+
+.v2-footer__about {
+  font: var(--v2-body);
+  color: rgba(255, 255, 255, 0.5);
+  max-width: 34ch;
+  margin: 18px 0 0;
+}
+
+.v2-footer__col-title {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  padding-bottom: 12px;
+  border-bottom: var(--rule-hair-dark);
+  margin: 0 0 14px;
+}
+
+.v2-footer__list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.v2-footer__list a,
+.v2-footer__list span {
+  font: var(--v2-body);
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.66);
+  text-decoration: none;
+}
+
+.v2-footer__list a:hover { color: var(--on-inverse); }
+
+.v2-footer__bottom {
+  border-top: var(--rule-hair-dark);
+  padding: 18px 0 28px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.v2-footer__bottom span,
+.v2-footer__bottom a {
+  font: var(--v2-label);
+  font-weight: 400;
+  letter-spacing: var(--ls-mono-label);
+  color: rgba(255, 255, 255, 0.35);
+  text-decoration: none;
+}
+
+.v2-footer__bottom a:hover { color: rgba(255, 255, 255, 0.6); }
+
+@media (max-width: 920px) {
+  .v2-footer__grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+}
+
+@media (max-width: 560px) {
+  .v2-footer__grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================================================
+   8. КАТАЛОГ · сетка
+   ОБЯЗАТЕЛЬНО auto-fill / minmax(240px, 1fr). Жёсткие колонки дают дефект,
+   который уже дважды чинили в макете: карточка сжимается уже своего подвала
+   и цена ломается на две строки.
+   ============================================================================ */
+.v2-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+  margin-top: 32px;
+}
+
+/* ============================================================================
+   9. КАТАЛОГ · паспорт единицы техники (VehiclePassport)
+   Порядок сверху вниз: фото 4:3 с тегами локации/наличия по нижней кромке →
+   тяжёлая линейка → название → ряды данных → тяжёлая линейка → цена + кнопка.
+   Теней нет; ховер утемняет рамку.
+   ============================================================================ */
+.vp {
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  border: 1px solid var(--asphalt-200);
+  border-radius: var(--radius-2);
+  text-decoration: none;
+  color: var(--asphalt-900);
+  transition: border-color .15s ease;
+  position: relative;
+}
+
+.vp:hover { border-color: var(--asphalt-900); }
+
+.vp__media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--asphalt-100);
+}
+
+.vp__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Теги по нижней кромке фото: локация слева, наличие справа */
+.vp__tag {
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 12px;
+  background: var(--surface-inverse);
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.vp__tag--place { left: 0; color: var(--on-inverse); }
+.vp__tag--avail { right: 0; }
+
+/* Один цвет — один смысл: «в наличии» это закрытый успешный статус (clear),
+   «под заказ» — ещё не закрыто (hazard). Красный здесь не участвует. */
+.vp__tag--in_stock { color: var(--clear-400); }
+.vp__tag--on_order { color: var(--hazard-400); }
+.vp__tag--in_transit { color: var(--hazard-400); }
+.vp__tag--out_of_stock { color: rgba(255, 255, 255, 0.55); }
+
+/* Избранное — функциональность v1, сохранена. Не сигнальный цвет:
+   красный зарезервирован за действием и активным узлом маршрута. */
+.vp__fav {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: var(--radius-4);
+  background: rgba(22, 24, 28, 0.62);
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+}
+
+.vp__fav:hover { background: rgba(22, 24, 28, 0.85); }
+.vp__fav.active { color: var(--hazard-400); }
+
+.vp__head {
+  padding: 16px 18px 0;
+  border-top: var(--rule-heavy);
+}
+
+.vp__title {
+  font-family: var(--type-display);
+  font-weight: 600;
+  font-size: var(--fs-20);
+  line-height: 1.15;
+  text-transform: uppercase;
+  letter-spacing: var(--ls-display);
+  word-spacing: 0.06em;
+  margin: 0;
+}
+
+.vp__sub {
+  font: var(--v2-label);
+  font-weight: 400;
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--asphalt-400);
+  margin-top: 5px;
+}
+
+.vp__rows { padding: 12px 18px 0; }
+
+/* Ряд данных — примитив всей системы: моно-ярлык слева, табличное значение
+   справа. Значения выравниваются в колонку по всей сетке, и карточки
+   читаются как строки одного каталога-манифеста. */
+.vp__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 9px 0;
+  border-bottom: var(--rule-hair);
+}
+
+.vp__row-label {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--asphalt-400);
+}
+
+.vp__row-value {
+  font: var(--v2-data);
+  font-variant-numeric: tabular-nums;
+  color: var(--asphalt-900);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.vp__foot {
+  margin-top: auto;
+  padding: 16px 18px 18px;
+  border-top: var(--rule-heavy);
+}
+
+.vp__price-label {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--asphalt-400);
+  white-space: nowrap;
+}
+
+/* Цена — главное число карточки, поэтому nowrap: при сжатии колонки
+   валюта не должна уезжать на вторую строку. */
+.vp__price {
+  font: var(--v2-price);
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+  margin: 4px 0 14px;
+  white-space: nowrap;
+}
+
+.vp__cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--v2-btn-h-sm);
+  padding: 10px 12px;
+  font-family: var(--type-mono);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: var(--ls-mono-btn);
+  text-transform: uppercase;
+  border-radius: var(--radius-4);
+  white-space: nowrap;
+  background: transparent;
+  color: var(--asphalt-900);
+  border: 1.5px solid var(--asphalt-900);
+}
+
+/* Заливка — максимум у одной карточки в сетке, иначе красный размножается. */
+.vp--primary .vp__cta {
+  background: var(--signal-fill);
+  color: var(--on-signal);
+  border-color: var(--signal-fill);
+}
+
+.vp:hover .vp__cta { background: var(--asphalt-900); color: var(--paper); }
+.vp--primary:hover .vp__cta { background: var(--signal-fill-hover); border-color: var(--signal-fill-hover); color: var(--on-signal); }
+
+/* ============================================================================
+   10. КАТАЛОГ · фильтры
+   Чипы задач: активный — ЗАЛИТЫЙ АСФАЛЬТ, не красный. Иначе в сетке
+   окажется несколько красных пятен и правило «максимум два signal-500
+   в кадре» рассыплется.
+   ============================================================================ */
+.v2-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.v2-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 0 16px;
+  cursor: pointer;
+  border: 1px solid var(--asphalt-200);
+  background: var(--paper);
+  color: var(--asphalt-900);
+  border-radius: var(--radius-4);
+  font-family: var(--type-body);
+  font-size: var(--fs-15);
+  text-align: left;
+  transition: background .15s ease, border-color .15s ease, color .15s ease;
+}
+
+.v2-chip:hover { border-color: var(--asphalt-900); }
+
+.v2-chip.active {
+  background: var(--asphalt-900);
+  border-color: var(--asphalt-900);
+  color: var(--paper);
+}
+
+/* Счётчик моно с табличными цифрами — ряд не «прыгает» при смене фильтра. */
+.v2-chip__count {
+  font-family: var(--type-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 11px;
+  color: var(--asphalt-400);
+}
+
+.v2-chip.active .v2-chip__count { color: rgba(255, 255, 255, 0.55); }
+
+/* --- Ведомость уточняющих фильтров: моно-ярлык над контролом ------------- */
+.v2-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: var(--rule-hair);
+}
+
+.v2-field { display: block; }
+
+.v2-field__label {
+  display: block;
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--asphalt-400);
+  margin-bottom: 7px;
+}
+
+.v2-field select,
+.v2-field input {
+  width: 100%;
+  border: var(--rule-hair);
+  border-radius: var(--radius-2);
+  background: var(--paper);
+  color: var(--asphalt-900);
+  padding: 11px 12px;
+  font: var(--v2-body);
+  outline: none;
+  cursor: pointer;
+}
+
+.v2-field input { cursor: text; }
+.v2-field select:focus,
+.v2-field input:focus { border-color: var(--asphalt-900); }
+
+/* Текстовая кнопка-действие (сброс, «показать уточнения») */
+.v2-link-btn {
+  background: none;
+  border: 0;
+  padding: 10px 0;
+  color: var(--asphalt-500);
+  font-family: var(--type-mono);
+  font-size: 11px;
+  letter-spacing: var(--ls-mono-btn);
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.v2-link-btn:hover { color: var(--signal-500); }
+
+/* ============================================================================
+   11. КАТАЛОГ · пустое состояние
+   ============================================================================ */
+.v2-empty {
+  grid-column: 1 / -1;
+  padding: 56px 24px;
+  background: var(--paper);
+  border: var(--rule-hair);
+  text-align: center;
+}
+
+.v2-empty__title {
+  font: var(--v2-section);
+  letter-spacing: var(--ls-display);
+  word-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 10px;
+}
+
+.v2-empty p {
+  font: var(--v2-body-lg);
+  color: var(--asphalt-500);
+  max-width: 52ch;
+  margin: 0 auto 24px;
+}
+
+.v2-empty__actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ============================================================================
+   12. КНОПКИ v2
+   Primary — один на экран. Формулировка = результат, не действие.
+   ============================================================================ */
+.v2-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--v2-btn-h);
+  padding: 0 24px;
+  border-radius: var(--radius-4);
+  font-family: var(--type-mono);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: var(--ls-mono-btn);
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  white-space: nowrap;
+}
+
+.v2-btn--primary {
+  background: var(--signal-fill);
+  color: var(--on-signal);
+  border-color: var(--signal-fill);
+}
+
+.v2-btn--primary:hover { background: var(--signal-fill-hover); border-color: var(--signal-fill-hover); }
+
+.v2-btn--secondary {
+  background: transparent;
+  color: var(--asphalt-900);
+  border-color: var(--asphalt-900);
+}
+
+.v2-btn--secondary:hover { background: var(--asphalt-900); color: var(--paper); }
+
+/* ============================================================================
+   13. ШАПКА СТРАНИЦЫ КАТАЛОГА
+   ============================================================================ */
+.v2-page-head {
+  padding: 40px 0 8px;
+}
+
+.v2-page-head__title { margin: 10px 0 6px; }
+
+.v2-page-head__sub {
+  font: var(--v2-body-lg);
+  color: var(--asphalt-500);
+  margin: 0;
+}
+
+@media (max-width: 560px) {
+  .v2-page-head { padding-top: 28px; }
+  body.v2 .v2-page-title { font-size: var(--fs-28); }
+  .v2-chip { flex: 1 1 100%; }
+}

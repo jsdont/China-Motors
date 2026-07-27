@@ -47,6 +47,7 @@
       nav_contacts: 'Контакты',
       nav_calculator: 'Калькулятор',
       help_call: 'Позвонить', help_whatsapp: 'WhatsApp', help_font_title: 'Увеличить размер текста',
+      vp_row_wheel: 'КОЛЁСНАЯ ФОРМУЛА', vp_row_mass: 'ПОЛНАЯ МАССА, Т', vp_row_payload: 'ГРУЗОПОДЪЁМНОСТЬ, Т', vp_row_power: 'ДВИГАТЕЛЬ, Л.С.', vp_row_gearbox: 'КПП', vp_price_label: 'ПОД КЛЮЧ В АЛМАТЫ', vp_cta: 'РАСЧЁТ ПОД КЛЮЧ', vp_price_on_request: '— по запросу', vp_owner_client: 'клиента', vp_avail_in_stock: 'В НАЛИЧИИ', vp_avail_on_order: 'ПОД ЗАКАЗ', vp_avail_out_of_stock: 'НЕТ', catalog_rule_title: 'Площадка', filter_search_label: 'Поиск', filter_brand_label: 'Марка', filter_wheel_label: 'Колёсная формула', nav_menu: 'МЕНЮ',
       product_cta_request: 'Оставить заявку на эту технику',
       cat_empty_t: 'По этому запросу ничего не нашлось', cat_empty_d: 'Попробуйте выбрать другую задачу или посмотреть всё. Либо позвоните — подберём под вашу задачу и бюджет.', cat_error_t: 'Не удалось загрузить каталог', cat_error_d: 'Обновите страницу или позвоните — расскажем, что есть в наличии.', contact_ok_t: 'Заявка отправлена!', contact_ok_d: 'Менеджер перезвонит в рабочее время и уточнит детали. Если нужно срочно — позвоните сами.', contact_ok_catalog: 'Посмотреть каталог',
       route_title: 'С чего начать — по шагам', route_sub: 'Если впервые на сайте, просто идите по порядку. На любом шаге можно позвонить — поможем.', route1_t: 'Посмотрите технику', route1_d: 'В каталоге выберите, что вам нужно делать — возить песок, грузы или поднимать на стройке. Покажем подходящие машины.', route1_go: 'Открыть каталог →', route2_t: 'Узнайте цену «под ключ»', route2_d: 'Калькулятор покажет итоговую сумму с растаможкой и доставкой. Не хотите считать — ответьте на три вопроса, посчитаем сами.', route2_go: 'Рассчитать стоимость →', route3_t: 'Оставьте заявку', route3_d: 'Достаточно имени и телефона. Менеджер перезвонит, уточнит детали и пришлёт коммерческое предложение.', route3_go: 'Оставить заявку →', route4_t: 'Следите за сделкой', route4_d: 'После заключения договора в личном кабинете видно, где сейчас ваша машина: оплата, доставка, таможня, выдача.', route4_go: 'Личный кабинет →', task_head: 'Что вам нужно делать?', task_all: 'Показать всё', task_dump: 'Возить песок, щебень, грунт', task_tractor: 'Возить грузы на дальние расстояния', task_semi: 'Перевозить технику и длинные грузы', task_trailer: 'Добавить прицеп к тягачу', task_crane: 'Поднимать грузы на стройке', task_more: 'Уточнить: марка, колёсная формула, сортировка', task_less: 'Скрыть уточнения',
@@ -476,6 +477,7 @@
       nav_contacts: 'Байланыс',
       nav_calculator: 'Калькулятор',
       help_call: 'Қоңырау шалу', help_whatsapp: 'WhatsApp', help_font_title: 'Мәтін өлшемін ұлғайту',
+      vp_row_wheel: 'ДӨҢГЕЛЕК ФОРМУЛАСЫ', vp_row_mass: 'ТОЛЫҚ МАССА, Т', vp_row_payload: 'ЖҮК КӨТЕРІМДІЛІГІ, Т', vp_row_power: 'ҚОЗҒАЛТҚЫШ, А.К.', vp_row_gearbox: 'БЕРІЛІС ҚОРАБЫ', vp_price_label: 'АЛМАТЫДА КІЛТТІ БҰРАП', vp_cta: 'КІЛТТІ БАҒАНЫ ЕСЕПТЕУ', vp_price_on_request: '— сұраныс бойынша', vp_owner_client: 'клиенттен', vp_avail_in_stock: 'ҚОЛДА БАР', vp_avail_on_order: 'ТАПСЫРЫСПЕН', vp_avail_out_of_stock: 'ЖОҚ', catalog_rule_title: 'Алаң', filter_search_label: 'Іздеу', filter_brand_label: 'Марка', filter_wheel_label: 'Дөңгелек формуласы', nav_menu: 'МӘЗІР',
       product_cta_request: 'Осы техникаға өтінім қалдыру',
       cat_empty_t: 'Бұл сұраныс бойынша ештеңе табылмады', cat_empty_d: 'Басқа тапсырманы таңдап көріңіз немесе барлығын қараңыз. Не қоңырау шалыңыз — тапсырмаңыз бен бюджетіңізге сай таңдаймыз.', cat_error_t: 'Каталогты жүктеу мүмкін болмады', cat_error_d: 'Бетті жаңартыңыз немесе қоңырау шалыңыз — қолда не бар екенін айтамыз.', contact_ok_t: 'Өтінім жіберілді!', contact_ok_d: 'Менеджер жұмыс уақытында қоңырау шалып, толықтырады. Шұғыл болса — өзіңіз қоңырау шалыңыз.', contact_ok_catalog: 'Каталогты қарау',
       route_title: 'Неден бастау керек — қадам-қадаммен', route_sub: 'Сайтта алғаш рет болсаңыз, ретімен жүріңіз. Кез келген қадамда қоңырау шалуға болады — көмектесеміз.', route1_t: 'Техниканы қараңыз', route1_d: 'Каталогта не істеу керегін таңдаңыз — құм, жүк тасу немесе құрылыста көтеру. Қолайлы көліктерді көрсетеміз.', route1_go: 'Каталогты ашу →', route2_t: '«Кілтті бұрап мінетін» бағаны біліңіз', route2_d: 'Калькулятор кедендік рәсімдеу мен жеткізуді қоса қорытынды соманы көрсетеді. Есептегіңіз келмесе — үш сұраққа жауап беріңіз, өзіміз есептейміз.', route2_go: 'Құнын есептеу →', route3_t: 'Өтінім қалдырыңыз', route3_d: 'Аты-жөні мен телефон жеткілікті. Менеджер қоңырау шалып, толықтырып, коммерциялық ұсыныс жібереді.', route3_go: 'Өтінім қалдыру →', route4_t: 'Мәмілені бақылаңыз', route4_d: 'Шарт жасалғаннан кейін жеке кабинетте көлігіңіздің қайда екені көрінеді: төлем, жеткізу, кеден, беру.', route4_go: 'Жеке кабинет →', task_head: 'Сізге не істеу керек?', task_all: 'Барлығын көрсету', task_dump: 'Құм, қиыршықтас, топырақ тасу', task_tractor: 'Алыс қашықтыққа жүк тасу', task_semi: 'Техника мен ұзын жүк тасу', task_trailer: 'Тартқышқа тіркеме қосу', task_crane: 'Құрылыста жүк көтеру', task_more: 'Нақтылау: марка, дөңгелек формуласы, сұрыптау', task_less: 'Нақтылауды жасыру',
@@ -858,6 +860,7 @@
       nav_contacts: '联系',
       nav_calculator: '计算器',
       help_call: '致电我们', help_whatsapp: 'WhatsApp', help_font_title: '放大文字',
+      vp_row_wheel: '驱动形式', vp_row_mass: '总质量（吨）', vp_row_payload: '载重（吨）', vp_row_power: '发动机（马力）', vp_row_gearbox: '变速箱', vp_price_label: '阿拉木图交钥匙价', vp_cta: '计算交钥匙价', vp_price_on_request: '— 询价', vp_owner_client: '客户', vp_avail_in_stock: '现货', vp_avail_on_order: '可订购', vp_avail_out_of_stock: '无货', catalog_rule_title: '车场', filter_search_label: '搜索', filter_brand_label: '品牌', filter_wheel_label: '驱动形式', nav_menu: '菜单',
       product_cta_request: '就这台车提交申请',
       cat_empty_t: '没有找到符合条件的车辆', cat_empty_d: '请换一个用途，或查看全部。也可以来电——我们按您的用途和预算推荐。', cat_error_t: '目录加载失败', cat_error_d: '请刷新页面或来电——我们会告诉您现有车源。', contact_ok_t: '申请已提交！', contact_ok_d: '经理将在工作时间回电确认细节。如有急事，您也可以直接致电。', contact_ok_catalog: '查看目录',
       route_title: '从哪里开始——分步指引', route_sub: '第一次访问本站，按顺序操作即可。任何一步都可以来电，我们会帮您。', route1_t: '查看车辆', route1_d: '在目录中选择您要做什么——运沙石、长途运货还是工地吊装。我们会为您推荐合适的车型。', route1_go: '打开目录 →', route2_t: '了解「交钥匙」价格', route2_d: '计算器会给出含清关和运输的总价。不想自己算——回答三个问题，我们替您算。', route2_go: '计算费用 →', route3_t: '提交申请', route3_d: '只需姓名和电话。经理会回电确认细节并发送报价单。', route3_go: '提交申请 →', route4_t: '跟踪订单', route4_d: '签约后可在个人中心查看车辆当前状态：付款、运输、清关、交付。', route4_go: '个人中心 →', task_head: '您需要做什么？', task_all: '显示全部', task_dump: '运输沙子、碎石、土方', task_tractor: '长途货物运输', task_semi: '运输设备和超长货物', task_trailer: '为牵引车加挂车', task_crane: '工地吊装货物', task_more: '细化：品牌、驱动形式、排序', task_less: '收起细化选项',
@@ -1278,6 +1281,7 @@
       nav_contacts: 'Contacts',
       nav_calculator: 'Calculator',
       help_call: 'Call us', help_whatsapp: 'WhatsApp', help_font_title: 'Increase text size',
+      vp_row_wheel: 'WHEEL FORMULA', vp_row_mass: 'GROSS WEIGHT, T', vp_row_payload: 'PAYLOAD, T', vp_row_power: 'ENGINE, HP', vp_row_gearbox: 'GEARBOX', vp_price_label: 'TURNKEY IN ALMATY', vp_cta: 'TURNKEY QUOTE', vp_price_on_request: '— on request', vp_owner_client: 'a client', vp_avail_in_stock: 'IN STOCK', vp_avail_on_order: 'ON ORDER', vp_avail_out_of_stock: 'NONE', catalog_rule_title: 'Yard', filter_search_label: 'Search', filter_brand_label: 'Brand', filter_wheel_label: 'Wheel formula', nav_menu: 'MENU',
       product_cta_request: 'Request this vehicle',
       cat_empty_t: 'Nothing matches this search', cat_empty_d: 'Try another task or show everything. Or call us — we will find something for your job and budget.', cat_error_t: 'The catalogue could not be loaded', cat_error_d: 'Refresh the page or call us — we will tell you what is in stock.', contact_ok_t: 'Request sent!', contact_ok_d: 'A manager will call during working hours to confirm the details. If it is urgent, call us yourself.', contact_ok_catalog: 'Browse the catalogue',
       route_title: 'Where to start — step by step', route_sub: 'First time here? Just follow the order. You can call us at any step.', route1_t: 'Look at the vehicles', route1_d: 'In the catalogue pick what you need to do — haul sand, carry freight or lift on site. We will show the right machines.', route1_go: 'Open the catalogue →', route2_t: 'Find the turnkey price', route2_d: 'The calculator gives the final figure including customs and delivery. Rather not calculate? Answer three questions and we will do it.', route2_go: 'Calculate the cost →', route3_t: 'Leave a request', route3_d: 'A name and phone number are enough. A manager will call, confirm the details and send a proposal.', route3_go: 'Leave a request →', route4_t: 'Follow your deal', route4_d: 'Once the contract is signed, your cabinet shows where the vehicle is: payment, delivery, customs, handover.', route4_go: 'Personal cabinet →', task_head: 'What do you need to do?', task_all: 'Show everything', task_dump: 'Haul sand, gravel, soil', task_tractor: 'Carry freight long distance', task_semi: 'Move machinery and long loads', task_trailer: 'Add a trailer to a tractor unit', task_crane: 'Lift loads on a construction site', task_more: 'Refine: brand, wheel formula, sorting', task_less: 'Hide the extra filters',
@@ -2078,7 +2082,14 @@
     initHelpWidget();
     initHintPopover();
 
-    loadPartial('siteHeader', './partials/navbar.html', () => {
+    // Какую версию шапки и футера грузить, решает сама страница:
+    // <body class="v2"> → тёмные партиалы v2, иначе — v1. Переезд идёт
+    // постранично, поэтому обе версии какое-то время работают рядом.
+    const v2 = document.body.classList.contains('v2');
+    const navPartial = v2 ? './partials/navbar-v2.html' : './partials/navbar.html';
+    const footerPartial = v2 ? './partials/footer-v2.html' : './partials/footer.html';
+
+    loadPartial('siteHeader', navPartial, () => {
     initTheme();
     initLang();
     initMobileDrawer();
@@ -2089,7 +2100,7 @@
   });
 
 
-    loadPartial('siteFooter', './partials/footer.html', () => {
+    loadPartial('siteFooter', footerPartial, () => {
       applyLang(getLang());
     });
 

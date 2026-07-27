@@ -36,9 +36,15 @@
   <title data-i18n="title_catalog">China Motors - Каталог</title>
 
   <link rel="stylesheet" href="style.css">
+  <!-- Дизайн-система v2 «Груз в пути». Подключается РЯДОМ со style.css:
+       страницы переезжают по одной, старый файл снимается на шаге 7. -->
+  <link rel="stylesheet" href="style-v2.css">
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500;600;700&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
+  <!-- v2: IBM Plex Sans — текст, IBM Plex Mono — все числа (табличные цифры).
+       Oswald уже выше. Archivo не подключается — вариант B отклонён. -->
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&subset=cyrillic&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
@@ -70,97 +76,105 @@
     .thumbs img.active{outline:2px solid #e11d48;opacity:1}
   </style>
 </head>
-<body>
+<!-- class="v2" включает дизайн-систему v2 и говорит common.js грузить
+     тёмные партиалы navbar-v2 / footer-v2 -->
+<body class="v2">
 <noscript><div><img src="https://mc.yandex.ru/watch/110843946" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
   <div id="siteHeader"></div>
 
-  <section class="hp-page-head fade-in">
-    <div>
-      <h1 data-i18n="catalog_hero">Актуальные предложения из базы</h1>
-      <p data-i18n="catalog_subhead">Каталог техники China Motors</p>
+  <section class="v2-wrap v2-page-head fade-in">
+    <div class="v2-rule">
+      <span class="v2-rule__index">01</span>
+      <span class="v2-rule__title" data-i18n="catalog_rule_title">Площадка</span>
+      <span class="v2-rule__aside">
+        <span data-i18n="catalog_found">Найдено</span>:
+        <span id="resultsCount" class="num">0</span>
+      </span>
     </div>
-    <div class="hp-page-head__count"><span data-i18n="catalog_found">Найдено</span>: <span id="resultsCount">0</span></div>
+    <h1 class="v2-page-title v2-page-head__title" data-i18n="catalog_hero">Актуальные предложения из базы</h1>
+    <p class="v2-page-head__sub" data-i18n="catalog_subhead">Каталог техники China Motors</p>
   </section>
 
   <!-- Подбор по задаче: понятнее, чем «тип кузова» — человек выбирает,
-       ЧТО ему нужно делать, а не как это называется у перевозчиков. -->
-  <div class="task-filter">
-    <div class="task-filter__head" data-i18n="task_head">Что вам нужно делать?</div>
-    <div class="task-filter__row" id="taskFilter">
-      <button type="button" class="task-btn active" data-body="" data-i18n="task_all">Показать всё</button>
-      <button type="button" class="task-btn" data-body="Самосвал">
-        <i class="fa-solid fa-truck-ramp-box" aria-hidden="true"></i>
+       ЧТО ему нужно делать, а не как это называется у перевозчиков.
+       v2: FilterChip. Активный чип — ЗАЛИТЫЙ АСФАЛЬТ, не красный:
+       сигнальный красный зарезервирован за одним действием и активным
+       узлом маршрута, иначе в сетке окажется несколько красных пятен. -->
+  <div class="v2-wrap task-filter">
+    <div class="v2-label task-filter__head" data-i18n="task_head">Что вам нужно делать?</div>
+    <div class="v2-chips task-filter__row" id="taskFilter">
+      <button type="button" class="v2-chip task-btn active" data-body="" data-i18n="task_all">Показать всё</button>
+      <button type="button" class="v2-chip task-btn" data-body="Самосвал">
         <span data-i18n="task_dump">Возить песок, щебень, грунт</span>
       </button>
-      <button type="button" class="task-btn" data-body="Тягач">
-        <i class="fa-solid fa-truck-fast" aria-hidden="true"></i>
+      <button type="button" class="v2-chip task-btn" data-body="Тягач">
         <span data-i18n="task_tractor">Возить грузы на дальние расстояния</span>
       </button>
-      <button type="button" class="task-btn" data-body="Полуприцеп">
-        <i class="fa-solid fa-trailer" aria-hidden="true"></i>
+      <button type="button" class="v2-chip task-btn" data-body="Полуприцеп">
         <span data-i18n="task_semi">Перевозить технику и длинные грузы</span>
       </button>
-      <button type="button" class="task-btn" data-body="Прицеп">
-        <i class="fa-solid fa-caravan" aria-hidden="true"></i>
+      <button type="button" class="v2-chip task-btn" data-body="Прицеп">
         <span data-i18n="task_trailer">Добавить прицеп к тягачу</span>
       </button>
-      <button type="button" class="task-btn" data-body="Кран">
-        <i class="fa-solid fa-truck-monster" aria-hidden="true"></i>
+      <button type="button" class="v2-chip task-btn" data-body="Кран">
         <span data-i18n="task_crane">Поднимать грузы на стройке</span>
       </button>
     </div>
-    <button type="button" id="toggleAdvFilters" class="task-filter__more" data-i18n="task_more">
+    <button type="button" id="toggleAdvFilters" class="v2-link-btn task-filter__more" data-i18n="task_more">
       Уточнить: марка, колёсная формула, сортировка
     </button>
   </div>
 
-  <div class="hp-filter-card">
-    <div class="hp-filter-card__inner">
-      <div class="f-search">
+  <!-- Ведомость фильтров: моно-ярлык над контролом -->
+  <div class="v2-wrap hp-filter-card">
+    <div class="v2-filters">
+      <label class="v2-field">
+        <span class="v2-field__label" data-i18n="filter_search_label">Поиск</span>
         <input id="search" type="text" data-i18n-placeholder="search_placeholder" placeholder="Поиск...">
-      </div>
+      </label>
     </div>
-    <div class="hp-filter-card__inner" id="advFilters" style="display:none">
-      <div class="f">
-        <label for="body" data-i18n="filter_body_label">Тип транспорта</label>
+    <div class="v2-filters" id="advFilters" style="display:none">
+      <label class="v2-field">
+        <span class="v2-field__label" data-i18n="filter_body_label">Тип транспорта</span>
         <select id="body">
           <option value="" data-i18n="body_all">Все типы</option>
         </select>
-      </div>
-      <div class="f">
-        <label for="sort" data-i18n="filter_sort_label">Сортировка</label>
+      </label>
+      <label class="v2-field">
+        <span class="v2-field__label" data-i18n="filter_sort_label">Сортировка</span>
         <select id="sort">
           <option value="" data-i18n="sort_none">Без сортировки</option>
           <option value="price_asc" data-i18n="sort_price_asc">Цена ↑</option>
           <option value="price_desc" data-i18n="sort_price_desc">Цена ↓</option>
         </select>
-      </div>
-      <div class="f">
-        <label for="brand">Марка</label>
+      </label>
+      <label class="v2-field">
+        <span class="v2-field__label" data-i18n="filter_brand_label">Марка</span>
         <select id="brand">
           <option value="">Все марки</option>
         </select>
-      </div>
-      <div class="f">
-        <label for="wheelFormula">Колёсная формула</label>
+      </label>
+      <label class="v2-field">
+        <span class="v2-field__label" data-i18n="filter_wheel_label">Колёсная формула</span>
         <select id="wheelFormula">
           <option value="">Любая</option>
         </select>
-      </div>
-      <div class="f">
-        <label for="source" data-i18n="filter_source_label">Источник</label>
+      </label>
+      <label class="v2-field">
+        <span class="v2-field__label" data-i18n="filter_source_label">Источник</span>
         <select id="source">
           <option value="" data-i18n="filter_source_all">Все объявления</option>
           <option value="official" data-i18n="filter_source_official">Официальный каталог</option>
           <option value="user" data-i18n="filter_source_user">Объявления клиентов</option>
         </select>
-      </div>
+      </label>
     </div>
   </div>
 
-  <section class="section fade-in" style="padding-bottom:60px">
-    <div class="container">
-      <div id="grid" class="feature-grid"></div>
+  <section class="fade-in" style="padding-bottom:96px">
+    <div class="v2-wrap">
+      <!-- Сетка обязательно auto-fill / minmax(240px, 1fr) — см. style-v2.css -->
+      <div id="grid" class="v2-grid"></div>
     </div>
   </section>
 

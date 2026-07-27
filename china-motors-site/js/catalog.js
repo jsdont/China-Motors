@@ -87,47 +87,74 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ================= CARD ================= */
 
-  function cardHTML(item) {
+  // Карточка v2 — «паспорт единицы», а не товар в магазине.
+  // Порядок сверху вниз: фото 4:3 с тегами локации и наличия по нижней
+  // кромке → тяжёлая линейка → название → ряды данных (моно-ярлык слева,
+  // табличное значение справа) → тяжёлая линейка → цена + кнопка.
+  // Табличные цифры выравнивают значения в колонку по всей сетке, и карточки
+  // читаются как строки одного каталога-манифеста.
+  const tr = (key, fallback) => (window.t ? window.t(key) : fallback) || fallback;
+
+  // Ряды данных берём только те, по которым реально есть значение: пустой
+  // ярлык с прочерком в паспорте хуже, чем отсутствие строки.
+  // Ключ отдаём наружу, чтобы повесить data-i18n: тогда смена языка
+  // переводит ярлыки сразу, без перерисовки сетки.
+  function passportRows(item) {
+    const v = item.raw || {};
+    return [
+      ['vp_row_wheel', 'КОЛЁСНАЯ ФОРМУЛА', item.wheelFormula || v.wheel_formula],
+      ['vp_row_mass', 'ПОЛНАЯ МАССА, Т', v.weight_t],
+      ['vp_row_payload', 'ГРУЗОПОДЪЁМНОСТЬ, Т', v.load_capacity_t],
+      ['vp_row_power', 'ДВИГАТЕЛЬ, Л.С.', v.engine_power_hp],
+      ['vp_row_gearbox', 'КПП', v.gearbox]
+    ].filter(([, , value]) => value !== null && value !== undefined && value !== '');
+  }
+
+  // primary=true заливает кнопку сигнальным красным — максимум у ОДНОЙ
+  // карточки в сетке, иначе красный размножается и перестаёт что-то значить.
+  function cardHTML(item, primary) {
     const isFav = window.CMFavorites?.isFavorite(item.id);
+    const v = item.raw || {};
+    const title = v.body_type || item.title || tr('card_no_name', 'Техника');
+    const sub = [v.category, item.year].filter(Boolean).join(' · ');
+    const availLabel = tr('vp_avail_' + item.availability, AVAIL_LABELS[item.availability] || '');
+    const price = item.price
+      ? `${item.price.toLocaleString('ru-RU')} ${item.priceCurrency === 'kzt' ? '₸' : '¥'}`
+      : tr('vp_price_on_request', '— по запросу');
+
     return `
-      <a class="cm-card" href="product.html?id=${item.id}">
-        <div class="cm-card__image">
+      <a class="vp${primary ? ' vp--primary' : ''}" href="product.html?id=${item.id}">
+        <div class="vp__media">
           <img src="${item.image}" alt="${item.title}" loading="lazy" decoding="async">
-          <span class="cm-badge cm-badge--${item.availability}">${AVAIL_LABELS[item.availability] || ''}</span>
-          ${item.isUserListing ? `<span class="cm-badge cm-badge--user-listing">${window.t ? window.t('badge_user_listing_prefix') : 'Объявление от'} ${item.ownerRoleLabel || 'клиента'}</span>` : ''}
-          <button type="button" class="cm-card__fav-btn${isFav ? ' active' : ''}" data-fav-id="${item.id}" title="${window.t ? window.t('fav_remove_title') : 'Избранное'}">
+          ${v.city ? `<span class="vp__tag vp__tag--place">${v.city}</span>` : ''}
+          ${availLabel ? `<span class="vp__tag vp__tag--avail vp__tag--${item.availability}" data-i18n="vp_avail_${item.availability}">${availLabel}</span>` : ''}
+          <button type="button" class="vp__fav${isFav ? ' active' : ''}" data-fav-id="${item.id}" title="${tr('fav_remove_title', 'Избранное')}">
             <i class="fa-${isFav ? 'solid' : 'regular'} fa-bookmark"></i>
           </button>
         </div>
 
-        <div class="cm-card__body">
-          <h3 class="cm-card__title">
-            ${item.raw.body_type || item.title || (window.t ? window.t('card_no_name') : 'Техника')}
-          </h3>
+        <div class="vp__head">
+          <h3 class="vp__title">${title}</h3>
+          ${sub ? `<div class="vp__sub">${sub}</div>` : ''}
+        </div>
 
-          <div class="cm-card__specs">
-            <div class="spec">
-              <span data-i18n="card_body_label">Тип транспорта</span>
-              <strong>${item.raw.category}</strong>
-            </div>
-            ${item.raw?.wheel_formula ? `
-            <div class="spec">
-              <span data-i18n="card_wheel_formula_label">Колёсная формула</span>
-              <strong>${item.raw.wheel_formula}</strong>
+        <div class="vp__rows">
+          ${passportRows(item).map(([key, fallback, value]) => `
+            <div class="vp__row">
+              <span class="vp__row-label" data-i18n="${key}">${tr(key, fallback)}</span>
+              <span class="vp__row-value">${value}</span>
+            </div>`).join('')}
+          ${item.isUserListing ? `
+            <div class="vp__row">
+              <span class="vp__row-label" data-i18n="badge_user_listing_prefix">${tr('badge_user_listing_prefix', 'Объявление от')}</span>
+              <span class="vp__row-value">${item.ownerRoleLabel || tr('vp_owner_client', 'клиента')}</span>
             </div>` : ''}
-            ${item.raw?.gearbox ? `
-            <div class="spec">
-              <span data-i18n="card_gearbox_label">КПП</span>
-              <strong>${item.raw.gearbox}</strong>
-            </div>` : ''}
-          </div>
+        </div>
 
-          <div class="cm-card__footer">
-            <div class="price">
-              ${item.price ? `${item.price.toLocaleString('ru-RU')} ${item.priceCurrency === 'kzt' ? '₸' : '¥'}` : 'Цена уточняется'}
-            </div>
-            <span data-i18n="btn_calculate_catalog" class="btn-outline">Подробнее и расчёт</span>
-          </div>
+        <div class="vp__foot">
+          <div class="vp__price-label" data-i18n="vp_price_label">ПОД КЛЮЧ В АЛМАТЫ</div>
+          <div class="vp__price">${price}</div>
+          <span class="vp__cta" data-i18n="vp_cta">РАСЧЁТ ПОД КЛЮЧ</span>
         </div>
       </a>
     `;
@@ -140,12 +167,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!list.length) {
       // Пустой список — не тупик: подсказываем, что делать дальше.
       grid.innerHTML = `
-        <div class="cat-empty">
-          <h3>${window.t ? window.t('cat_empty_t') : 'По этому запросу ничего не нашлось'}</h3>
+        <div class="v2-empty cat-empty">
+          <h3 class="v2-empty__title">${window.t ? window.t('cat_empty_t') : 'По этому запросу ничего не нашлось'}</h3>
           <p>${window.t ? window.t('cat_empty_d') : 'Попробуйте выбрать другую задачу или посмотреть всё. Либо позвоните — подберём под вашу задачу и бюджет.'}</p>
-          <div class="cat-empty__actions">
-            <button type="button" class="btn btn--primary" id="catShowAll">${window.t ? window.t('task_all') : 'Показать всё'}</button>
-            <a class="btn" href="tel:+77776133731">${window.t ? window.t('help_call') : 'Позвонить'}: +7 777 613 37 31</a>
+          <div class="v2-empty__actions cat-empty__actions">
+            <button type="button" class="v2-btn v2-btn--primary" id="catShowAll">${window.t ? window.t('task_all') : 'Показать всё'}</button>
+            <a class="v2-btn v2-btn--secondary num" href="tel:+77776133731">+7 777 613 37 31</a>
           </div>
         </div>`;
       document.getElementById('catShowAll')?.addEventListener('click', () => {
@@ -158,14 +185,18 @@ document.addEventListener('DOMContentLoaded', () => {
         refilter();
       });
     } else {
-      grid.innerHTML = list.map(cardHTML).join('');
+      // Заливка кнопки — только у первой карточки: «максимум два signal-500
+      // в кадре», иначе красный размножается по сетке.
+      grid.innerHTML = list.map((item, i) => cardHTML(item, i === 0)).join('');
     }
     const countEl = document.getElementById('resultsCount');
     if (countEl) countEl.textContent = list.length;
   }
 
   grid?.addEventListener('click', (e) => {
-    const btn = e.target.closest('.cm-card__fav-btn');
+    // .vp__fav — кнопка избранного в паспорте v2; .cm-card__fav-btn оставлена
+    // на время переезда, пока где-то может встретиться карточка v1.
+    const btn = e.target.closest('.vp__fav, .cm-card__fav-btn');
     if (!btn) return;
     e.preventDefault();
     e.stopPropagation();
