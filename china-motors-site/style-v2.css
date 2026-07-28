@@ -3180,3 +3180,36 @@ body.v2 #contact { background: transparent; }
 
 /* Статья лежит внутри .section, который в v1 центрирует текст. */
 body.v2 .blog-article { text-align: left; }
+
+/* ============================================================================
+   20. ИЗБРАННОЕ (отдельный шаг после 5)
+   Не зависит от route[] с бэкенда и использует тот же VehiclePassport, что
+   каталог, поэтому переносится, не дожидаясь кабинета.
+   ============================================================================ */
+
+/* Загрузка и ошибка — в той же оправе, что и пустое состояние, но без
+   отступов в полэкрана: это временные строки, а не тупик. */
+body.v2 #favGrid .v2-empty { padding: 26px 24px; }
+body.v2 #favGrid .v2-empty p { margin-bottom: 0; }
+body.v2 .v2-empty--error p { color: var(--signal-500); }
+
+/* Один следующий шаг на весь список */
+/* Секция избранного — .section, а он в v1 центрирует текст. */
+body.v2 .fav-cta-banner {
+  background: transparent;
+  border-radius: 0;
+  padding: 28px 0 0;
+  margin-top: 40px;
+  text-align: left;
+}
+
+body.v2 .fav-cta-banner__sub {
+  font: var(--v2-body);
+  color: var(--asphalt-500);
+  margin-top: 6px;
+  max-width: 52ch;
+}
+
+/* v1 держал `#favEmpty` скрытым инлайном и показывал через style.display —
+   логика не тронута, поэтому пустое состояние остаётся блоком сетки. */
+body.v2 #favEmpty { margin-top: 0; }

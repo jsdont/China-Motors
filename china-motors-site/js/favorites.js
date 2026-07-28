@@ -11,46 +11,76 @@ document.addEventListener('DOMContentLoaded', () => {
   const ctaBtn = document.getElementById('favCtaBtn');
   const emptyEl = document.getElementById('favEmpty');
 
-  const AVAIL_LABELS = {
-    in_stock: 'В наличии',
-    out_of_stock: 'Нет в наличии',
-    on_order: 'На заказ'
-  };
+  const AVAIL_LABELS = { in_stock: 'В НАЛИЧИИ', on_order: 'ПОД ЗАКАЗ', out_of_stock: 'НЕТ' };
+
+  const tr = (key, fallback) => (window.t ? window.t(key) : null) || fallback;
 
   function fmtPrice(v) {
     if (v.price_kzt) return `${Number(v.price_kzt).toLocaleString('ru-RU')} ₸`;
     if (v.price_cny) return `${Number(v.price_cny).toLocaleString('ru-RU')} ¥`;
-    return 'Цена уточняется';
+    return tr('vp_price_on_request', '— по запросу');
   }
 
+  function passportRows(v) {
+    return [
+      ['vp_row_wheel', 'КОЛЁСНАЯ ФОРМУЛА', v.wheel_formula],
+      ['vp_row_mass', 'ПОЛНАЯ МАССА, Т', v.weight_t],
+      ['vp_row_payload', 'ГРУЗОПОДЪЁМНОСТЬ, Т', v.load_capacity_t],
+      ['vp_row_power', 'ДВИГАТЕЛЬ, Л.С.', v.engine_power_hp],
+      ['vp_row_gearbox', 'КПП', v.gearbox],
+    ].filter(([, , value]) => value !== null && value !== undefined && value !== '');
+  }
+
+  // Тот же VehiclePassport, что в каталоге и на главной: один компонент
+  // живёт в одном месте, иначе три страницы начнут расходиться.
+  //
+  // Отдельной кнопки «Получить КП» на карточке больше нет, и не по недосмотру:
+  // паспорт — это сам по себе <a> на страницу техники, вложить в него вторую
+  // ссылку нельзя. Действие не потеряно — на странице техники стоит
+  // «ПОЛУЧИТЬ КП ПО ЭТОЙ ТЕХНИКЕ» (шаг 2), а по всему списку сразу работает
+  // баннер внизу.
   function cardHTML(v) {
-    const title = [v.brand, v.model, v.body_type].filter(Boolean).join(' ').trim() || `Техника #${v.id}`;
-    const rawImg = v.image_url || (Array.isArray(v.images) && v.images[0]) || '/img/no-photo.png';
-    const img = rawImg === '/img/no-photo.png' ? rawImg : (window.cmOptimizeImage?.(rawImg, { width: 400 }) || rawImg);
+    const fullTitle = [v.brand, v.model, v.body_type].filter(Boolean).join(' ').trim()
+      || tr('card_no_name', 'Техника');
+    const title = v.body_type || fullTitle;
+    const sub = [v.category, v.year].filter(Boolean).join(' · ');
     const availability = v.availability || 'in_stock';
+    const availLabel = tr('vp_avail_' + availability, AVAIL_LABELS[availability] || '');
+    const rawImg = v.image_url || (Array.isArray(v.images) && v.images[0]) || '/img/no-photo.png';
+    const img = rawImg === '/img/no-photo.png'
+      ? rawImg
+      : (window.cmOptimizeImage?.(rawImg, { width: 400 }) || rawImg);
+
     return `
-      <div class="cm-card fav-card" data-vehicle-id="${v.id}">
-        <div class="cm-card__image">
-          <img src="${img}" alt="${title}" loading="lazy" decoding="async">
-          <span class="cm-badge cm-badge--${availability}">${AVAIL_LABELS[availability] || ''}</span>
-          <button type="button" class="cm-card__fav-btn active" data-fav-id="${v.id}" title="${window.t ? window.t('fav_remove_title') : 'Убрать из избранного'}">
+      <a class="vp fav-card" data-vehicle-id="${v.id}" href="product.html?id=${v.id}">
+        <div class="vp__media">
+          <img src="${img}" alt="${fullTitle}" loading="lazy" decoding="async">
+          ${v.city ? `<span class="vp__tag vp__tag--place">${v.city}</span>` : ''}
+          ${availLabel ? `<span class="vp__tag vp__tag--avail vp__tag--${availability}" data-i18n="vp_avail_${availability}">${availLabel}</span>` : ''}
+          <button type="button" class="vp__fav active" data-fav-id="${v.id}" title="${tr('fav_remove_title', 'Убрать из избранного')}">
             <i class="fa-solid fa-bookmark"></i>
           </button>
         </div>
-        <div class="cm-card__body">
-          <h3 class="cm-card__title">${title}${v.year ? `, ${v.year}` : ''}</h3>
-          <div class="cm-card__specs">
-            ${v.category || v.body_type ? `<div class="spec"><span data-i18n="card_body_label">Тип транспорта</span><strong>${v.category || v.body_type}</strong></div>` : ''}
-            ${v.wheel_formula ? `<div class="spec"><span data-i18n="card_wheel_formula_label">Колёсная формула</span><strong>${v.wheel_formula}</strong></div>` : ''}
-            ${v.gearbox ? `<div class="spec"><span data-i18n="card_gearbox_label">КПП</span><strong>${v.gearbox}</strong></div>` : ''}
-          </div>
-          <div class="fav-card__price">${fmtPrice(v)}</div>
-          <div class="fav-card__actions">
-            <a href="product.html?id=${v.id}" class="fav-card__btn fav-card__btn--dark" data-i18n="btn_calculate_catalog">Подробнее и расчёт</a>
-            <a href="contacts.html?product_id=${v.id}&message=${encodeURIComponent(`Запрос по технике:\n${title}\nЦена: ${fmtPrice(v)}`)}" class="fav-card__btn fav-card__btn--outline" data-i18n="fav_request_btn">Получить КП</a>
-          </div>
+
+        <div class="vp__head">
+          <h3 class="vp__title">${title}</h3>
+          ${sub ? `<div class="vp__sub">${sub}</div>` : ''}
         </div>
-      </div>`;
+
+        <div class="vp__rows">
+          ${passportRows(v).map(([key, fallback, value]) => `
+            <div class="vp__row">
+              <span class="vp__row-label" data-i18n="${key}">${tr(key, fallback)}</span>
+              <span class="vp__row-value">${value}</span>
+            </div>`).join('')}
+        </div>
+
+        <div class="vp__foot">
+          <div class="vp__price-label" data-i18n="vp_price_label">ПОД КЛЮЧ В АЛМАТЫ</div>
+          <div class="vp__price">${fmtPrice(v)}</div>
+          <span class="vp__cta" data-i18n="vp_cta">РАСЧЁТ ПОД КЛЮЧ</span>
+        </div>
+      </a>`;
   }
 
   function updateChrome(favIds, vehicles) {
@@ -77,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   gridEl?.addEventListener('click', (e) => {
-    const btn = e.target.closest('.cm-card__fav-btn');
+    const btn = e.target.closest('.vp__fav, .cm-card__fav-btn');
     if (!btn) return;
     e.preventDefault();
     removeFavorite(btn.dataset.favId);
@@ -103,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    if (gridEl) gridEl.innerHTML = '<p class="empty-note">Загрузка…</p>';
+    if (gridEl) gridEl.innerHTML = `<div class="v2-empty"><p>${tr('fav_loading', 'Загрузка…')}</p></div>`;
 
     const results = await Promise.allSettled(favIds.map(fetchVehicle));
     const vehicles = [];
@@ -127,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const errorNote = hadTransientError
-      ? '<p class="empty-note" style="color:#e74c3c">Не удалось загрузить часть техники из избранного — попробуйте обновить страницу.</p>'
+      ? `<div class="v2-empty v2-empty--error"><p>${tr('fav_load_error', 'Не удалось загрузить часть техники из избранного — попробуйте обновить страницу.')}</p></div>`
       : '';
     if (gridEl) gridEl.innerHTML = errorNote + vehicles.map(cardHTML).join('');
     updateChrome(favIds.filter(id => !stale.includes(id)), vehicles);

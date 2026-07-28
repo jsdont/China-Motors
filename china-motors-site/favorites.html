@@ -38,39 +38,53 @@
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500;600;700&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- Дизайн-система v2 «Груз в пути». Подключается РЯДОМ со style.css:
+       страницы переезжают по одной, старый файл снимается на шаге 7. -->
+  <link rel="stylesheet" href="style-v2.css">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&subset=cyrillic&display=swap" rel="stylesheet">
 </head>
-<body>
+<!-- class="v2" включает дизайн-систему v2 и говорит common.js грузить
+     тёмные партиалы navbar-v2 / footer-v2 -->
+<body class="v2">
 <noscript><div><img src="https://mc.yandex.ru/watch/110843946" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
   <div id="siteHeader"></div>
 
-  <section class="hp-page-head fade-in">
-    <div>
-      <h1 data-i18n="nav_favorites">Избранное</h1>
-      <p data-i18n="fav_subtitle">Сохранённая техника — сравните и запросите расчёт</p>
+  <section class="v2-wrap v2-page-head fade-in">
+    <div class="v2-rule">
+      <span class="v2-rule__index">05</span>
+      <span class="v2-rule__title" data-i18n="fav_rule_title">Сохранённое</span>
+      <span class="v2-rule__aside">
+        <span data-i18n="fav_saved_count">Сохранено</span>:
+        <span id="favCount" class="num">0</span>
+      </span>
     </div>
-    <div class="hp-page-head__count"><span data-i18n="fav_saved_count">Сохранено</span>: <span id="favCount">0</span></div>
+    <h1 class="v2-page-title v2-page-head__title" data-i18n="nav_favorites">Избранное</h1>
+    <p class="v2-page-head__sub" data-i18n="fav_subtitle">Сохранённая техника — сравните и запросите расчёт</p>
   </section>
 
-  <section class="section fade-in" style="padding-bottom:60px">
-    <div class="container">
+  <section class="section v2-sec v2-sec--tight fade-in">
+    <div class="v2-wrap">
 
-      <div id="favGrid" class="feature-grid"></div>
+      <div id="favGrid" class="v2-grid"></div>
 
-      <div id="favCtaBanner" class="fav-cta-banner" style="display:none">
+      <!-- Один следующий шаг на весь список. Красный здесь единственный:
+           карточки-паспорта ведут на страницу техники и primary не несут. -->
+      <div id="favCtaBanner" class="v2-close fav-cta-banner" style="display:none">
         <div>
-          <div class="fav-cta-banner__title" data-i18n="fav_cta_title">Запросить расчёт по всему списку</div>
+          <div class="v2-close__t" data-i18n="fav_cta_title">Запросить расчёт по всему списку</div>
           <div class="fav-cta-banner__sub" data-i18n="fav_cta_sub">Пришлём КП по каждой позиции из избранного — с доставкой до Алматы.</div>
         </div>
-        <a id="favCtaBtn" href="contacts.html" class="fav-cta-banner__btn" data-i18n="fav_cta_btn">Получить КП по списку</a>
+        <a id="favCtaBtn" href="contacts.html" class="v2-btn v2-btn--primary" data-i18n="fav_cta_btn">Получить КП по списку</a>
       </div>
 
-      <div id="favEmpty" class="fav-empty" style="display:none">
-        <i class="fa-regular fa-bookmark"></i>
-        <div class="fav-empty__title" data-i18n="fav_empty_title">В избранном пока пусто</div>
-        <div class="fav-empty__sub" data-i18n="fav_empty_sub">Нажимайте на закладку на карточках техники в каталоге — они появятся здесь.</div>
-        <a href="catalog.html" class="fav-empty__btn" data-i18n="fav_empty_btn">Перейти в каталог</a>
+      <div id="favEmpty" class="v2-empty" style="display:none">
+        <div class="v2-empty__title" data-i18n="fav_empty_title">В избранном пока пусто</div>
+        <p data-i18n="fav_empty_sub">Нажимайте на закладку на карточках техники в каталоге — они появятся здесь.</p>
+        <div class="v2-empty__actions">
+          <a href="catalog.html" class="v2-btn v2-btn--secondary" data-i18n="fav_empty_btn">Перейти в каталог</a>
+        </div>
       </div>
 
     </div>
