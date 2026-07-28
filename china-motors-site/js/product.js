@@ -22,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const thumbsEl = document.getElementById('thumbs');
 
   const btnCalc = document.getElementById('btnCalc');
-  const btnCalcBanner = document.getElementById('btnCalcBanner');
   const btnReq  = document.getElementById('btnRequest');
   const btnFav = document.getElementById('btnFav');
 
@@ -116,8 +115,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // === helpers (вынесено из catalog.js логики) ===
   const nf = new Intl.NumberFormat('ru-RU');
+  // Пробел перед знаком валюты обязателен: в v2 цена набрана моноширинным
+  // и стоит крупно — «33 200 000₸» без пробела читается как одно слово.
   const fmtPrice = (n, currency = 'cny') =>
-    (n === 0 || n) ? `${nf.format(Number(n))}${currency === 'kzt' ? '₸' : '¥'}` : 'Цена по запросу';
+    (n === 0 || n) ? `${nf.format(Number(n))} ${currency === 'kzt' ? '₸' : '¥'}` : 'Цена по запросу';
 
   function pickImages(v) {
     if (Array.isArray(v.images) && v.images.length) return v.images;
@@ -231,27 +232,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const price = pickPrice(v);
 
+    // Ряды данных v2: моно-ярлык слева, табличное значение справа. Иконок нет —
+    // единицы измерения вынесены в ярлык, а значения выравниваются в колонку.
+    // Цена, наличие и город здесь не дублируются: цена стоит отдельным блоком,
+    // наличие и город — тегами по нижней кромке фото.
     const rows = [
-      ['fa-industry', 'Бренд', v.brand],
-      ['fa-hashtag', 'Модель', v.model],
-      ['fa-calendar', 'Год выпуска', v.year],
-      ['fa-truck', 'Категория', v.category],
-      ['fa-location-dot', 'Город', v.city],
-      ['fa-road', 'Колёсная формула', v.wheel_formula],
-      ['fa-gears', 'КПП', v.gearbox],
-      ['fa-bolt', 'Мощность двигателя', v.engine_power_hp ? `${v.engine_power_hp} л.с.` : null],
-      ['fa-weight-hanging', 'Грузоподъёмность', v.load_capacity_t ? `${v.load_capacity_t} т` : null],
-      ['fa-tag', 'Цена', price.amount ? fmtPrice(price.amount, price.currency) : null],
-      ['fa-circle-check', 'Наличие', AVAIL_LABELS[v.availability] || null],
-      ['fa-weight', 'Масса, т', v.weight_t],
-      ['fa-road-circle-check', 'Пробег, км', v.mileage_km],
+      ['spec_brand', 'БРЕНД', v.brand],
+      ['spec_model', 'МОДЕЛЬ', v.model],
+      ['spec_year', 'ГОД ВЫПУСКА', v.year],
+      ['spec_category', 'КАТЕГОРИЯ', v.category],
+      ['vp_row_wheel', 'КОЛЁСНАЯ ФОРМУЛА', v.wheel_formula],
+      ['vp_row_gearbox', 'КПП', v.gearbox],
+      ['vp_row_power', 'ДВИГАТЕЛЬ, Л.С.', v.engine_power_hp],
+      ['vp_row_payload', 'ГРУЗОПОДЪЁМНОСТЬ, Т', v.load_capacity_t],
+      ['vp_row_mass', 'ПОЛНАЯ МАССА, Т', v.weight_t],
+      ['spec_mileage', 'ПРОБЕГ, КМ', v.mileage_km],
     ];
 
-    rows.forEach(([icon, label, value]) => {
+    const tr = (key, fallback) => (window.t ? window.t(key) : fallback) || fallback;
+    rows.forEach(([key, fallback, value]) => {
       if (value === null || value === undefined || value === '') return;
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td><i class="fa-solid ${icon}"></i>${label}</td><td>${value}</td>`;
-      specsEl.appendChild(tr);
+      const row = document.createElement('div');
+      row.className = 'vp__row';
+      row.innerHTML =
+        `<span class="vp__row-label" data-i18n="${key}">${tr(key, fallback)}</span>` +
+        `<span class="vp__row-value">${value}</span>`;
+      specsEl.appendChild(row);
     });
   }
 
@@ -297,8 +303,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const v = await res.json();
 
+      // Полное имя — для SEO, alt и заголовка вкладки.
       const title =
         [v.brand, v.model, v.body_type].filter(Boolean).join(' ').trim() || 'Без названия';
+
+      // Имя на экране — то же, что в карточке каталога: body_type уже содержит
+      // «Тягач SHACMAN X3000», а категория, бренд и год стоят строкой выше,
+      // поэтому полное имя в H1 повторяло бы себя.
+      const displayTitle = v.body_type || title;
 
       const price = pickPrice(v);
       const priceUsdForCalc = pickPriceUsd(v);
@@ -309,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
       // === fill page ===
-      titleEl.textContent = title;
+      titleEl.textContent = displayTitle;
       priceEl.textContent = fmtPrice(price.amount, price.currency);
 
       const userListingBadge = document.getElementById('userListingBadge');
@@ -320,16 +332,23 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       document.title = `${title} — China Motors`;
-      if (breadcrumbTitleEl) breadcrumbTitleEl.textContent = title;
+      if (breadcrumbTitleEl) breadcrumbTitleEl.textContent = displayTitle;
       if (productSubtitleEl) {
+        // Строка над заголовком: категория · бренд · год — моно капсом
         productSubtitleEl.textContent =
-          [v.model, v.year].filter(Boolean).join(' · ');
+          [v.category, v.brand, v.year].filter(Boolean).join(' · ');
       }
 
       applySeo(v, title, price, images);
 
       if (availabilityBadgeEl && AVAIL_LABELS[v.availability]) {
-        availabilityBadgeEl.textContent = AVAIL_LABELS[v.availability];
+        // Подпись капсом и цвет по состоянию: «в наличии» — clear,
+        // «под заказ» — hazard. Красный здесь не участвует.
+        const availKey = 'vp_avail_' + v.availability;
+        const availLabel = window.t ? window.t(availKey) : AVAIL_LABELS[v.availability];
+        availabilityBadgeEl.textContent = availLabel || AVAIL_LABELS[v.availability];
+        availabilityBadgeEl.setAttribute('data-i18n', availKey);
+        availabilityBadgeEl.classList.add('vp__tag--' + v.availability);
         availabilityBadgeEl.style.display = '';
       }
       if (cityBadgeEl && v.city) {
@@ -359,7 +378,6 @@ document.addEventListener('DOMContentLoaded', () => {
         `&year=${encodeURIComponent(v.year ?? '')}`;
 
       if (btnCalc) btnCalc.href = calcHref;
-      if (btnCalcBanner) btnCalcBanner.href = calcHref;
 
       if (btnReq) {
         btnReq.href =

@@ -34,9 +34,12 @@
   <link rel="apple-touch-icon" href="/icons/icon-192.png">
 
   <link rel="stylesheet" href="style.css">
+  <!-- Дизайн-система v2 «Груз в пути» — рядом со style.css, см. шаг 2 плана -->
+  <link rel="stylesheet" href="style-v2.css">
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500;600;700&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&subset=cyrillic&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
@@ -334,87 +337,97 @@
   </style>
 </head>
 
-<body>
+<!-- class="v2" включает дизайн-систему v2 и тёмные партиалы navbar-v2/footer-v2 -->
+<body class="v2">
 <noscript><div><img src="https://mc.yandex.ru/watch/110843946" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 
 <div id="siteHeader"></div>
 
-<div class="hp-breadcrumb">
+<!-- Хлебные крошки — моно капсом, как ярлыки полей: интерфейс-документ -->
+<div class="v2-wrap v2-crumbs">
   <a href="index.html" data-i18n="nav_home">Главная</a>
   <span>/</span>
-  <a href="catalog.html" data-i18n="nav_catalog">Каталог</a>
+  <a href="catalog.html" data-i18n="catalog_rule_title">Площадка</a>
   <span>/</span>
-  <span class="current" id="breadcrumbTitle">—</span>
+  <span class="v2-crumbs__current" id="breadcrumbTitle">—</span>
 </div>
 
-<section class="product-page fade-in">
-  <div class="container">
-    <div class="product-grid">
+<section class="fade-in" style="padding-bottom:96px">
+  <div class="v2-wrap v2-product">
 
-      <!-- ЛЕВО: ГАЛЕРЕЯ -->
-      <div class="product-gallery">
-        <div class="product-gallery__frame">
-          <img id="mainImage" src="" alt="">
-          <span class="product-badge-availability" id="availabilityBadge" style="display:none"></span>
-          <span class="product-badge-city" id="cityBadge" style="display:none"></span>
-        </div>
-        <div class="thumbs" id="thumbs"></div>
+    <!-- ЛЕВО: ГАЛЕРЕЯ -->
+    <div class="v2-product__media">
+      <div class="v2-shot">
+        <img id="mainImage" src="" alt="">
+        <span class="vp__tag vp__tag--place" id="cityBadge" style="display:none"></span>
+        <span class="vp__tag vp__tag--avail" id="availabilityBadge" style="display:none"></span>
+      </div>
+      <div class="v2-thumbs" id="thumbs"></div>
 
-        <div class="product-trust-card">
-          <ul class="trust-list">
-            <li><i class="fa-solid fa-file-signature"></i><span data-i18n="why_card1_y">Работа по договору</span></li>
-            <li><i class="fa-solid fa-camera"></i><span data-i18n="why_card2_y">Фото и видео с погрузки и доставки</span></li>
-            <li><i class="fa-solid fa-calculator"></i><span data-i18n="why_card3_y">Прозрачный расчёт без «вдруг доплатите»</span></li>
-            <li><i class="fa-solid fa-file-shield"></i><span data-i18n="why_card4_y">Помощь с таможней и регистрацией</span></li>
-          </ul>
-        </div>
+      <!-- Комплектация -->
+      <div class="v2-panel" id="extraInfo" style="display:none">
+        <div class="v2-panel__head" data-i18n="product_extra_title">Комплектация и характеристики</div>
+        <div class="v2-panel__body" id="extraInfoText"></div>
       </div>
 
-      <!-- ПРАВО: ИНФО -->
-      <div class="product-info-card">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
-          <h1 class="product-title" id="productTitle">—</h1>
-          <button type="button" id="btnFav" class="nav-icon-btn" data-i18n-title="fav_remove_title" title="Избранное" style="flex-shrink:0;">
+      <div class="product-video-section" id="videoReview" style="display:none"></div>
+    </div>
+
+    <!-- ПРАВО: ПАСПОРТ + ДЕЙСТВИЕ -->
+    <aside class="v2-product__aside">
+
+      <div class="v2-panel v2-panel--pad">
+        <div class="v2-product__meta" id="productSubtitle"></div>
+        <div class="v2-product__titlerow">
+          <h1 class="v2-product__title" id="productTitle">—</h1>
+          <button type="button" id="btnFav" class="v2-icon-btn" data-i18n-title="fav_remove_title" title="Избранное">
             <i class="fa-regular fa-bookmark"></i>
           </button>
         </div>
-        <div class="product-subtitle" id="productSubtitle"></div>
-        <span class="cm-badge cm-badge--user-listing" id="userListingBadge" style="position:static; display:none; margin-bottom:8px;"></span>
+        <span class="v2-owner-badge" id="userListingBadge" style="display:none"></span>
 
-        <div class="product-price" id="productPrice">—</div>
+        <!-- Спецификация — ряды данных: моно-ярлык слева, табличное значение справа -->
+        <div class="v2-product__rows" id="specsTable"></div>
 
-        <table class="specs" id="specsTable"></table>
+        <div class="v2-product__pricebox">
+          <div class="v2-product__price-label" data-i18n="vp_price_label">ПОД КЛЮЧ В АЛМАТЫ</div>
+          <div class="v2-product__price" id="productPrice">—</div>
+          <div class="v2-product__price-note" data-i18n="product_price_note">
+            Включая пошлину, НДС, сертификацию, доставку и учёт.
+          </div>
 
-        <div class="product-actions">
-          <a id="btnCalc" class="btn btn--primary">
-            <i class="fa fa-calculator"></i> Рассчитать стоимость
-          </a>
+          <!-- Один primary на экран; второй уровень — обводка -->
+          <a id="btnRequest" href="contacts.html" class="v2-btn v2-btn--primary v2-btn--block"
+             data-i18n="product_cta_kp">ПОЛУЧИТЬ КП ПО ЭТОЙ ТЕХНИКЕ</a>
+          <a id="btnCalc" class="v2-btn v2-btn--secondary v2-btn--block"
+             data-i18n="product_cta_breakdown">РАЗОБРАТЬ ЦЕНУ ПО ШАГАМ</a>
         </div>
-        <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;font-size:12.5px;color:#8a8f9c">
-          <i class="fa-solid fa-shield-halved"></i>
-          <span data-i18n="product_secure_note">Безопасная оплата через банк · полный пакет документов</span>
+      </div>
+
+      <!-- Как проходит покупка — ведомость, а не иконки-карточки -->
+      <div class="v2-panel v2-panel--pad">
+        <div class="v2-panel__head" data-i18n="product_how_head">КАК ПРОХОДИТ ПОКУПКА</div>
+        <div class="v2-ledger">
+          <div class="v2-ledger__row">
+            <div class="v2-ledger__t" data-i18n="trust1_t">Официальный договор</div>
+            <div class="v2-ledger__d" data-i18n="trust1_d">Все условия и сроки прописаны на бумаге. Никаких скрытых доплат.</div>
+          </div>
+          <div class="v2-ledger__row">
+            <div class="v2-ledger__t" data-i18n="trust2_t">Оплата через банк</div>
+            <div class="v2-ledger__d" data-i18n="trust2_d">Деньги идут на расчётный счёт компании по договору — не на карту частному лицу.</div>
+          </div>
+          <div class="v2-ledger__row">
+            <div class="v2-ledger__t" data-i18n="trust3_t">Полный пакет документов</div>
+            <div class="v2-ledger__d" data-i18n="trust3_d">ЭПТС, СБКТС и таможенные документы оформляем сами — вы получаете технику готовой к учёту.</div>
+          </div>
+          <div class="v2-ledger__row">
+            <div class="v2-ledger__t" data-i18n="why_card2_y">Фото и видео с погрузки и доставки</div>
+            <div class="v2-ledger__d" data-i18n="product_how_media">Присылаем на каждом этапе — от завода до выдачи.</div>
+          </div>
         </div>
       </div>
 
-    </div>
-
-    <div class="product-extra-card" id="extraInfo" style="display:none">
-      <h2 data-i18n="product_extra_title">Комплектация и характеристики</h2>
-      <div class="product-extra" id="extraInfoText"></div>
-    </div>
-
-    <div class="product-video-section" id="videoReview" style="display:none"></div>
-
-    <div class="product-cta-banner">
-      <div>
-        <div class="product-cta-banner__title" data-i18n="product_cta_title">Хотите приобрести эту технику?</div>
-        <div class="product-cta-banner__sub" data-i18n="product_cta_sub">Рассчитаем полную стоимость и оформим сделку по договору.</div>
-      </div>
-      <div style="display:flex;gap:12px;flex-wrap:wrap">
-        <a id="btnRequest" href="contacts.html" class="btn btn--primary" data-i18n="product_cta_request">Оставить заявку на эту технику</a>
-        <a id="btnCalcBanner" class="btn-outline-light" data-i18n="hp_calc_submit">Рассчитать стоимость</a>
-      </div>
-    </div>
+    </aside>
   </div>
 </section>
 

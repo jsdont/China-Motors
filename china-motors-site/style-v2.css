@@ -501,8 +501,10 @@ body.v2 .v2-nav .nav-fav-count {
   height: 18px;
   padding: 0 4px;
   border-radius: 999px;
-  background: var(--signal-fill);
-  color: var(--on-signal);
+  /* Счётчик — не действие и не «вы здесь», поэтому не сигнальный красный:
+     иначе в шапке появляется третье красное пятно рядом с узлом логотипа. */
+  background: var(--ink-500);
+  color: #fff;
   font-family: var(--type-mono);
   font-variant-numeric: tabular-nums;
   font-size: 10px;
@@ -1349,4 +1351,222 @@ body.v2 #themeToggle { color: var(--on-inverse); }
 body.v2 #langSwitch {
   background: transparent;
   border: 0;
+}
+
+/* ============================================================================
+   16. КАРТОЧКА ТЕХНИКИ (шаг 2)
+   Паспорт единицы: галерея слева, спецификация и одно действие — справа.
+   Рейка «путь этой единицы» НЕ переносится: она требует Vehicle.route_stage,
+   которого в модели нет, а выводить её эвристикой из availability — врать
+   (см. backend-requirements-v2.md §3).
+   ============================================================================ */
+body.v2 .v2-crumbs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 28px;
+  padding-bottom: 18px;
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--asphalt-400);
+}
+
+body.v2 .v2-crumbs a { color: var(--asphalt-400); text-decoration: none; }
+body.v2 .v2-crumbs a:hover { color: var(--asphalt-900); }
+body.v2 .v2-crumbs__current { color: var(--asphalt-900); }
+
+body.v2 .v2-product {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) 420px;
+  gap: 32px;
+  align-items: start;
+}
+
+/* --- Галерея ------------------------------------------------------------ */
+body.v2 .v2-shot {
+  position: relative;
+  border: var(--rule-hair);
+  background: var(--paper);
+}
+
+body.v2 .v2-shot img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+  cursor: zoom-in;
+}
+
+/* Теги по нижней кромке — те же, что в паспорте каталога */
+body.v2 .v2-shot .vp__tag { height: 30px; padding: 0 14px; }
+
+body.v2 .v2-thumbs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+
+body.v2 .v2-thumbs img {
+  width: 100%;
+  height: 78px;
+  object-fit: cover;
+  display: block;
+  cursor: pointer;
+  border: 2px solid transparent;
+  opacity: .72;
+}
+
+body.v2 .v2-thumbs img.active { border-color: var(--asphalt-900); opacity: 1; }
+
+/* --- Панель (комплектация, «как проходит покупка») ---------------------- */
+body.v2 .v2-panel {
+  background: var(--paper);
+  border: var(--rule-hair);
+  margin-top: 28px;
+}
+
+body.v2 .v2-panel--pad { padding: 26px; margin-top: 0; }
+
+body.v2 .v2-panel__head {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--asphalt-900);
+  padding: 24px 26px 12px;
+  border-bottom: var(--rule-heavy);
+  margin-bottom: 16px;
+}
+
+body.v2 .v2-panel--pad .v2-panel__head { padding: 0 0 12px; }
+
+body.v2 .v2-panel__body {
+  font: var(--v2-body-lg);
+  color: var(--asphalt-500);
+  padding: 0 26px 24px;
+  margin: 0;
+  white-space: pre-line;
+}
+
+/* --- Правая колонка ----------------------------------------------------- */
+body.v2 .v2-product__aside {
+  position: sticky;
+  top: 102px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+body.v2 .v2-product__meta {
+  font: var(--v2-label);
+  font-weight: 400;
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--asphalt-400);
+  margin-bottom: 8px;
+}
+
+body.v2 .v2-product__titlerow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+body.v2 .v2-product__title {
+  font-family: var(--type-display);
+  font-weight: 700;
+  font-size: var(--fs-36);
+  line-height: 1.05;
+  letter-spacing: var(--ls-display);
+  word-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--asphalt-900);
+  margin: 0 0 22px;
+}
+
+body.v2 .v2-icon-btn {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--asphalt-200);
+  border-radius: var(--radius-4);
+  background: var(--paper);
+  color: var(--asphalt-900);
+  cursor: pointer;
+  font-size: 15px;
+}
+
+body.v2 .v2-icon-btn:hover { border-color: var(--asphalt-900); }
+body.v2 .v2-icon-btn.active { color: var(--hazard-400); }
+
+body.v2 .v2-owner-badge {
+  display: inline-block;
+  margin-bottom: 12px;
+  padding: 4px 10px;
+  background: var(--ink-tint);
+  color: var(--ink-700);
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+}
+
+body.v2 .v2-product__rows { padding-top: 4px; border-top: var(--rule-heavy); }
+
+body.v2 .v2-product__pricebox {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: var(--rule-heavy);
+}
+
+body.v2 .v2-product__price-label {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--asphalt-400);
+}
+
+body.v2 .v2-product__price {
+  font: var(--v2-price);
+  font-variant-numeric: tabular-nums;
+  color: var(--asphalt-900);
+  margin: 6px 0 4px;
+}
+
+body.v2 .v2-product__price-note {
+  font: var(--v2-small);
+  color: var(--asphalt-400);
+  margin-bottom: 18px;
+}
+
+body.v2 .v2-btn--block { display: flex; width: 100%; }
+body.v2 .v2-btn--block + .v2-btn--block { margin-top: 10px; }
+
+/* --- Ведомость «как проходит покупка» ----------------------------------- */
+body.v2 .v2-ledger__row { padding: 13px 0; border-bottom: var(--rule-hair); }
+body.v2 .v2-ledger__row:last-child { border-bottom: 0; }
+
+body.v2 .v2-ledger__t {
+  font: var(--v2-body);
+  font-weight: 600;
+  color: var(--asphalt-900);
+  margin-bottom: 3px;
+}
+
+body.v2 .v2-ledger__d { font: var(--v2-small); color: var(--asphalt-500); }
+
+@media (max-width: 1000px) {
+  body.v2 .v2-product { grid-template-columns: 1fr; }
+  body.v2 .v2-product__aside { position: static; }
+}
+
+@media (max-width: 560px) {
+  body.v2 .v2-product__title { font-size: var(--fs-28); }
+  body.v2 .v2-panel--pad { padding: 20px; }
+  body.v2 .v2-thumbs img { height: 60px; }
 }
