@@ -697,8 +697,14 @@ p {
   color: #1F1F1F;
   background: #ffffffff;
 }
+/* Тёмная тема красит фон этих полей в #121212 (см. правило html.dark выше),
+   но цвет текста оставался #1F1F1F из правила над этим блоком — контраст
+   1,14:1, то есть ввод не виден. У textarea цвет был поправлен, у input —
+   нет, поэтому имя, телефон и пароль набирались вслепую на страницах
+   контактов, входа и регистрации. */
+html.dark .contact-form input,
 html.dark .contact-form textarea {
-  color: white;
+  color: #fff;
 }
 .contact-form input:focus,
 .contact-form textarea:focus {
