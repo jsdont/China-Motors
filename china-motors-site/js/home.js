@@ -1,65 +1,112 @@
-// js/home.js — главная страница: калькулятор-виджет в хиро (популярные
-// категории/марки из реальных данных) + превью "Популярная техника".
+// js/home.js — главная страница: живые числа в hero (количество техники и
+// курс) + превью «Популярная техника» карточками VehiclePassport.
+//
+// Виджет-калькулятор из hero снят на шаге 4 переноса дизайн-системы v2
+// (redesign-plan §4.1: «Никакого белого виджета-калькулятора, парящего на
+// фото»), вместе с ним ушёл и код, который наполнял его селекты.
 document.addEventListener('DOMContentLoaded', async () => {
   const metaBase = document.querySelector('meta[name="api-base"]')?.content;
   const API_BASE = (metaBase || location.origin).replace(/\/+$/, '');
 
   const grid = document.getElementById('hpVehiclesGrid');
-  const categorySelect = document.getElementById('hpCalcCategory');
-  const brandSelect = document.getElementById('hpCalcBrand');
-  const yearSelect = document.getElementById('hpCalcYear');
-  const form = document.getElementById('hpCalcWidget');
 
-  function fillYearSelect() {
-    if (!yearSelect) return;
-    const currentYear = new Date().getFullYear();
-    for (let y = currentYear + 1; y >= 2015; y--) {
-      const opt = document.createElement('option');
-      opt.value = y;
-      opt.textContent = y;
-      yearSelect.appendChild(opt);
+  const tr = (key, fallback) => (window.t ? window.t(key) : null) || fallback;
+
+  const AVAIL_LABELS = { in_stock: 'В НАЛИЧИИ', on_order: 'ПОД ЗАКАЗ', out_of_stock: 'НЕТ' };
+
+  /* ---------- Живые числа в hero -------------------------------------- */
+  // Показываем только то, что реально пришло с бэкенда: пустой блок честнее
+  // выдуманного «47 единиц».
+  function showMeta(wrapId, valueId, value) {
+    const wrap = document.getElementById(wrapId);
+    const el = document.getElementById(valueId);
+    if (!wrap || !el || value === null || value === undefined) return;
+    el.textContent = value;
+    wrap.hidden = false;
+  }
+
+  async function fillRate() {
+    try {
+      const res = await fetch(`${API_BASE}/api/rates/`);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      const usd = Number(data.usd_kzt);
+      if (!usd) return;
+      showMeta('heroRate', 'heroRateN', usd.toLocaleString('ru-RU', {
+        minimumFractionDigits: 2, maximumFractionDigits: 2,
+      }));
+    } catch (e) {
+      /* курс не отдался — строка просто не появляется */
     }
   }
 
-  function fillSelect(select, values, fallback) {
-    if (!select) return;
-    const list = values.length ? values : fallback;
-    select.innerHTML = list.map(v => `<option value="${v}">${v}</option>`).join('');
+  /* ---------- Карточка техники — тот же паспорт, что в каталоге -------- */
+  function passportRows(v) {
+    return [
+      ['vp_row_wheel', 'КОЛЁСНАЯ ФОРМУЛА', v.wheel_formula],
+      ['vp_row_mass', 'ПОЛНАЯ МАССА, Т', v.weight_t],
+      ['vp_row_payload', 'ГРУЗОПОДЪЁМНОСТЬ, Т', v.load_capacity_t],
+      ['vp_row_power', 'ДВИГАТЕЛЬ, Л.С.', v.engine_power_hp],
+      ['vp_row_gearbox', 'КПП', v.gearbox],
+    ].filter(([, , value]) => value !== null && value !== undefined && value !== '');
   }
 
   function priceLine(v) {
     if (v.price_kzt) return `${Number(v.price_kzt).toLocaleString('ru-RU')} ₸`;
     if (v.price_cny) return `${Number(v.price_cny).toLocaleString('ru-RU')} ¥`;
-    return 'Цена по запросу';
+    return tr('vp_price_on_request', '— по запросу');
   }
 
+  // primary=true заливает кнопку сигнальным красным — максимум у ОДНОЙ
+  // карточки, иначе красный размножается и перестаёт что-то значить.
+  // На главной primary уже занят кнопкой в hero, поэтому здесь его нет.
   function vehicleCard(v) {
-    const title = [v.brand, v.model, v.body_type].filter(Boolean).join(' ').trim() || `Техника #${v.id}`;
-    const category = v.category || v.body_type || '';
+    const fullTitle = [v.brand, v.model, v.body_type].filter(Boolean).join(' ').trim()
+      || tr('card_no_name', 'Техника');
+    const title = v.body_type || fullTitle;
+    const sub = [v.category, v.year].filter(Boolean).join(' · ');
+    const availability = v.availability || 'in_stock';
+    const availLabel = tr('vp_avail_' + availability, AVAIL_LABELS[availability] || '');
     const rawImg = v.image_url || (Array.isArray(v.images) && v.images[0]) || '/img/no-photo.png';
-    const img = rawImg === '/img/no-photo.png' ? rawImg : (window.cmOptimizeImage?.(rawImg, { width: 300 }) || rawImg);
+    const img = rawImg === '/img/no-photo.png'
+      ? rawImg
+      : (window.cmOptimizeImage?.(rawImg, { width: 400 }) || rawImg);
     const isFav = window.CMFavorites?.isFavorite(v.id);
+
     return `
-      <a class="hp-vehicle-card" href="product.html?id=${v.id}">
-        <div class="hp-vehicle-card__image">
-          <img src="${img}" alt="${title}" loading="lazy" decoding="async">
-          <button type="button" class="cm-card__fav-btn${isFav ? ' active' : ''}" data-fav-id="${v.id}" title="${window.t ? window.t('fav_remove_title') : 'Избранное'}">
+      <a class="vp" href="product.html?id=${v.id}">
+        <div class="vp__media">
+          <img src="${img}" alt="${fullTitle}" loading="lazy" decoding="async">
+          ${v.city ? `<span class="vp__tag vp__tag--place">${v.city}</span>` : ''}
+          ${availLabel ? `<span class="vp__tag vp__tag--avail vp__tag--${availability}" data-i18n="vp_avail_${availability}">${availLabel}</span>` : ''}
+          <button type="button" class="vp__fav${isFav ? ' active' : ''}" data-fav-id="${v.id}" title="${tr('fav_remove_title', 'Избранное')}">
             <i class="fa-${isFav ? 'solid' : 'regular'} fa-bookmark"></i>
           </button>
         </div>
-        <div class="hp-vehicle-card__body">
-          <div class="hp-vehicle-card__category">${category}</div>
-          <div class="hp-vehicle-card__name">${title}</div>
-          <div class="hp-vehicle-card__price">${priceLine(v)}</div>
-          <div class="hp-vehicle-card__cta" data-i18n="hp_vehicle_cta">Получить КП</div>
+
+        <div class="vp__head">
+          <h3 class="vp__title">${title}</h3>
+          ${sub ? `<div class="vp__sub">${sub}</div>` : ''}
+        </div>
+
+        <div class="vp__rows">
+          ${passportRows(v).map(([key, fallback, value]) => `
+            <div class="vp__row">
+              <span class="vp__row-label" data-i18n="${key}">${tr(key, fallback)}</span>
+              <span class="vp__row-value">${value}</span>
+            </div>`).join('')}
+        </div>
+
+        <div class="vp__foot">
+          <div class="vp__price-label" data-i18n="vp_price_label">ПОД КЛЮЧ В АЛМАТЫ</div>
+          <div class="vp__price">${priceLine(v)}</div>
+          <span class="vp__cta" data-i18n="vp_cta">РАСЧЁТ ПОД КЛЮЧ</span>
         </div>
       </a>`;
   }
 
-  fillYearSelect();
-
   grid?.addEventListener('click', (e) => {
-    const btn = e.target.closest('.cm-card__fav-btn');
+    const btn = e.target.closest('.vp__fav, .cm-card__fav-btn');
     if (!btn) return;
     e.preventDefault();
     e.stopPropagation();
@@ -69,35 +116,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (icon) icon.className = `fa-${nowFav ? 'solid' : 'regular'} fa-bookmark`;
   });
 
+  fillRate();
+
   try {
     const res = await fetch(`${API_BASE}/api/vehicles/`);
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const vehicles = await res.json();
     const list = Array.isArray(vehicles) ? vehicles : (vehicles.results || []);
 
-    const categories = [...new Set(list.map(v => v.category || v.body_type).filter(Boolean))];
-    const brands = [...new Set(list.map(v => v.brand).filter(Boolean))];
-    fillSelect(categorySelect, categories, ['Самосвал', 'Тягач седельный', 'Автобетоносмеситель', 'Манипулятор']);
-    fillSelect(brandSelect, brands, ['Shacman']);
+    if (list.length) showMeta('heroUnits', 'heroUnitsN', list.length);
 
     if (grid) {
       const preview = list.slice(0, 4);
       grid.innerHTML = preview.length
         ? preview.map(vehicleCard).join('')
-        : '<p class="empty-note">Пока нет доступной техники в каталоге.</p>';
+        : `<div class="v2-empty"><p>${tr('hp_vehicles_empty', 'Пока нет доступной техники в каталоге.')}</p></div>`;
     }
   } catch (e) {
-    fillSelect(categorySelect, [], ['Самосвал', 'Тягач седельный', 'Автобетоносмеситель', 'Манипулятор']);
-    fillSelect(brandSelect, [], ['Shacman']);
-    if (grid) grid.innerHTML = `<p class="empty-note" style="color:#e74c3c">Не удалось загрузить каталог: ${e.message}</p>`;
+    if (grid) {
+      grid.innerHTML = `<div class="v2-empty"><p>${tr('hp_vehicles_error', 'Не удалось загрузить каталог')}: ${e.message}</p></div>`;
+    }
   }
-
-  form?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const params = new URLSearchParams();
-    if (categorySelect?.value) params.set('body', categorySelect.value);
-    if (brandSelect?.value) params.set('title', brandSelect.value);
-    if (yearSelect?.value) params.set('year', yearSelect.value);
-    location.href = `calculator.html?${params.toString()}`;
-  });
 });

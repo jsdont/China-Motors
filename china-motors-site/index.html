@@ -56,91 +56,133 @@
   }
   </script>
   <link rel="stylesheet" href="style.css">
+  <!-- Дизайн-система v2 «Груз в пути». Подключается РЯДОМ со style.css:
+       страницы переезжают по одной, старый файл снимается на шаге 7. -->
+  <link rel="stylesheet" href="style-v2.css">
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500;600;700&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
+  <!-- v2: IBM Plex Sans — текст, IBM Plex Mono — все числа (табличные цифры). -->
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&subset=cyrillic&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  
+
 </head>
-<body>
+<!-- class="v2" включает дизайн-систему v2 и говорит common.js грузить
+     тёмные партиалы navbar-v2 / footer-v2 -->
+<body class="v2">
 <noscript><div><img src="https://mc.yandex.ru/watch/110843946" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
   <div id="siteHeader"></div>
 
-  <section class="hp-hero fade-in">
-    <div class="hp-hero-overlay"></div>
-    <div class="hp-hero-inner">
-      <div>
-        <div class="hp-hero-badge" data-i18n="hp_hero_badge">ПРЯМЫЕ ПОСТАВКИ ОТ ЗАВОДОВ КИТАЯ</div>
-        <h1 data-i18n="hero_title_main">Спецтехника и автомобили из Китая под ключ</h1>
-        <p class="hp-hero-sub" data-i18n="hero_tagline">Подбор • расчёт • доставка • таможня • постановка на учёт в РК</p>
-
-        <div class="hp-hero-bullets">
-          <div><i class="fa-solid fa-file-signature"></i> <span data-i18n="hp_bullet1">Официальный договор</span></div>
-          <div><i class="fa-solid fa-shield-halved"></i> <span data-i18n="hp_bullet2">Банк защищает деньги</span></div>
-          <div><i class="fa-solid fa-file-shield"></i> <span data-i18n="hp_bullet3">Полный комплект документов</span></div>
-          <div><i class="fa-regular fa-clock"></i> <span data-i18n="hp_bullet4">С 2024 года</span></div>
-        </div>
-
-        <div class="hp-hero-cta">
-          <a href="contacts.html" class="btn btn--primary" data-i18n="hp_cta_offer">Получить КП</a>
-          <a href="catalog.html" class="btn-outline-light" data-i18n="hp_cta_catalog">Смотреть каталог →</a>
-        </div>
+  <!-- Hero держит ОДНУ мысль. Белый виджет-калькулятора, паривший на фото,
+       снят: расчёт вызывается кнопкой (redesign-plan §4.1). Список
+       «официальный договор / банк / документы» тоже снят — он дословно
+       повторял секцию 04 «Почему это безопасно» ниже. -->
+  <section class="hp-hero v2-hero fade-in">
+    <div class="hp-hero-overlay v2-hero__scrim"></div>
+    <div class="v2-hero__inner v2-wrap">
+      <!-- Цифры живые: количество — из /api/vehicles/, курс — из /api/rates/.
+           Если источник не ответил, фрагмент не показывается вообще. -->
+      <div class="v2-hero__meta">
+        <!-- Подпись впереди, число после — как показание на шкале. Так же
+             снимается согласование числительного: «4 единицы» / «5 единиц»
+             потребовало бы правил склонения в каждом из четырёх языков. -->
+        <span class="v2-hero__meta-item" id="heroUnits" hidden>
+          <span data-i18n="hp_meta_units">на площадке</span> <b class="num" id="heroUnitsN">—</b>
+        </span>
+        <span class="v2-hero__meta-item" id="heroRate" hidden>
+          <span data-i18n="hp_meta_rate">курс</span> <b class="num" id="heroRateN">—</b> ₸/$
+        </span>
       </div>
 
-      <div class="hp-calc-widget">
-        <div class="hp-calc-widget__title" data-i18n="hp_calc_widget_title">Рассчитать стоимость</div>
-        <form id="hpCalcWidget">
-          <div class="hp-field">
-            <label data-i18n="hp_calc_category">Категория</label>
-            <select id="hpCalcCategory"></select>
-          </div>
-          <div class="hp-field">
-            <label data-i18n="hp_calc_brand">Марка</label>
-            <select id="hpCalcBrand"></select>
-          </div>
-          <div class="hp-field">
-            <label data-i18n="calc_year_label">Год выпуска</label>
-            <select id="hpCalcYear"></select>
-          </div>
-          <button type="submit" data-i18n="hp_calc_submit">Рассчитать стоимость</button>
-        </form>
-        <div class="hp-calc-widget__note" data-i18n="hp_calc_widget_note">бесплатно и ни к чему не обязывает</div>
+      <h1 class="v2-hero__title" data-i18n="hp_hero_h1">Техника из Китая с ценой до тенге</h1>
+      <p class="v2-hero__sub" data-i18n="hp_hero_sub">Считаем полную стоимость до Алматы: техника, пошлина, НДС, доставка, утильсбор, учёт. Без «доплатите потом».</p>
+
+      <div class="v2-hero__cta">
+        <a href="calculator.html" class="v2-btn v2-btn--primary" data-i18n="hp_cta_price">Показать цену под ключ</a>
+        <a href="catalog.html" class="v2-btn v2-btn--ghost-light" data-i18n="hp_cta_catalog">Смотреть каталог →</a>
+      </div>
+    </div>
+
+    <!-- Справочная рейка: маршрут компании, а не прогресс конкретной сделки,
+         поэтому все узлы в состоянии todo и активного красного узла нет. -->
+    <div class="v2-hero__rail v2-wrap">
+      <div class="v2-rail v2-rail--labeled" aria-hidden="true">
+        <div class="v2-rail__seg">
+          <span class="v2-rail__line"><span class="v2-rail__node"></span></span>
+          <span class="v2-rail__tick"></span>
+          <span class="v2-rail__label" data-i18n="stage_factory">Завод</span>
+          <span class="v2-rail__sub" data-i18n="stage_factory_s">КНР</span>
+        </div>
+        <div class="v2-rail__seg">
+          <span class="v2-rail__line"><span class="v2-rail__node"></span></span>
+          <span class="v2-rail__tick"></span>
+          <span class="v2-rail__label" data-i18n="stage_khorgos">Хоргос</span>
+          <span class="v2-rail__sub" data-i18n="stage_khorgos_s">граница</span>
+        </div>
+        <div class="v2-rail__seg">
+          <span class="v2-rail__line"><span class="v2-rail__node"></span></span>
+          <span class="v2-rail__tick"></span>
+          <span class="v2-rail__label" data-i18n="stage_customs">Таможня</span>
+          <span class="v2-rail__sub" data-i18n="stage_customs_s">ГТД</span>
+        </div>
+        <div class="v2-rail__seg">
+          <span class="v2-rail__line"><span class="v2-rail__node"></span></span>
+          <span class="v2-rail__tick"></span>
+          <span class="v2-rail__label" data-i18n="stage_cert">СБКТС</span>
+          <span class="v2-rail__sub" data-i18n="stage_cert_s">лаборатория</span>
+        </div>
+        <div class="v2-rail__seg">
+          <span class="v2-rail__line"><span class="v2-rail__node"></span></span>
+          <span class="v2-rail__tick"></span>
+          <span class="v2-rail__label" data-i18n="stage_almaty">Алматы</span>
+          <span class="v2-rail__sub" data-i18n="stage_almaty_s">склад</span>
+        </div>
+        <div class="v2-rail__seg">
+          <span class="v2-rail__line"><span class="v2-rail__node"></span></span>
+          <span class="v2-rail__tick"></span>
+          <span class="v2-rail__label" data-i18n="stage_handover">Выдача</span>
+          <span class="v2-rail__sub" data-i18n="stage_handover_s">документы</span>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- МАРШРУТ ПО САЙТУ: что делать шаг за шагом. Каждый шаг — ссылка,
        чтобы человек не искал, куда нажимать дальше. -->
-  <section class="hp-route fade-in">
-    <div class="hp-route__head">
-      <h2 data-i18n="route_title">С чего начать — по шагам</h2>
-      <p data-i18n="route_sub">Если впервые на сайте, просто идите по порядку. На любом шаге можно позвонить — поможем.</p>
+  <section class="hp-route v2-sec fade-in">
+    <div class="v2-wrap">
+      <div class="v2-rule v2-sec__rule">
+        <span class="v2-rule__index">01</span>
+        <span class="v2-rule__title" data-i18n="hp_rule_route">Маршрут по сайту</span>
+      </div>
+      <h2 class="v2-section-title" data-i18n="route_title">С чего начать — по шагам</h2>
+      <p class="v2-sec__lead" data-i18n="route_sub">Если впервые на сайте, просто идите по порядку. На любом шаге можно позвонить — поможем.</p>
     </div>
 
-    <div class="hp-route__grid">
+    <div class="v2-wrap hp-route__grid">
       <a class="hp-route__step" href="catalog.html">
-        <div class="hp-route__n">1</div>
+        <div class="hp-route__n">01</div>
         <h3 data-i18n="route1_t">Посмотрите технику</h3>
         <p data-i18n="route1_d">В каталоге выберите, что вам нужно делать — возить песок, грузы или поднимать на стройке. Покажем подходящие машины.</p>
         <span class="hp-route__go" data-i18n="route1_go">Открыть каталог →</span>
       </a>
 
       <a class="hp-route__step" href="calculator.html">
-        <div class="hp-route__n">2</div>
+        <div class="hp-route__n">02</div>
         <h3 data-i18n="route2_t">Узнайте цену «под ключ»</h3>
         <p data-i18n="route2_d">Калькулятор покажет итоговую сумму с растаможкой и доставкой. Не хотите считать — ответьте на три вопроса, посчитаем сами.</p>
         <span class="hp-route__go" data-i18n="route2_go">Рассчитать стоимость →</span>
       </a>
 
       <a class="hp-route__step" href="contacts.html">
-        <div class="hp-route__n">3</div>
+        <div class="hp-route__n">03</div>
         <h3 data-i18n="route3_t">Оставьте заявку</h3>
         <p data-i18n="route3_d">Достаточно имени и телефона. Менеджер перезвонит, уточнит детали и пришлёт коммерческое предложение.</p>
         <span class="hp-route__go" data-i18n="route3_go">Оставить заявку →</span>
       </a>
 
       <a class="hp-route__step" href="account.html">
-        <div class="hp-route__n">4</div>
+        <div class="hp-route__n">04</div>
         <h3 data-i18n="route4_t">Следите за сделкой</h3>
         <p data-i18n="route4_d">После заключения договора в личном кабинете видно, где сейчас ваша машина: оплата, доставка, таможня, выдача.</p>
         <span class="hp-route__go" data-i18n="route4_go">Личный кабинет →</span>
@@ -148,121 +190,219 @@
     </div>
   </section>
 
-  <!-- SERVICES -->
-  <section id="services" class="hp-services fade-in">
-    <h2 class="hp-services__title" data-i18n="hp_services_title">Наши услуги</h2>
-    <p class="hp-services__sub" data-i18n="hp_services_sub">Комплексные решения для поставки и обслуживания техники</p>
-    <div class="hp-services-grid">
-      <div class="hp-service-card">
-        <div class="hp-service-card__icon"><i class="fa-solid fa-truck-field"></i></div>
-        <div class="hp-service-card__title" data-i18n="hp_service1_t">Заказ и поставка</div>
-        <div class="hp-service-card__desc" data-i18n="hp_service1_d">Автомобили и спецтехника из Китая под ваши нужды.</div>
+  <!-- ЧТО ВХОДИТ. Блок «flat-иконка + заголовок + два предложения» ×4
+       заменён ведомостью (redesign-plan §4.5): этапы ведомости — те же узлы,
+       что на рейке, поэтому «что входит» и «как проходит сделка» читаются
+       как один процесс.
+       Колонки СРОК в ведомости НЕТ: сроков этапов нет ни в коде, ни в
+       контенте сайта, а придумывать их — значит выдавать за обязательство
+       компании то, чего она не заявляла. Появятся реальные — колонка
+       добавляется одной строкой. -->
+  <section id="services" class="hp-services v2-sec fade-in">
+    <div class="v2-wrap">
+      <div class="v2-rule v2-sec__rule">
+        <span class="v2-rule__index">02</span>
+        <span class="v2-rule__title" data-i18n="hp_rule_included">Что входит</span>
       </div>
-      <div class="hp-service-card">
-        <div class="hp-service-card__icon"><i class="fa-solid fa-file-circle-check"></i></div>
-        <div class="hp-service-card__title" data-i18n="hp_service2_t">Таможенное оформление</div>
-        <div class="hp-service-card__desc" data-i18n="hp_service2_d">Помощь с таможенной очисткой.</div>
-      </div>
-      <div class="hp-service-card">
-        <div class="hp-service-card__icon"><i class="fa-solid fa-truck-fast"></i></div>
-        <div class="hp-service-card__title" data-i18n="hp_service3_t">Доставка</div>
-        <div class="hp-service-card__desc" data-i18n="hp_service3_d">Доставка с Хоргоса в Алматы.</div>
-      </div>
-      <div class="hp-service-card">
-        <div class="hp-service-card__icon"><i class="fa-solid fa-id-card"></i></div>
-        <div class="hp-service-card__title" data-i18n="hp_service4_t">Гос. номер</div>
-        <div class="hp-service-card__desc" data-i18n="hp_service4_d">Помощь с получением гос. номера.</div>
+      <h2 class="v2-section-title" data-i18n="hp_services_h2">Полный цикл до постановки на учёт</h2>
+      <p class="v2-sec__lead" data-i18n="hp_services_sub">Комплексные решения для поставки и обслуживания техники</p>
+
+      <div class="v2-ledger-wrap">
+        <table class="v2-ledger">
+          <thead>
+            <tr>
+              <th data-i18n="hp_led_stage">Этап</th>
+              <th data-i18n="hp_led_work">Работа</th>
+              <th data-i18n="hp_led_incl">Включено</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="v2-ledger__stage" data-i18n="stage_factory">Завод</td>
+              <td data-i18n="hp_service1_d">Автомобили и спецтехника из Китая под ваши нужды.</td>
+              <td class="v2-ledger__ok"><i class="fa-solid fa-check" aria-hidden="true"></i><span class="sr-only" data-i18n="hp_led_yes">включено</span></td>
+            </tr>
+            <tr>
+              <td class="v2-ledger__stage" data-i18n="stage_customs">Таможня</td>
+              <td data-i18n="hp_service2_d">Помощь с таможенной очисткой.</td>
+              <td class="v2-ledger__ok"><i class="fa-solid fa-check" aria-hidden="true"></i><span class="sr-only" data-i18n="hp_led_yes">включено</span></td>
+            </tr>
+            <tr>
+              <td class="v2-ledger__stage" data-i18n="stage_cert">СБКТС</td>
+              <td data-i18n="hp_led_cert_work">Лаборатория, СБКТС и ЭПТС — оформляем сами.</td>
+              <td class="v2-ledger__ok"><i class="fa-solid fa-check" aria-hidden="true"></i><span class="sr-only" data-i18n="hp_led_yes">включено</span></td>
+            </tr>
+            <tr>
+              <td class="v2-ledger__stage" data-i18n="stage_delivery">Доставка</td>
+              <td data-i18n="hp_service3_d">Доставка с Хоргоса в Алматы.</td>
+              <td class="v2-ledger__ok"><i class="fa-solid fa-check" aria-hidden="true"></i><span class="sr-only" data-i18n="hp_led_yes">включено</span></td>
+            </tr>
+            <tr>
+              <td class="v2-ledger__stage" data-i18n="stage_reg">Учёт</td>
+              <td data-i18n="hp_service4_d">Помощь с получением гос. номера.</td>
+              <td class="v2-ledger__ok"><i class="fa-solid fa-check" aria-hidden="true"></i><span class="sr-only" data-i18n="hp_led_yes">включено</span></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </section>
 
-  <!-- PROCESS -->
-  <section class="hp-process fade-in">
-    <div class="hp-section-head">
-      <h2 data-i18n="hp_process_title">Как проходит сделка</h2>
-    </div>
-    <div class="hp-steps">
-      <div class="hp-step">
-        <div class="hp-step-n">1</div>
-        <h4 data-i18n="hp_step1_t">Выбор техники</h4>
-        <p data-i18n="hp_step1_d">Подбираем модель под задачи и бюджет</p>
+  <!-- КАК ПРОХОДИТ СДЕЛКА. Кружки 1-2-3-4-5 без связи с маршрутом заменены
+       рейкой, которая идёт СКВОЗЬ контент: карточки в шахматном порядке над
+       и под осью (redesign-plan §4.2).
+       Тики карточек намеренно попадают МЕЖДУ узлами: этапы сделки — работа,
+       которая идёт на перегоне между двумя географическими точками, и
+       привязывать каждую карточку к одному узлу значило бы придумать
+       соответствие, которого в контенте нет. -->
+  <section class="hp-process v2-sec v2-sec--tight fade-in">
+    <div class="v2-wrap">
+      <div class="v2-rule v2-sec__rule">
+        <span class="v2-rule__index">03</span>
+        <span class="v2-rule__title" data-i18n="hp_rule_deal">Маршрут груза</span>
       </div>
-      <div class="hp-step">
-        <div class="hp-step-n">2</div>
-        <h4 data-i18n="hp_step2_t">Коммерческое предложение</h4>
-        <p data-i18n="hp_step2_d">Расчёт стоимости с полной спецификацией</p>
-      </div>
-      <div class="hp-step">
-        <div class="hp-step-n">3</div>
-        <h4 data-i18n="hp_step3_t">Договор и оплата</h4>
-        <p data-i18n="hp_step3_d">Безопасная оплата через банк, полный пакет документов</p>
-      </div>
-      <div class="hp-step">
-        <div class="hp-step-n">4</div>
-        <h4 data-i18n="hp_step4_t">Поставка и растаможка</h4>
-        <p data-i18n="hp_step4_d">Логистика из Китая и таможенное оформление</p>
-      </div>
-      <div class="hp-step">
-        <div class="hp-step-n">5</div>
-        <h4 data-i18n="hp_step5_t">Получение техники</h4>
-        <p data-i18n="hp_step5_d">Передача техники и полный комплект документов</p>
+      <h2 class="v2-section-title" data-i18n="hp_process_title">Как проходит сделка</h2>
+
+      <div class="v2-flow">
+        <div class="v2-flow__cards v2-flow__cards--top">
+          <div class="v2-flow__card v2-flow__card--1">
+            <div class="v2-flow__i">01</div>
+            <h4 data-i18n="hp_step1_t">Выбор техники</h4>
+            <p data-i18n="hp_step1_d">Подбираем модель под задачи и бюджет</p>
+          </div>
+          <div class="v2-flow__card v2-flow__card--3">
+            <div class="v2-flow__i">03</div>
+            <h4 data-i18n="hp_step3_t">Договор и оплата</h4>
+            <p data-i18n="hp_step3_d">Безопасная оплата через банк, полный пакет документов</p>
+          </div>
+          <div class="v2-flow__card v2-flow__card--5">
+            <div class="v2-flow__i">05</div>
+            <h4 data-i18n="hp_step5_t">Получение техники</h4>
+            <p data-i18n="hp_step5_d">Передача техники и полный комплект документов</p>
+          </div>
+        </div>
+
+        <div class="v2-rail v2-rail--labeled v2-flow__axis" aria-hidden="true">
+          <div class="v2-rail__seg">
+            <span class="v2-rail__line"><span class="v2-rail__node"></span></span>
+            <span class="v2-rail__tick"></span>
+            <span class="v2-rail__label" data-i18n="stage_factory">Завод</span>
+          </div>
+          <div class="v2-rail__seg">
+            <span class="v2-rail__line"><span class="v2-rail__node"></span></span>
+            <span class="v2-rail__tick"></span>
+            <span class="v2-rail__label" data-i18n="stage_khorgos">Хоргос</span>
+          </div>
+          <div class="v2-rail__seg">
+            <span class="v2-rail__line"><span class="v2-rail__node"></span></span>
+            <span class="v2-rail__tick"></span>
+            <span class="v2-rail__label" data-i18n="stage_customs">Таможня</span>
+          </div>
+          <div class="v2-rail__seg">
+            <span class="v2-rail__line"><span class="v2-rail__node"></span></span>
+            <span class="v2-rail__tick"></span>
+            <span class="v2-rail__label" data-i18n="stage_cert">СБКТС</span>
+          </div>
+          <div class="v2-rail__seg">
+            <span class="v2-rail__line"><span class="v2-rail__node"></span></span>
+            <span class="v2-rail__tick"></span>
+            <span class="v2-rail__label" data-i18n="stage_almaty">Алматы</span>
+          </div>
+          <div class="v2-rail__seg">
+            <span class="v2-rail__line"><span class="v2-rail__node"></span></span>
+            <span class="v2-rail__tick"></span>
+            <span class="v2-rail__label" data-i18n="stage_handover">Выдача</span>
+          </div>
+        </div>
+
+        <div class="v2-flow__cards v2-flow__cards--bottom">
+          <div class="v2-flow__card v2-flow__card--2">
+            <div class="v2-flow__i">02</div>
+            <h4 data-i18n="hp_step2_t">Коммерческое предложение</h4>
+            <p data-i18n="hp_step2_d">Расчёт стоимости с полной спецификацией</p>
+          </div>
+          <div class="v2-flow__card v2-flow__card--4">
+            <div class="v2-flow__i">04</div>
+            <h4 data-i18n="hp_step4_t">Поставка и растаможка</h4>
+            <p data-i18n="hp_step4_d">Логистика из Китая и таможенное оформление</p>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Почему это безопасно — простыми словами, без терминов -->
-  <section class="hp-trust fade-in">
-    <div class="hp-trust__grid">
+  <!-- Почему это безопасно — простыми словами, без терминов.
+       Иконки сняты: в v2 смысл несёт текст и разметка, а не flat-пиктограмма
+       (redesign-plan §5, запрет «flat-иконка + заголовок + 2 предложения»). -->
+  <section class="hp-trust v2-sec fade-in">
+    <div class="v2-wrap">
+      <div class="v2-rule v2-sec__rule">
+        <span class="v2-rule__index">04</span>
+        <span class="v2-rule__title" data-i18n="hp_rule_safe">Почему это безопасно</span>
+      </div>
+      <h2 class="v2-section-title" data-i18n="hp_trust_title">Деньги и документы под договором</h2>
+    </div>
+    <div class="v2-wrap hp-trust__grid">
       <div class="hp-trust__item">
-        <i class="fa-solid fa-file-signature" aria-hidden="true"></i>
         <h4 data-i18n="trust1_t">Официальный договор</h4>
         <p data-i18n="trust1_d">Все условия и сроки прописаны на бумаге. Никаких скрытых доплат.</p>
       </div>
       <div class="hp-trust__item">
-        <i class="fa-solid fa-building-columns" aria-hidden="true"></i>
         <h4 data-i18n="trust2_t">Оплата через банк</h4>
         <p data-i18n="trust2_d">Деньги идут на расчётный счёт компании по договору — не на карту частному лицу.</p>
       </div>
       <div class="hp-trust__item">
-        <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
         <h4 data-i18n="trust3_t">Полный пакет документов</h4>
         <p data-i18n="trust3_d">ЭПТС, СБКТС и таможенные документы оформляем сами — вы получаете технику готовой к учёту.</p>
       </div>
       <div class="hp-trust__item">
-        <i class="fa-solid fa-phone" aria-hidden="true"></i>
         <h4 data-i18n="trust4_t">Живой менеджер</h4>
         <p data-i18n="trust4_d">Не нужно разбираться самому — позвоните, и мы подберём технику и посчитаем стоимость.</p>
       </div>
     </div>
   </section>
 
-  <!-- POPULAR VEHICLES (real data) -->
-  <section class="hp-vehicles fade-in">
-    <div class="hp-section-head">
-      <h2 data-i18n="hp_vehicles_title">Популярная техника</h2>
-      <a href="catalog.html" data-i18n="hp_vehicles_link">Смотреть весь каталог →</a>
-    </div>
-    <div class="hp-vehicles-grid" id="hpVehiclesGrid">
-      <p class="empty-note" data-i18n="hp_vehicles_loading">Загрузка...</p>
-    </div>
-  </section>
-
-  <!-- STATS -->
-  <section class="hp-stats fade-in">
-    <div class="hp-stats-inner">
-      <div class="hp-stats-label" data-i18n="hp_stats_label">НАМ ДОВЕРЯЮТ</div>
-      <div class="hp-stats-grid">
-        <div class="hp-stat"><strong>500+</strong><span data-i18n="hp_stat1">клиентов</span></div>
-        <div class="hp-stat"><strong>100%</strong><span data-i18n="hp_stat2">сделок по договору</span></div>
-        <div class="hp-stat"><strong>1000+</strong><span data-i18n="hp_stat3">единиц техники</span></div>
-        <div class="hp-stat"><strong>2 <span data-i18n="hp_stat4_years">года</span></strong><span data-i18n="hp_stat4">на рынке</span></div>
+  <!-- ПЛОЩАДКА (реальные данные). Карточки — тот же VehiclePassport, что и
+       в каталоге: один компонент живёт в одном месте, иначе главная и
+       каталог начнут расходиться. -->
+  <section class="hp-vehicles v2-sec fade-in">
+    <div class="v2-wrap">
+      <div class="v2-rule v2-sec__rule">
+        <span class="v2-rule__index">05</span>
+        <span class="v2-rule__title" data-i18n="catalog_rule_title">Площадка</span>
+        <span class="v2-rule__aside"><a href="catalog.html" data-i18n="hp_vehicles_link">Смотреть весь каталог →</a></span>
+      </div>
+      <h2 class="v2-section-title" data-i18n="hp_vehicles_title">Популярная техника</h2>
+      <div class="v2-grid" id="hpVehiclesGrid">
+        <p class="empty-note" data-i18n="hp_vehicles_loading">Загрузка...</p>
       </div>
     </div>
   </section>
 
-  <section id="gallery" class="section fade-in">
-    <div class="container">
-      <h2 class="blue-title" data-i18n="gallery_title">Галерея</h2>
+  <!-- ЧИСЛА. Цифры моно и табличные — как показания прибора, а не как
+       рекламный баннер. Значения не тронуты. -->
+  <section class="hp-stats v2-sec fade-in">
+    <div class="hp-stats-inner v2-wrap">
+      <div class="v2-rule v2-sec__rule">
+        <span class="v2-rule__index">06</span>
+        <span class="v2-rule__title hp-stats-label" data-i18n="hp_stats_label">НАМ ДОВЕРЯЮТ</span>
+      </div>
+      <div class="hp-stats-grid">
+        <div class="hp-stat"><strong class="num">500+</strong><span data-i18n="hp_stat1">клиентов</span></div>
+        <div class="hp-stat"><strong class="num">100%</strong><span data-i18n="hp_stat2">сделок по договору</span></div>
+        <div class="hp-stat"><strong class="num">1000+</strong><span data-i18n="hp_stat3">единиц техники</span></div>
+        <div class="hp-stat"><strong class="num">2 <span data-i18n="hp_stat4_years">года</span></strong><span data-i18n="hp_stat4">на рынке</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="gallery" class="section v2-sec fade-in">
+    <div class="v2-wrap">
+      <div class="v2-rule v2-sec__rule">
+        <span class="v2-rule__index">07</span>
+        <span class="v2-rule__title" data-i18n="hp_rule_gallery">Что возим</span>
+      </div>
+      <h2 class="v2-section-title" data-i18n="gallery_title">Галерея</h2>
       <div class="gallery-grid">
         <!-- карточки галереи — как было -->
         <div class="card gallery-card">
@@ -294,9 +434,13 @@
   </section>
 
   <!-- Reviews Section -->
-  <section id="reviews" class="section fade-in">
-    <div class="container">
-      <h2 class="blue-title" data-i18n="reviews_title">Отзывы</h2>
+  <section id="reviews" class="section v2-sec fade-in">
+    <div class="v2-wrap">
+      <div class="v2-rule v2-sec__rule">
+        <span class="v2-rule__index">08</span>
+        <span class="v2-rule__title" data-i18n="hp_rule_reviews">Клиенты</span>
+      </div>
+      <h2 class="v2-section-title" data-i18n="reviews_title">Отзывы</h2>
       <div class="reviews-grid">
         <div class="review-card">
           <iframe 
@@ -357,9 +501,12 @@
           <p data-i18n="reviews_title1" class="review-caption">Техника у клиента</p>
         </div>
       </div>
-      <p class="cta-text">Хотите так же? Подберём технику под вашу задачу и бюджет.</p>
-      <a href="contacts.html" class="btn btn--primary">Получить предложение</a>
-
+      <!-- Закрывающий шаг. Кнопка вторичная: единственный primary страницы
+           стоит в hero, и второй заливкой он бы обесценился. -->
+      <div class="v2-close">
+        <p class="v2-close__t" data-i18n="hp_close_t">Хотите так же? Подберём технику под вашу задачу и бюджет.</p>
+        <a href="contacts.html" class="v2-btn v2-btn--secondary" data-i18n="hp_close_cta">Оставить заявку</a>
+      </div>
     </div>
   </section>
 
