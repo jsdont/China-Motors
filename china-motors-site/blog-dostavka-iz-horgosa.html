@@ -52,14 +52,20 @@
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500;600;700&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- Дизайн-система v2 «Груз в пути». Подключается РЯДОМ со style.css:
+       страницы переезжают по одной, старый файл снимается на шаге 7. -->
+  <link rel="stylesheet" href="style-v2.css">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&subset=cyrillic&display=swap" rel="stylesheet">
 </head>
-<body>
+<!-- class="v2" включает дизайн-систему v2 и говорит common.js грузить
+     тёмные партиалы navbar-v2 / footer-v2 -->
+<body class="v2">
 <noscript><div><img src="https://mc.yandex.ru/watch/110843946" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
   <div id="siteHeader"></div>
 
-  <section class="section fade-in">
+  <section class="section v2-sec v2-sec--tight fade-in">
     <article class="blog-article">
       <a href="blog.html" class="blog-back-link"><i class="fa-solid fa-arrow-left"></i> К списку статей</a>
       <div class="blog-article__meta">Гайд · China Motors</div>

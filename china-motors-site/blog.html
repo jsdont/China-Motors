@@ -63,26 +63,33 @@
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500;600;700&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- Дизайн-система v2 «Груз в пути». Подключается РЯДОМ со style.css:
+       страницы переезжают по одной, старый файл снимается на шаге 7. -->
+  <link rel="stylesheet" href="style-v2.css">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&subset=cyrillic&display=swap" rel="stylesheet">
 </head>
-<body>
+<!-- class="v2" включает дизайн-систему v2 и говорит common.js грузить
+     тёмные партиалы navbar-v2 / footer-v2 -->
+<body class="v2">
 <noscript><div><img src="https://mc.yandex.ru/watch/110843946" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
   <div id="siteHeader"></div>
 
-  <section class="hp-page-head fade-in">
-    <div>
-      <h1 data-i18n="blog_hero">Блог</h1>
-      <p data-i18n="blog_subhead">Статьи и гайды о технике из Китая, доставке и оформлении сделки</p>
+  <section class="v2-wrap v2-page-head fade-in">
+    <div class="v2-rule">
+      <span class="v2-rule__index">04</span>
+      <span class="v2-rule__title" data-i18n="blog_rule_title">Материалы</span>
     </div>
+    <h1 class="v2-page-title v2-page-head__title" data-i18n="blog_hero">Блог</h1>
+    <p class="v2-page-head__sub" data-i18n="blog_subhead">Статьи и гайды о технике из Китая, доставке и оформлении сделки</p>
   </section>
 
-  <section class="section fade-in" style="padding-bottom:60px">
-    <div class="container">
+  <section class="section v2-sec v2-sec--tight fade-in">
+    <div class="v2-wrap">
       <div class="blog-grid">
 
         <a class="blog-card" href="blog-kak-prohodit-sdelka.html">
-          <div class="blog-card__icon"><i class="fa-solid fa-file-signature"></i></div>
           <div class="blog-card__body">
             <div class="blog-card__date" data-i18n="blog1_date">Гайд</div>
             <div class="blog-card__title" data-i18n="blog1_title">Как проходит сделка: от заявки до получения техники</div>
@@ -92,7 +99,6 @@
         </a>
 
         <a class="blog-card" href="blog-kak-vybrat-tehniku.html">
-          <div class="blog-card__icon"><i class="fa-solid fa-truck-monster"></i></div>
           <div class="blog-card__body">
             <div class="blog-card__date" data-i18n="blog2_date">Гайд</div>
             <div class="blog-card__title" data-i18n="blog2_title">Как выбрать спецтехнику: самосвал, тягач или манипулятор</div>
@@ -102,7 +108,6 @@
         </a>
 
         <a class="blog-card" href="blog-dostavka-iz-horgosa.html">
-          <div class="blog-card__icon"><i class="fa-solid fa-truck-fast"></i></div>
           <div class="blog-card__body">
             <div class="blog-card__date" data-i18n="blog3_date">Гайд</div>
             <div class="blog-card__title" data-i18n="blog3_title">Доставка техники из Китая: путь от Хоргоса до Алматы</div>

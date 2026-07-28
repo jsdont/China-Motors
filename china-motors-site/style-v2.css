@@ -2695,3 +2695,488 @@ body.v2 #reviews .v2-close__t {
   body.v2 .v2-ledger th,
   body.v2 .v2-ledger td { padding: 13px 14px; }
 }
+
+/* ============================================================================
+   19. КОНТАКТЫ, ВХОД, РЕГИСТРАЦИЯ, БЛОГ (шаг 5)
+   Источник: prod-migration-plan §5. Ветвление регистрации по пяти ролям и
+   тексты пояснений перенесены дословно — меняется только подача.
+   ============================================================================ */
+
+/* --- Общая форма (контакты + авторизация) -------------------------------- */
+body.v2 .contact-form {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+body.v2 .contact-form label {
+  display: block;
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--asphalt-400);
+  margin: 16px 0 7px;
+}
+
+body.v2 .contact-form label:first-of-type { margin-top: 0; }
+
+/* v1 держит `.contact-form input, .contact-form textarea { color: #fff }`
+   БЕЗ префикса html.dark — то есть белый текст и в светлой теме.
+   Задаём цвет явно, иначе ввод не виден на белой бумаге. */
+body.v2 .contact-form input,
+body.v2 .contact-form textarea,
+body.v2 .contact-form select {
+  width: 100%;
+  box-sizing: border-box;
+  border: var(--rule-hair);
+  border-radius: var(--radius-2);
+  background: var(--paper);
+  color: var(--asphalt-900);
+  padding: 11px 12px;
+  font: var(--v2-body);
+  outline: none;
+  box-shadow: none;
+  margin: 0;
+}
+
+body.v2 .contact-form textarea { min-height: 110px; resize: vertical; }
+
+body.v2 .contact-form input:focus,
+body.v2 .contact-form textarea:focus,
+body.v2 .contact-form select:focus { border-color: var(--asphalt-900); }
+
+/* Единственный primary на экране формы. Ширину и типографику задаём здесь:
+   раньше их держал постраничный <style> страниц входа и регистрации,
+   который снят при переносе. */
+body.v2 .contact-form .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: var(--v2-btn-h);
+  padding: 0 24px;
+  margin-top: 22px;
+  background: var(--signal-fill);
+  color: var(--on-signal);
+  border: 1.5px solid var(--signal-fill);
+  border-radius: var(--radius-4);
+  box-shadow: none;
+  font-family: var(--type-mono);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: var(--ls-mono-btn);
+  text-transform: uppercase;
+}
+
+body.v2 .contact-form .btn:hover {
+  background: var(--signal-fill-hover);
+  border-color: var(--signal-fill-hover);
+  transform: none;
+  box-shadow: none;
+}
+
+body.v2 .form-note {
+  font: var(--v2-small);
+  color: var(--asphalt-400);
+  margin: 12px 0 0;
+}
+
+body.v2 #formStatus,
+body.v2 #loginStatus,
+body.v2 #personStatus,
+body.v2 #companyStatus,
+body.v2 #serviceStatus,
+body.v2 #bankStatus,
+body.v2 #partnerStatus {
+  font: var(--v2-body);
+  margin-top: 12px;
+  color: var(--asphalt-500);
+}
+
+body.v2 .contact-ok { color: var(--clear-600); }
+
+/* Ловушка для ботов — остаётся невидимой */
+body.v2 .cf-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+/* --- Контакты ------------------------------------------------------------ */
+body.v2 .v2-contacts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 32px;
+  align-items: start;
+  padding-top: 32px;
+  padding-bottom: 80px;
+}
+
+/* Прямые контакты — асфальтовая панель (prod-migration-plan §5) */
+body.v2 .v2-reach {
+  background: var(--surface-inverse);
+  color: var(--on-inverse);
+  border-radius: var(--radius-2);
+  padding: 26px;
+}
+
+body.v2 .v2-reach__head {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  padding-bottom: 14px;
+  border-bottom: var(--rule-hair-dark);
+}
+
+body.v2 .v2-reach__row {
+  display: block;
+  padding: 14px 0;
+  border-bottom: var(--rule-hair-dark);
+  text-decoration: none;
+  color: var(--on-inverse);
+}
+
+body.v2 .v2-reach__label {
+  display: block;
+  font: var(--v2-label);
+  font-weight: 400;
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 5px;
+}
+
+body.v2 .v2-reach__value { font: var(--v2-body); color: var(--on-inverse); }
+
+a.v2-reach__row:hover .v2-reach__value { color: var(--signal-500); }
+
+body.v2 .v2-reach__wa { margin-top: 22px; }
+
+body.v2 .v2-reach__social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: var(--rule-hair-dark);
+}
+
+body.v2 .v2-reach__social a {
+  font: var(--v2-label);
+  font-weight: 400;
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+}
+
+body.v2 .v2-reach__social a:hover { color: var(--on-inverse); }
+
+/* --- Вход и регистрация -------------------------------------------------- */
+/* Постраничные <style> этих страниц сняты — всё описано здесь. */
+body.v2.auth-body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+body.v2 .auth-page {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(32px, 6vw, 72px) var(--v2-gutter);
+  background: var(--v2-page);
+}
+
+body.v2 .auth-card,
+body.v2 .auth-card--wide {
+  background: var(--paper);
+  border: var(--rule-hair);
+  border-radius: var(--radius-2);
+  box-shadow: none;
+  padding: 36px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+body.v2 .auth-card { max-width: 420px; }
+body.v2 .auth-card--wide { max-width: 560px; }
+
+body.v2 .auth-card__logo { display: flex; justify-content: center; margin-bottom: 20px; }
+
+body.v2 .auth-card__logo .logo-mark {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-2);
+  background: var(--surface-inverse);
+  color: var(--on-inverse);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--type-display);
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: var(--ls-display);
+}
+
+body.v2 .auth-card h1,
+body.v2 .auth-card--wide h1 {
+  font: var(--v2-section);
+  letter-spacing: var(--ls-display);
+  word-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--asphalt-900);
+  text-align: center;
+  margin: 0 0 8px;
+}
+
+body.v2 .auth-card__sub {
+  font: var(--v2-body);
+  color: var(--asphalt-500);
+  text-align: center;
+  margin: 0 0 26px;
+}
+
+/* Выбор роли — чипы. Активный ЗАЛИТЫЙ АСФАЛЬТ, не красный: единственный
+   primary на экране — кнопка «Создать аккаунт». */
+body.v2 .auth-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 22px;
+  padding-bottom: 22px;
+  border-bottom: var(--rule-hair);
+}
+
+body.v2 .auth-tabs button {
+  padding: 9px 14px;
+  border: 1px solid var(--asphalt-200);
+  border-radius: var(--radius-4);
+  background: var(--paper);
+  color: var(--asphalt-900);
+  font-family: var(--type-mono);
+  font-size: 11px;
+  letter-spacing: var(--ls-mono-btn);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+body.v2 .auth-tabs button:hover { border-color: var(--asphalt-900); }
+
+body.v2 .auth-tabs button.active {
+  background: var(--asphalt-900);
+  border-color: var(--asphalt-900);
+  color: var(--paper);
+}
+
+body.v2 .auth-type-select { display: none; }
+
+/* Пояснение к роли — текст переносится дословно, меняется только оправа. */
+body.v2 .auth-note {
+  background: var(--asphalt-050);
+  border: 0;
+  border-left: 2px solid var(--asphalt-200);
+  border-radius: 0;
+  padding: 13px 16px;
+  font: var(--v2-small);
+  color: var(--asphalt-500);
+  margin: 0 0 22px;
+  max-width: none;
+  text-align: left;
+}
+
+body.v2 .auth-note strong { color: var(--asphalt-900); }
+
+body.v2 .auth-link {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: var(--rule-hair);
+  font: var(--v2-small);
+  color: var(--asphalt-500);
+  text-decoration: none;
+}
+
+body.v2 .auth-link:hover { color: var(--signal-500); }
+
+/* --- Блог ---------------------------------------------------------------- */
+/* minmax(300px, …), а не 240px как в каталоге: у карточек блога подвал
+   длиннее (заголовок + анонс + «Читать»), и в 240px он ломается. */
+body.v2 .blog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+/* v1 держит `.section { text-align: center }`, а секция блога — .section;
+   в системе ведомости выравниваются по левому краю. */
+body.v2 .blog-card {
+  background: var(--paper);
+  color: var(--asphalt-900);
+  border: var(--rule-hair);
+  border-radius: var(--radius-2);
+  box-shadow: none;
+  overflow: visible;
+  text-align: left;
+}
+
+body.v2 .blog-card:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--asphalt-900);
+}
+
+body.v2 .blog-card__body { padding: 22px; gap: 0; }
+
+/* Кикер — метка рубрики, а не действие и не «вы здесь»: три красных
+   пятна подряд в одном ряду карточек размывают смысл сигнального цвета
+   (тот же разбор, что и со счётчиком избранного на шаге 2). */
+body.v2 .blog-card__date {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--asphalt-400);
+  margin-bottom: 12px;
+}
+
+body.v2 .blog-card__title {
+  font: var(--v2-card-title);
+  letter-spacing: var(--ls-display);
+  text-transform: uppercase;
+  color: var(--asphalt-900);
+  margin-bottom: 10px;
+}
+
+body.v2 .blog-card__excerpt {
+  font: var(--v2-body);
+  color: var(--asphalt-500);
+  margin-bottom: 16px;
+}
+
+body.v2 .blog-card__cta {
+  margin-top: auto;
+  font-family: var(--type-mono);
+  font-size: 11px;
+  letter-spacing: var(--ls-mono-btn);
+  text-transform: uppercase;
+  color: var(--asphalt-900);
+}
+
+body.v2 .blog-card:hover .blog-card__cta { color: var(--signal-500); }
+
+/* --- Статья -------------------------------------------------------------- */
+/* max-width 760px из v1 сохраняется: это мера строки для чтения, а не сетка
+   страницы, поэтому .v2-wrap здесь НЕ применяется. */
+body.v2 .blog-article { padding: 8px 24px 80px; }
+
+body.v2 .blog-back-link {
+  display: inline-block;
+  font-family: var(--type-mono);
+  font-size: 11px;
+  letter-spacing: var(--ls-mono-btn);
+  text-transform: uppercase;
+  color: var(--asphalt-500);
+  text-decoration: none;
+  margin-bottom: 26px;
+}
+
+body.v2 .blog-back-link:hover { color: var(--signal-500); }
+
+body.v2 .blog-article__meta {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--asphalt-400);
+  padding-bottom: 12px;
+  border-bottom: var(--rule-heavy);
+  margin-bottom: 22px;
+}
+
+body.v2 .blog-article h1 {
+  font: var(--v2-page-title);
+  letter-spacing: var(--ls-display);
+  word-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--asphalt-900);
+  margin: 0 0 24px;
+}
+
+body.v2 .blog-article h2 {
+  font: var(--v2-card-title);
+  letter-spacing: var(--ls-display);
+  text-transform: uppercase;
+  color: var(--asphalt-900);
+  margin: 36px 0 12px;
+}
+
+body.v2 .blog-article p,
+body.v2 .blog-article li {
+  font: var(--v2-body-lg);
+  color: var(--asphalt-700);
+}
+
+body.v2 .blog-article p { margin: 0 0 16px; }
+body.v2 .blog-article li { margin-bottom: 8px; }
+body.v2 .blog-article li strong { color: var(--asphalt-900); }
+
+/* v1 рисовал здесь тёмно-синюю коробку со скруглением 16px и центровкой —
+   ровно то, от чего система уходит. Остаётся тяжёлая линейка и левый край. */
+body.v2 .blog-article__cta {
+  background: transparent;
+  border-radius: 0;
+  padding: 26px 0 0;
+  margin-top: 40px;
+  border-top: var(--rule-heavy);
+  text-align: left;
+}
+
+body.v2 .blog-article__cta p {
+  font: var(--v2-body-lg);
+  color: var(--asphalt-900);
+  margin: 0 0 18px;
+}
+
+body.v2 .blog-article__cta .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--v2-btn-h);
+  padding: 0 24px;
+  background: var(--signal-fill);
+  color: var(--on-signal);
+  border: 1.5px solid var(--signal-fill);
+  border-radius: var(--radius-4);
+  box-shadow: none;
+  font-family: var(--type-mono);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: var(--ls-mono-btn);
+  text-transform: uppercase;
+}
+
+body.v2 .blog-article__cta .btn:hover {
+  background: var(--signal-fill-hover);
+  border-color: var(--signal-fill-hover);
+  transform: none;
+  box-shadow: none;
+}
+
+@media (max-width: 900px) {
+  body.v2 .v2-contacts { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px) {
+  body.v2 .auth-card,
+  body.v2 .auth-card--wide { padding: 24px; }
+  body.v2 .v2-reach { padding: 20px; }
+}
+
+/* v1 держит `#contact { background: #f9f9f9 }` — id-правило, классом его не
+   перебить, из-за чего под секцией контактов оставалась светлая плашка,
+   не относящаяся к сетке v2. */
+body.v2 #contact { background: transparent; }
+
+/* Статья лежит внутри .section, который в v1 центрирует текст. */
+body.v2 .blog-article { text-align: left; }
