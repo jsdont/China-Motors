@@ -1195,8 +1195,12 @@ body.v2 .v2-btn--secondary {
 /* ============================================================================
    13. ШАПКА СТРАНИЦЫ КАТАЛОГА
    ============================================================================ */
+/* Только вертикальные отступы: шапка страницы одновременно .v2-wrap,
+   а сокращённая запись padding обнулила бы боковой жёлоб и прижала
+   заголовок к краю окна. */
 body.v2 .v2-page-head {
-  padding: 40px 0 8px;
+  padding-top: 40px;
+  padding-bottom: 8px;
 }
 
 .v2-page-head__title { margin: 10px 0 6px; }
@@ -1569,4 +1573,544 @@ body.v2 .v2-ledger__d { font: var(--v2-small); color: var(--asphalt-500); }
   body.v2 .v2-product__title { font-size: var(--fs-28); }
   body.v2 .v2-panel--pad { padding: 20px; }
   body.v2 .v2-thumbs img { height: 60px; }
+}
+
+/* ============================================================================
+   17. КАЛЬКУЛЯТОР (шаг 3)
+   Разбивка стоимости И ЕСТЬ маршрут: каждая группа расходов стоит в той
+   точке пути, где деньги реально уходят. Источник: CostBreakdown.jsx +
+   RouteRailVertical. Формулы не тронуты — переносится только подача.
+
+   Узлы рейки нарисованы состоянием `done` (ink-700), как в CostBreakdown:
+   это точки расхода, а не прогресс конкретной сделки, поэтому здесь нет
+   зависимости от Vehicle.route_stage и нет активного красного узла.
+   ============================================================================ */
+
+/* --- Панель разбивки ----------------------------------------------------- */
+body.v2 .v2-breakdown {
+  background: var(--paper);
+  border: var(--rule-hair);
+  border-radius: var(--radius-2);
+  padding: 28px;
+}
+
+/* Секции внутри рейки — не карточки: одна панель, пять групп. */
+body.v2 .v2-breakdown .calc-card {
+  background: transparent;
+  color: var(--asphalt-900);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+}
+
+/* --- Сегмент рейки: узел + линия слева, содержимое справа ---------------- */
+body.v2 .v2-railv {
+  display: grid;
+  grid-template-columns: var(--rail-node-active) 1fr;
+  column-gap: 18px;
+  position: relative;
+  padding-bottom: 26px;
+}
+
+body.v2 .v2-railv > * { grid-column: 2; min-width: 0; }
+
+body.v2 .v2-railv::before {
+  content: '';
+  grid-column: 1;
+  grid-row: 1;
+  width: var(--rail-node-active);
+  height: var(--rail-node-active);
+  border-radius: 50%;
+  background: var(--ink-700);
+  margin-top: 1px;
+}
+
+body.v2 .v2-railv::after {
+  content: '';
+  position: absolute;
+  left: calc(var(--rail-node-active) / 2 - var(--rule-rail) / 2);
+  top: calc(var(--rail-node-active) + 6px);
+  bottom: 0;
+  width: var(--rule-rail);
+  background: var(--ink-700);
+}
+
+body.v2 .v2-railv:last-child { padding-bottom: 0; }
+body.v2 .v2-railv:last-child::after { content: none; }
+
+/* --- Заголовок группы: индекс · этап маршрута · название раздела --------- */
+body.v2 .v2-railv__head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 0 0 12px;
+  font-size: inherit;
+  font-weight: 400;
+}
+
+/* v1 рисовал номер шага красным кружком — пять таких заливок в кадре
+   разносят правило «максимум два signal-500». Номер становится моно-индексом. */
+body.v2 .v2-railv__head .hp-calc-step {
+  display: inline;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: none;
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  color: var(--asphalt-400);
+}
+
+body.v2 .v2-railv__label {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--asphalt-900);
+}
+
+body.v2 .v2-railv__sub {
+  font: var(--v2-label);
+  font-weight: 400;
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--asphalt-400);
+}
+
+body.v2 .v2-breakdown .calc-hint {
+  font: var(--v2-small);
+  color: var(--asphalt-500);
+  margin: 0 0 10px;
+}
+
+body.v2 .v2-breakdown .readonly-note {
+  font: var(--v2-small);
+  color: var(--asphalt-500);
+  opacity: 1;
+  margin: 0 0 10px;
+}
+
+/* --- Строка расхода: подпись — точечный поводок — сумма ------------------ */
+body.v2 .bill {
+  margin-top: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+
+body.v2 .bill h4 {
+  padding: 0 0 8px;
+  border-bottom: 0;
+  font: var(--v2-label);
+  font-weight: 400;
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--asphalt-400);
+}
+
+body.v2 .bill ul { padding: 0; }
+
+body.v2 .bill li,
+body.v2 .v2-breakdown .summary-line {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 8px 0;
+  border: 0;
+  border-bottom: var(--rule-hair);
+  border-radius: 0;
+  background: none;
+  font: var(--v2-body);
+  color: var(--asphalt-900);
+}
+
+/* Поводок — псевдоэлемент между подписью и суммой: разметку строк
+   рисует calculator.js, и его трогать не нужно. */
+body.v2 .bill li::before,
+body.v2 .v2-breakdown .summary-line::before {
+  content: '';
+  order: 1;
+  flex: 1 1 24px;
+  border-bottom: 1px dotted var(--asphalt-200);
+  transform: translateY(-4px);
+}
+
+body.v2 .bill li > .sum,
+body.v2 .v2-breakdown .summary-line strong {
+  order: 2;
+  font: var(--v2-data);
+  font-variant-numeric: tabular-nums;
+  color: var(--asphalt-900);
+  white-space: nowrap;
+}
+
+body.v2 .bill li:last-child { border-bottom: 0; }
+body.v2 .bill .muted { opacity: 1; color: var(--asphalt-900); }
+
+/* --- Форма ввода --------------------------------------------------------- */
+body.v2 .calc-sections { gap: 24px; }
+
+body.v2 #calcGrid { gap: 32px; }
+
+body.v2 #calcForm > .calc-card,
+body.v2 #simpleCalc {
+  background: var(--paper);
+  color: var(--asphalt-900);
+  border: var(--rule-hair);
+  border-radius: var(--radius-2);
+  box-shadow: none;
+  padding: 28px;
+}
+
+body.v2 #calcForm > .calc-card > .calc-card__title {
+  font: var(--v2-card-title);
+  letter-spacing: var(--ls-display);
+  text-transform: uppercase;
+  margin: 0 0 18px;
+}
+
+body.v2 .calc-card label {
+  display: block;
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--asphalt-400);
+  margin-bottom: 7px;
+}
+
+/* Согласия и флажки — обычный текст: капсом моно читается как ярлык поля,
+   а здесь это предложение, которое человек должен прочесть. */
+body.v2 .calc-card label:has(input[type="checkbox"]) {
+  display: flex;
+  font: var(--v2-body);
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--asphalt-900);
+}
+
+body.v2 .calc-card input[type="text"],
+body.v2 .calc-card input[type="number"],
+body.v2 .calc-card input[type="tel"],
+body.v2 .calc-card select {
+  width: 100%;
+  border: var(--rule-hair);
+  border-radius: var(--radius-2);
+  background: var(--paper);
+  color: var(--asphalt-900);
+  padding: 11px 12px;
+  font: var(--v2-body);
+  outline: none;
+  box-shadow: none;
+}
+
+body.v2 .calc-card input:focus,
+body.v2 .calc-card select:focus { border-color: var(--asphalt-900); }
+
+body.v2 .calc-card input[type="checkbox"] { width: auto; }
+
+body.v2 .calc-card hr {
+  border: 0;
+  border-top: var(--rule-hair);
+  margin: 8px 0;
+  grid-column: 1 / -1;
+}
+
+body.v2 .calc-card h3 {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--asphalt-400);
+  margin: 0 0 8px;
+}
+
+body.v2 .calc-card small { font: var(--v2-small); color: var(--asphalt-500); }
+
+/* v1 держал `#calcForm .btn` с id — обычным классом это не перебить. */
+body.v2 #calcForm .btn {
+  background: transparent;
+  color: var(--asphalt-900);
+  border: 1.5px solid var(--asphalt-900);
+  border-radius: var(--radius-4);
+  box-shadow: none;
+  font-family: var(--type-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: var(--ls-mono-btn);
+  text-transform: uppercase;
+  padding: 0 16px;
+  min-height: var(--v2-btn-h-sm);
+  white-space: nowrap;
+}
+
+body.v2 #calcForm .btn:hover {
+  background: var(--asphalt-900);
+  color: var(--paper);
+  transform: none;
+  box-shadow: none;
+}
+
+/* --- Итог ---------------------------------------------------------------- */
+body.v2 .summary-card {
+  background: var(--paper);
+  color: var(--asphalt-900);
+  border: var(--rule-hair);
+  border-radius: var(--radius-2);
+  box-shadow: none;
+  padding: 28px 28px 0;
+  overflow: hidden;
+  position: sticky;
+  top: 102px;
+}
+
+body.v2 .summary-card .summary-title {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--asphalt-400);
+  border-bottom: 0;
+  padding: 0 0 14px;
+  margin: 0;
+}
+
+body.v2 .summary-card .summary-line {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 9px 0;
+  border: 0;
+  border-bottom: var(--rule-hair);
+  color: var(--asphalt-900);
+  font: var(--v2-body);
+}
+
+body.v2 .summary-card .summary-line::before {
+  content: '';
+  order: 1;
+  flex: 1 1 24px;
+  border-bottom: 1px dotted var(--asphalt-200);
+  transform: translateY(-4px);
+}
+
+body.v2 .summary-card .summary-line strong {
+  order: 2;
+  font: var(--v2-data);
+  font-variant-numeric: tabular-nums;
+  color: var(--asphalt-900);
+  white-space: nowrap;
+}
+
+/* Асфальтовая плашка во всю ширину панели — как `margin: 0 -28px` в
+   CostBreakdown.jsx. */
+body.v2 .v2-total__box {
+  margin: 0 -28px;
+  background: var(--surface-inverse);
+  color: var(--on-inverse);
+  padding: 0 28px 28px;
+}
+
+/* Шевронная лента — одно из двух мест в системе, где она вообще появляется. */
+body.v2 .v2-total__chevron {
+  height: 6px;
+  margin: 0 -28px 24px;
+  background: var(--hazard-chevron);
+}
+
+body.v2 .summary-card .summary-total {
+  display: block;
+  margin: 0;
+  padding: 0;
+  border-top: 0;
+  color: var(--on-inverse);
+}
+
+body.v2 .summary-card .summary-total span {
+  display: block;
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+body.v2 .summary-card .summary-total strong {
+  display: block;
+  font: var(--v2-price);
+  font-variant-numeric: tabular-nums;
+  color: var(--on-inverse);
+  margin-top: 8px;
+  white-space: nowrap;
+}
+
+body.v2 .v2-total__secondary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 8px;
+}
+
+body.v2 .summary-card .summary-sub {
+  font: var(--v2-label);
+  font-weight: 400;
+  letter-spacing: var(--ls-mono-label);
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+}
+
+/* Объяснение суммы обычным языком — ключевое поведение бренда,
+   поэтому живёт прямо под итогом, а не в сноске. */
+body.v2 .summary-card .summary-plain {
+  font: var(--v2-body);
+  color: rgba(255, 255, 255, 0.62);
+  margin: 14px 0 0;
+  max-width: 380px;
+}
+
+body.v2 .summary-card .summary-actions { margin-top: 20px; }
+
+body.v2 .summary-card .summary-actions .btn {
+  min-width: 0;
+  background: var(--signal-fill);
+  border: 1.5px solid var(--signal-fill);
+  border-radius: var(--radius-4);
+  box-shadow: none;
+}
+
+body.v2 .summary-card .summary-actions .btn:hover {
+  background: var(--signal-fill-hover);
+  border-color: var(--signal-fill-hover);
+  transform: none;
+  box-shadow: none;
+}
+
+/* --- Простой режим: логика та же, подача — v2 ---------------------------- */
+body.v2 #simpleCalc { max-width: 720px; margin: 0 auto 32px; }
+
+body.v2 #simpleCalc .simple-calc__title {
+  font: var(--v2-section);
+  letter-spacing: var(--ls-display);
+  word-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 8px;
+}
+
+body.v2 #simpleCalc .simple-calc__sub {
+  font: var(--v2-body-lg);
+  color: var(--asphalt-500);
+  margin: 0 0 24px;
+}
+
+body.v2 #simpleCalc .simple-calc__label {
+  display: block;
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--asphalt-400);
+  margin: 22px 0 10px;
+}
+
+body.v2 #simpleCalc .sc-choice {
+  min-height: 46px;
+  padding: 0 16px;
+  border: 1px solid var(--asphalt-200);
+  border-radius: var(--radius-4);
+  background: var(--paper);
+  color: var(--asphalt-900);
+  font: var(--v2-body);
+}
+
+body.v2 #simpleCalc .sc-choice:hover { border-color: var(--asphalt-900); }
+
+/* Выбранный вариант — залитый асфальт, не красный: сигнальный цвет
+   зарезервирован за одним действием в кадре. */
+body.v2 #simpleCalc .sc-choice.active {
+  background: var(--asphalt-900);
+  border-color: var(--asphalt-900);
+  color: var(--paper);
+  font-weight: 400;
+}
+
+body.v2 #simpleCalc .simple-calc__input {
+  width: 100%;
+  min-height: 46px;
+  padding: 11px 12px;
+  border: var(--rule-hair);
+  border-radius: var(--radius-2);
+  background: var(--paper);
+  color: var(--asphalt-900);
+  font: var(--v2-body);
+  margin-bottom: 10px;
+}
+
+body.v2 #simpleCalc .simple-calc__input:focus { border-color: var(--asphalt-900); outline: none; }
+
+body.v2 #simpleCalc .simple-calc__send {
+  display: flex;
+  width: 100%;
+  min-height: var(--v2-btn-h);
+  margin-top: 14px;
+  padding: 0 24px;
+  background: var(--signal-fill);
+  border: 1.5px solid var(--signal-fill);
+  border-radius: var(--radius-4);
+  box-shadow: none;
+  font-family: var(--type-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: var(--ls-mono-btn);
+  text-transform: uppercase;
+}
+
+body.v2 #simpleCalc .simple-calc__send:hover {
+  background: var(--signal-fill-hover);
+  border-color: var(--signal-fill-hover);
+  transform: none;
+  box-shadow: none;
+}
+
+body.v2 #simpleCalc .simple-calc__status { font: var(--v2-body); margin-top: 12px; }
+body.v2 #simpleCalc .simple-calc__status.ok { color: var(--clear-600); }
+body.v2 #simpleCalc .simple-calc__status.err { color: var(--signal-500); }
+
+body.v2 #simpleCalc .simple-calc__or {
+  text-align: center;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: var(--rule-hair);
+}
+
+body.v2 #simpleCalc .simple-calc__link {
+  color: var(--asphalt-500);
+  font-family: var(--type-mono);
+  font-size: 11px;
+  letter-spacing: var(--ls-mono-btn);
+  text-transform: uppercase;
+  text-underline-offset: 3px;
+}
+
+body.v2 #simpleCalc .simple-calc__link:hover { color: var(--signal-500); }
+
+body.v2 .calc-disclaimer {
+  max-width: var(--v2-grid-max);
+  margin: 0 auto;
+  padding: 0 var(--v2-gutter) 48px;
+  font: var(--v2-small);
+  color: var(--asphalt-400);
+}
+
+@media (max-width: 980px) {
+  body.v2 .summary-card { position: static; margin-top: 24px; }
+}
+
+@media (max-width: 560px) {
+  body.v2 .v2-breakdown,
+  body.v2 #calcForm > .calc-card,
+  body.v2 #simpleCalc,
+  body.v2 .summary-card { padding-left: 20px; padding-right: 20px; }
+  body.v2 .summary-card { padding-top: 20px; }
+  body.v2 .v2-total__box { margin: 0 -20px; padding: 0 20px 20px; }
+  body.v2 .v2-total__chevron { margin: 0 -20px 20px; }
+  body.v2 .v2-railv { column-gap: 12px; }
+  body.v2 #simpleCalc .simple-calc__title { font-size: var(--fs-20); }
 }

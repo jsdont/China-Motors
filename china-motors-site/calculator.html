@@ -35,9 +35,14 @@
   <title data-i18n="title_calculator">China Motors - Калькулятор</title>
 
   <link rel="stylesheet" href="style.css">
+  <!-- Дизайн-система v2 «Груз в пути». Подключается РЯДОМ со style.css:
+       страницы переезжают по одной, старый файл снимается на шаге 7. -->
+  <link rel="stylesheet" href="style-v2.css">
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500;600;700&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
+  <!-- v2: IBM Plex Sans — текст, IBM Plex Mono — все числа (табличные цифры). -->
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&subset=cyrillic&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
@@ -54,20 +59,24 @@
     .view-only input, .view-only select, .view-only button {pointer-events:none; opacity:.75}
   </style>
 </head>
-<body>
+<!-- class="v2" включает дизайн-систему v2 и говорит common.js грузить
+     тёмные партиалы navbar-v2 / footer-v2 -->
+<body class="v2">
 <noscript><div><img src="https://mc.yandex.ru/watch/110843946" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
   <div id="siteHeader"></div>
 
   <!-- Header -->
-  <section class="hp-page-head fade-in">
-    <div>
-      <h1 data-i18n="calc_page_title">Калькулятор стоимости</h1>
-      <p data-i18n="calculator_tagline">Подбор, доставка и оформление под ключ — рассчитайте стоимость за 2 минуты</p>
+  <section class="v2-wrap v2-page-head fade-in">
+    <div class="v2-rule">
+      <span class="v2-rule__index">02</span>
+      <span class="v2-rule__title" data-i18n="calc_rule_title">Расчёт</span>
     </div>
+    <h1 class="v2-page-title v2-page-head__title" data-i18n="calc_page_title">Калькулятор стоимости</h1>
+    <p class="v2-page-head__sub" data-i18n="calculator_tagline">Подбор, доставка и оформление под ключ — рассчитайте стоимость за 2 минуты</p>
   </section>
 
   <!-- Main -->
-  <main class="container" style="padding-top:24px;padding-bottom:60px">
+  <main class="v2-wrap" style="padding-top:32px;padding-bottom:60px">
 
     <!-- Простой режим: три вопроса вместо большой формы. Показывается по
          умолчанию; подробный калькулятор открывается по кнопке ниже. -->
@@ -296,16 +305,30 @@
           </div>
         </section>
 
+        <!-- Разбивка стоимости висит на вертикальной рейке маршрута: каждая
+             группа расходов стоит в той точке пути, где деньги реально уходят.
+             ЗАВОД → ГРАНИЦА → СЕРТИФИКАЦИЯ → ДОСТАВКА → УЧЁТ.
+             Формулы не тронуты — изменилась только подача. -->
+        <div class="v2-breakdown">
+
         <!-- 2. Реальная стоимость -->
-        <section class="calc-card">
-          <h2 class="calc-card__title"><span class="hp-calc-step">1</span> <span data-i18n="calc_real_title">Реальная стоимость</span></h2>
+        <section class="calc-card v2-railv">
+          <h2 class="calc-card__title v2-railv__head">
+            <span class="hp-calc-step">01</span>
+            <span class="v2-railv__label" data-i18n="calc_stage_factory">Завод · КНР</span>
+            <span class="v2-railv__sub" data-i18n="calc_real_title">Реальная стоимость</span>
+          </h2>
           <p class="calc-hint" data-i18n="calc_real_hint">Цена авто в тенге = Цена($) × Курс</p>
-          <div class="summary-line"><span>=</span><strong id="realCostKZT">—</strong></div>
+          <div class="summary-line"><span data-i18n="calc_real_row">Цена техники</span><strong id="realCostKZT">—</strong></div>
         </section>
 
         <!-- 3. Таможенная стоимость -->
-        <section class="calc-card">
-          <h2 class="calc-card__title"><span class="hp-calc-step">2</span> <span data-i18n="calc_ts_title">Таможенная стоимость</span></h2>
+        <section class="calc-card v2-railv">
+          <h2 class="calc-card__title v2-railv__head">
+            <span class="hp-calc-step">02</span>
+            <span class="v2-railv__label" data-i18n="calc_stage_border">Граница · Хоргос</span>
+            <span class="v2-railv__sub" data-i18n="calc_ts_title">Таможенная стоимость</span>
+          </h2>
 
           <div class="bill">
             <h4 data-i18n="calc_ts_bill_title">Таможенные платежи</h4>
@@ -327,8 +350,12 @@
         </section>
 
         <!-- 4. Дополнительные расходы -->
-        <section class="calc-card">
-          <h2 class="calc-card__title"><span class="hp-calc-step">3</span> <span data-i18n="calc_mand_title">Дополнительные расходы</span></h2>
+        <section class="calc-card v2-railv">
+          <h2 class="calc-card__title v2-railv__head">
+            <span class="hp-calc-step">03</span>
+            <span class="v2-railv__label" data-i18n="calc_stage_cert">Сертификация и оформление</span>
+            <span class="v2-railv__sub" data-i18n="calc_mand_title">Дополнительные расходы</span>
+          </h2>
           <p class="readonly-note" data-i18n="calc_mand_note">Фиксируется по типу транспорта и выбранному режиму ТС.</p>
           <div class="bill">
             <h4 data-i18n="calc_mand_list_title">За что платим</h4>
@@ -337,8 +364,12 @@
         </section>
 
         <!-- 5. Доставка -->
-        <section class="calc-card">
-          <h2 class="calc-card__title"><span class="hp-calc-step">4</span> <span data-i18n="calc_ship_title">Доставка и граница</span></h2>
+        <section class="calc-card v2-railv">
+          <h2 class="calc-card__title v2-railv__head">
+            <span class="hp-calc-step">04</span>
+            <span class="v2-railv__label" data-i18n="calc_stage_delivery">Доставка</span>
+            <span class="v2-railv__sub" data-i18n="calc_ship_title">Доставка и граница</span>
+          </h2>
           <div class="bill">
             <h4 data-i18n="calc_ship_list_title">Состав доставки</h4>
             <ul id="list-delivery"></ul>
@@ -346,38 +377,52 @@
         </section>
 
         <!-- 6. Утиль и регистрация -->
-        <section class="calc-card">
-          <h2 class="calc-card__title"><span class="hp-calc-step">5</span> <span data-i18n="calc_util_title">Утилизационный сбор и регистрация</span></h2>
+        <section class="calc-card v2-railv">
+          <h2 class="calc-card__title v2-railv__head">
+            <span class="hp-calc-step">05</span>
+            <span class="v2-railv__label" data-i18n="calc_stage_reg">Учёт · Регистрация</span>
+            <span class="v2-railv__sub" data-i18n="calc_util_title">Утилизационный сбор и регистрация</span>
+          </h2>
           <div class="bill">
             <h4 data-i18n="calc_util_list_title">Государственные платежи</h4>
             <ul id="list-util"></ul>
 
           </div>
         </section>
+
+        </div><!-- /.v2-breakdown -->
       </form>
 
-      <!-- Итоги -->
-      <aside class="summary-card summary-card--dark">
+      <!-- Итоги. Блок «Итого» — асфальтовый, с шевронной лентой по верхней
+           кромке: одно из двух мест в системе, где она вообще появляется. -->
+      <aside class="summary-card summary-card--dark v2-total">
         <h3 class="summary-title" data-i18n="aside_title">Итоговая стоимость</h3>
         <div class="summary-line"><span data-i18n="aside_base">База для расчёта:</span> <strong id="sBase">—</strong></div>
         <div class="summary-line"><span data-i18n="aside_customs">Таможенные платежи:</span> <strong id="sCustoms">—</strong></div>
         <div class="summary-line"><span data-i18n="aside_mand">Дополнительные расходы:</span> <strong id="mandatoryTotal">—</strong></div>
         <div class="summary-line"><span data-i18n="aside_border">Доставка и граница:</span> <strong id="deliveryTotal">—</strong></div>
         <div class="summary-line"><span data-i18n="aside_util">Утиль/регистрация:</span> <strong id="sUtil">—</strong></div>
-        <div class="summary-total">
-          <span>ИТОГО:</span>
-          <strong id="sTotalKZT">—</strong>
-        </div>
 
-        <p class="summary-plain" data-i18n="calc_total_plain">
-          Это цена «под ключ» в Алматы — уже включает растаможку, документы,
-          сертификацию и доставку. Доплачивать сверху ничего не нужно.
-        </p>
+        <div class="v2-total__box">
+          <div class="v2-total__chevron" aria-hidden="true"></div>
+          <div class="summary-total">
+            <span data-i18n="aside_total_label">Итого · под ключ в Алматы</span>
+            <strong id="sTotalKZT">—</strong>
+          </div>
 
-        <div class="summary-sub" id="sTotalUSD">≈ — USD</div>
-        <div class="summary-sub" id="sTotalCNY">≈ — ¥</div>
-        <div class="summary-actions">
-          <a id="toContactsAside" class="btn btn--primary" href="contacts.html"><i class="fa-solid fa-paper-plane"></i> <span data-i18n="aside_btn_apply">Оформить заявку</span></a>
+          <div class="v2-total__secondary">
+            <span class="summary-sub" id="sTotalUSD">≈ — USD</span>
+            <span class="summary-sub" id="sTotalCNY">≈ — ¥</span>
+          </div>
+
+          <p class="summary-plain" data-i18n="calc_total_plain">
+            Это цена «под ключ» в Алматы — уже включает растаможку, документы,
+            сертификацию и доставку. Доплачивать сверху ничего не нужно.
+          </p>
+
+          <div class="summary-actions">
+            <a id="toContactsAside" class="btn btn--primary v2-btn v2-btn--primary v2-btn--block" href="contacts.html" data-i18n="aside_btn_apply">Оформить заявку</a>
+          </div>
         </div>
       </aside>
     </div>
