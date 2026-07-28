@@ -47,6 +47,7 @@
       nav_contacts: 'Контакты',
       nav_calculator: 'Калькулятор',
       help_call: 'Позвонить', help_whatsapp: 'WhatsApp', help_font_title: 'Увеличить размер текста',
+      help_write: 'Написать',
       vp_row_wheel: 'КОЛЁСНАЯ ФОРМУЛА', vp_row_mass: 'ПОЛНАЯ МАССА, Т', vp_row_payload: 'ГРУЗОПОДЪЁМНОСТЬ, Т', vp_row_power: 'ДВИГАТЕЛЬ, Л.С.', vp_row_gearbox: 'КПП', vp_price_label: 'ПОД КЛЮЧ В АЛМАТЫ', vp_cta: 'РАСЧЁТ ПОД КЛЮЧ', vp_price_on_request: '— по запросу', vp_owner_client: 'клиента', vp_avail_in_stock: 'В НАЛИЧИИ', vp_avail_on_order: 'ПОД ЗАКАЗ', vp_avail_out_of_stock: 'НЕТ', catalog_rule_title: 'Площадка', filter_search_label: 'Поиск', filter_brand_label: 'Марка', filter_wheel_label: 'Колёсная формула', nav_menu: 'МЕНЮ',
       product_cta_request: 'Оставить заявку на эту технику',
       cat_empty_t: 'По этому запросу ничего не нашлось', cat_empty_d: 'Попробуйте выбрать другую задачу или посмотреть всё. Либо позвоните — подберём под вашу задачу и бюджет.', cat_error_t: 'Не удалось загрузить каталог', cat_error_d: 'Обновите страницу или позвоните — расскажем, что есть в наличии.', contact_ok_t: 'Заявка отправлена!', contact_ok_d: 'Менеджер перезвонит в рабочее время и уточнит детали. Если нужно срочно — позвоните сами.', contact_ok_catalog: 'Посмотреть каталог',
@@ -477,6 +478,7 @@
       nav_contacts: 'Байланыс',
       nav_calculator: 'Калькулятор',
       help_call: 'Қоңырау шалу', help_whatsapp: 'WhatsApp', help_font_title: 'Мәтін өлшемін ұлғайту',
+      help_write: 'Жазу',
       vp_row_wheel: 'ДӨҢГЕЛЕК ФОРМУЛАСЫ', vp_row_mass: 'ТОЛЫҚ МАССА, Т', vp_row_payload: 'ЖҮК КӨТЕРІМДІЛІГІ, Т', vp_row_power: 'ҚОЗҒАЛТҚЫШ, А.К.', vp_row_gearbox: 'БЕРІЛІС ҚОРАБЫ', vp_price_label: 'АЛМАТЫДА КІЛТТІ БҰРАП', vp_cta: 'КІЛТТІ БАҒАНЫ ЕСЕПТЕУ', vp_price_on_request: '— сұраныс бойынша', vp_owner_client: 'клиенттен', vp_avail_in_stock: 'ҚОЛДА БАР', vp_avail_on_order: 'ТАПСЫРЫСПЕН', vp_avail_out_of_stock: 'ЖОҚ', catalog_rule_title: 'Алаң', filter_search_label: 'Іздеу', filter_brand_label: 'Марка', filter_wheel_label: 'Дөңгелек формуласы', nav_menu: 'МӘЗІР',
       product_cta_request: 'Осы техникаға өтінім қалдыру',
       cat_empty_t: 'Бұл сұраныс бойынша ештеңе табылмады', cat_empty_d: 'Басқа тапсырманы таңдап көріңіз немесе барлығын қараңыз. Не қоңырау шалыңыз — тапсырмаңыз бен бюджетіңізге сай таңдаймыз.', cat_error_t: 'Каталогты жүктеу мүмкін болмады', cat_error_d: 'Бетті жаңартыңыз немесе қоңырау шалыңыз — қолда не бар екенін айтамыз.', contact_ok_t: 'Өтінім жіберілді!', contact_ok_d: 'Менеджер жұмыс уақытында қоңырау шалып, толықтырады. Шұғыл болса — өзіңіз қоңырау шалыңыз.', contact_ok_catalog: 'Каталогты қарау',
@@ -860,6 +862,7 @@
       nav_contacts: '联系',
       nav_calculator: '计算器',
       help_call: '致电我们', help_whatsapp: 'WhatsApp', help_font_title: '放大文字',
+      help_write: '写信',
       vp_row_wheel: '驱动形式', vp_row_mass: '总质量（吨）', vp_row_payload: '载重（吨）', vp_row_power: '发动机（马力）', vp_row_gearbox: '变速箱', vp_price_label: '阿拉木图交钥匙价', vp_cta: '计算交钥匙价', vp_price_on_request: '— 询价', vp_owner_client: '客户', vp_avail_in_stock: '现货', vp_avail_on_order: '可订购', vp_avail_out_of_stock: '无货', catalog_rule_title: '车场', filter_search_label: '搜索', filter_brand_label: '品牌', filter_wheel_label: '驱动形式', nav_menu: '菜单',
       product_cta_request: '就这台车提交申请',
       cat_empty_t: '没有找到符合条件的车辆', cat_empty_d: '请换一个用途，或查看全部。也可以来电——我们按您的用途和预算推荐。', cat_error_t: '目录加载失败', cat_error_d: '请刷新页面或来电——我们会告诉您现有车源。', contact_ok_t: '申请已提交！', contact_ok_d: '经理将在工作时间回电确认细节。如有急事，您也可以直接致电。', contact_ok_catalog: '查看目录',
@@ -1281,6 +1284,7 @@
       nav_contacts: 'Contacts',
       nav_calculator: 'Calculator',
       help_call: 'Call us', help_whatsapp: 'WhatsApp', help_font_title: 'Increase text size',
+      help_write: 'Write to us',
       vp_row_wheel: 'WHEEL FORMULA', vp_row_mass: 'GROSS WEIGHT, T', vp_row_payload: 'PAYLOAD, T', vp_row_power: 'ENGINE, HP', vp_row_gearbox: 'GEARBOX', vp_price_label: 'TURNKEY IN ALMATY', vp_cta: 'TURNKEY QUOTE', vp_price_on_request: '— on request', vp_owner_client: 'a client', vp_avail_in_stock: 'IN STOCK', vp_avail_on_order: 'ON ORDER', vp_avail_out_of_stock: 'NONE', catalog_rule_title: 'Yard', filter_search_label: 'Search', filter_brand_label: 'Brand', filter_wheel_label: 'Wheel formula', nav_menu: 'MENU',
       product_cta_request: 'Request this vehicle',
       cat_empty_t: 'Nothing matches this search', cat_empty_d: 'Try another task or show everything. Or call us — we will find something for your job and budget.', cat_error_t: 'The catalogue could not be loaded', cat_error_d: 'Refresh the page or call us — we will tell you what is in stock.', contact_ok_t: 'Request sent!', contact_ok_d: 'A manager will call during working hours to confirm the details. If it is urgent, call us yourself.', contact_ok_catalog: 'Browse the catalogue',
@@ -1980,7 +1984,76 @@
     if (scale === 'xl') html.classList.add('cm-font-xl');
   }
 
+  // ContactDial (v2): один свёрнутый круг, раскрывается вверх. Никогда не
+  // красный — иначе спорит с основным CTA страницы («максимум два signal-500
+  // в кадре»). Живёт только на v2-страницах; v1 остаётся на прежнем виджете,
+  // пока не переедет.
+  //
+  // Позиция — слева внизу, а не справа, как в макете: справа на проде висит
+  // чат tawk.to, и по макету круг лёг бы прямо на него.
+  function initContactDial() {
+    if (document.getElementById('cmContactDial')) return;
+
+    applyFontScale(localStorage.getItem(LS_FONT) || '');
+
+    const box = document.createElement('div');
+    box.id = 'cmContactDial';
+    box.className = 'v2-dial-wrap';
+    box.innerHTML = `
+      <div class="v2-dial__items" id="cmDialItems" hidden>
+        <a class="v2-dial__item" href="tel:${CONTACT_PHONE}">
+          <i class="fas fa-phone" aria-hidden="true"></i>
+          <span class="num">+7 (777) 613-3731</span>
+        </a>
+        <a class="v2-dial__item" href="https://wa.me/${CONTACT_WA}" target="_blank" rel="noopener">
+          <i class="fab fa-whatsapp" aria-hidden="true"></i>
+          <span data-i18n="help_whatsapp">WhatsApp</span>
+        </a>
+        <a class="v2-dial__item" href="contacts.html">
+          <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+          <span data-i18n="help_write">Написать</span>
+        </a>
+      </div>
+      <div class="v2-dial__row">
+        <button type="button" class="v2-dial__font" id="cmFontToggle"
+                data-i18n-title="help_font_title" title="Увеличить текст">
+          <span aria-hidden="true">A<sup>+</sup></span>
+        </button>
+        <button type="button" class="v2-dial" id="cmDialToggle"
+                aria-label="Связаться" aria-expanded="false">
+          <i class="fa-solid fa-phone" aria-hidden="true"></i>
+        </button>
+      </div>
+    `;
+    document.body.appendChild(box);
+
+    const items = document.getElementById('cmDialItems');
+    const toggle = document.getElementById('cmDialToggle');
+    toggle?.addEventListener('click', () => {
+      const open = items.hasAttribute('hidden');
+      items.toggleAttribute('hidden', !open);
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.querySelector('i').className = open ? 'fa-solid fa-xmark' : 'fa-solid fa-phone';
+    });
+
+    initFontToggle();
+  }
+
+  // Три ступени размера текста: обычный → крупный → очень крупный.
+  // Управление размером — не часть дизайн-системы, но это уже работающая
+  // на проде доступность, поэтому переносится в v2 как есть.
+  function initFontToggle() {
+    document.getElementById('cmFontToggle')?.addEventListener('click', () => {
+      const cur = localStorage.getItem(LS_FONT) || '';
+      const next = cur === '' ? 'lg' : (cur === 'lg' ? 'xl' : '');
+      localStorage.setItem(LS_FONT, next);
+      applyFontScale(next);
+    });
+  }
+
   function initHelpWidget() {
+    // На переехавших страницах — ContactDial из v2.
+    if (document.body.classList.contains('v2')) { initContactDial(); return; }
     if (document.getElementById('cmHelpWidget')) return;
 
     applyFontScale(localStorage.getItem(LS_FONT) || '');
@@ -2005,13 +2078,7 @@
     `;
     document.body.appendChild(box);
 
-    // Три ступени размера текста: обычный → крупный → очень крупный.
-    document.getElementById('cmFontToggle')?.addEventListener('click', () => {
-      const cur = localStorage.getItem(LS_FONT) || '';
-      const next = cur === '' ? 'lg' : (cur === 'lg' ? 'xl' : '');
-      localStorage.setItem(LS_FONT, next);
-      applyFontScale(next);
-    });
+    initFontToggle();
   }
 
   // Страницы, которые перерисовывают body (например, экран ошибки на карточке

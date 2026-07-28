@@ -254,7 +254,7 @@ body.v2 .v2-section-title {
 
 /* Моно-ярлык капсом — деталь, которая переводит интерфейс из «сайта»
    в «документ». */
-.v2-label {
+body.v2 .v2-label {
   font: var(--v2-label);
   letter-spacing: var(--ls-mono-label);
   text-transform: uppercase;
@@ -262,7 +262,7 @@ body.v2 .v2-section-title {
 }
 
 /* Служебная линейка раздела: индекс + название + справка справа */
-.v2-rule {
+body.v2 .v2-rule {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -272,20 +272,20 @@ body.v2 .v2-section-title {
   border-bottom: var(--rule-heavy);
 }
 
-.v2-rule__index {
+body.v2 .v2-rule__index {
   font: var(--v2-label);
   letter-spacing: var(--ls-mono-label);
   color: var(--signal-500);
 }
 
-.v2-rule__title {
+body.v2 .v2-rule__title {
   font: var(--v2-label);
   letter-spacing: var(--ls-mono-label);
   text-transform: uppercase;
   color: var(--v2-text);
 }
 
-.v2-rule__aside {
+body.v2 .v2-rule__aside {
   font: var(--v2-label);
   font-weight: 400;
   letter-spacing: var(--ls-mono-label);
@@ -318,7 +318,7 @@ body.v2 .v2-nav__inner {
 }
 
 /* --- Логотип: «CM» стоит на отрезке маршрута с тремя узлами -------------- */
-.v2-logo {
+body.v2 .v2-logo {
   display: flex;
   align-items: center;
   gap: 14px;
@@ -326,7 +326,7 @@ body.v2 .v2-nav__inner {
   flex-shrink: 0;
 }
 
-.v2-logo__mark {
+body.v2 .v2-logo__mark {
   position: relative;
   width: 44px;
   height: 44px;
@@ -334,7 +334,7 @@ body.v2 .v2-nav__inner {
   display: block;
 }
 
-.v2-logo__cm {
+body.v2 .v2-logo__cm {
   position: absolute;
   inset: 0 0 auto 0;
   height: 34px;
@@ -349,7 +349,7 @@ body.v2 .v2-nav__inner {
   color: var(--on-inverse);
 }
 
-.v2-logo__rail {
+body.v2 .v2-logo__rail {
   position: absolute;
   top: 34px;
   left: 0;
@@ -358,7 +358,7 @@ body.v2 .v2-nav__inner {
   background: rgba(255, 255, 255, 0.28);
 }
 
-.v2-logo__node {
+body.v2 .v2-logo__node {
   position: absolute;
   top: 33px;
   width: 5px;
@@ -370,14 +370,14 @@ body.v2 .v2-nav__inner {
 .v2-logo__node--2 { left: calc(50% - 2.5px); background: var(--ink-500); }
 .v2-logo__node--3 { left: calc(82% - 2.5px); background: var(--signal-500); }
 
-.v2-logo__text {
+body.v2 .v2-logo__text {
   display: flex;
   flex-direction: column;
   gap: 5px;
   min-width: 0;
 }
 
-.v2-logo__name {
+body.v2 .v2-logo__name {
   font-family: var(--type-display);
   font-weight: 700;
   font-size: 21px;
@@ -388,7 +388,7 @@ body.v2 .v2-nav__inner {
   color: var(--on-inverse);
 }
 
-.v2-logo__sub {
+body.v2 .v2-logo__sub {
   font: var(--v2-label);
   letter-spacing: var(--ls-mono-label);
   text-transform: uppercase;
@@ -682,26 +682,26 @@ body.v2 .nav-drawer__phone {
    По верхней кромке — волосяная рейка с двумя конечными узлами:
    ХОРГОС ● ── ● АЛМАТЫ. Тихая подпись, не декор.
    ============================================================================ */
-.v2-footer {
+body.v2 .v2-footer {
   background: var(--surface-inverse);
   color: var(--on-inverse);
 }
 
-.v2-footer__inner {
+body.v2 .v2-footer__inner {
   max-width: var(--v2-grid-max);
   margin: 0 auto;
   padding: 0 var(--v2-gutter);
 }
 
 /* --- Рейка «Хоргос — Алматы» -------------------------------------------- */
-.v2-rail {
+body.v2 .v2-rail {
   display: flex;
   align-items: flex-start;
   width: 100%;
   padding-top: 28px;
 }
 
-.v2-rail__seg {
+body.v2 .v2-rail__seg {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -709,25 +709,25 @@ body.v2 .nav-drawer__phone {
   min-width: 0;
 }
 
-.v2-rail__line {
+body.v2 .v2-rail__line {
   display: flex;
   align-items: center;
   width: 100%;
   height: var(--rail-node-active);
 }
 
-.v2-rail__line::before,
-.v2-rail__line::after {
+body.v2 .v2-rail__line::before,
+body.v2 .v2-rail__line::after {
   content: "";
   flex: 1;
   height: var(--rule-rail);
   background: rgba(255, 255, 255, 0.22);
 }
 
-.v2-rail__seg:first-child .v2-rail__line::before,
+body.v2 .v2-rail__seg:first-child .v2-rail__line::before,
 .v2-rail__seg:last-child .v2-rail__line::after { background: transparent; }
 
-.v2-rail__node {
+body.v2 .v2-rail__node {
   width: var(--rail-node);
   height: var(--rail-node);
   border-radius: 50%;
@@ -737,7 +737,7 @@ body.v2 .nav-drawer__phone {
   background: transparent;
 }
 
-.v2-rail__label {
+body.v2 .v2-rail__label {
   font: var(--v2-label);
   letter-spacing: var(--ls-mono-label);
   text-transform: uppercase;
@@ -745,21 +745,21 @@ body.v2 .nav-drawer__phone {
   margin-top: 8px;
 }
 
-.v2-footer__grid {
+body.v2 .v2-footer__grid {
   display: grid;
   grid-template-columns: 1.6fr 1fr 1fr 1fr;
   gap: 32px;
   padding: 48px 0;
 }
 
-.v2-footer__about {
+body.v2 .v2-footer__about {
   font: var(--v2-body);
   color: rgba(255, 255, 255, 0.5);
   max-width: 34ch;
   margin: 18px 0 0;
 }
 
-.v2-footer__col-title {
+body.v2 .v2-footer__col-title {
   font: var(--v2-label);
   letter-spacing: var(--ls-mono-label);
   text-transform: uppercase;
@@ -769,7 +769,7 @@ body.v2 .nav-drawer__phone {
   margin: 0 0 14px;
 }
 
-.v2-footer__list {
+body.v2 .v2-footer__list {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -778,8 +778,8 @@ body.v2 .nav-drawer__phone {
   padding: 0;
 }
 
-.v2-footer__list a,
-.v2-footer__list span {
+body.v2 .v2-footer__list a,
+body.v2 .v2-footer__list span {
   font: var(--v2-body);
   font-size: 14px;
   color: rgba(255, 255, 255, 0.66);
@@ -788,7 +788,7 @@ body.v2 .nav-drawer__phone {
 
 .v2-footer__list a:hover { color: var(--on-inverse); }
 
-.v2-footer__bottom {
+body.v2 .v2-footer__bottom {
   border-top: var(--rule-hair-dark);
   padding: 18px 0 28px;
   display: flex;
@@ -797,8 +797,8 @@ body.v2 .nav-drawer__phone {
   gap: 10px;
 }
 
-.v2-footer__bottom span,
-.v2-footer__bottom a {
+body.v2 .v2-footer__bottom span,
+body.v2 .v2-footer__bottom a {
   font: var(--v2-label);
   font-weight: 400;
   letter-spacing: var(--ls-mono-label);
@@ -822,7 +822,7 @@ body.v2 .nav-drawer__phone {
    который уже дважды чинили в макете: карточка сжимается уже своего подвала
    и цена ломается на две строки.
    ============================================================================ */
-.v2-grid {
+body.v2 .v2-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 20px;
@@ -835,7 +835,7 @@ body.v2 .nav-drawer__phone {
    тяжёлая линейка → название → ряды данных → тяжёлая линейка → цена + кнопка.
    Теней нет; ховер утемняет рамку.
    ============================================================================ */
-.vp {
+body.v2 .vp {
   display: flex;
   flex-direction: column;
   background: var(--paper);
@@ -849,14 +849,14 @@ body.v2 .nav-drawer__phone {
 
 .vp:hover { border-color: var(--asphalt-900); }
 
-.vp__media {
+body.v2 .vp__media {
   position: relative;
   aspect-ratio: 4 / 3;
   overflow: hidden;
   background: var(--asphalt-100);
 }
 
-.vp__media img {
+body.v2 .vp__media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -864,7 +864,7 @@ body.v2 .nav-drawer__phone {
 }
 
 /* Теги по нижней кромке фото: локация слева, наличие справа */
-.vp__tag {
+body.v2 .vp__tag {
   position: absolute;
   bottom: 0;
   display: flex;
@@ -890,7 +890,7 @@ body.v2 .nav-drawer__phone {
 
 /* Избранное — функциональность v1, сохранена. Не сигнальный цвет:
    красный зарезервирован за действием и активным узлом маршрута. */
-.vp__fav {
+body.v2 .vp__fav {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -911,12 +911,12 @@ body.v2 .nav-drawer__phone {
 .vp__fav:hover { background: rgba(22, 24, 28, 0.85); }
 .vp__fav.active { color: var(--hazard-400); }
 
-.vp__head {
+body.v2 .vp__head {
   padding: 16px 18px 0;
   border-top: var(--rule-heavy);
 }
 
-.vp__title {
+body.v2 .vp__title {
   font-family: var(--type-display);
   font-weight: 600;
   font-size: var(--fs-20);
@@ -927,7 +927,7 @@ body.v2 .nav-drawer__phone {
   margin: 0;
 }
 
-.vp__sub {
+body.v2 .vp__sub {
   font: var(--v2-label);
   font-weight: 400;
   letter-spacing: var(--ls-mono-label);
@@ -941,7 +941,7 @@ body.v2 .nav-drawer__phone {
 /* Ряд данных — примитив всей системы: моно-ярлык слева, табличное значение
    справа. Значения выравниваются в колонку по всей сетке, и карточки
    читаются как строки одного каталога-манифеста. */
-.vp__row {
+body.v2 .vp__row {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -950,14 +950,14 @@ body.v2 .nav-drawer__phone {
   border-bottom: var(--rule-hair);
 }
 
-.vp__row-label {
+body.v2 .vp__row-label {
   font: var(--v2-label);
   letter-spacing: var(--ls-mono-label);
   text-transform: uppercase;
   color: var(--asphalt-400);
 }
 
-.vp__row-value {
+body.v2 .vp__row-value {
   font: var(--v2-data);
   font-variant-numeric: tabular-nums;
   color: var(--asphalt-900);
@@ -965,13 +965,13 @@ body.v2 .nav-drawer__phone {
   white-space: nowrap;
 }
 
-.vp__foot {
+body.v2 .vp__foot {
   margin-top: auto;
   padding: 16px 18px 18px;
   border-top: var(--rule-heavy);
 }
 
-.vp__price-label {
+body.v2 .vp__price-label {
   font: var(--v2-label);
   letter-spacing: var(--ls-mono-label);
   text-transform: uppercase;
@@ -981,7 +981,7 @@ body.v2 .nav-drawer__phone {
 
 /* Цена — главное число карточки, поэтому nowrap: при сжатии колонки
    валюта не должна уезжать на вторую строку. */
-.vp__price {
+body.v2 .vp__price {
   font: var(--v2-price);
   font-size: 22px;
   font-variant-numeric: tabular-nums;
@@ -989,7 +989,7 @@ body.v2 .nav-drawer__phone {
   white-space: nowrap;
 }
 
-.vp__cta {
+body.v2 .vp__cta {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1008,7 +1008,7 @@ body.v2 .nav-drawer__phone {
 }
 
 /* Заливка — максимум у одной карточки в сетке, иначе красный размножается. */
-.vp--primary .vp__cta {
+body.v2 .vp--primary .vp__cta {
   background: var(--signal-fill);
   color: var(--on-signal);
   border-color: var(--signal-fill);
@@ -1023,13 +1023,13 @@ body.v2 .nav-drawer__phone {
    окажется несколько красных пятен и правило «максимум два signal-500
    в кадре» рассыплется.
    ============================================================================ */
-.v2-chips {
+body.v2 .v2-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
 
-.v2-chip {
+body.v2 .v2-chip {
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -1048,14 +1048,14 @@ body.v2 .nav-drawer__phone {
 
 .v2-chip:hover { border-color: var(--asphalt-900); }
 
-.v2-chip.active {
+body.v2 .v2-chip.active {
   background: var(--asphalt-900);
   border-color: var(--asphalt-900);
   color: var(--paper);
 }
 
 /* Счётчик моно с табличными цифрами — ряд не «прыгает» при смене фильтра. */
-.v2-chip__count {
+body.v2 .v2-chip__count {
   font-family: var(--type-mono);
   font-variant-numeric: tabular-nums;
   font-size: 11px;
@@ -1065,7 +1065,7 @@ body.v2 .nav-drawer__phone {
 .v2-chip.active .v2-chip__count { color: rgba(255, 255, 255, 0.55); }
 
 /* --- Ведомость уточняющих фильтров: моно-ярлык над контролом ------------- */
-.v2-filters {
+body.v2 .v2-filters {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
   gap: 16px;
@@ -1076,7 +1076,7 @@ body.v2 .nav-drawer__phone {
 
 .v2-field { display: block; }
 
-.v2-field__label {
+body.v2 .v2-field__label {
   display: block;
   font: var(--v2-label);
   letter-spacing: var(--ls-mono-label);
@@ -1085,8 +1085,8 @@ body.v2 .nav-drawer__phone {
   margin-bottom: 7px;
 }
 
-.v2-field select,
-.v2-field input {
+body.v2 .v2-field select,
+body.v2 .v2-field input {
   width: 100%;
   border: var(--rule-hair);
   border-radius: var(--radius-2);
@@ -1099,11 +1099,11 @@ body.v2 .nav-drawer__phone {
 }
 
 .v2-field input { cursor: text; }
-.v2-field select:focus,
+body.v2 .v2-field select:focus,
 .v2-field input:focus { border-color: var(--asphalt-900); }
 
 /* Текстовая кнопка-действие (сброс, «показать уточнения») */
-.v2-link-btn {
+body.v2 .v2-link-btn {
   background: none;
   border: 0;
   padding: 10px 0;
@@ -1122,7 +1122,7 @@ body.v2 .nav-drawer__phone {
 /* ============================================================================
    11. КАТАЛОГ · пустое состояние
    ============================================================================ */
-.v2-empty {
+body.v2 .v2-empty {
   grid-column: 1 / -1;
   padding: 56px 24px;
   background: var(--paper);
@@ -1130,7 +1130,7 @@ body.v2 .nav-drawer__phone {
   text-align: center;
 }
 
-.v2-empty__title {
+body.v2 .v2-empty__title {
   font: var(--v2-section);
   letter-spacing: var(--ls-display);
   word-spacing: 0.08em;
@@ -1138,14 +1138,14 @@ body.v2 .nav-drawer__phone {
   margin: 0 0 10px;
 }
 
-.v2-empty p {
+body.v2 .v2-empty p {
   font: var(--v2-body-lg);
   color: var(--asphalt-500);
   max-width: 52ch;
   margin: 0 auto 24px;
 }
 
-.v2-empty__actions {
+body.v2 .v2-empty__actions {
   display: flex;
   gap: 12px;
   justify-content: center;
@@ -1156,7 +1156,7 @@ body.v2 .nav-drawer__phone {
    12. КНОПКИ v2
    Primary — один на экран. Формулировка = результат, не действие.
    ============================================================================ */
-.v2-btn {
+body.v2 .v2-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1174,7 +1174,7 @@ body.v2 .nav-drawer__phone {
   white-space: nowrap;
 }
 
-.v2-btn--primary {
+body.v2 .v2-btn--primary {
   background: var(--signal-fill);
   color: var(--on-signal);
   border-color: var(--signal-fill);
@@ -1182,7 +1182,7 @@ body.v2 .nav-drawer__phone {
 
 .v2-btn--primary:hover { background: var(--signal-fill-hover); border-color: var(--signal-fill-hover); }
 
-.v2-btn--secondary {
+body.v2 .v2-btn--secondary {
   background: transparent;
   color: var(--asphalt-900);
   border-color: var(--asphalt-900);
@@ -1193,13 +1193,13 @@ body.v2 .nav-drawer__phone {
 /* ============================================================================
    13. ШАПКА СТРАНИЦЫ КАТАЛОГА
    ============================================================================ */
-.v2-page-head {
+body.v2 .v2-page-head {
   padding: 40px 0 8px;
 }
 
 .v2-page-head__title { margin: 10px 0 6px; }
 
-.v2-page-head__sub {
+body.v2 .v2-page-head__sub {
   font: var(--v2-body-lg);
   color: var(--asphalt-500);
   margin: 0;
@@ -1209,4 +1209,112 @@ body.v2 .nav-drawer__phone {
   .v2-page-head { padding-top: 28px; }
   body.v2 .v2-page-title { font-size: var(--fs-28); }
   .v2-chip { flex: 1 1 100%; }
+}
+
+/* ============================================================================
+   14. CONTACT DIAL (v2)
+   Один свёрнутый круг, раскрывается вверх. НИКОГДА не красный: сигнальный
+   красный зарезервирован за primary CTA и активным узлом маршрута, иначе
+   правило «максимум два signal-500 в кадре» рассыпается.
+
+   Позиция — слева внизу, а не справа, как в макете: справа на проде висит
+   чат tawk.to и круг лёг бы прямо на него. Радиус 999 здесь разрешён —
+   контакт-виджет и статус-чипы единственные исключения из шкалы 0/2/4/6.
+   ============================================================================ */
+body.v2 .v2-dial-wrap {
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  z-index: 9998;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+body.v2 .v2-dial__items {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+body.v2 .v2-dial__items[hidden] { display: none; }
+
+body.v2 .v2-dial__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 46px;
+  padding: 0 20px 0 16px;
+  background: var(--surface-inverse);
+  color: var(--on-inverse);
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 999px;
+  font-family: var(--type-mono);
+  font-size: 12px;
+  letter-spacing: var(--ls-mono-btn);
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+body.v2 .v2-dial__item:hover { border-color: rgba(255, 255, 255, .38); }
+
+body.v2 .v2-dial__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+body.v2 .v2-dial {
+  width: var(--v2-dial);
+  height: var(--v2-dial);
+  border-radius: 50%;
+  background: var(--surface-inverse);
+  color: var(--on-inverse);
+  border: 1px solid rgba(255, 255, 255, .16);
+  cursor: pointer;
+  font-size: 19px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+body.v2 .v2-dial:hover { border-color: rgba(255, 255, 255, .4); }
+
+/* Управление размером текста — не из дизайн-системы, но это работающая
+   доступность с прода. Держим подчинённым к набору: меньше и тише круга. */
+body.v2 .v2-dial__font {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--asphalt-900);
+  border: 1px solid var(--asphalt-200);
+  cursor: pointer;
+  font-family: var(--type-mono);
+  font-size: 15px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+body.v2 .v2-dial__font sup { font-size: 10px; }
+body.v2 .v2-dial__font:hover { border-color: var(--asphalt-900); }
+
+/* Правило из v1, обязательное к сохранению: при открытой шторке плавающие
+   контакты и чат прячутся, иначе лежат поверх пунктов меню. */
+html.cm-drawer-open body.v2 .v2-dial-wrap { visibility: hidden; opacity: 0; }
+
+/* Виджет не раздуваем вместе со страницей при увеличенном тексте —
+   он и так крупный, а иначе перекрывает контент. */
+html.cm-font-lg body.v2 .v2-dial-wrap { zoom: 0.87; }
+html.cm-font-xl body.v2 .v2-dial-wrap { zoom: 0.77; }
+
+@media (max-width: 640px) {
+  body.v2 .v2-dial-wrap { left: 12px; bottom: 12px; }
+  body.v2 .v2-dial { width: 48px; height: 48px; font-size: 17px; }
+  body.v2 .v2-dial__font { width: 40px; height: 40px; font-size: 14px; }
+  body.v2 .v2-dial__item { height: 42px; font-size: 11px; }
 }
