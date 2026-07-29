@@ -30,7 +30,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&family=Oswald:wght@500;600;700&family=Open+Sans:wght@400;700&family=Poppins:wght@500;600&subset=cyrillic-ext&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <!-- Дизайн-система v2 «Груз в пути». Подключается РЯДОМ со style.css:
-       кабинет менеджера (.mgr-*) в перенос не входит и живёт на v1. -->
+       кабинет менеджера в перенос не входит и живёт на v1 — его правила
+       вынесены в style-manager.css (шаг 7.2), он подключён ниже. -->
   <link rel="stylesheet" href="style-v2.css">
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&subset=cyrillic&display=swap" rel="stylesheet">
 
@@ -301,7 +302,6 @@
     html.dark .pay-how__head { color: #f5f5f5; }
     html.dark .pay-how__body { color: #cbd2df; }
     .dc-empty { padding: 6px 0; font-size: 13px; color: #8a90a2; }
-    .dc-internal { font-size: 11px; font-weight: 400; color: #c8322b; letter-spacing: 0; }
 
     /* Уведомления (колокольчик) */
     .account-header-actions { display: flex; align-items: center; gap: 14px; }
@@ -370,15 +370,6 @@
     html.dark .stage-actions button:hover:not(:disabled) { background: #222; }
     .stage-input { flex: 1; min-width: 180px; padding: 9px 12px; border-radius: 8px; border: 1px solid #dfe3ea; font-size: 13px; background: #fff; color: #12172a; }
     html.dark .stage-input { background: #171717; color: #fff; border-color: #333; }
-    .exp-note { color: #8a90a2; font-weight: 400; font-size: 12.5px; }
-    .exp-del {
-      background: none; border: none; color: #c8322b; cursor: pointer;
-      font-size: 14px; line-height: 1; padding: 4px 6px; margin-left: auto;
-    }
-    .exp-del:hover { color: #e12821; }
-    .exp-del:disabled { opacity: .5; }
-    html.dark .exp-note { color: rgba(255,255,255,.5); }
-    .fin-hint { margin-top: 12px; font-size: 12px; color: #8a90a2; }
 
     /* Галерея сделки (фото/видео) */
     .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; padding: 4px 0; }
@@ -574,7 +565,17 @@
     html.dark .comment-form input { background: #171717; color: #fff; border-color: #333; }
     html.dark .empty-note { color: #aab4c5; }
 
-    /* ===== Кабинет менеджера ===== */
+    /* ===== Плитки сводки — .mgr-*, но НЕ кабинет менеджера =====
+
+       Имя врёт, и на шаге 7.2 это чуть не стоило шести ролей сразу.
+       Эти пять правил рисуют сводку исполнителя (renderAssigneeSummary):
+       «всего / ожидает / в работе / готово» у SERVICE_BROKER, SERVICE_SVH,
+       SERVICE_LAB, SERVICE_LOGISTIC, SERVICE_DECLARANT и BANK. Менеджер
+       этих плиток не видит вообще — у него свои, из style-manager.css.
+
+       Поэтому блок остался здесь, а не уехал в style-manager.css вместе с
+       остальным .mgr-. Переименовать в .sum-* можно, но отдельным шагом:
+       имя сидит в трёх местах js/account.js. */
     .mgr-section h2 {
       color: #12172a;
       font-family: 'Oswald', sans-serif;
@@ -601,84 +602,6 @@
     html.dark .mgr-tile__label { color: #aab4c5; }
     @media (max-width: 640px) { .mgr-stats { grid-template-columns: repeat(2, 1fr); } }
 
-    .lead-list { list-style: none; margin: 0; padding: 0; }
-    .lead-row { padding: 14px 0; border-bottom: 1px solid #eef0f4; }
-    .lead-row:last-child { border-bottom: none; }
-    .lead-main { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
-    .lead-name { font-weight: 700; color: #12172a; font-size: 15px; }
-    .lead-phone { color: #E12821; text-decoration: none; font-size: 13.5px; font-weight: 600; }
-    .lead-phone:hover { text-decoration: underline; }
-    .lead-source { font-size: 11.5px; color: #8a90a2; text-transform: uppercase; letter-spacing: .5px; }
-    .lead-msg { margin-top: 6px; font-size: 13px; color: #4b5165; white-space: pre-wrap; }
-    .lead-foot { margin-top: 8px; display: flex; align-items: center; gap: 12px; }
-    .lead-date { font-size: 12px; color: #8a90a2; margin-left: auto; }
-    .lead-status {
-      font-size: 11.5px; font-weight: 700; padding: 4px 11px; border-radius: 999px;
-      background: rgba(255,255,255,0.08); color: #4b5165;
-    }
-    .lead-status.s-new { background: rgba(226,35,26,0.12); color: #c8322b; }
-    .lead-status.s-in_progress { background: rgba(37,99,235,0.14); color: #2563eb; }
-    .lead-status.s-won { background: rgba(22,163,74,0.15); color: #16a34a; }
-    .lead-status.s-lost { background: rgba(120,120,120,0.18); color: #6b7280; }
-    .lead-convert-btn {
-      background: #E12821;
-      color: #fff;
-      border: none;
-      border-radius: 999px;
-      padding: 7px 16px;
-      font-size: 12.5px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .lead-convert-btn:hover { background: #c8322b; }
-    .lead-convert-btn:disabled { opacity: .6; cursor: default; }
-    .lead-converted { font-size: 12.5px; font-weight: 600; color: #16a34a; display: inline-flex; align-items: center; gap: 6px; }
-    html.dark .lead-row { border-color: rgba(255,255,255,.08); }
-    html.dark .lead-name { color: #f5f5f5; }
-    html.dark .lead-msg { color: #cbd2df; }
-
-    /* Выпадающий выбор этапа сделки (для менеджера) в шапке карточки */
-    .deal-status-select {
-      background: #12172a;
-      color: #fff;
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 999px;
-      padding: 7px 14px;
-      font-size: 12.5px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .deal-status-select:disabled { opacity: .6; cursor: default; }
-
-    /* ===== Финансовый отчёт ===== */
-    .fin-tile-val { font-size: 20px !important; }
-    .fin-table-wrap { margin-top: 18px; overflow-x: auto; }
-    .fin-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
-    .fin-table th, .fin-table td { padding: 11px 12px; text-align: left; border-bottom: 1px solid #eef0f4; white-space: nowrap; }
-    .fin-table th { font-size: 11.5px; text-transform: uppercase; letter-spacing: .5px; color: #8a90a2; font-weight: 700; }
-    .fin-table td { color: #12172a; }
-    .fin-table .fin-num { text-align: right; }
-    .fin-due { color: #c8322b; font-weight: 600; }
-    .fin-ok { color: #16a34a; font-weight: 600; }
-    html.dark .fin-table th { color: #aab4c5; }
-    html.dark .fin-table td { color: #f5f5f5; }
-    html.dark .fin-table th, html.dark .fin-table td { border-color: rgba(255,255,255,.08); }
-
-    .dc-value-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 14px 22px 4px; font-size: 13px; color: #4b5165; }
-    .dc-value-row .dc-value-input { width: 170px; padding: 9px 12px; border-radius: 8px; border: 1px solid #dfe3ea; font-size: 13px; background: #fff; color: #12172a; }
-    .dc-value-row .btn { border-radius: 999px; padding: 9px 16px; font-size: 12.5px; }
-    html.dark .dc-value-row { color: #cbd2df; }
-    html.dark .dc-value-row .dc-value-input { background: #171717; color: #fff; border-color: #333; }
-
-    @media (max-width: 700px) {
-      .fin-table thead { display: none; }
-      .fin-table, .fin-table tbody, .fin-table tr, .fin-table td { display: block; width: 100%; }
-      .fin-table tr { border: 1px solid #eef0f4; border-radius: 10px; margin-bottom: 10px; padding: 4px 0; }
-      .fin-table td { border: none; display: flex; justify-content: space-between; gap: 16px; white-space: normal; text-align: right; }
-      .fin-table td::before { content: attr(data-label); font-weight: 600; color: #8a90a2; text-align: left; }
-      .fin-table .fin-num { text-align: right; }
-      html.dark .fin-table tr { border-color: rgba(255,255,255,.1); }
-    }
 
     /* --- Профиль --- */
     .profile-grid { display: grid; grid-template-columns: 180px 1fr; gap: 10px 14px; align-items: center; max-width: 560px; }
@@ -693,32 +616,6 @@
     html.dark .profile-grid input { background: #1e1e1e; border-color: rgba(255,255,255,.14); color: #f5f5f5; }
     @media (max-width: 560px) { .profile-grid { grid-template-columns: 1fr; gap: 4px 0; } }
 
-    /* --- Управление сделкой (менеджер): назначения + удаление --- */
-    .mgr-controls .assign-cur-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 5px 0; font-size: 14px; }
-    .mgr-controls .assign-remove { border: none; background: transparent; color: #e74c3c; cursor: pointer; font-size: 15px; line-height: 1; }
-    .assign-form { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
-    .assign-form select { padding: 8px 10px; border: 1px solid #d8dbe2; border-radius: 8px; font-size: 14px; }
-    .kp-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 10px 0; }
-    .kp-status { font-size: 13px; color: #6b7280; }
-    html.dark .kp-status { color: rgba(255,255,255,.6); }
-    .dc-delete-deal { background: #fdecec; color: #c0392b; border: 1px solid #f5c6cb; }
-    html.dark .assign-form select { background: #1e1e1e; border-color: rgba(255,255,255,.14); color: #f5f5f5; }
-    html.dark .dc-delete-deal { background: rgba(231,76,60,.12); border-color: rgba(231,76,60,.4); color: #ff8a80; }
-
-    /* --- Конструктор КП --- */
-    .kpb-body { display: block; }
-    .kpb-label { display: block; font-weight: 600; font-size: 14px; margin: 14px 0 6px; color: #4b5563; }
-    .kpb-input { width: 100%; padding: 10px 12px; border: 1px solid #d8dbe2; border-radius: 8px; font-size: 14px; font-family: inherit; }
-    .kpb-row { display: flex; flex-wrap: wrap; gap: 12px; }
-    .kpb-row > div { flex: 1 1 150px; }
-    .kpb-row > .kpb-input { flex: 1 1 220px; }
-    .kpb-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 18px; }
-    .kpb-status { font-size: 13px; }
-    .kpb-status.ok { color: #16a34a; }
-    .kpb-status.err { color: #e74c3c; }
-    html.dark .kpb-label { color: rgba(255,255,255,.65); }
-    html.dark .kpb-input { background: #1e1e1e; border-color: rgba(255,255,255,.14); color: #f5f5f5; }
-
     /* --- Вкладки сделок --- */
     .deal-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
     .deal-tab { padding: 8px 16px; border: 1px solid #d8dbe2; background: #fff; border-radius: 20px; cursor: pointer; font-size: 14px; color: #6b7280; }
@@ -726,6 +623,15 @@
     html.dark .deal-tab { background: #1e1e1e; border-color: rgba(255,255,255,.14); color: rgba(255,255,255,.6); }
     html.dark .deal-tab.active { background: #f5f5f5; color: #111; border-color: #f5f5f5; }
   </style>
+
+  <!-- Кабинет менеджера (шаг 7.2). Внутренний инструмент: инбокс лидов,
+       финансы, конструктор КП, управление сделкой. Стоит ниже встроенных
+       стилей намеренно: правила менеджера и до выноса шли последними,
+       порядок сохранён. Поднять этот link выше — сломать кабинет.
+       Пять имён с префиксом .mgr- (section/stats/tile/tile__val/tile__label)
+       СЮДА НЕ ПЕРЕЕХАЛИ: ими нарисована сводка исполнителя, а не кабинет
+       менеджера. Подробности — в шапке style-manager.css. -->
+  <link rel="stylesheet" href="style-manager.css">
 </head>
 <!-- class="v2" включает дизайн-систему v2 и говорит common.js грузить
      тёмные партиалы navbar-v2 / footer-v2 -->
