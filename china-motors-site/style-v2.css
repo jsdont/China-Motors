@@ -1823,6 +1823,431 @@ html.dark .why-card p {
   }
 }
 
+
+/* Блог и простой режим калькулятора. Последний остаток, найденный полным
+   прогоном: .blog-back-link (inline-flex и насыщенность), карточки
+   .blog-card, и .simple-calc__choices — тот случай, когда счёт правил
+   обманывает: у .simple-calc их 16 в v1 против 14 в v2, и по числам
+   казалось, что v2 покрывает всё, а не покрыт был именно ряд выбора
+   (display:flex), из-за чего три ответа вставали в столбик. */
+html.dark .calc-card input[type="text"], html.dark .calc-card input[type="number"], html.dark .calc-card select, html.dark .meta-row {
+  background: #1f1f1f;
+  color: #fff;
+}
+.calc-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.calc-card h3 {
+  font-size: 20px;
+  margin-bottom: 15px;
+  font-weight: 600;
+  color: #222;
+}
+.calc-card label {
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 6px;
+}
+.calc-card input, .calc-card select {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 14px;
+  transition: all .2s ease;
+}
+.calc-card input:focus, .calc-card select:focus {
+  border-color: #E12821;
+  box-shadow: 0 0 0 3px rgba(225,40,33,0.2);
+  outline: none;
+}
+.calc-card {
+  background: rgba(255, 255, 255, 0.95);
+  border:1px solid #223044;
+  border-radius:16px;
+  padding:18px;
+  box-shadow:0 8px 22px rgba(0,0,0,.28);
+}
+.calc-card__title {
+  margin:0 0 10px 0;
+  font-size:18px;
+  font-weight:800;
+  color: #1f1f1f;
+}
+.calc-card input[type="text"], .calc-card input[type="number"], .calc-card select {
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #545454;
+  border:1px solid #2b3648;
+  outline:none;
+  transition:border .15s, box-shadow .15s, background .15s;
+}
+.calc-card input:focus, .calc-card select:focus {
+  border-color:#365cff;
+  box-shadow:0 0 0 3px rgba(54,92,255,.18);
+}
+.calc-card .summary-line {
+  background:transparent;
+  border:1px dashed #2a3445;
+  padding:10px;
+  border-radius:12px;
+}
+.calc-card .summary-line strong {
+  color:#1f1f1f;
+}
+.calc-card {
+  background:#fff;
+  border-radius:16px;
+  box-shadow:0 6px 18px rgba(0,0,0,.08);
+  padding:24px;
+}
+.calc-card__title {
+  font-size:22px;
+  font-weight:700;
+  margin-bottom:10px;
+}
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+.blog-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(18,23,42,0.06);
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: #12172a;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.blog-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 28px rgba(18,23,42,0.15);
+}
+html.dark .blog-card {
+  background: #1e1e1e;
+  color: #f5f5f5;
+}
+.blog-card__icon {
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #12172a, #1c2440);
+  color: #E12821;
+  font-size: 32px;
+}
+.blog-card__body {
+  padding: 20px 22px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+.blog-card__date {
+  font-size: 11.5px;
+  color: #8a8f9c;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.blog-card__title {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.3;
+}
+.blog-card__excerpt {
+  font-size: 14px;
+  color: #4b5165;
+  line-height: 1.55;
+}
+html.dark .blog-card__excerpt {
+  color: #aab4c5;
+}
+.blog-card__cta {
+  margin-top: auto;
+  padding-top: 8px;
+  color: #E12821;
+  font-weight: 600;
+  font-size: 13.5px;
+}
+.blog-article__cta {
+  background: #12172a;
+  border-radius: 16px;
+  padding: 28px;
+  margin-top: 40px;
+  text-align: center;
+}
+.blog-article__cta p {
+  color: #fff;
+  margin-bottom: 16px;
+}
+.blog-article__cta .btn {
+  display: inline-block;
+}
+.blog-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #8a8f9c;
+  text-decoration: none;
+  margin-bottom: 20px;
+}
+.blog-back-link:hover {
+  color: #E12821;
+}
+.calc-card__title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.simple-calc {
+  max-width: 720px;
+  margin: 0 auto 28px;
+}
+.simple-calc__title {
+  font-size: 26px;
+  margin: 0 0 6px;
+}
+.simple-calc__sub {
+  color: #6b7280;
+  margin: 0 0 22px;
+  font-size: 17px;
+}
+.simple-calc__label {
+  display: block;
+  font-weight: 700;
+  font-size: 17px;
+  margin: 20px 0 10px;
+}
+.simple-calc__choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.sc-choice {
+  padding: 14px 20px;
+  border: 2px solid #d8dbe2;
+  background: #fff;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  min-height: 52px;
+}
+.sc-choice:hover {
+  border-color: #E12821;
+}
+.sc-choice.active {
+  background: #E12821;
+  border-color: #E12821;
+  color: #fff;
+  font-weight: 700;
+}
+.simple-calc__input {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 17px;
+  border: 2px solid #d8dbe2;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  min-height: 52px;
+}
+.simple-calc__send {
+  width: 100%;
+  padding: 16px;
+  font-size: 18px;
+  margin-top: 10px;
+  min-height: 56px;
+}
+.simple-calc__status {
+  margin-top: 12px;
+  font-size: 16px;
+}
+.simple-calc__status.ok {
+  color: #16a34a;
+}
+.simple-calc__status.err {
+  color: #e74c3c;
+}
+.simple-calc__or {
+  text-align: center;
+  margin-top: 22px;
+}
+.simple-calc__link {
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 16px;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 10px;
+}
+.simple-calc__link:hover {
+  color: #E12821;
+}
+html.dark .simple-calc__sub {
+  color: #aab4c5;
+}
+html.dark .sc-choice {
+  background: #1e1e1e;
+  border-color: rgba(255, 255, 255, .16);
+  color: #f5f5f5;
+}
+html.dark .simple-calc__input {
+  background: #1e1e1e;
+  border-color: rgba(255, 255, 255, .16);
+  color: #f5f5f5;
+}
+html.dark .simple-calc__link {
+  color: #aab4c5;
+}
+
+@media (max-width: 600px) {
+  .calc-card label {
+    display: flex;
+    justify-content: center;
+  }
+  .calc-card__title {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+
+/* Калькулятор: колонка разделов, шаги и виджет расчёта на главной. */
+.calc-sections {
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+.calc-actions {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:6px;
+}
+.calc-hint {
+  color:#aab4c5;
+  font-size:13px;
+  margin:6px 0 8px;
+  position: relative;
+}
+.calc-sections {
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+.calc-disclaimer {
+  max-width: 900px;
+  margin: 20px auto 0;
+  font-size: 13px;
+  color: #666;
+  text-align: center;
+}
+html.dark .calc-disclaimer {
+  color: #aaa;
+}
+.hp-calc-widget {
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+  color: #12172a;
+}
+.hp-calc-widget__title {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 17px;
+  margin-bottom: 16px;
+}
+.hp-calc-widget label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #8a8f9c;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+.hp-calc-widget .hp-field {
+  margin-bottom: 14px;
+}
+.hp-calc-widget select, .hp-calc-widget input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #e4e6eb;
+  font-size: 14px;
+  font-family: 'Inter', 'Open Sans', sans-serif;
+  color: #12172a;
+  background: #fff;
+}
+.hp-calc-widget button {
+  width: 100%;
+  margin-top: 6px;
+  background: #12172a;
+  color: #fff;
+  border: none;
+  padding: 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.hp-calc-widget button:hover {
+  background: #1c2340;
+}
+.hp-calc-widget__note {
+  text-align: center;
+  font-size: 12px;
+  color: #8a8f9c;
+  margin-top: 10px;
+}
+html.dark .hp-calc-widget {
+  background: #1e1e1e;
+  color: #f5f5f5;
+}
+html.dark .hp-calc-widget select, html.dark .hp-calc-widget input {
+  background: #1f1f1f;
+  color: #fff;
+  border-color: #333;
+}
+html.dark .hp-calc-widget label {
+  color: #aab4c5;
+}
+.hp-calc-step {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: #E12821;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+@media (max-width:980px) {
+  .calc-actions .btn {
+    width:100%;
+    justify-content:center;
+  }
+}
+
 /* ============================================================================
    4. ОСНОВАНИЕ СТРАНИЦЫ v2
    Включается классом .v2 на <body> — только на переехавших страницах.
