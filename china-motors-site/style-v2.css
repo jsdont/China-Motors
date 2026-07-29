@@ -208,6 +208,165 @@ html.dark {
 }
 
 /* ============================================================================
+   3.5. ЧТО ПЕРЕЖИЛО style.css (шаг 7.3)
+   ----------------------------------------------------------------------------
+   Не наследие «чтобы не сломать», а десять правил, без которых страница
+   действительно меняется. Найдены замером: два дерева рядом, одно со
+   style.css, второе без него, и сверка вычисленных стилей у каждого элемента
+   на всех 15 страницах. 31 первопричина, свёрнутая до этого блока.
+
+   Селекторы намеренно БЕЗ `body.v2` и стоят выше всех компонентов v2 —
+   ровно там, где они были, когда style.css грузился первым. Поднять их
+   специфичность до `body.v2 .section` значит сравнять её с обходами вроде
+   `body.v2 .blog-article`, и порядок в файле начнёт решать то, что сейчас
+   решает специфичность. Не трогать.
+   ============================================================================ */
+
+/* Сброс. Первые шесть строк v1; ничего специфичного для v1 в нём не было.
+   Первым без него ломается плавающий круг связи: UA возвращает кнопке свои
+   отступы, и .v2-dial перестаёт быть кругом. */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* overflow-x перенесён как был. Он же прячет настоящее переполнение (см.
+   врезку про scrollWidth в плане), и снять его стоит — но отдельным шагом
+   и со своим обходом переполнения, а не заодно с удалением файла: без него
+   ширина страницы меняется на всех 15 страницах разом. */
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body { overflow-x: hidden; }
+
+/* Перекрестие солнца и луны в переключателе темы. Живёт в партиале v2, но
+   до 7.3 держалось на v1 — единственное место, где новая шапка зависела от
+   старого файла. Без этих правил оба значка встают рядом и не переключаются.
+
+   Цвет НЕ перенесён намеренно. В v1 тут стоял `color: #12172a` — тёмно-синий
+   значок на тёмной шапке v2, контраст 1.00:1, то есть значок не виден вообще
+   ни в одной теме. Кнопка `.theme-toggle` уже красится в `--on-inverse`;
+   убрав цвет, значок наследует белый и даёт 17.8:1. */
+.theme-toggle .icon {
+  position: absolute;
+  font-size: 16px;
+  transition: transform .35s ease, opacity .35s ease;
+}
+
+.theme-toggle .sun  { opacity: 1; transform: scale(1); }
+.theme-toggle .moon { opacity: 0; transform: scale(0.4); }
+html.dark .theme-toggle .sun  { opacity: 0; transform: scale(0.4); }
+html.dark .theme-toggle .moon { opacity: 1; transform: scale(1); }
+
+/* Ширина секций главной. `.v2-sec` задаёт ритм по вертикали, но не
+   контейнер, — меру строки держал v1. Без них секции разъезжаются на всю
+   ширину окна. */
+.hp-route    { max-width: 1200px; margin: 0 auto; padding: 44px 20px 10px; }
+.hp-services { max-width: 1200px; margin: 0 auto; padding: 70px 20px 0; }
+.hp-process  { max-width: 1200px; margin: 0 auto; padding: 70px 20px; }
+.hp-trust    { max-width: 1200px; margin: 0 auto; padding: 10px 20px 40px; }
+.hp-vehicles { max-width: 1200px; margin: 0 auto; padding: 0 20px 70px; }
+
+/* Фотография героя на главной лежала в v1: `.v2-hero` фон не задаёт. */
+.hp-hero {
+  align-items: center;
+  background: url('https://res.cloudinary.com/dkita2qyq/image/upload/v1756128166/%D0%98%D0%B7%D0%BE%D0%B1%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5_WhatsApp_2025-05-27_%D0%B2_18.33.35_cbb88195_nxd0wv.jpg') no-repeat center center/cover;
+}
+
+/* `.section` — главная (две секции), блог, избранное, privacy-policy, terms.
+   Центрирование остаётся: три обхода в v2 (`.blog-article`, `.fav-cta-banner`,
+   `.blog-card`) написаны против него и держат левый край там, где он нужен
+   системе. Снять правило и обходы разом — отдельная правка с пересмотром
+   этих пяти страниц, а не побочный эффект удаления файла. */
+.section {
+  padding: 0 0 60px;
+  text-align: center;
+}
+
+/* Ступени увеличения текста. Вёрстка в px, поэтому масштабируем через zoom —
+   так растёт весь интерфейс целиком, а не только шрифт. Поправка для
+   .v2-dial-wrap уже есть ниже, в блоке плавающих контактов. */
+html.cm-font-lg body { zoom: 1.15; }
+html.cm-font-xl body { zoom: 1.30; }
+
+/* Значок «?» у строк разбивки калькулятора и его всплывающая подсказка.
+   Рисует js/calculator.js (hintFor), в v2 их не было вовсе.
+   Ховер НЕ перенесён красным: в v1 значок заливался --signal-500, а
+   подсказка не значит ни «действие», ни «вы здесь» — по правилу красного
+   ей полагается асфальт. */
+.cm-hint {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin-left: 6px;
+  border-radius: 50%;
+  background: var(--asphalt-500);
+  color: var(--on-inverse);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: help;
+  vertical-align: middle;
+}
+
+.cm-hint:hover,
+.cm-hint:focus { background: var(--asphalt-900); outline: none; }
+
+.cm-hint-pop {
+  position: absolute;
+  z-index: 10000;
+  background: var(--surface-inverse);
+  color: var(--on-inverse);
+  padding: 14px 38px 14px 16px;
+  border-radius: var(--radius-2);
+  font-size: 15px;
+  line-height: 1.5;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .3);
+}
+
+.cm-hint-pop__x {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .15);
+  color: var(--on-inverse);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.cm-hint-pop__x:hover { background: rgba(255, 255, 255, .28); }
+
+/* Плашка ответа формы на контактах. Цвета — по смыслу из системы:
+   отправлено это «закрыто успешно», ошибка — сигнал. */
+#formStatus {
+  display: none;
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: var(--radius-4);
+  color: var(--on-inverse);
+}
+
+#formStatus.success { background-color: var(--clear-600); }
+#formStatus.error   { background-color: var(--signal-fill); }
+
+/* Оговорка под расчётом. */
+.calc-disclaimer {
+  max-width: 900px;
+  margin: 20px auto 0;
+  font-size: 13px;
+  color: var(--asphalt-500);
+  text-align: center;
+}
+
+/* ============================================================================
    4. ОСНОВАНИЕ СТРАНИЦЫ v2
    Включается классом .v2 на <body> — только на переехавших страницах.
    ============================================================================ */
