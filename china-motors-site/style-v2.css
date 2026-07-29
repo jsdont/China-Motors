@@ -3213,3 +3213,25 @@ body.v2 .fav-cta-banner__sub {
 /* v1 держал `#favEmpty` скрытым инлайном и показывал через style.display —
    логика не тронута, поэтому пустое состояние остаётся блоком сетки. */
 body.v2 #favEmpty { margin-top: 0; }
+
+/* Отсутствие фото рисуется системой, а не картинкой-заглушкой: файла
+   /img/no-photo.png в репозитории нет и не было, поэтому у техники без
+   снимка в каталоге, на главной, в избранном и на странице техники
+   показывался битый <img>. Токены вместо бинарника — и заглушка сама
+   собой работает в обеих темах. */
+body.v2 .vp__noimg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--asphalt-100);
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--asphalt-400);
+}
+
+/* На странице техники кадр крупнее — плашка держит те же пропорции 4:3,
+   что и <img>, иначе галерея схлопнется в ноль высоты. */
+body.v2 .v2-shot .vp__noimg { position: relative; aspect-ratio: 4 / 3; }

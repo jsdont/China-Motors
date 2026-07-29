@@ -77,7 +77,10 @@ document.addEventListener('DOMContentLoaded', () => {
       bodyRaw,
       brand: v.brand || '',
       wheelFormula: normText(v.wheel_formula || '') || extractWheelFormula(`${title} ${bodyRaw}`),
-      image: v.image_url ? (window.cmOptimizeImage?.(v.image_url, { width: 400 }) || v.image_url) : '/img/no-photo.png',
+      // Пустая строка, а не путь к картинке: файла /img/no-photo.png в
+      // репозитории нет, и вместо заглушки выходил битый <img>. Отсутствие
+      // фото рисует сама система — см. .vp__noimg.
+      image: v.image_url ? (window.cmOptimizeImage?.(v.image_url, { width: 400 }) || v.image_url) : '',
       availability: v.availability || 'in_stock',
       isUserListing: Boolean(v.is_user_listing),
       ownerRoleLabel: v.owner_role_label || '',
@@ -99,6 +102,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // ярлык с прочерком в паспорте хуже, чем отсутствие строки.
   // Ключ отдаём наружу, чтобы повесить data-i18n: тогда смена языка
   // переводит ярлыки сразу, без перерисовки сетки.
+  // Техника без снимка: вместо битого <img> — плашка средствами системы.
+  function mediaHTML(src, alt) {
+    if (src) return `<img src="${src}" alt="${alt}" loading="lazy" decoding="async">`;
+    return `<div class="vp__noimg"><span data-i18n="vp_no_photo">${tr('vp_no_photo', 'НЕТ ФОТО')}</span></div>`;
+  }
+
   function passportRows(item) {
     const v = item.raw || {};
     return [
@@ -125,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return `
       <a class="vp${primary ? ' vp--primary' : ''}" href="product.html?id=${item.id}">
         <div class="vp__media">
-          <img src="${item.image}" alt="${item.title}" loading="lazy" decoding="async">
+          ${mediaHTML(item.image, item.title)}
           ${v.city ? `<span class="vp__tag vp__tag--place">${v.city}</span>` : ''}
           ${availLabel ? `<span class="vp__tag vp__tag--avail vp__tag--${item.availability}" data-i18n="vp_avail_${item.availability}">${availLabel}</span>` : ''}
           <button type="button" class="vp__fav${isFav ? ' active' : ''}" data-fav-id="${item.id}" title="${tr('fav_remove_title', 'Избранное')}">

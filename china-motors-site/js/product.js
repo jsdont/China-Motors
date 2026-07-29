@@ -267,7 +267,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function buildGallery(images) {
-    if (!images.length) return;
+    // Без снимков <img src=""> рисует битую картинку. Показываем ту же
+    // плашку, что и на карточках в каталоге.
+    if (!images.length) {
+      mainImg.style.display = 'none';
+      if (!mainImg.parentElement.querySelector('.vp__noimg')) {
+        const ph = document.createElement('div');
+        ph.className = 'vp__noimg';
+        ph.innerHTML = `<span data-i18n="vp_no_photo">${window.t ? window.t('vp_no_photo') : 'НЕТ ФОТО'}</span>`;
+        mainImg.parentElement.insertBefore(ph, mainImg);
+      }
+      return;
+    }
+    mainImg.style.display = '';
     // Полное разрешение — для лайтбокса (там смотрят детали крупно).
     galleryImages = images.map(src => optimize(src, 1200));
 

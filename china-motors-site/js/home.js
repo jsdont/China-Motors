@@ -67,16 +67,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     const sub = [v.category, v.year].filter(Boolean).join(' · ');
     const availability = v.availability || 'in_stock';
     const availLabel = tr('vp_avail_' + availability, AVAIL_LABELS[availability] || '');
-    const rawImg = v.image_url || (Array.isArray(v.images) && v.images[0]) || '/img/no-photo.png';
-    const img = rawImg === '/img/no-photo.png'
-      ? rawImg
-      : (window.cmOptimizeImage?.(rawImg, { width: 400 }) || rawImg);
+    // Файла /img/no-photo.png в репозитории нет — отсутствие фото рисует
+    // сама система (.vp__noimg), а не битый <img>.
+    const rawImg = v.image_url || (Array.isArray(v.images) && v.images[0]) || '';
+    const img = rawImg ? (window.cmOptimizeImage?.(rawImg, { width: 400 }) || rawImg) : '';
     const isFav = window.CMFavorites?.isFavorite(v.id);
 
     return `
       <a class="vp" href="product.html?id=${v.id}">
         <div class="vp__media">
-          <img src="${img}" alt="${fullTitle}" loading="lazy" decoding="async">
+          ${img
+            ? `<img src="${img}" alt="${fullTitle}" loading="lazy" decoding="async">`
+            : `<div class="vp__noimg"><span data-i18n="vp_no_photo">${tr('vp_no_photo', 'НЕТ ФОТО')}</span></div>`}
           ${v.city ? `<span class="vp__tag vp__tag--place">${v.city}</span>` : ''}
           ${availLabel ? `<span class="vp__tag vp__tag--avail vp__tag--${availability}" data-i18n="vp_avail_${availability}">${availLabel}</span>` : ''}
           <button type="button" class="vp__fav${isFav ? ' active' : ''}" data-fav-id="${v.id}" title="${tr('fav_remove_title', 'Избранное')}">
