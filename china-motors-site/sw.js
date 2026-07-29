@@ -1,12 +1,16 @@
 // Bump this on every deploy that changes a file listed in STATIC_ASSETS below —
 // cacheFirst() means old visitors never see updated JS/CSS until this changes.
-const CACHE_VERSION = 'v1.0.1';
+const CACHE_VERSION = 'v1.0.2';
 const STATIC_CACHE = `cm-static-${CACHE_VERSION}`;
 const PAGES_CACHE = `cm-pages-${CACHE_VERSION}`;
 
+// style.css удалён на шаге 7.3; style-v2.css и style-manager.css сюда
+// намеренно НЕ добавлены — они и так попадают под cacheFirst() по
+// req.destination === 'style'. Но помнить надо вот что: cacheFirst() не
+// перепроверяет ничего и никогда, поэтому правка любой таблицы стилей
+// доходит до вернувшегося посетителя ТОЛЬКО со сменой CACHE_VERSION выше.
 const STATIC_ASSETS = [
   '/offline.html',
-  '/style.css',
   '/js/common.js',
   '/js/catalog.js',
   '/js/calculator.js',
