@@ -3235,3 +3235,394 @@ body.v2 .vp__noimg {
 /* На странице техники кадр крупнее — плашка держит те же пропорции 4:3,
    что и <img>, иначе галерея схлопнется в ноль высоты. */
 body.v2 .v2-shot .vp__noimg { position: relative; aspect-ratio: 4 / 3; }
+
+/* ============================================================================
+   21. ЛИЧНЫЙ КАБИНЕТ (шаг 6)
+   Живая рейка: узлы и их состояния приходят с бэкенда в deal.route[].
+   Кабинет менеджера (.mgr-*) в перенос НЕ входит — он внутренний инструмент
+   и остаётся на постраничных стилях v1; здесь ему даётся только оправа,
+   чтобы он не выглядел сломанным рядом с перенесёнными блоками.
+   ============================================================================ */
+
+body.v2 .account-page {
+  background: var(--v2-page);
+  padding: 40px 0 80px;
+}
+
+body.v2 .account-header {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+
+body.v2 .v2-acc__rule { margin-bottom: 12px; }
+body.v2 .account-header-left { display: block; }
+body.v2 .account-header h1 { margin: 0 0 6px; color: var(--asphalt-900); }
+
+body.v2 #accountRoleLine {
+  font: var(--v2-label);
+  font-weight: 400;
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--asphalt-400);
+}
+
+body.v2 .account-grid { display: block; }
+
+/* --- Панель статуса сделки ---------------------------------------------- */
+body.v2 .v2-deal__status {
+  background: var(--surface-inverse);
+  color: var(--on-inverse);
+  border-radius: var(--radius-2);
+  overflow: hidden;
+}
+
+/* Шевронная лента — второе и последнее место в системе, где она есть. */
+body.v2 .v2-deal__chevron { height: 6px; background: var(--hazard-chevron); }
+
+body.v2 .v2-deal__status-body { padding: 26px 28px 32px; }
+
+body.v2 .v2-deal__status-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+body.v2 .v2-deal__meta {
+  font: var(--v2-label);
+  font-weight: 400;
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 10px;
+}
+
+body.v2 .v2-deal__title {
+  font: var(--v2-page-title);
+  letter-spacing: var(--ls-display);
+  word-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--on-inverse);
+  margin: 0;
+}
+
+/* «СЕЙЧАС — ТАМОЖНЯ» красным, «ПРОСРОЧЕНО — ТАМОЖНЯ» — hazard: просрочка
+   это не действие и не «вы здесь», у неё свой смысл и свой цвет. */
+body.v2 .v2-deal__now {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--signal-500);
+  text-align: right;
+}
+
+body.v2 .v2-deal__now.is-late { color: var(--hazard-400); }
+
+/* --- Рейка сделки: состояния узлов --------------------------------------- */
+body.v2 .v2-rail--deal .v2-rail__seg.is-first .v2-rail__line::before,
+body.v2 .v2-rail--deal .v2-rail__seg.is-last .v2-rail__line::after {
+  background: transparent;
+}
+
+body.v2 .v2-rail--deal .v2-rail__line.is-passed::before { background: var(--ink-700); }
+
+body.v2 .v2-rail__node--done {
+  border: 0;
+  background: var(--ink-700);
+}
+
+body.v2 .v2-rail__node--active,
+body.v2 .v2-rail__node--overdue {
+  width: var(--rail-node-active);
+  height: var(--rail-node-active);
+  border: 0;
+}
+
+body.v2 .v2-rail__node--active {
+  background: var(--signal-500);
+  box-shadow: 0 0 0 4px var(--signal-tint);
+}
+
+body.v2 .v2-rail__node--overdue {
+  background: var(--hazard-400);
+  box-shadow: 0 0 0 4px var(--hazard-tint);
+}
+
+body.v2 .v2-rail--deal .v2-rail__label { color: rgba(255, 255, 255, 0.75); }
+
+body.v2 .v2-rail--deal .v2-rail__seg:has(.v2-rail__node--active) .v2-rail__label,
+body.v2 .v2-rail--deal .v2-rail__seg:has(.v2-rail__node--overdue) .v2-rail__label {
+  color: var(--on-inverse);
+}
+
+body.v2 .v2-rail__sub--overdue { color: var(--hazard-400); font-weight: 500; }
+body.v2 .v2-rail__sub--active { color: rgba(255, 255, 255, 0.62); }
+
+/* --- Карточка сделки ----------------------------------------------------- */
+body.v2 .deal-list { display: flex; flex-direction: column; gap: 28px; }
+
+body.v2 .deal-card {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  color: var(--asphalt-900);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+body.v2 .deal-card__head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 0;
+}
+
+body.v2 .deal-card .deal-meta {
+  font: var(--v2-label);
+  font-weight: 400;
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--asphalt-400);
+  margin: 0;
+}
+
+body.v2 .deal-status-pill {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  background: var(--asphalt-100);
+  color: var(--asphalt-900);
+  padding: 6px 12px;
+  border-radius: var(--radius-2);
+}
+
+/* --- Панели внутри сделки ------------------------------------------------ */
+body.v2 .deal-card > div:not(.v2-deal__status):not(.deal-card__head) {
+  background: var(--paper);
+  border: var(--rule-hair);
+  border-radius: var(--radius-2);
+  padding: 20px 22px;
+}
+
+body.v2 .deal-card h4,
+body.v2 .deal-card .block-head {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--asphalt-900);
+  margin: 0 0 14px;
+  padding-bottom: 12px;
+  border-bottom: var(--rule-heavy);
+}
+
+body.v2 .assignment-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 11px 0;
+  border-bottom: var(--rule-hair);
+  color: var(--asphalt-900);
+}
+
+body.v2 .assignment-row:last-child { border-bottom: 0; }
+body.v2 .assignment-role { font: var(--v2-body); color: var(--asphalt-900); }
+
+body.v2 .assignment-status {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  padding: 4px 9px;
+  border-radius: var(--radius-2);
+  background: var(--asphalt-100);
+  color: var(--asphalt-400);
+  margin-left: auto;
+}
+
+body.v2 .assignment-status.DONE { background: var(--clear-tint); color: var(--clear-600); }
+body.v2 .assignment-status.IN_PROGRESS { background: var(--hazard-tint); color: #8A5A00; }
+
+/* --- Личные данные и остальные карточки кабинета ------------------------- */
+body.v2 .cab-card {
+  background: var(--paper);
+  border: var(--rule-hair);
+  border-radius: var(--radius-2);
+  box-shadow: none;
+  padding: 22px;
+  margin-bottom: 24px;
+}
+
+body.v2 .cab-card-head h2 {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--asphalt-900);
+  margin: 0 0 14px;
+  padding-bottom: 12px;
+  border-bottom: var(--rule-heavy);
+}
+
+body.v2 .profile-grid label {
+  display: block;
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--asphalt-400);
+  margin: 14px 0 7px;
+}
+
+body.v2 .profile-grid input,
+body.v2 .cab-card input[type="text"],
+body.v2 .cab-card input[type="email"],
+body.v2 .cab-card input[type="password"],
+body.v2 .cab-card select,
+body.v2 .cab-card textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: var(--rule-hair);
+  border-radius: var(--radius-2);
+  background: var(--paper);
+  color: var(--asphalt-900);
+  padding: 11px 12px;
+  font: var(--v2-body);
+  outline: none;
+}
+
+body.v2 .cab-card input:focus,
+body.v2 .cab-card select:focus,
+body.v2 .cab-card textarea:focus { border-color: var(--asphalt-900); }
+
+/* Кабинет менеджера остаётся на v1 — ему нужна только оправа, чтобы он не
+   выглядел сломанным рядом с перенесёнными блоками. */
+body.v2 .mgr-section { background: var(--paper); }
+
+@media (max-width: 760px) {
+  body.v2 .v2-deal__status-body { padding: 20px; }
+  body.v2 .v2-deal__title { font-size: var(--fs-28); }
+  body.v2 .v2-deal__now { text-align: left; }
+  /* Шесть подписей в ряд на телефоне не помещаются — рейка остаётся шкалой,
+     а даты уходят: они есть в журнале событий строкой ниже. */
+  body.v2 .v2-rail--deal .v2-rail__sub { display: none; }
+  body.v2 .v2-rail--deal .v2-rail__label { font-size: 9px; letter-spacing: 0.04em; }
+}
+
+/* Заголовки блоков внутри сделки: моно-капс на тяжёлой линейке.
+   Иконки FontAwesome сняты — в v2 роль подписи несёт сама типографика. */
+body.v2 .dc-block__head,
+body.v2 .comments-block__head,
+body.v2 .dc-head {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--asphalt-900);
+  margin: 0 0 14px;
+  padding-bottom: 12px;
+  border-bottom: var(--rule-heavy);
+}
+
+body.v2 .dc-block__head i,
+body.v2 .comments-block__head i { display: none; }
+
+body.v2 .dc-internal {
+  font-weight: 400;
+  color: var(--asphalt-400);
+  letter-spacing: var(--ls-mono-label);
+}
+
+/* Кнопки кабинета — те же, что во всей системе, вместо красных «пилюль» v1.
+   Заливки здесь нет НИ У ОДНОЙ: кабинет это экран наблюдения, а сигнальный
+   красный значит «действие, которого от вас ждут сейчас». Сохранить свой
+   e-mail или отправить сообщение менеджеру — не тот случай, и три красных
+   пятна в кадре обесценили бы цвет на всех остальных экранах. */
+body.v2 .account-page .btn,
+body.v2 .account-page button.btn {
+  background: transparent;
+  color: var(--asphalt-900);
+  border: 1.5px solid var(--asphalt-900);
+  border-radius: var(--radius-4);
+  box-shadow: none;
+  font-family: var(--type-mono);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: var(--ls-mono-btn);
+  text-transform: uppercase;
+  min-height: var(--v2-btn-h-sm);
+  padding: 0 18px;
+}
+
+body.v2 .account-page .btn:hover {
+  background: var(--asphalt-900);
+  color: var(--paper);
+  transform: none;
+  box-shadow: none;
+}
+
+/* Второстепенные действия внутри сделки не заливаются: единственный красный
+   на экране — то действие, которого от человека ждут сейчас. */
+body.v2 .deal-card .btn,
+body.v2 #btnLogout,
+body.v2 .account-page .btn--ghost {
+  background: transparent;
+  color: var(--asphalt-900);
+  border: 1.5px solid var(--asphalt-900);
+  border-radius: var(--radius-4);
+  box-shadow: none;
+  font-family: var(--type-mono);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: var(--ls-mono-btn);
+  text-transform: uppercase;
+  min-height: var(--v2-btn-h-sm);
+  padding: 0 18px;
+}
+
+body.v2 .deal-card .btn:hover,
+body.v2 #btnLogout:hover {
+  background: var(--asphalt-900);
+  color: var(--paper);
+  transform: none;
+}
+
+body.v2 .empty-note {
+  font: var(--v2-body);
+  color: var(--asphalt-400);
+  text-align: left;
+  margin: 0;
+}
+
+/* Вкладки «Активные / Завершённые» — чипы системы */
+body.v2 .deal-tabs button,
+body.v2 .deal-tab {
+  border: 1px solid var(--asphalt-200);
+  border-radius: var(--radius-4);
+  background: var(--paper);
+  color: var(--asphalt-900);
+  font-family: var(--type-mono);
+  font-size: 11px;
+  letter-spacing: var(--ls-mono-btn);
+  text-transform: uppercase;
+  padding: 9px 14px;
+  box-shadow: none;
+}
+
+body.v2 .deal-tabs button.active,
+body.v2 .deal-tab.active {
+  background: var(--asphalt-900);
+  border-color: var(--asphalt-900);
+  color: var(--paper);
+}

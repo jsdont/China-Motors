@@ -57,32 +57,108 @@ document.addEventListener('DOMContentLoaded', async () => {
     return DEAL_STAGE_INDEX[status] !== undefined ? stageLabel(status) : (status || '');
   }
 
-  // Дорожная карта сделки: этапы до текущего — «пройдено», текущий —
-  // «активен», после — «предстоит». Для COMPLETED все этапы пройдены.
-  function buildTimelineHtml(status) {
-    const curIdx = status in DEAL_STAGE_INDEX ? DEAL_STAGE_INDEX[status] : 0;
-    const isCompleted = status === 'COMPLETED';
+  /* ================= РЕЙКА МАРШРУТА (шаг 6) =================
+     Состояния узлов приходят с бэкенда ГОТОВЫМИ в deal.route[].
+     Компонент не сравнивает даты и не вычисляет просрочку сам: это зависит
+     от рабочих дней, праздников и от того, что реально считается закрытием
+     этапа (backend-requirements-v2.md §2). planned_at / done_at здесь —
+     только строки для подписи под узлом.
+     ========================================================== */
 
-    const steps = DEAL_STAGES.map(([key, icon], i) => {
-      let state;
-      if (isCompleted || i < curIdx) state = 'done';
-      else if (i === curIdx) state = 'active';
-      else state = 'todo';
-      const mark = state === 'done'
-        ? '<i class="fa-solid fa-check"></i>'
-        : `<i class="fa-solid ${icon}"></i>`;
-      return `
-        <li class="tl-step tl-${state}">
-          <span class="tl-dot">${mark}</span>
-          <span class="tl-label">${stageLabel(key)}</span>
-        </li>`;
-    }).join('');
+  const RAIL_STATES = ['done', 'active', 'todo', 'overdue'];
+
+  // «2026-02-09T14:00:00Z» и «2026-02-10» → «09.02». Это форматирование для
+  // показа, а не интерпретация: какое состояние у узла, решает бэкенд.
+  function railDate(value) {
+    if (!value) return '';
+    const m = String(value).match(/^(\d{4})-(\d{2})-(\d{2})/);
+    return m ? `${m[3]}.${m[2]}` : '';
+  }
+
+  function railSub(node) {
+    const done = railDate(node.done_at);
+    const planned = railDate(node.planned_at);
+    switch (node.state) {
+      case 'done':
+        return done;
+      case 'active':
+        return planned ? `${t('cab_rail_planned')} ${planned}` : t('cab_rail_now');
+      case 'overdue':
+        // Приписка «просрочен» — из состояния с бэкенда, а не из сравнения дат.
+        return planned
+          ? `${t('cab_rail_planned')} ${planned} · ${t('cab_rail_late')}`
+          : t('cab_rail_late');
+      default:
+        return planned ? `~${planned}` : '';
+    }
+  }
+
+  // Рейка рисуется ТОЛЬКО из route[]. Если бэкенд его не отдал (старая
+  // сделка), рейки нет вовсе: собирать шесть географических узлов из восьми
+  // торговых статусов Deal.status значило бы завести второй маппинг на
+  // фронте — ровно то, от чего предостерегают требования к бэкенду.
+  function buildRouteRailHtml(route) {
+    if (!Array.isArray(route) || !route.length) return '';
+
+    const last = route.length - 1;
+    return `
+      <div class="v2-rail v2-rail--labeled v2-rail--deal">
+        ${route.map((node, i) => {
+          const state = RAIL_STATES.includes(node.state) ? node.state : 'todo';
+          const label = escapeHtml(node.label || node.node || '');
+          const sub = escapeHtml(railSub(node));
+          // Линия слева закрашена, если предыдущий узел пройден.
+          const prevDone = i > 0 && route[i - 1].state === 'done';
+          return `
+            <div class="v2-rail__seg${i === 0 ? ' is-first' : ''}${i === last ? ' is-last' : ''}">
+              <span class="v2-rail__line${prevDone ? ' is-passed' : ''}">
+                <span class="v2-rail__node v2-rail__node--${state}"></span>
+              </span>
+              <span class="v2-rail__tick"></span>
+              <span class="v2-rail__label">${label}</span>
+              ${sub ? `<span class="v2-rail__sub v2-rail__sub--${state}">${sub}</span>` : ''}
+            </div>`;
+        }).join('')}
+      </div>`;
+  }
+
+  // Панель статуса: асфальт, шевронная лента по верхней кромке — одно из двух
+  // мест в системе, где она вообще появляется (второе — «Итого» в калькуляторе).
+  function buildStatusPanelHtml(deal) {
+    const route = Array.isArray(deal.route) ? deal.route : [];
+    const focus = route.find(n => n.state === 'overdue') || route.find(n => n.state === 'active');
+    const late = Boolean(focus && focus.state === 'overdue');
+    const title = escapeHtml(deal.vehicle_title || deal.title || (t('cab_deal_num') + ' #' + deal.id));
+
+    const focusLine = focus
+      ? `<div class="v2-deal__now${late ? ' is-late' : ''}">
+           ${late ? t('cab_rail_late_head') : t('cab_rail_now_head')} — ${escapeHtml(focus.label || focus.node)}
+         </div>`
+      : `<div class="v2-deal__now">${escapeHtml(dealStatusLabel(deal.status))}</div>`;
 
     return `
-      <div class="tl-block">
-        <div class="tl-block__head"><i class="fa-solid fa-route"></i> ${t('cab_timeline_head')}</div>
-        <ol class="tl-steps">${steps}</ol>
+      <div class="v2-deal__status">
+        <div class="v2-deal__chevron" aria-hidden="true"></div>
+        <div class="v2-deal__status-body">
+          <div class="v2-deal__status-head">
+            <div>
+              <div class="v2-deal__meta">
+                ${t('cab_deal_num')} №&nbsp;<span class="num">${deal.id}</span>
+                · ${t('cab_created')} <span class="num">${escapeHtml(fmtDateShort(deal.created_at))}</span>
+              </div>
+              <h3 class="v2-deal__title">${title}</h3>
+            </div>
+            ${focusLine}
+          </div>
+          ${buildRouteRailHtml(route)}
+        </div>
       </div>`;
+  }
+
+  function fmtDateShort(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    return Number.isNaN(d.getTime()) ? '' : d.toLocaleDateString('ru-RU');
   }
 
   function fmtDate(iso) {
@@ -694,15 +770,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       : `<span class="deal-status-pill">${escapeHtml(dealStatusLabel(deal.status))}</span>`;
 
     card.innerHTML = `
+      ${buildStatusPanelHtml(deal)}
       <div class="deal-card__head">
-        <h3>${deal.vehicle_title || deal.title || (t('cab_deal_num') + ' #' + deal.id)}</h3>
         ${statusControl}
+        <span class="deal-meta">
+          ${editableRole ? '' : `${t('cab_client')}: ${escapeHtml(deal.customer_info?.name || deal.customer_info?.phone || '—')}`}
+        </span>
       </div>
-      <div class="deal-meta">
-        ${t('cab_created')}: ${fmtDate(deal.created_at)}
-        ${editableRole ? '' : `· ${t('cab_client')}: ${deal.customer_info?.name || deal.customer_info?.phone || '—'}`}
-      </div>
-      ${buildTimelineHtml(deal.status)}
       <div class="assignments-block">${assignmentsHtml}</div>
     `;
 
@@ -713,10 +787,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         const prev = deal.status;
         sel.disabled = true;
         try {
-          await window.CMAuth.apiAuthed('PATCH', `/api/manager/deals/${deal.id}/status/`, { status: newStatus });
+          const updated = await window.CMAuth.apiAuthed('PATCH', `/api/manager/deals/${deal.id}/status/`, { status: newStatus });
           deal.status = newStatus;
-          const tl = card.querySelector('.tl-block');
-          if (tl) tl.outerHTML = buildTimelineHtml(newStatus);
+          // route[] пересчитывает бэкенд — берём его из ответа, а не
+          // достраиваем сами. Не вернул — панель остаётся как была.
+          if (updated && Array.isArray(updated.route)) deal.route = updated.route;
+          const panel = card.querySelector('.v2-deal__status');
+          if (panel) panel.outerHTML = buildStatusPanelHtml(deal);
         } catch (err) {
           alert(t('cab_error') + ': ' + err.message);
           sel.value = prev;
