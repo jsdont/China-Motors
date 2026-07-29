@@ -2353,13 +2353,13 @@ body.v2 .v2-ledger-wrap {
   overflow-x: auto;
 }
 
-body.v2 .v2-ledger {
+body.v2 table.v2-ledger {
   width: 100%;
   border-collapse: collapse;
   min-width: 520px;
 }
 
-body.v2 .v2-ledger th {
+body.v2 table.v2-ledger th {
   text-align: left;
   padding: 14px 20px;
   border-bottom: var(--rule-heavy);
@@ -2370,14 +2370,14 @@ body.v2 .v2-ledger th {
   white-space: nowrap;
 }
 
-body.v2 .v2-ledger th:first-child { width: 190px; }
-body.v2 .v2-ledger th:last-child { text-align: right; width: 120px; }
+body.v2 table.v2-ledger th:first-child { width: 190px; }
+body.v2 table.v2-ledger th:last-child { text-align: right; width: 120px; }
 
 /* position: relative обязателен: внутри ячейки лежит .sr-only с
    position: absolute, и без позиционированного предка он якорится к
    документу — вылезает из прокручиваемой обёртки и растягивает страницу
    по горизонтали на узких экранах. */
-body.v2 .v2-ledger td {
+body.v2 table.v2-ledger td {
   position: relative;
   padding: 15px 20px;
   border-bottom: var(--rule-hair);
@@ -2386,9 +2386,9 @@ body.v2 .v2-ledger td {
   vertical-align: top;
 }
 
-body.v2 .v2-ledger tr:last-child td { border-bottom: 0; }
+body.v2 table.v2-ledger tr:last-child td { border-bottom: 0; }
 
-body.v2 .v2-ledger__stage {
+body.v2 table.v2-ledger .v2-ledger__stage {
   font: var(--v2-label);
   letter-spacing: var(--ls-mono-label);
   text-transform: uppercase;
@@ -2396,7 +2396,7 @@ body.v2 .v2-ledger__stage {
 }
 
 /* «Включено» — clear-600 по смыслу «закрыто успешно», не красный. */
-body.v2 .v2-ledger__ok {
+body.v2 table.v2-ledger .v2-ledger__ok {
   text-align: right;
   color: var(--clear-600);
   font-size: 14px;
@@ -2688,12 +2688,12 @@ body.v2 #reviews .v2-close__t {
    галочка, а сам заголовок секции — «Что входит», так что информации она
    там не несёт. Остаются этап и работа, и таблица помещается целиком. */
 @media (max-width: 620px) {
-  body.v2 .v2-ledger { min-width: 0; }
-  body.v2 .v2-ledger th:last-child,
-  body.v2 .v2-ledger td:last-child { display: none; }
-  body.v2 .v2-ledger th:first-child { width: 120px; }
-  body.v2 .v2-ledger th,
-  body.v2 .v2-ledger td { padding: 13px 14px; }
+  body.v2 table.v2-ledger { min-width: 0; }
+  body.v2 table.v2-ledger th:last-child,
+  body.v2 table.v2-ledger td:last-child { display: none; }
+  body.v2 table.v2-ledger th:first-child { width: 120px; }
+  body.v2 table.v2-ledger th,
+  body.v2 table.v2-ledger td { padding: 13px 14px; }
 }
 
 /* ============================================================================
@@ -3708,3 +3708,24 @@ body.v2 .privacy-container li { margin-bottom: 8px; }
 
 body.v2 .privacy-container a { color: var(--ink-500); text-underline-offset: 3px; }
 body.v2 .privacy-container a:hover { color: var(--signal-500); }
+
+/* Футер на узких экранах.
+   Сетка футера так и оставалась четырёхколоночной на телефоне: колонки
+   «Контакты» и «Соцсети» уезжали за правый край (left 370 и 510 при ширине
+   окна 390) и обрезались правилом `overflow-x: hidden` из v1. Проверка по
+   document.scrollWidth этого не ловила — страница не прокручивалась, потому
+   что содержимое было именно ОБРЕЗАНО, — а на телефоне из футера пропадали
+   телефон и почта компании. */
+@media (max-width: 900px) {
+  body.v2 .v2-footer__grid { grid-template-columns: 1fr 1fr; gap: 28px 24px; }
+}
+
+@media (max-width: 560px) {
+  body.v2 .v2-footer__grid { grid-template-columns: 1fr; gap: 26px; }
+  body.v2 .v2-footer__about { max-width: none; }
+}
+
+/* `.v2-ledger` на главной — <table> с min-width 520px, а на карточке техники
+   так же названа ведомость «как проходит покупка» в колонке 420px. Правила
+   таблицы теперь адресованы самому элементу table, иначе они растягивали
+   ведомость шире её колонки, и та обрезалась `overflow-x: hidden`. */
