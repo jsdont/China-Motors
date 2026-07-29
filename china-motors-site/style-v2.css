@@ -3649,3 +3649,62 @@ body.v2 .v2-empty--pending {
 }
 
 body.v2 .v2-empty--pending p { margin: 0; max-width: 60ch; }
+
+/* ============================================================================
+   22. ЮРИДИЧЕСКИЕ СТРАНИЦЫ (шаг 7.1)
+   Переносятся ПЕРВЫМИ в шаге 7 — до удаления style.css. Задача та же, что у
+   .blog-article: мера строки для чтения и типографика документа. Белая
+   карточка со скруглением 18px и тенью уходит — это была последняя такая
+   на публичной части сайта.
+   ============================================================================ */
+body.v2 .privacy-page { background: var(--v2-page); }
+
+body.v2 .privacy-container {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  text-align: left;
+}
+
+body.v2 .privacy-container h1 {
+  font: var(--v2-page-title);
+  letter-spacing: var(--ls-display);
+  word-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--asphalt-900);
+  margin: 0 0 12px;
+}
+
+body.v2 .privacy-date {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--asphalt-400);
+  padding-bottom: 12px;
+  border-bottom: var(--rule-heavy);
+  margin: 0 0 26px;
+}
+
+body.v2 .privacy-container h3 {
+  font: var(--v2-card-title);
+  letter-spacing: var(--ls-display);
+  text-transform: uppercase;
+  color: var(--asphalt-900);
+  margin: 34px 0 12px;
+}
+
+body.v2 .privacy-container p,
+body.v2 .privacy-container li {
+  font: var(--v2-body-lg);
+  color: var(--asphalt-700);
+}
+
+body.v2 .privacy-container p { margin: 0 0 16px; }
+body.v2 .privacy-container ul { margin: 0 0 16px 20px; }
+body.v2 .privacy-container li { margin-bottom: 8px; }
+
+body.v2 .privacy-container a { color: var(--ink-500); text-underline-offset: 3px; }
+body.v2 .privacy-container a:hover { color: var(--signal-500); }
