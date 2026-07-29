@@ -1199,6 +1199,630 @@ html.dark .hp-route__step p {
   }
 }
 
+
+/* Переменные v1: `h3, h4` выше красятся в var(--primary-blue), а фильтры
+   и чипы каталога — остаток той же основы. Без :root переменная не
+   разрешается и заголовки уезжают в цвет по умолчанию. */
+:root {
+  --primary-blue: #1F1F1F;
+  --secondary-blue: #1F1F1F;
+  --accent-orange: #E12821;
+  --white: #FFFFFF;
+  --shadow-sm: 0 5px 15px rgba(0, 0, 0, 15);
+  --shadow-md: 0 10px 20px rgba(0, 0, 0, 0.2);
+  --accent:#E12821;
+  --accent-2:#2f6fed;
+}
+.hp-filter-card {
+  max-width: 1200px;
+  margin: 24px auto 8px;
+  padding: 0 20px;
+}
+.hp-filter-card__inner {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 24px rgba(18,23,42,0.06);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 14px;
+  align-items: end;
+}
+.hp-filter-card__inner .f-search {
+  grid-column: 1 / -1;
+}
+.hp-filter-card label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #8a8f9c;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+.hp-filter-card input, .hp-filter-card select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #e4e6eb;
+  font-size: 13.5px;
+  font-family: 'Open Sans', sans-serif;
+  color: #12172a;
+  background: #fff;
+}
+html.dark .hp-filter-card__inner {
+  background: #1e1e1e;
+}
+html.dark .hp-filter-card input, html.dark .hp-filter-card select {
+  background: #1f1f1f;
+  color: #fff;
+  border-color: #333;
+}
+html.dark .hp-filter-card label {
+  color: #aab4c5;
+}
+.cat-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 44px 20px;
+}
+.cat-empty h3 {
+  font-size: 21px;
+  margin: 0 0 10px;
+}
+.cat-empty p {
+  color: #6b7280;
+  font-size: 16px;
+  max-width: 520px;
+  margin: 0 auto 20px;
+  line-height: 1.55;
+}
+.cat-empty__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+html.dark .cat-empty p {
+  color: #aab4c5;
+}
+.task-filter {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px 6px;
+}
+.task-filter__head {
+  font-size: 19px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.task-filter__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.task-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 18px;
+  border: 2px solid #d8dbe2;
+  background: #fff;
+  border-radius: 12px;
+  font-size: 15px;
+  cursor: pointer;
+  min-height: 50px;
+  text-align: left;
+}
+.task-btn i {
+  font-size: 18px;
+  color: #E12821;
+}
+.task-btn:hover {
+  border-color: #E12821;
+}
+/* Только насыщенность. Заливка, рамка и цвет текста тут были
+   красными; их и сегодня перебивает body.v2 .v2-chip.active,
+   и по правилу красного активному чипу полагается асфальт. */
+.task-btn.active {
+  font-weight: 700;
+}
+.task-btn.active i {
+  color: #fff;
+}
+.task-filter__more {
+  margin-top: 12px;
+  background: none;
+  border: none;
+  color: #6b7280;
+  text-decoration: underline;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 8px 0;
+}
+.task-filter__more:hover {
+  color: #E12821;
+}
+html.dark .task-btn {
+  background: #1e1e1e;
+  border-color: rgba(255, 255, 255, .16);
+  color: #f5f5f5;
+}
+html.dark .task-filter__more {
+  color: #aab4c5;
+}
+
+@media (max-width: 640px) {
+  .task-btn {
+    flex: 1 1 100%;
+    font-size: 15px;
+  }
+}
+
+
+/* Карточки, галерея и семейство .btn. Перенесено дословно, включая
+   красный градиент .btn: он и сегодня красит primary на каталоге, где
+   v2 его не перекрывает. Заменить градиент на плоский --signal-fill
+   стоит, но это правка дизайна, а не уборка, — отдельным шагом. */
+html.dark .card, html.dark .feature-card, html.dark .gallery-card, html.dark .review-card, html.dark .calc-card, html.dark .contact-form {
+  background: #1e1e1e;
+  color: #f5f5f5;
+}
+html.dark h3, html.dark .card i, html.dark h4, html.dark .gallery-card p, html.dark .card p, html.dark .calc-card__title, html.dark .calc-card label, html.dark .calc-card .summary-line strong, html.dark .summary-line, html.dark .contact-form label, html.dark .review-caption, .contact-form input, .contact-form textarea {
+  color: #fff;
+}
+.feature-grid, .gallery-grid, .reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  margin-top: 30px;
+}
+.card, .gallery-card, .review-card {
+  border-radius: 15px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+}
+.card:hover, .review-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+.card {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 25px;
+}
+.card i {
+  color: var(--accent);
+  font-size: 40px;
+  margin-bottom: 15px;
+}
+.card p {
+  color: #000;
+}
+.gallery-card {
+  overflow: hidden;
+}
+.gallery-card:hover {
+  transform: translateY(-5px);
+}
+.gallery-img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 15px 15px 0 0;
+  transition: opacity 0.3s ease;
+}
+.gallery-card:hover .gallery-img {
+  opacity: 0.9;
+}
+.gallery-card p {
+  margin: 15px;
+  font-size: 14px;
+  color: var(--primary-blue);
+  font-weight: 500;
+}
+.review-card {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 20px;
+}
+.review-img, .review-card video {
+  max-width: 100%;
+  min-width: 100%;
+  min-height: 250px;
+  max-height: 300px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  display: block;
+  border: none;
+}
+.review-caption {
+  font-size: 14px;
+  color: #000;
+  padding: 0 10px;
+  font-weight: 500;
+}
+.btn {
+  display: inline-block;
+  background: linear-gradient(90deg, var(--secondary-blue), #1F1F1F);
+  color: var(--white);
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(18, 130, 162, 0.3);
+}
+.btn:hover {
+  background: linear-gradient(90deg, var(--accent-orange), #E12821);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(249, 87, 56, 0.4);
+}
+.btn.instagram {
+  background: linear-gradient(90deg, #E4405F, #E1306C);
+}
+.btn.instagram:hover {
+  background: linear-gradient(90deg, #F56040, #FF7E6D);
+}
+.btn.tiktok {
+  background: linear-gradient(90deg, #000000, #111111);
+}
+.btn.tiktok:hover {
+  background: linear-gradient(90deg, #111111, #222222);
+}
+.btn i {
+  margin-right: 8px;
+}
+.summary-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+.summary-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 18px;
+  color: #111;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 8px;
+}
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px dashed #ddd;
+  font-size: 15px;
+  color: #333;
+}
+.summary-line:last-of-type {
+  border-bottom: none;
+}
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 18px;
+  padding-top: 12px;
+  border-top: 2px solid #ccc;
+  font-size: 18px;
+  font-weight: 700;
+  color: #111;
+}
+.summary-total strong {
+  font-size: 22px;
+  color: #E12821;
+}
+#calcForm .btn, .summary-card .btn {
+  background: linear-gradient(90deg, #E12821, #ff5a54);
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 15px;
+  box-shadow: 0 6px 14px rgba(225,40,33,0.25);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+#calcForm .btn:hover, .summary-card .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(225,40,33,0.35);
+}
+.btn.btn--ghost {
+  background:#1f2631;
+  color:#e7edf6;
+  box-shadow:none;
+  border:1px solid #2a3444;
+}
+.btn.btn--ghost:hover {
+  filter:brightness(1.05);
+}
+.summary-card--dark {
+  background:#0b0e13;
+  border:1px solid #232b39;
+  border-radius:16px;
+  padding:22px;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.02), 0 12px 30px rgba(0,0,0,.35);
+}
+.summary-card--dark .summary-title {
+  font-size:22px;
+  font-weight:800;
+  margin-bottom:14px;
+  color:#fff;
+  border-bottom:1px solid #1f2733;
+  padding-bottom:10px;
+}
+.summary-card--dark .summary-line {
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:10px 0;
+  border-bottom:1px dashed #2a3445;
+  color:#e2e8f0;
+}
+.summary-card--dark .summary-line:last-of-type {
+  border-bottom:none;
+}
+.summary-card--dark .summary-total {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:16px;
+  padding-top:12px;
+  border-top:2px solid #2a3445;
+  color:#fff;
+}
+.summary-card--dark .summary-total strong {
+  font-size:24px;
+  color:#ff6b61;
+}
+.summary-card--dark .summary-sub {
+  color:#9fb2cc;
+  margin-top:6px;
+}
+.summary-actions {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:18px;
+}
+.summary-actions .btn {
+  min-width: 180px;
+}
+.summary-actions {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:18px;
+}
+.summary-actions .btn {
+  min-width: 180px;
+}
+.summary-card {
+  background:#1f1f1f;
+  color:white;
+  border-radius:18px;
+  padding:24px;
+  box-shadow:0 12px 28px rgba(0,0,0,.2);
+  position:sticky;
+  top:88px;
+}
+.summary-card--dark .summary-title {
+  font-size:22px;
+  font-weight:800;
+  margin:0 0 12px;
+}
+.summary-card--dark .summary-line {
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:10px 0;
+  border-bottom:1px dashed #ffffffff;
+  color:#e2e8f0;
+}
+.summary-card--dark .summary-line:last-of-type {
+  border-bottom:none;
+}
+.summary-card--dark .summary-total {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:16px;
+  padding-top:12px;
+  border-top:2px solid #ffffffff;
+  color:#fff;
+}
+.summary-card--dark .summary-total strong {
+  font-size:24px;
+  color:#ff6b61;
+}
+.summary-sub {
+  color:#9fb2cc;
+  margin-top:6px;
+}
+.summary-actions {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:18px;
+}
+.summary-actions .btn {
+  min-width:180px;
+}
+.btn {
+  cursor:pointer;
+  border-radius:10px;
+  padding:.55rem .85rem;
+  font-weight:600;
+  border:1px solid #d9d9d9;
+  background:#e53935;
+}
+.btn:disabled {
+  opacity:.5;
+  cursor:not-allowed;
+}
+.btn-primary {
+  background:#e53935;
+  color:#fff;
+  border-color:#e53935;
+}
+.btn-outline {
+  background:transparent;
+}
+.btn.js-open-gallery {
+  background: #1f1f1f;
+  border: 1px solid #e8eaee;
+}
+.why-us {
+  background: #f9f9f9;
+}
+html.dark .why-us {
+  background: #121212;
+}
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  margin-top: 30px;
+}
+.why-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px 20px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  transition: transform .2s ease, box-shadow .2s ease;
+  text-align: center;
+}
+.why-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.15);
+}
+.why-card i {
+  font-size: 36px;
+  color: #E12821;
+  margin-bottom: 14px;
+}
+.why-card h4 {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+.why-card p {
+  font-size: 14px;
+  color: #333;
+}
+html.dark .why-card {
+  background: #1e1e1e;
+}
+html.dark .why-card p {
+  color: #e0e0e0;
+}
+.btn.js-open-gallery:hover {
+  background: linear-gradient(90deg, var(--accent-orange), #E12821);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(249, 87, 56, 0.4);
+}
+.btn-outline {
+  padding: 10px 18px;
+  border: 1.5px solid #ff3b30;
+  border-radius: 999px;
+  color: #ff3b30;
+  font-weight: 600;
+  font-size: 14px;
+}
+.btn-outline {
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: 1.5px solid #e53935;
+  color: #e53935;
+  font-size: 14px;
+  font-weight: 600;
+}
+.btn-outline-light {
+  border: 1.5px solid rgba(255,255,255,0.6);
+  color: #fff;
+  padding: 12px 26px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  display: inline-block;
+}
+.summary-card {
+  background: #12172a;
+}
+.summary-card--dark {
+  background: #12172a;
+}
+.summary-plain {
+  margin: 10px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, .75);
+}
+
+@media (max-width: 768px) {
+  .feature-grid, .gallery-grid, .reviews-grid {
+    grid-template-columns: 1fr;
+  }
+  .btn {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+  .gallery-img {
+    height: 200px;
+  }
+  .review-img, .review-card video {
+    height: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card, .gallery-card, .review-card {
+    padding: 15px;
+  }
+  .gallery-img {
+    height: 150px;
+  }
+  .review-img, .review-card video {
+    height: 150px;
+  }
+  .btn {
+    padding: 8px 12px;
+    font-size: 12px;
+    min-width: 90px;
+  }
+}
+
+@media (max-width:980px) {
+  .summary-card--dark {
+    margin-top:16px;
+  }
+  .summary-actions .btn {
+    flex:1;
+  }
+  .summary-actions .btn {
+    flex:1;
+  }
+}
+
+@media (max-width: 600px) {
+  .summary-actions .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .summary-card--dark .summary-title {
+    display: flex;
+    justify-content: center;
+  }
+  .card-actions {
+    justify-content: space-evenly;
+  }
+}
+
 /* ============================================================================
    4. ОСНОВАНИЕ СТРАНИЦЫ v2
    Включается классом .v2 на <body> — только на переехавших страницах.
