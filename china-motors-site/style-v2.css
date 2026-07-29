@@ -3626,3 +3626,26 @@ body.v2 .deal-tab.active {
   border-color: var(--asphalt-900);
   color: var(--paper);
 }
+
+/* Бейдж подтверждения — статус-чип. Радиус 999 здесь разрешён (чипы статуса
+   и контакт-виджет — единственные исключения из шкалы 0/2/4/6), но цвета
+   берутся из токенов, а не задаются вручную, как было в v1. */
+body.v2 .account-badge {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  padding: 5px 12px;
+}
+
+body.v2 .account-badge.verified { background: var(--clear-tint); color: var(--clear-600); }
+body.v2 .account-badge.not-verified { background: var(--hazard-tint); color: #8A5A00; }
+
+/* Аккаунт на подтверждении — не тупик и не ошибка: hazard значит «ждёт
+   действия», и это ровно тот случай. */
+body.v2 .v2-empty--pending {
+  border-left: 2px solid var(--hazard-400);
+  text-align: left;
+  padding: 26px 24px;
+}
+
+body.v2 .v2-empty--pending p { margin: 0; max-width: 60ch; }

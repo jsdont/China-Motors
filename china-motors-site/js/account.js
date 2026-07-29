@@ -1248,6 +1248,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         renderDealList(deals, {});
       } else if (ASSIGNEE_ROLES.includes(session.role)) {
+        // Аккаунты исполнителей и банка проходят подтверждение администратора
+        // (об этом сказано ещё в форме регистрации). Пока оно не пройдено,
+        // сделок не назначают — и написать «вам пока не назначили ни одной
+        // сделки» значит назвать не ту причину: человек будет ждать
+        // менеджера вместо того, чтобы понять, что ждут его подтверждения.
+        if (!session.isVerified) {
+          dealListEl.innerHTML = `
+            <div class="v2-empty v2-empty--pending">
+              <div class="v2-empty__title">${t('cab_pending_title')}</div>
+              <p>${t('cab_pending_text')}</p>
+            </div>`;
+          return;
+        }
         const deals = await window.CMAuth.apiAuthed('GET', '/api/deals/assigned/');
         dealListEl.innerHTML = '';
         if (!deals.length) {
