@@ -1877,6 +1877,90 @@
   }
   window.cmOptimizeImage = cmOptimizeImage;
 
+  /* =====================
+     COUNT-UP (числа набегают от нуля)
+     ===================== */
+  // Один общий счётчик для всех «живых» чисел системы: hero на главной,
+  // «Итого» в калькуляторе. Правила:
+  //   • запуск — один раз, когда элемент впервые попал во вьюпорт
+  //     (IntersectionObserver отключается сразу после срабатывания, поэтому
+  //     повторные проходы скроллом мимо ничего не перезапускают);
+  //   • ease-out-cubic — число тормозит к финалу, а не ползёт равномерно;
+  //   • на каждом кадре значение округляется до нужного знака и проходит
+  //     через toLocaleString, так что «сырых» дробей на экране не бывает;
+  //   • prefers-reduced-motion: reduce — сразу конечное значение, без кадров.
+  // После того как счётчик отработал, следующие вызовы с новым значением
+  // просто ставят его на место: анимация здесь — появление блока, а не
+  // реакция на каждый пересчёт (иначе калькулятор дёргался бы на каждый ввод).
+  const REDUCED_MOTION = window.matchMedia
+    ? window.matchMedia('(prefers-reduced-motion: reduce)')
+    : { matches: false };
+  const countUpState = new WeakMap();
+
+  function cmCountUp(el, value, opts) {
+    if (!el) return;
+    const o = opts || {};
+    const target = Number(value);
+    if (!Number.isFinite(target)) return;
+
+    const decimals  = Number.isFinite(o.decimals) ? o.decimals : 0;
+    const duration  = Number.isFinite(o.duration) ? o.duration : 1300;
+    const locale    = o.locale || 'ru-RU';
+    const prefix    = o.prefix || '';
+    const suffix    = o.suffix || '';
+    const pow       = Math.pow(10, decimals);
+
+    const render = (n) => {
+      el.textContent = prefix + (Math.round(n * pow) / pow).toLocaleString(locale, {
+        minimumFractionDigits: decimals, maximumFractionDigits: decimals,
+      }) + suffix;
+    };
+
+    const state = countUpState.get(el) || {};
+    state.target = target;
+    countUpState.set(el, state);
+    if (state.frame) { cancelAnimationFrame(state.frame); state.frame = null; }
+
+    // Без анимации: пользователь просит меньше движения, браузер не умеет
+    // IntersectionObserver, или счётчик для этого элемента уже отыграл.
+    if (REDUCED_MOTION.matches || !('IntersectionObserver' in window) || state.done) {
+      render(target);
+      return;
+    }
+
+    const run = () => {
+      state.done = true;
+      const start = performance.now();
+      const tick = (now) => {
+        // Переключить настройку могли и в середине пробега — досчитываем сразу.
+        if (REDUCED_MOTION.matches) { state.frame = null; render(state.target); return; }
+        const p = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - p, 3);       // ease-out-cubic
+        render(state.target * eased);
+        state.frame = p < 1 ? requestAnimationFrame(tick) : null;
+        if (p >= 1) render(state.target);
+      };
+      state.frame = requestAnimationFrame(tick);
+    };
+
+    if (state.visible) { run(); return; }
+    if (state.observer) return;                     // ждём появления во вьюпорте
+
+    // Пока элемент за display:none, наблюдатель молчит и срабатывает в тот
+    // момент, когда блок раскрыли и он попал во вьюпорт, — на это опираются
+    // и hero (снимает hidden до вызова), и «Итого» в калькуляторе (живёт
+    // внутри свёрнутого подробного расчёта).
+    state.observer = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      state.observer.disconnect();
+      state.observer = null;
+      state.visible = true;
+      run();
+    }, { threshold: 0.4 });
+    state.observer.observe(el);
+  }
+  window.cmCountUp = cmCountUp;
+
   function initFavNav() {
     const countEl = document.getElementById('navFavCount');
     if (!countEl) return;

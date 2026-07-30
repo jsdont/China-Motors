@@ -17,12 +17,18 @@ document.addEventListener('DOMContentLoaded', async () => {
   /* ---------- Живые числа в hero -------------------------------------- */
   // Показываем только то, что реально пришло с бэкенда: пустой блок честнее
   // выдуманного «47 единиц».
-  function showMeta(wrapId, valueId, value) {
+  function showMeta(wrapId, valueId, value, opts) {
     const wrap = document.getElementById(wrapId);
     const el = document.getElementById(valueId);
     if (!wrap || !el || value === null || value === undefined) return;
-    el.textContent = value;
+    // Снимаем hidden ДО счётчика: пока элемент display:none,
+    // IntersectionObserver за ним не следит и число не побежит.
     wrap.hidden = false;
+    const decimals = opts?.decimals || 0;
+    if (window.cmCountUp) window.cmCountUp(el, value, opts);
+    else el.textContent = Number(value).toLocaleString('ru-RU', {
+      minimumFractionDigits: decimals, maximumFractionDigits: decimals,
+    });
   }
 
   async function fillRate() {
@@ -32,9 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const data = await res.json();
       const usd = Number(data.usd_kzt);
       if (!usd) return;
-      showMeta('heroRate', 'heroRateN', usd.toLocaleString('ru-RU', {
-        minimumFractionDigits: 2, maximumFractionDigits: 2,
-      }));
+      showMeta('heroRate', 'heroRateN', usd, { decimals: 2 });
     } catch (e) {
       /* курс не отдался — строка просто не появляется */
     }

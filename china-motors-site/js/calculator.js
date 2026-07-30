@@ -148,6 +148,21 @@
   );
 
   const fmt = (v) => nf.format(Math.round(v || 0));
+  const NF_LOCALE = localStorage.getItem('lang') === 'en' ? 'en-US' : 'ru-RU';
+
+  // Числа в блоке «Итого» набегают от нуля, когда блок впервые появляется во
+  // вьюпорте; дальше cmCountUp просто подставляет новое значение, чтобы
+  // пересчёт на каждый ввод не превращался в мигание. При
+  // prefers-reduced-motion счётчик ставит финальное значение сразу.
+  function setTotal(sel, value, suffix, prefix) {
+    const el = $(sel);
+    if (!el) return;
+    if (window.cmCountUp) {
+      window.cmCountUp(el, value, { locale: NF_LOCALE, prefix, suffix });
+    } else {
+      el.textContent = (prefix || '') + fmt(value) + (suffix || '');
+    }
+  }
   const num = (sel) => {
     const el = $(sel);
     const n = Number((el?.value ?? '0').toString().replace(/\s/g,'').replace(',','.'));
@@ -752,11 +767,9 @@
       total: Math.round(totalKZT),
     };
 
-    $('#sTotalKZT').textContent = fmt(totalKZT) + ' ₸';
-    $('#sTotalUSD').textContent = '≈ ' + fmt(totalKZT / rate) + ' USD';
-    if ($('#sTotalCNY')) {
-      $('#sTotalCNY').textContent = '≈ ' + fmt(totalKZT / LIVE_CNY_KZT_RATE) + ' ¥';
-    }
+    setTotal('#sTotalKZT', totalKZT, ' ₸');
+    setTotal('#sTotalUSD', totalKZT / rate, ' USD', '≈ ');
+    setTotal('#sTotalCNY', totalKZT / LIVE_CNY_KZT_RATE, ' ¥', '≈ ');
 
     $('#mandatoryTotal') && ($('#mandatoryTotal').textContent = fmt(mandatoryTotal));
     $('#deliveryTotal') && ($('#deliveryTotal').textContent = fmt(deliveryTotal));
@@ -837,7 +850,11 @@
     const name = document.getElementById('vehicleName')?.value || '';
     const year = document.getElementById('year')?.value || '';
     const price = document.getElementById('basePrice')?.value || '';
-    const total = document.getElementById('sTotalKZT')?.textContent || '';
+    // Берём итог из результата расчёта, а не со экрана: пока счётчик набегает,
+    // в #sTotalKZT лежит промежуточное число, и оно попало бы в заявку.
+    const total = LAST_CALC_BREAKDOWN
+      ? fmt(LAST_CALC_BREAKDOWN.total) + ' ₸'
+      : (document.getElementById('sTotalKZT')?.textContent || '');
 
     return `
   🧮 Запрос с калькулятора China Motors
