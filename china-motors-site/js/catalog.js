@@ -311,7 +311,11 @@ document.addEventListener('DOMContentLoaded', () => {
       .forEach(b => b.classList.toggle('active', b === btn));
     if (bodyEl) bodyEl.value = btn.dataset.body || '';
     refilter();
-    document.getElementById('grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // scrollIntoView(smooth) не подчиняется CSS scroll-behavior, поэтому
+    // prefers-reduced-motion проверяет сам хелпер (см. common.js).
+    const gridEl = document.getElementById('grid');
+    if (window.cmScrollIntoView) window.cmScrollIntoView(gridEl, { block: 'start' });
+    else gridEl?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
   // Уточняющие фильтры скрыты по умолчанию — не пугаем лишними полями.

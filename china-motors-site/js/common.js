@@ -1961,6 +1961,17 @@
   }
   window.cmCountUp = cmCountUp;
 
+  // scrollIntoView({behavior:'smooth'}) задан в JS и на CSS scroll-behavior не
+  // смотрит — правило из блока prefers-reduced-motion его не выключит.
+  // Поэтому режим проверяем здесь, руками.
+  function cmScrollIntoView(el, opts) {
+    if (!el) return;
+    const o = Object.assign({}, opts);
+    o.behavior = REDUCED_MOTION.matches ? 'auto' : 'smooth';
+    el.scrollIntoView(o);
+  }
+  window.cmScrollIntoView = cmScrollIntoView;
+
   function initFavNav() {
     const countEl = document.getElementById('navFavCount');
     if (!countEl) return;

@@ -2909,11 +2909,14 @@ body.v2 .vp {
   border-radius: var(--radius-2);
   text-decoration: none;
   color: var(--asphalt-900);
-  transition: border-color .15s ease;
+  transition: transform .18s ease, border-color .18s ease;
   position: relative;
 }
 
-.vp:hover { border-color: var(--asphalt-900); }
+/* Подъём на 2px — ровно столько, чтобы карточка отзывалась на курсор, и не
+   столько, чтобы сетка каталога ходила ходуном. Тот же жест, что у
+   .hp-route__step, только тише: там карточек шесть, здесь — вся выдача. */
+.vp:hover { border-color: var(--asphalt-900); transform: translateY(-2px); }
 
 body.v2 .vp__media {
   position: relative;
@@ -3071,6 +3074,7 @@ body.v2 .vp__cta {
   background: transparent;
   color: var(--asphalt-900);
   border: 1.5px solid var(--asphalt-900);
+  transition: background .18s ease, color .18s ease, border-color .18s ease;
 }
 
 /* Заливка — максимум у одной карточки в сетке, иначе красный размножается. */
@@ -4108,6 +4112,18 @@ body.v2 #simpleCalc .simple-calc__input {
 }
 
 body.v2 #simpleCalc .simple-calc__input:focus { border-color: var(--asphalt-900); outline: none; }
+
+/* Раскрытие подробного расчёта. #calcGrid переключается через display, а его
+   анимировать нельзя — поэтому в момент показа вешается одноразовый класс
+   (см. initSimpleMode в calculator.js), и блок проявляется, а не возникает.
+   Высоту не трогаем: страница и так подпрыгивает на всю высоту формы, и
+   тянуть её 180 мс значило бы 180 мс дёргать всё, что ниже. */
+body.v2 #calcGrid.is-revealing { animation: v2-reveal .18s ease-out; }
+
+@keyframes v2-reveal {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: none; }
+}
 
 body.v2 #simpleCalc .simple-calc__send {
   display: flex;
@@ -5438,6 +5454,33 @@ body.v2 .v2-rail__node--overdue {
 body.v2 .v2-rail__node--active {
   background: var(--signal-500);
   box-shadow: 0 0 0 4px var(--signal-tint);
+  position: relative;
+}
+
+/* Активный узел — единственный на рейке, и единственный, который дышит.
+   Пульсирует ТОЛЬКО ореол, и не тот, что нарисован на самом узле выше, а
+   отдельное кольцо в ::after: статичные 4px остаются на месте при любых
+   условиях, поэтому без анимации (reduced-motion, старый браузер) узел
+   выглядит ровно так же, как выглядел. Само пятно и подпись не двигаются —
+   иначе «вы здесь» превращается в мигающую лампочку.
+   done / todo / overdue не трогаем: у просрочки свой цвет и свой смысл,
+   мигать ей незачем. */
+body.v2 .v2-rail__node--active::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: v2-rail-pulse 2.2s ease-out infinite;
+}
+
+/* Кольцо расходится от кромки статичного ореола (4px) наружу и гаснет.
+   Старт с opacity 0 — иначе в момент перезапуска цикла оно накладывалось бы
+   на статичный ореол и тот заметно темнел бы раз в 2,2 с. */
+@keyframes v2-rail-pulse {
+  0%   { box-shadow: 0 0 0 4px var(--signal-tint);  opacity: 0; }
+  20%  { opacity: 1; }
+  100% { box-shadow: 0 0 0 13px var(--signal-tint); opacity: 0; }
 }
 
 body.v2 .v2-rail__node--overdue {
@@ -5815,3 +5858,28 @@ body.v2 .privacy-container a:hover { color: var(--signal-500); }
    так же названа ведомость «как проходит покупка» в колонке 420px. Правила
    таблицы теперь адресованы самому элементу table, иначе они растягивали
    ведомость шире её колонки, и та обрезалась `overflow-x: hidden`. */
+
+/* ============================================================================
+   PREFERS-REDUCED-MOTION
+   Системная настройка «меньше движения» — не пожелание, а требование: её
+   включают при вестибулярных расстройствах, когда от параллакса и разъездов
+   реально укачивает. Поэтому правило одно на весь лист и универсальное: любая
+   новая анимация в системе выключается им автоматически, и не нужно помнить
+   про неё в каждом следующем коммите.
+
+   Длительности гасятся до 0.01ms, а не в none, намеренно: событие
+   animationend/transitionend при этом продолжает приходить, и код, который
+   на него завязан, не зависает. На этом стоит снятие класса .is-revealing
+   у подробного расчёта.
+
+   Счётчики чисел (cmCountUp) сюда не относятся — это JS, он проверяет
+   matchMedia сам и сразу ставит конечное значение.
+   ========================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
