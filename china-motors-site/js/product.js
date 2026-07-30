@@ -4,7 +4,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const id = qs.get('id');
 
   if (!id) {
-    document.body.innerHTML = '<h2 style="padding:40px">Техника не найдена</h2>';
+    // Пустое состояние v2. Голый <h2> сюда не годится: бэрные заголовки
+    // дизайн-система не описывает — со шага 7.3 их типографику больше никто
+    // не задаёт, и заголовок отрисовывался размером обычного текста.
+    document.body.innerHTML = `
+      <div class="v2-wrap" style="margin:64px auto">
+        <div class="v2-empty">
+          <h2 class="v2-empty__title">Техника не найдена</h2>
+        </div>
+      </div>`;
     return;
   }
 
@@ -403,14 +411,14 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error(e);
       // Оставляем человеку способ связаться, а не пустой экран с ошибкой.
       document.body.innerHTML = `
-        <div style="padding:40px;text-align:center">
-          <h2>Не удалось загрузить технику</h2>
-          <p style="font-size:17px;color:#6b7280;margin:12px 0 24px">
-            Попробуйте обновить страницу или позвоните — подберём и расскажем всё сами.
-          </p>
-          <a class="btn btn--primary" href="tel:+77776133731" style="font-size:18px;padding:14px 26px">
-            Позвонить: +7 777 613 37 31
-          </a>
+        <div class="v2-wrap" style="margin:64px auto">
+          <div class="v2-empty v2-empty--error">
+            <h2 class="v2-empty__title">Не удалось загрузить технику</h2>
+            <p>Попробуйте обновить страницу или позвоните — подберём и расскажем всё сами.</p>
+            <div class="v2-empty__actions">
+              <a class="btn btn--primary" href="tel:+77776133731">Позвонить: +7 777 613 37 31</a>
+            </div>
+          </div>
         </div>`;
       window.cmInitHelpWidget?.();
     }
