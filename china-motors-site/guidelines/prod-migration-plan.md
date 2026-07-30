@@ -321,40 +321,37 @@ for (const el of document.querySelectorAll('body *')) {
 перенести `html.cm-font-lg body { zoom }` (строка 9 таблицы). Решать
 владельцу, по умолчанию — оставить и перенести.
 
-**7.4. Гарнитуры в запросе шрифтов — наполовину.** После удаления
-`style.css` каждая страница продолжала просить у Google Fonts пять
-гарнитур: `Roboto`, `Montserrat`, `Oswald`, `Open Sans`, `Poppins`. Из
-запроса убраны **только `Roboto` и `Poppins`** — на них не ссылается ни
-одна строка CSS или JS (единственное упоминание `Roboto` осталось в
-`offline.html`, и там это системный стек `system-ui … Segoe UI, Roboto`,
-то есть локальный шрифт Android, а не веб-шрифт).
+**7.4. Гарнитуры в запросе шрифтов.** После удаления `style.css` каждая
+страница продолжала просить у Google Fonts пять гарнитур: `Roboto`,
+`Montserrat`, `Oswald`, `Open Sans`, `Poppins`.
 
-**`Montserrat` и `Open Sans` убрать нельзя — они живые.** Их держат шесть
-строк, которые при удалении `style.css` переехали в `style-v2.css`
-элементными правилами v1:
+Первым заходом убраны **`Roboto` и `Poppins`** — на них не ссылается ни одна
+строка CSS или JS. (Единственное упоминание `Roboto` осталось в
+`offline.html`, и там это системный стек `system-ui … Segoe UI, Roboto`, то
+есть локальный шрифт Android, а не веб-шрифт.)
+
+`Montserrat` и `Open Sans` сразу убрать было нельзя — они живые. Их держат
+шесть строк, переехавших в `style-v2.css` вместе с элементными правилами v1:
 
 ```
-style-v2.css:463   h2, .blue-title, .white-title { font-family: 'Montserrat' }
-style-v2.css:475   h3, h4                        { font-family: 'Montserrat' }
-style-v2.css:492   p                             { font-family: 'Open Sans' }
-style-v2.css:1497  .lang-switch__menu button     { font-family: 'Open Sans' }
-style-v2.css:1848  .hp-calc-widget select, input { font-family: 'Inter', 'Open Sans' }
-style-v2.css:1959  .hp-filter-card input, select { font-family: 'Open Sans' }
+style-v2.css   h2, .blue-title, .white-title { font-family: 'Montserrat' }
+               h3, h4                        { font-family: 'Montserrat' }
+               p                             { font-family: 'Open Sans' }
+               .lang-switch__menu button     { font-family: 'Open Sans' }
+               .hp-calc-widget select, input { font-family: 'Inter', 'Open Sans' }
+               .hp-filter-card input, select { font-family: 'Open Sans' }
 ```
 
-Проверено рендером всех 15 страниц: они не мёртвые, а выигрывают в трёх
-местах, и все три — дефекты, а не замысел:
+Рендер всех 15 страниц показал, где они выигрывают, и оба места — дефекты,
+а не замысел:
 
-| Где | Что | Почему это дефект |
+| Где | Что | Почему дефект |
 |---|---|---|
-| `calculator.html`, пять заголовков рейки `.v2-railv__head` | Montserrat | правило `body.v2 .v2-railv__head` задаёт `font-size: inherit` и `font-weight: 400`, то есть намеренно приравнивает заголовок к тексту, — но `font-family` не задаёт, и голое `h2` из v1 перебивает. Видно на живой странице |
+| `calculator.html`, пять заголовков рейки `.v2-railv__head` | Montserrat | правило `body.v2 .v2-railv__head` задаёт `font-size: inherit` и `font-weight: 400`, то есть намеренно приравнивает заголовок к тексту, — но `font-family` не задаёт, и голое `h2` из v1 перебивает |
 | `catalog.html`, экран ошибки `.cat-empty` | `h3` Montserrat, `p` Open Sans | тот же случай, что был в `product.js`: `.cat-empty h3/p` задают размер и цвет, но не гарнитуру |
-| остальные абзацы сайта | Open Sans — **не проверено** | голое `p { font-family: 'Open Sans' }` подхватывает любой абзац, которому v2 не задал гарнитуру явно. На 14 страницах из 15 замер показал, что v2 везде выигрывает; `account.html` проверить не вышло — она требует сессии и в песочнице не отрисовывается. Считать её чистой нельзя, но и утверждать обратное — тоже |
 
-Порядок для 7.4: сначала закрыть эти три (одна строка `font-family:
-inherit` в `.v2-railv__head`, `.cat-empty` — на `.v2-empty`, и решить по
-голому `p`), и только потом убирать `Montserrat` с `Open Sans` из запроса.
-Убрать раньше — значит уронить эти элементы в системный `sans-serif`.
+Порядок: **сначала закрыть пробел, потом убирать гарнитуры.** Убрать раньше
+— уронить эти элементы в системный `sans-serif`.
 
 ### ⛔ `offline.html` — НЕ переносить. Никогда.
 
