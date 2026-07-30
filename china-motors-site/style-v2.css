@@ -460,7 +460,10 @@ html.dark .section, html.dark .container, html.dark .contact-form input, html.da
   margin-right: 8px;
 }
 h2, .blue-title, .white-title {
-  font-family: 'Montserrat', sans-serif;
+  /* Голые заголовки: v2 описывает типографику только через классы, но
+     страховка нужна — иначе любой h2 без класса падает в системный шрифт.
+     Раньше здесь стоял Montserrat из v1; теперь — дисплейная гарнитура v2. */
+  font-family: var(--type-display);
   font-size: 36px;
   margin-bottom: 40px;
   position: relative;
@@ -472,7 +475,7 @@ h2, .blue-title, .white-title {
   background: var(--white);
 }
 h3, h4 {
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--type-display);
   color: var(--primary-blue);
 }
 h3 {
@@ -489,7 +492,8 @@ h4 {
   margin-bottom: 10px;
 }
 p {
-  font-family: 'Open Sans', sans-serif;
+  /* Тот же случай, что у голых заголовков: было 'Open Sans' из v1. */
+  font-family: var(--type-body);
   font-size: 16px;
   margin-bottom: 10px;
   max-width: 800px;
@@ -1494,7 +1498,7 @@ html.dark .nav-fav-count {
   color: #12172a;
   text-align: left;
   cursor: pointer;
-  font-family: 'Open Sans', sans-serif;
+  font-family: var(--type-body);
 }
 .lang-switch__menu button:hover {
   background: #f5f6f8;
@@ -1845,7 +1849,7 @@ html.dark .blog-article li strong {
   border-radius: 10px;
   border: 1px solid #e4e6eb;
   font-size: 14px;
-  font-family: 'Inter', 'Open Sans', sans-serif;
+  font-family: var(--type-body);
   color: #12172a;
   background: #fff;
 }
@@ -1956,7 +1960,7 @@ html.dark .hp-calc-widget label {
   border-radius: 10px;
   border: 1px solid #e4e6eb;
   font-size: 13.5px;
-  font-family: 'Open Sans', sans-serif;
+  font-family: var(--type-body);
   color: #12172a;
   background: #fff;
 }
@@ -2101,10 +2105,14 @@ html.dark .simple-calc__link {
   padding: 44px 20px;
 }
 .cat-empty h3 {
+  /* Гарнитуру задаём явно: без неё заголовок доставался голому `h3` из v1
+     и набирался Montserrat. Oswald — как у `.v2-empty__title`. */
+  font-family: var(--type-display);
   font-size: 21px;
   margin: 0 0 10px;
 }
 .cat-empty p {
+  font-family: var(--type-body);
   color: #6b7280;
   font-size: 16px;
   max-width: 520px;
@@ -3714,6 +3722,11 @@ body.v2 .v2-railv__head {
   gap: 10px;
   flex-wrap: wrap;
   margin: 0 0 12px;
+  /* Заголовок рейки намеренно не выглядит заголовком: размер и начертание
+     приравнены к тексту. Гарнитуру правило не задавало — и её решало голое
+     `h2` из v1. Наследуем явно; весь видимый текст всё равно лежит в
+     дочерних спанах со своим `font: var(--v2-label)`. */
+  font-family: inherit;
   font-size: inherit;
   font-weight: 400;
 }
