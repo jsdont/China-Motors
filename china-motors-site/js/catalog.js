@@ -141,11 +141,14 @@ document.addEventListener('DOMContentLoaded', () => {
     ].filter(([, , value]) => value !== null && value !== undefined && value !== '');
   }
 
-  // primary=true заливает кнопку сигнальным красным — максимум у ОДНОЙ
-  // карточки в сетке, иначе красный размножается и перестаёт что-то значить.
-  // Заливку получает «ПОЛУЧИТЬ КП», а не «РАСЧЁТ ПОД КЛЮЧ»: из двух действий
-  // карточки КП теперь короче — оно отдаёт готовый документ сразу, тогда как
-  // расчёт ведёт в калькулятор считать самому.
+  // «ПОЛУЧИТЬ КП» залита сигнальным красным на КАЖДОЙ карточке сетки — это
+  // намеренное исключение из правила «один сигнальный красный в кадре»,
+  // принятое ради конверсии и записанное в redesign-plan §1.1. Прежде
+  // заливку получала одна «рекомендованная» карточка (флаг primary), теперь
+  // флага нет: КП — главное действие каждой карточки, и выделять одну из
+  // шести значило бы говорить, что у остальных это действие второстепенное.
+  // Второй кнопке («РАСЧЁТ ПОД КЛЮЧ») заливка не достаётся нигде: она ведёт
+  // в калькулятор считать самому, то есть длинным путём.
   //
   // Карточка перестала быть одним <a>. Двум настоящим кнопкам в подвале
   // некуда встать внутри ссылки — вложенные <a> невалидны и браузеры рвут
@@ -153,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // техники даёт растянутая ссылка на заголовке (.vp__link::after перекрывает
   // карточку целиком). Побочно чинится и то, что было раньше: кнопка
   // избранного стояла внутри <a>, чего HTML тоже не разрешает.
-  function cardHTML(item, primary) {
+  function cardHTML(item) {
     const isFav = window.CMFavorites?.isFavorite(item.id);
     const v = item.raw || {};
     const title = v.body_type || item.title || tr('card_no_name', 'Техника');
@@ -164,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
       : tr('vp_price_on_request', '— по запросу');
 
     return `
-      <article class="vp${primary ? ' vp--primary' : ''}">
+      <article class="vp">
         <div class="vp__media">
           ${mediaHTML(item.image, item.title)}
           ${v.city ? `<span class="vp__tag vp__tag--place">${v.city}</span>` : ''}
@@ -229,9 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
         refilter();
       });
     } else {
-      // Заливка кнопки — только у первой карточки: «максимум два signal-500
-      // в кадре», иначе красный размножается по сетке.
-      grid.innerHTML = list.map((item, i) => cardHTML(item, i === 0)).join('');
+      grid.innerHTML = list.map(cardHTML).join('');
     }
     const countEl = document.getElementById('resultsCount');
     if (countEl) countEl.textContent = list.length;

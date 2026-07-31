@@ -182,12 +182,39 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Ссылка на готовый PDF из ответа. Пока её отдаёт только будущий эндпоинт,
-  // у мока она null — тогда «Скачать PDF» печатает страницу.
-  let pdfUrl = null;
+  // Ссылка на ОФИЦИАЛЬНЫЙ PDF — тот, что бэкенд собирает через core/kp.py,
+  // с реквизитами продавца в шапке и печатью с подписью внизу. Мок её не
+  // отдаёт и отдавать не может: подписанный документ существует только как
+  // файл с бэкенда. Пока её нет, кнопка «с подписью» выключена.
+  let signedPdfUrl = null;
+
+  // Когда официальный документ доступен, он и становится предпочтительным
+  // действием: заливка переезжает на него, печать страницы уходит в обводку.
+  function applyDownloadState() {
+    const signed = $('#kpDownloadSigned');
+    const page = $('#kpDownloadPage');
+    if (!signed || !page) return;
+
+    if (!signedPdfUrl) return;   // разметка уже в нужном состоянии
+
+    signed.disabled = false;
+    signed.classList.remove('is-disabled', 'v2-btn--secondary');
+    signed.classList.add('v2-btn--primary');
+    page.classList.remove('v2-btn--primary');
+    page.classList.add('v2-btn--secondary');
+
+    const note = $('#kpDownloadSignedNote');
+    if (note) {
+      note.textContent = tr('kp_download_signed_ready', 'с печатью компании');
+      note.setAttribute('data-i18n', 'kp_download_signed_ready');
+    }
+  }
 
   function render(kp) {
-    pdfUrl = kp.pdf_url || null;
+    // Имя поля намеренно не pdf_url: «какой-то PDF» и «официальный
+    // подписанный PDF» — разные вещи, и на странице теперь две кнопки.
+    signedPdfUrl = kp.kp_pdf_url || null;
+    applyDownloadState();
     renderHead(kp);
     renderSeller(kp.seller || {});
     renderSubject(kp);
@@ -253,13 +280,19 @@ document.addEventListener('DOMContentLoaded', () => {
     toastTimer = setTimeout(() => el.classList.remove('is-on'), 2600);
   }
 
-  // Скачивание. Готовый PDF отдаст бэкенд (pdf_url в ответе) — тот самый
-  // файл, который уходит письмом. Пока его нет, печатаем страницу: в
-  // «Сохранить как PDF» умеют все браузеры, а @media print в style-v2.css
-  // убирает с листа шапку, футер и сами кнопки. Это не имитация PDF —
-  // человек получает документ, а не сообщение «скоро будет».
-  $('#kpDownload')?.addEventListener('click', () => {
-    if (pdfUrl) { window.open(pdfUrl, '_blank', 'noopener'); return; }
+  // Официальный документ — просто ссылка на файл с бэкенда. Ничего не
+  // собираем на фронте: подпись и печать ставит тот, кто их имеет право
+  // ставить. Если url не пришёл, кнопка выключена и сюда не попасть.
+  $('#kpDownloadSigned')?.addEventListener('click', () => {
+    if (!signedPdfUrl) return;
+    window.open(signedPdfUrl, '_blank', 'noopener');
+  });
+
+  // «Как на сайте» — печать текущей страницы: в «Сохранить как PDF» умеют
+  // все браузеры, а @media print в style-v2.css убирает с листа шапку,
+  // футер, плавающий круг и сами кнопки. Печати и подписи здесь нет и не
+  // будет — на это есть первая кнопка.
+  $('#kpDownloadPage')?.addEventListener('click', () => {
     window.print();
   });
 

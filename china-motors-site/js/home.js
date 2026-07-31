@@ -61,9 +61,33 @@ document.addEventListener('DOMContentLoaded', async () => {
     return tr('vp_price_on_request', '— по запросу');
   }
 
-  // primary=true заливает кнопку сигнальным красным — максимум у ОДНОЙ
-  // карточки, иначе красный размножается и перестаёт что-то значить.
-  // На главной primary уже занят кнопкой в hero, поэтому здесь его нет.
+  // Ссылка в калькулятор с подставленной техникой — те же параметры, что
+  // строят catalog.js и product.js. Держать их одинаковыми важнее, чем
+  // вынести в общий модуль: калькулятор читает строку запроса напрямую.
+  function calcHref(v) {
+    const title = [v.brand, v.model, v.body_type].filter(Boolean).join(' ').trim();
+    const p = new URLSearchParams();
+    p.set('id', v.id ?? '');
+    p.set('title', title);
+    p.set('price', v.price_usd ?? '');
+    p.set('price_cny', v.price_cny ?? '');
+    p.set('body', v.category || v.body_type || '');
+    p.set('body_raw', v.body_type || '');
+    p.set('weight', v.weight_t ?? '');
+    p.set('year', v.year ?? '');
+    return `calculator.html?${p.toString()}`;
+  }
+
+  // Карточка — тот же паспорт, что в каталоге, включая обе кнопки подвала.
+  // «ПОЛУЧИТЬ КП» залита сигнальным красным на каждой карточке: намеренное
+  // исключение из правила «один сигнальный красный в кадре» ради конверсии,
+  // записано в redesign-plan §1.1. На главной это значит, что в кадре
+  // «Популярной техники» четыре заливки, и hero со своим CTA сюда не
+  // попадает — они на разных экранах прокрутки.
+  //
+  // Корень — <article>, а не <a>: две настоящие кнопки не живут внутри
+  // ссылки. Переход на страницу техники даёт растянутая ссылка заголовка,
+  // как в каталоге.
   function vehicleCard(v) {
     const fullTitle = [v.brand, v.model, v.body_type].filter(Boolean).join(' ').trim()
       || tr('card_no_name', 'Техника');
@@ -78,7 +102,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const isFav = window.CMFavorites?.isFavorite(v.id);
 
     return `
-      <a class="vp" href="product.html?id=${v.id}">
+      <article class="vp">
         <div class="vp__media">
           ${img
             ? `<img src="${img}" alt="${fullTitle}" loading="lazy" decoding="async">`
@@ -91,7 +115,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         </div>
 
         <div class="vp__head">
-          <h3 class="vp__title">${title}</h3>
+          <h3 class="vp__title"><a class="vp__link" href="product.html?id=${v.id}">${title}</a></h3>
           ${sub ? `<div class="vp__sub">${sub}</div>` : ''}
         </div>
 
@@ -106,9 +130,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         <div class="vp__foot">
           <div class="vp__price-label" data-i18n="vp_price_label">ПОД КЛЮЧ В АЛМАТЫ</div>
           <div class="vp__price">${priceLine(v)}</div>
-          <span class="vp__cta" data-i18n="vp_cta">РАСЧЁТ ПОД КЛЮЧ</span>
+          <div class="vp__actions">
+            <a class="vp__cta vp__cta--kp" href="kp.html?id=${v.id}" data-i18n="vp_cta_kp">${tr('vp_cta_kp', 'ПОЛУЧИТЬ КП')}</a>
+            <a class="vp__cta" href="${calcHref(v)}" data-i18n="vp_cta">${tr('vp_cta', 'РАСЧЁТ ПОД КЛЮЧ')}</a>
+          </div>
         </div>
-      </a>`;
+      </article>`;
   }
 
   grid?.addEventListener('click', (e) => {
