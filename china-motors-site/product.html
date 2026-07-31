@@ -395,7 +395,11 @@
             Включая пошлину, НДС, сертификацию, доставку и учёт.
           </div>
 
-          <!-- Один primary на экран; второй уровень — обводка -->
+          <!-- Один primary на экран; второй уровень — обводка.
+               href подменяется в product.js на kp.html?id=… первым же делом,
+               ещё до запроса техники. Здесь стоит contacts.html как запасной
+               адрес на случай, если скрипт не выполнился вообще: он ведёт к
+               живому человеку, а kp.html без id вывел бы ошибку. -->
           <a id="btnRequest" href="contacts.html" class="v2-btn v2-btn--primary v2-btn--block"
              data-i18n="product_cta_kp">ПОЛУЧИТЬ КП ПО ЭТОЙ ТЕХНИКЕ</a>
           <a id="btnCalc" class="v2-btn v2-btn--secondary v2-btn--block"

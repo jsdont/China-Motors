@@ -1,6 +1,6 @@
 // Bump this on every deploy that changes a file listed in STATIC_ASSETS below —
 // cacheFirst() means old visitors never see updated JS/CSS until this changes.
-const CACHE_VERSION = 'v1.0.2';
+const CACHE_VERSION = 'v1.0.3';
 const STATIC_CACHE = `cm-static-${CACHE_VERSION}`;
 const PAGES_CACHE = `cm-pages-${CACHE_VERSION}`;
 
@@ -15,6 +15,8 @@ const STATIC_ASSETS = [
   '/js/catalog.js',
   '/js/calculator.js',
   '/js/contacts.js',
+  '/js/kp.js',
+  '/js/kp-mock.js',
   '/manifest.webmanifest',
   '/icons/icon-192.png',
   '/icons/icon-512.png'

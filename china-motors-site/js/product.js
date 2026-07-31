@@ -316,6 +316,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // === LOAD DATA ===
   async function load() {
+    // Адрес КП известен сразу — id стоит в строке запроса, ждать техники для
+    // него незачем. Ставим до запроса, чтобы кнопка не успела побыть ссылкой
+    // на contacts.html, пока идёт загрузка.
+    if (btnReq && id) btnReq.href = `kp.html?id=${encodeURIComponent(id)}`;
     try {
       const res = await fetch(`${API_BASE}/api/vehicles/${id}`, {
         headers: { 'Accept': 'application/json' }
@@ -399,12 +403,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (btnCalc) btnCalc.href = calcHref;
 
-      if (btnReq) {
-        btnReq.href =
-          `contacts.html?message=${encodeURIComponent(
-            `Запрос по технике:\n${title}\nЦена: ${fmtPrice(price.amount, price.currency)}`
-          )}`;
-      }
+      // КП больше не заявка менеджеру: кнопка ведёт на готовое предложение
+      // по этой технике. Прежний адрес — contacts.html с предзаполненным
+      // сообщением — означал «напишите нам, и через какое-то время вам
+      // ответят»; страница КП отдаёт документ сразу. Связаться с менеджером
+      // с самого КП по-прежнему можно.
+      if (btnReq) btnReq.href = `kp.html?id=${encodeURIComponent(v.id ?? id)}`;
 
 
     } catch (e) {

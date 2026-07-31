@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <!-- Yandex.Metrika counter -->
+  <script type="text/javascript">
+      (function(m,e,t,r,i,k,a){
+          m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+          m[i].l=1*new Date();
+          for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+          k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+      })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=110843946', 'ym');
+
+      ym(110843946, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+  </script>
+  <!-- /Yandex.Metrika counter -->
+  <meta name="api-base" content="https://cm-backend-daniyal.fly.dev">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO: заголовок и описание проставляет js/kp.js по технике.
+       Индексировать КП незачем — это документ под конкретную единицу
+       техники, а не страница каталога. -->
+  <meta name="robots" content="noindex, follow">
+  <title id="seoTitle" data-i18n="title_kp">China Motors — Коммерческое предложение</title>
+  <meta name="description" id="seoDescription" content="Коммерческое предложение China Motors">
+
+  <meta name="theme-color" content="#0b2b5a">
+  <link rel="icon" href="/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-title" content="China Motors">
+
+  <!-- Дизайн-система v2 «Груз в пути» — единственная таблица стилей сайта. -->
+  <link rel="stylesheet" href="style-v2.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&subset=cyrillic-ext&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&subset=cyrillic&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="v2">
+<noscript><div><img src="https://mc.yandex.ru/watch/110843946" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  <div id="siteHeader"></div>
+
+  <!-- Порядок разделов — ровно тот же, что в PDF-шаблоне компании
+       (core/kp.py, build_kp_pdf): шапка → продавец → предмет предложения с
+       фото и характеристиками → таблица количество/цена → расчёт под ключ →
+       условия и сроки поставки → сервис и гарантия. Человек, который держал
+       в руках бумажное КП China Motors, должен узнать документ. -->
+  <main class="v2-wrap kp" id="kpDoc" hidden>
+
+    <!-- ШАПКА ДОКУМЕНТА -->
+    <section class="v2-page-head kp__head fade-in">
+      <div class="v2-rule">
+        <span class="v2-rule__index">КП</span>
+        <span class="v2-rule__title" data-i18n="kp_rule_title">Коммерческое предложение</span>
+      </div>
+      <h1 class="v2-page-title v2-page-head__title" id="kpTitle">—</h1>
+
+      <div class="kp__meta">
+        <div class="kp__meta-item">
+          <span class="kp__meta-label" data-i18n="kp_meta_number">НОМЕР</span>
+          <span class="kp__meta-value num" id="kpNumber">—</span>
+        </div>
+        <div class="kp__meta-item">
+          <span class="kp__meta-label" data-i18n="kp_meta_date">ДАТА</span>
+          <span class="kp__meta-value num" id="kpDate">—</span>
+        </div>
+        <div class="kp__meta-item" id="kpBuyerWrap" hidden>
+          <span class="kp__meta-label" data-i18n="kp_meta_buyer">ПОКУПАТЕЛЬ</span>
+          <span class="kp__meta-value" id="kpBuyer">—</span>
+        </div>
+      </div>
+
+      <!-- Единственная заливка на экране — «СКАЧАТЬ PDF»: за этим человек
+           сюда и пришёл. «Поделиться» рядом обводкой. -->
+      <div class="kp__actions" id="kpActions">
+        <button type="button" class="v2-btn v2-btn--primary" id="kpDownload" data-i18n="kp_download">СКАЧАТЬ PDF</button>
+        <button type="button" class="v2-btn v2-btn--secondary" id="kpShare" data-i18n="kp_share">ПОДЕЛИТЬСЯ</button>
+        <span class="kp__toast" id="kpToast" role="status" aria-live="polite"></span>
+      </div>
+    </section>
+
+    <!-- ПРОДАВЕЦ -->
+    <section class="v2-panel v2-panel--pad kp__block fade-in">
+      <div class="v2-panel__head" data-i18n="kp_seller_head">ПРОДАВЕЦ</div>
+      <div class="kp__seller-name" id="kpSellerName">—</div>
+      <div class="v2-product__rows kp__rows" id="kpSellerRows"></div>
+    </section>
+
+    <!-- ПРЕДМЕТ ПРЕДЛОЖЕНИЯ -->
+    <section class="v2-panel v2-panel--pad kp__block fade-in">
+      <div class="v2-panel__head" data-i18n="kp_subject_head">ПРЕДМЕТ ПРЕДЛОЖЕНИЯ</div>
+
+      <div class="kp__subject">
+        <figure class="kp__photo" id="kpPhotoWrap">
+          <img id="kpPhoto" src="" alt="">
+        </figure>
+
+        <div class="kp__subject-body">
+          <h2 class="kp__subject-title" id="kpVehicleTitle">—</h2>
+          <p class="kp__subject-note" id="kpExtraInfo" hidden></p>
+
+          <!-- Таблица «количество / цена» — как в PDF: те же четыре колонки
+               в том же порядке. -->
+          <div class="kp__table-wrap">
+            <table class="kp__table">
+              <thead>
+                <tr>
+                  <th data-i18n="kp_col_qty">КОЛ-ВО</th>
+                  <th data-i18n="kp_col_usd">ЦЕНА, USD</th>
+                  <th data-i18n="kp_col_cny">ЦЕНА, CNY</th>
+                  <th data-i18n="kp_col_kzt">СУММА, ₸</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="num" id="kpQty">—</td>
+                  <td class="num" id="kpPriceUsd">—</td>
+                  <td class="num" id="kpPriceCny">—</td>
+                  <td class="num" id="kpPriceKzt">—</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="kp__avail" id="kpAvailability" hidden></p>
+        </div>
+      </div>
+
+      <div class="kp__specs">
+        <div class="kp__subhead" data-i18n="kp_specs_head">ХАРАКТЕРИСТИКИ</div>
+        <div class="v2-product__rows kp__rows" id="kpSpecs"></div>
+      </div>
+    </section>
+
+    <!-- РАСЧЁТ ПОД КЛЮЧ -->
+    <section class="v2-panel v2-panel--pad kp__block fade-in">
+      <div class="v2-panel__head" data-i18n="kp_breakdown_head">РАСЧЁТ СТОИМОСТИ ПОД КЛЮЧ</div>
+      <div id="kpBreakdown"></div>
+
+      <!-- Итог — асфальтовая плашка с шевронной лентой, как «Итого» на
+           калькуляторе: одно и то же число должно выглядеть одинаково. -->
+      <div class="kp__total" id="kpTotal">
+        <div class="kp__total-label" data-i18n="kp_total_label">ПОД КЛЮЧ В АЛМАТЫ</div>
+        <div class="kp__total-value num" id="kpTotalValue">—</div>
+        <div class="kp__total-alt num" id="kpTotalAlt"></div>
+        <div class="kp__total-note" data-i18n="kp_total_note">Это конечная сумма. Доплачивать сверху нечего.</div>
+      </div>
+    </section>
+
+    <!-- УСЛОВИЯ ПОСТАВКИ -->
+    <section class="v2-panel v2-panel--pad kp__block fade-in">
+      <div class="v2-panel__head" data-i18n="kp_terms_head">УСЛОВИЯ ПОСТАВКИ</div>
+      <div class="kp__terms" id="kpDeliveryTerms">—</div>
+      <div class="kp__subhead" data-i18n="kp_timeline_head">СРОКИ</div>
+      <ol class="kp__timeline" id="kpTimeline"></ol>
+    </section>
+
+    <!-- СЕРВИС И ГАРАНТИЯ -->
+    <section class="v2-panel v2-panel--pad kp__block fade-in" id="kpServiceBlock" hidden>
+      <div class="v2-panel__head" data-i18n="kp_service_head">СЕРВИС И ГАРАНТИЯ</div>
+      <p class="kp__service" id="kpService"></p>
+    </section>
+
+    <!-- ПОДВАЛ ДОКУМЕНТА: связаться с человеком. Кнопки обводкой — ведут
+         дальше по сайту, а не совершают действие этой страницы. -->
+    <section class="kp__foot fade-in">
+      <p class="kp__foot-note" data-i18n="kp_foot_note">Вопросы по предложению — позвоните или напишите, ответим по этому же КП.</p>
+      <div class="kp__foot-actions">
+        <a class="v2-btn v2-btn--secondary num" href="tel:+77776133731">+7 777 613 37 31</a>
+        <a class="v2-btn v2-btn--secondary" href="contacts.html" data-i18n="kp_foot_contacts">НАПИСАТЬ МЕНЕДЖЕРУ</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Состояние загрузки и ошибка — те же примитивы, что на остальных
+       страницах: человеку не показывают пустой экран. -->
+  <div class="v2-wrap kp__state" id="kpLoading">
+    <p class="kp__state-text" data-i18n="kp_loading">Готовим коммерческое предложение…</p>
+  </div>
+
+  <div class="v2-wrap kp__state" id="kpError" hidden>
+    <div class="v2-empty v2-empty--error">
+      <h2 class="v2-empty__title" data-i18n="kp_error_t">Не удалось собрать предложение</h2>
+      <p data-i18n="kp_error_d">Откройте страницу заново или позвоните — пришлём КП сами.</p>
+      <div class="v2-empty__actions">
+        <a class="v2-btn v2-btn--secondary" href="catalog.html" data-i18n="kp_error_catalog">В КАТАЛОГ</a>
+        <a class="v2-btn v2-btn--secondary num" href="tel:+77776133731">+7 777 613 37 31</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="siteFooter"></div>
+
+<!-- scripts -->
+<script src="js/common.js"></script>
+<script src="js/auth.js"></script>
+<!-- Моковые данные КП. Живут отдельным файлом ровно для того, чтобы
+     подключение бэкенда было удалением одного <script> и одного ветвления
+     в kp.js: форма объекта здесь — это форма будущего ответа /api/kp/<id>/. -->
+<script src="js/kp-mock.js"></script>
+<script src="js/kp.js"></script>
+
+</body>
+</html>
