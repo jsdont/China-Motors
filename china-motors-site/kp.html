@@ -71,12 +71,37 @@
         </div>
       </div>
 
-      <!-- Единственная заливка на экране — «СКАЧАТЬ PDF»: за этим человек
-           сюда и пришёл. «Поделиться» рядом обводкой. -->
+      <!-- Скачать можно двумя разными документами, и разница между ними не
+           косметическая, поэтому это две отдельные кнопки с подписями под
+           ними, а не одна кнопка с выпадающим списком: выбор из двух
+           неравнозначных файлов нельзя прятать за один клик.
+
+           Официальный (с печатью и подписью) собирает бэкенд — тот же
+           файл, что уходит письмом. Пока эндпоинта нет, кнопка стоит
+           выключенной с пометкой «скоро»: подменять её печатью страницы
+           значило бы отдать под видом подписанного документа неподписанный.
+
+           Заливку держит та кнопка, которая сейчас работает и является
+           предпочтительной. Пока официальной версии нет — это «как на
+           сайте»; когда бэкенд отдаст kp_pdf_url, kp.js передаст заливку
+           официальной, а эту переведёт в обводку. -->
       <div class="kp__actions" id="kpActions">
-        <button type="button" class="v2-btn v2-btn--primary" id="kpDownload" data-i18n="kp_download">СКАЧАТЬ PDF</button>
-        <button type="button" class="v2-btn v2-btn--secondary" id="kpShare" data-i18n="kp_share">ПОДЕЛИТЬСЯ</button>
-        <span class="kp__toast" id="kpToast" role="status" aria-live="polite"></span>
+        <div class="kp__dl">
+          <button type="button" class="v2-btn v2-btn--secondary is-disabled" id="kpDownloadSigned"
+                  disabled aria-describedby="kpDownloadSignedNote" data-i18n="kp_download_signed">СКАЧАТЬ С ПОДПИСЬЮ</button>
+          <span class="kp__dl-note" id="kpDownloadSignedNote" data-i18n="kp_download_signed_note">с печатью компании · скоро</span>
+        </div>
+
+        <div class="kp__dl">
+          <button type="button" class="v2-btn v2-btn--primary" id="kpDownloadPage"
+                  aria-describedby="kpDownloadPageNote" data-i18n="kp_download_page">СКАЧАТЬ КАК НА САЙТЕ</button>
+          <span class="kp__dl-note" id="kpDownloadPageNote" data-i18n="kp_download_page_note">эта страница, без печати</span>
+        </div>
+
+        <div class="kp__dl">
+          <button type="button" class="v2-btn v2-btn--secondary" id="kpShare" data-i18n="kp_share">ПОДЕЛИТЬСЯ</button>
+          <span class="kp__toast" id="kpToast" role="status" aria-live="polite"></span>
+        </div>
       </div>
     </section>
 

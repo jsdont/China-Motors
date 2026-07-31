@@ -3129,10 +3129,14 @@ body.v2 .vp__cta {
   transition: background .18s ease, color .18s ease, border-color .18s ease;
 }
 
-/* Заливка — максимум у одной карточки в сетке, иначе красный размножается.
-   Внутри этой карточки она достаётся КП: из двух действий оно короче —
-   отдаёт готовый документ, а не отправляет считать самому. */
-body.v2 .vp--primary .vp__cta--kp {
+/* Заливка на КАЖДОЙ карточке сетки — намеренное исключение из правила
+   «один сигнальный красный в кадре», принятое ради конверсии и записанное
+   в guidelines/redesign-plan.md §1.1. В кадре каталога таких заливок
+   бывает 4–8 одновременно, и это ожидаемое поведение, а не регрессия:
+   следующий замер не должен считать её нарушением.
+   Границы исключения — только `.vp__cta--kp` и только в сетке карточек.
+   На остальных экранах правило продолжает действовать как прежде. */
+body.v2 .vp__cta--kp {
   background: var(--signal-fill);
   color: var(--on-signal);
   border-color: var(--signal-fill);
@@ -3144,7 +3148,7 @@ body.v2 .vp--primary .vp__cta--kp {
    что сработает по клику. Отклик карточки на курсор остался — рамка и
    подъём на 2px выше. */
 .vp__cta:hover { background: var(--asphalt-900); color: var(--paper); border-color: var(--asphalt-900); }
-.vp--primary .vp__cta--kp:hover { background: var(--signal-fill-hover); border-color: var(--signal-fill-hover); color: var(--on-signal); }
+.vp__cta--kp:hover { background: var(--signal-fill-hover); border-color: var(--signal-fill-hover); color: var(--on-signal); }
 
 /* Избранное (favorites.js) осталось на прежней карточке: там .vp — это по-
    прежнему одна ссылка целиком, а .vp__cta внутри неё — <span>, не кнопка.
@@ -6011,12 +6015,50 @@ body.v2 .kp__meta-value {
   color: var(--asphalt-900);
 }
 
+/* align-items: start — подписи под кнопками разной длины, и по центру
+   кнопки бы разъехались по вертикали. */
 body.v2 .kp__actions {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 12px;
+  align-items: flex-start;
+  gap: 12px 16px;
   margin: 24px 0 8px;
+}
+
+/* Кнопка со своей подписью. Подпись объясняет, чем два скачивания
+   отличаются: без неё «с подписью» и «как на сайте» — загадка. */
+body.v2 .kp__dl {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* 26ch — чтобы самая длинная подпись («с печатью компании · скоро») встала
+   в одну строку и кнопки не разъезжались по высоте. Мера, а не nowrap: в
+   других языках подпись длиннее, и рвать её лучше по словам, чем упирать
+   в край. */
+body.v2 .kp__dl-note {
+  font: var(--v2-small);
+  color: var(--asphalt-400);
+  max-width: 26ch;
+}
+
+/* Выключенная кнопка. Не серая заливка, а приглушённая обводка: документа
+   пока нет, но кнопка — не поломка, поэтому она читается как «здесь будет»,
+   а не как «здесь сломалось». */
+body.v2 .v2-btn.is-disabled,
+body.v2 .v2-btn:disabled {
+  color: var(--asphalt-400);
+  border-color: var(--asphalt-200);
+  background: transparent;
+  cursor: not-allowed;
+}
+
+body.v2 .v2-btn.is-disabled:hover,
+body.v2 .v2-btn:disabled:hover {
+  color: var(--asphalt-400);
+  border-color: var(--asphalt-200);
+  background: transparent;
 }
 
 /* Подтверждение копирования. Не alert и не всплывашка поверх страницы:
@@ -6077,6 +6119,14 @@ body.v2 .kp__photo {
 }
 
 body.v2 .kp__photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* min-width: 0 — иначе элемент грида не может стать уже своего содержимого
+   (у элементов грида min-width по умолчанию auto), и `min-width: 380px`
+   таблицы цен распирает колонку до 380px внутри окна в 390px. Страница при
+   этом не прокручивается — `overflow-x: hidden` на body молча обрезает
+   правый край, и потеря заметна только замером. С нулём колонка сжимается,
+   а прокрутка достаётся самой таблице, как и задумано. */
+body.v2 .kp__subject-body { min-width: 0; }
 
 body.v2 .kp__subject-title {
   font-family: var(--type-display);
@@ -6287,7 +6337,11 @@ body.v2 .kp__state-text {
 }
 
 @media (max-width: 560px) {
-  body.v2 .kp__actions .v2-btn { flex: 1 1 100%; }
+  /* Растягивается пара «кнопка + подпись» целиком, а не кнопка внутри неё:
+     иначе подпись остаётся узкой колонкой сбоку от полноширинной кнопки. */
+  body.v2 .kp__dl { flex: 1 1 100%; }
+  body.v2 .kp__dl .v2-btn { width: 100%; }
+  body.v2 .kp__dl-note { max-width: none; }
   body.v2 .kp__foot-actions .v2-btn { flex: 1 1 100%; }
   body.v2 .kp__total-value { font-size: 24px; }
 }
