@@ -85,24 +85,6 @@
            предпочтительной. Пока официальной версии нет — это «как на
            сайте»; когда бэкенд отдаст kp_pdf_url, kp.js передаст заливку
            официальной, а эту переведёт в обводку. -->
-      <div class="kp__actions" id="kpActions">
-        <div class="kp__dl">
-          <button type="button" class="v2-btn v2-btn--secondary is-disabled" id="kpDownloadSigned"
-                  disabled aria-describedby="kpDownloadSignedNote" data-i18n="kp_download_signed">СКАЧАТЬ С ПОДПИСЬЮ</button>
-          <span class="kp__dl-note" id="kpDownloadSignedNote" data-i18n="kp_download_signed_note">с печатью компании · скоро</span>
-        </div>
-
-        <div class="kp__dl">
-          <button type="button" class="v2-btn v2-btn--primary" id="kpDownloadPage"
-                  aria-describedby="kpDownloadPageNote" data-i18n="kp_download_page">СКАЧАТЬ КАК НА САЙТЕ</button>
-          <span class="kp__dl-note" id="kpDownloadPageNote" data-i18n="kp_download_page_note">эта страница, без печати</span>
-        </div>
-
-        <div class="kp__dl">
-          <button type="button" class="v2-btn v2-btn--secondary" id="kpShare" data-i18n="kp_share">ПОДЕЛИТЬСЯ</button>
-          <span class="kp__toast" id="kpToast" role="status" aria-live="polite"></span>
-        </div>
-      </div>
     </section>
 
     <!-- ПРОДАВЕЦ -->
@@ -190,6 +172,24 @@
     <!-- ПОДВАЛ ДОКУМЕНТА: связаться с человеком. Кнопки обводкой — ведут
          дальше по сайту, а не совершают действие этой страницы. -->
     <section class="kp__foot fade-in">
+      <div class="kp__actions" id="kpActions">
+        <div class="kp__dl">
+          <button type="button" class="v2-btn v2-btn--secondary is-disabled" id="kpDownloadSigned"
+                  disabled aria-describedby="kpDownloadSignedNote" data-i18n="kp_download_signed">СКАЧАТЬ С ПОДПИСЬЮ</button>
+          <span class="kp__dl-note" id="kpDownloadSignedNote" data-i18n="kp_download_signed_note">с печатью компании · скоро</span>
+        </div>
+
+        <div class="kp__dl">
+          <button type="button" class="v2-btn v2-btn--primary" id="kpDownloadPage"
+                  aria-describedby="kpDownloadPageNote" data-i18n="kp_download_page">СКАЧАТЬ КАК НА САЙТЕ</button>
+          <span class="kp__dl-note" id="kpDownloadPageNote" data-i18n="kp_download_page_note">эта страница, без печати</span>
+        </div>
+
+        <div class="kp__dl">
+          <button type="button" class="v2-btn v2-btn--secondary" id="kpShare" data-i18n="kp_share">ПОДЕЛИТЬСЯ</button>
+          <span class="kp__toast" id="kpToast" role="status" aria-live="polite"></span>
+        </div>
+      </div>
       <p class="kp__foot-note" data-i18n="kp_foot_note">Вопросы по предложению — позвоните или напишите, ответим по этому же КП.</p>
       <div class="kp__foot-actions">
         <a class="v2-btn v2-btn--secondary num" href="tel:+77776133731">+7 777 613 37 31</a>
