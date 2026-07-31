@@ -210,10 +210,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Бэкенд отдаёт kp_pdf_url абсолютным — сайт и API на разных хостах, и
+  // относительный путь браузер разрешил бы от chinamotors.kz, где PDF нет.
+  // Относительную форму всё равно поддерживаем: она короче, её легко
+  // вернуть по недосмотру, и тогда ссылка обязана вести на API, а не на
+  // страницу.
+  function resolvePdfUrl(raw) {
+    if (!raw) return null;
+    if (/^https?:\/\//i.test(raw)) return raw;
+    return API_BASE + (raw.startsWith('/') ? raw : '/' + raw);
+  }
+
   function render(kp) {
     // Имя поля намеренно не pdf_url: «какой-то PDF» и «официальный
     // подписанный PDF» — разные вещи, и на странице теперь две кнопки.
-    signedPdfUrl = kp.kp_pdf_url || null;
+    signedPdfUrl = resolvePdfUrl(kp.kp_pdf_url);
     applyDownloadState();
     renderHead(kp);
     renderSeller(kp.seller || {});
