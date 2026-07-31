@@ -98,9 +98,15 @@
       <h1 class="v2-hero__title" data-i18n="hp_hero_h1">Спецтехника из Китая с ценой до тенге</h1>
       <p class="v2-hero__sub" data-i18n="hp_hero_sub">Считаем полную стоимость до Алматы: техника, пошлина, НДС, доставка, утильсбор, учёт. Без «доплатите потом».</p>
 
+      <!-- Первый шаг воронки — каталог, поэтому заливка стоит на нём. КП
+           теперь выдаётся сразу с карточки и со страницы техники, и путь
+           «главная → калькулятор → заявка → менеджер» перестал быть
+           коротким путём к цене: короткий путь идёт через каталог.
+           Калькулятор никуда не делся — он рядом обводкой, для тех, кто
+           хочет посчитать сам. -->
       <div class="v2-hero__cta">
-        <a href="calculator.html" class="v2-btn v2-btn--primary" data-i18n="hp_cta_price">Показать цену под ключ</a>
-        <a href="catalog.html" class="v2-btn v2-btn--ghost-light" data-i18n="hp_cta_catalog">Смотреть каталог →</a>
+        <a href="catalog.html" class="v2-btn v2-btn--primary v2-btn--pulse" data-i18n="hp_cta_catalog">Смотреть каталог →</a>
+        <a href="calculator.html" class="v2-btn v2-btn--ghost-light" data-i18n="hp_cta_price">Показать цену под ключ</a>
       </div>
     </div>
 

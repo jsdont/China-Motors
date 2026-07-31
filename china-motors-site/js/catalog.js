@@ -98,6 +98,28 @@ document.addEventListener('DOMContentLoaded', () => {
   // читаются как строки одного каталога-манифеста.
   const tr = (key, fallback) => (window.t ? window.t(key) : fallback) || fallback;
 
+  // Ссылка в калькулятор с уже подставленной техникой — те же параметры, что
+  // строит product.js для кнопки «РАЗОБРАТЬ ЦЕНУ ПО ШАГАМ». Раньше кнопка
+  // карточки никуда не вела: она лежала внутри общей ссылки карточки и
+  // открывала страницу техники, как и любое другое место карточки. Теперь
+  // это настоящая кнопка, и ей нужен собственный адрес.
+  // price отдаём в долларах — калькулятор ждёт именно их (price_cny — своим
+  // параметром); если цена в каталоге только в тенге, не передаём ничего и
+  // калькулятор открывается пустым, а не с тенге в поле долларов.
+  function calcHref(item) {
+    const v = item.raw || {};
+    const p = new URLSearchParams();
+    p.set('id', item.id ?? '');
+    p.set('title', item.title || '');
+    p.set('price', v.price_usd ?? '');
+    p.set('price_cny', v.price_cny ?? '');
+    p.set('body', item.bodyType || '');
+    p.set('body_raw', item.bodyRaw || '');
+    p.set('weight', v.weight_t ?? '');
+    p.set('year', item.year ?? '');
+    return `calculator.html?${p.toString()}`;
+  }
+
   // Ряды данных берём только те, по которым реально есть значение: пустой
   // ярлык с прочерком в паспорте хуже, чем отсутствие строки.
   // Ключ отдаём наружу, чтобы повесить data-i18n: тогда смена языка
@@ -121,6 +143,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // primary=true заливает кнопку сигнальным красным — максимум у ОДНОЙ
   // карточки в сетке, иначе красный размножается и перестаёт что-то значить.
+  // Заливку получает «ПОЛУЧИТЬ КП», а не «РАСЧЁТ ПОД КЛЮЧ»: из двух действий
+  // карточки КП теперь короче — оно отдаёт готовый документ сразу, тогда как
+  // расчёт ведёт в калькулятор считать самому.
+  //
+  // Карточка перестала быть одним <a>. Двум настоящим кнопкам в подвале
+  // некуда встать внутри ссылки — вложенные <a> невалидны и браузеры рвут
+  // такое дерево. Поэтому корень теперь <article>, а переход на страницу
+  // техники даёт растянутая ссылка на заголовке (.vp__link::after перекрывает
+  // карточку целиком). Побочно чинится и то, что было раньше: кнопка
+  // избранного стояла внутри <a>, чего HTML тоже не разрешает.
   function cardHTML(item, primary) {
     const isFav = window.CMFavorites?.isFavorite(item.id);
     const v = item.raw || {};
@@ -132,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
       : tr('vp_price_on_request', '— по запросу');
 
     return `
-      <a class="vp${primary ? ' vp--primary' : ''}" href="product.html?id=${item.id}">
+      <article class="vp${primary ? ' vp--primary' : ''}">
         <div class="vp__media">
           ${mediaHTML(item.image, item.title)}
           ${v.city ? `<span class="vp__tag vp__tag--place">${v.city}</span>` : ''}
@@ -143,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <div class="vp__head">
-          <h3 class="vp__title">${title}</h3>
+          <h3 class="vp__title"><a class="vp__link" href="product.html?id=${item.id}">${title}</a></h3>
           ${sub ? `<div class="vp__sub">${sub}</div>` : ''}
         </div>
 
@@ -163,9 +195,12 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="vp__foot">
           <div class="vp__price-label" data-i18n="vp_price_label">ПОД КЛЮЧ В АЛМАТЫ</div>
           <div class="vp__price">${price}</div>
-          <span class="vp__cta" data-i18n="vp_cta">РАСЧЁТ ПОД КЛЮЧ</span>
+          <div class="vp__actions">
+            <a class="vp__cta vp__cta--kp" href="kp.html?id=${item.id}" data-i18n="vp_cta_kp">${tr('vp_cta_kp', 'ПОЛУЧИТЬ КП')}</a>
+            <a class="vp__cta" href="${calcHref(item)}" data-i18n="vp_cta">${tr('vp_cta', 'РАСЧЁТ ПОД КЛЮЧ')}</a>
+          </div>
         </div>
-      </a>
+      </article>
     `;
   }
 

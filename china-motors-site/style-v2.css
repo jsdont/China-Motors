@@ -41,6 +41,11 @@
   /* --- СИГНАЛ · «действие / вы здесь». Максимум два в кадре -------------- */
   --signal-500: #E1281F;
   --signal-600: #B81F19;
+  /* Ореол пульсации CTA. Отдельно от --signal-tint (10%) намеренно: tint
+     рассчитан на светлый бетон и под активный узел рейки, а этот ореол
+     расходится вокруг заливки на асфальте hero — на 10% его там не видно
+     вообще. Значение одно на обе темы: hero в обеих тёмный. */
+  --signal-halo: rgba(225, 40, 31, 0.34);
   /* Заливка кнопки отдельно: --signal-500 в тёмной теме светлеет ради
      читаемости текста, а заливка обязана остаться фирменной. */
   --signal-fill: #E1281F;
@@ -177,6 +182,7 @@ html.dark {
   --signal-fill: #E1281F;
   --signal-fill-hover: #B81F19;
   --on-signal: #FFFFFF;
+  --signal-halo: rgba(255, 90, 79, 0.30);
 
   --hazard-tint: rgba(245, 165, 36, 0.20);   /* сам hazard на тёмном 8,9:1 — как есть */
 
@@ -2921,6 +2927,33 @@ body.v2 .vp {
   position: relative;
 }
 
+/* Растянутая ссылка. Карточка — <article>, а не <a>: в подвале стоят две
+   настоящие кнопки, а вложенные <a> невалидны. Переход на страницу техники
+   даёт ::after заголовка, перекрывающий карточку целиком, — для мыши всё
+   осталось как было, а для клавиатуры и скринридера в табуляции теперь одна
+   осмысленная ссылка с названием техники вместо ссылки на всю карточку. */
+body.v2 .vp__link {
+  color: inherit;
+  text-decoration: none;
+}
+
+body.v2 .vp__link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* Всё, что кликается само, живёт над перекрытием. */
+body.v2 .vp__fav,
+body.v2 .vp__actions { position: relative; z-index: 1; }
+
+/* Фокус видно на всей карточке, а не на строке заголовка: перекрытие
+   растянуто на неё целиком, и обводка вокруг текста показывала бы не ту
+   область, которая на самом деле сработает. */
+body.v2 .vp__link:focus-visible { outline: none; }
+body.v2 .vp:has(.vp__link:focus-visible) { outline: 2px solid var(--asphalt-900); outline-offset: 2px; }
+
 /* Подъём на 2px — ровно столько, чтобы карточка отзывалась на курсор, и не
    столько, чтобы сетка каталога ходила ходуном. Тот же жест, что у
    .hp-route__step, только тише: там карточек шесть, здесь — вся выдача. */
@@ -3066,6 +3099,16 @@ body.v2 .vp__price {
   white-space: nowrap;
 }
 
+/* Две кнопки в столбик, а не в ряд. В ряд они помещались бы только на
+   широкой карточке: сетка держит колонку от 240px, и «ПОЛУЧИТЬ КП» рядом с
+   «РАСЧЁТ ПОД КЛЮЧ» на такой ширине рвёт nowrap. Столбик заодно повторяет
+   порядок на странице техники — КП сверху, разбор цены под ним. */
+body.v2 .vp__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 body.v2 .vp__cta {
   display: flex;
   align-items: center;
@@ -3077,6 +3120,7 @@ body.v2 .vp__cta {
   font-size: 11px;
   letter-spacing: var(--ls-mono-btn);
   text-transform: uppercase;
+  text-decoration: none;
   border-radius: var(--radius-4);
   white-space: nowrap;
   background: transparent;
@@ -3085,15 +3129,31 @@ body.v2 .vp__cta {
   transition: background .18s ease, color .18s ease, border-color .18s ease;
 }
 
-/* Заливка — максимум у одной карточки в сетке, иначе красный размножается. */
-body.v2 .vp--primary .vp__cta {
+/* Заливка — максимум у одной карточки в сетке, иначе красный размножается.
+   Внутри этой карточки она достаётся КП: из двух действий оно короче —
+   отдаёт готовый документ, а не отправляет считать самому. */
+body.v2 .vp--primary .vp__cta--kp {
   background: var(--signal-fill);
   color: var(--on-signal);
   border-color: var(--signal-fill);
 }
 
-.vp:hover .vp__cta { background: var(--asphalt-900); color: var(--paper); }
-.vp--primary:hover .vp__cta { background: var(--signal-fill-hover); border-color: var(--signal-fill-hover); color: var(--on-signal); }
+/* Ховер повешен на саму кнопку, а не на карточку. Пока кнопка была одна,
+   `.vp:hover .vp__cta` читалось как «карточка кликабельна»; с двумя
+   кнопками тот же селектор подсвечивал бы обе разом и показывал бы не то,
+   что сработает по клику. Отклик карточки на курсор остался — рамка и
+   подъём на 2px выше. */
+.vp__cta:hover { background: var(--asphalt-900); color: var(--paper); border-color: var(--asphalt-900); }
+.vp--primary .vp__cta--kp:hover { background: var(--signal-fill-hover); border-color: var(--signal-fill-hover); color: var(--on-signal); }
+
+/* Избранное (favorites.js) осталось на прежней карточке: там .vp — это по-
+   прежнему одна ссылка целиком, а .vp__cta внутри неё — <span>, не кнопка.
+   Разводить КП по избранному в эту задачу не входило, поэтому прежний жест
+   «наведение на карточку заливает её единственную кнопку» сохраняется ровно
+   для той формы. Селектор `a.vp` не заденет карточку каталога — она теперь
+   <article>. Когда избранное переедет на две кнопки, правило уйдёт вместе с
+   последней карточкой-ссылкой. */
+a.vp:hover .vp__cta { background: var(--asphalt-900); color: var(--paper); }
 
 /* ============================================================================
    10. КАТАЛОГ · фильтры
@@ -3267,6 +3327,41 @@ body.v2 .v2-btn--secondary {
 }
 
 .v2-btn--secondary:hover { background: var(--asphalt-900); color: var(--paper); }
+
+/* Пульсирующий ореол у единственного CTA экрана — тот же жест, что у
+   активного узла рейки (§25), и сделан теми же средствами: расходящееся
+   кольцо в ::after, сама кнопка не движется и не мигает. Заливка, текст и
+   рамка при любых условиях остаются на месте, поэтому без анимации
+   (prefers-reduced-motion, старый браузер) кнопка выглядит ровно как
+   обычный primary — это не декор, который что-то держит.
+
+   Отличие от узла рейки одно: у узла есть статичный ореол 4px, от кромки
+   которого кольцо и расходится. У кнопки статичного ореола нет — иначе
+   вокруг заливки появилось бы постоянное красное гало 4px, а это второе
+   красное пятно там, где по правилу разрешено одно. Кольцо стартует от
+   самой кромки кнопки.
+
+   Ставится вручную классом, а не на все .v2-btn--primary: primary есть на
+   каждой странице, а «дышать» должен ровно один CTA — тот, на который
+   страница действительно ведёт. */
+body.v2 .v2-btn--pulse { position: relative; }
+
+body.v2 .v2-btn--pulse::after {
+  content: "";
+  position: absolute;
+  inset: -1.5px;                 /* поверх рамки: кольцо идёт от края заливки */
+  border-radius: var(--radius-4);
+  pointer-events: none;
+  animation: v2-btn-pulse 2.2s ease-out infinite;
+}
+
+/* Стартовая непрозрачность 0 — как у узла рейки: в момент перезапуска цикла
+   кольцо не накладывается само на себя и кромка не темнеет раз в 2,2 с. */
+@keyframes v2-btn-pulse {
+  0%   { box-shadow: 0 0 0 0 var(--signal-halo);  opacity: 0; }
+  20%  { opacity: 1; }
+  100% { box-shadow: 0 0 0 12px var(--signal-halo); opacity: 0; }
+}
 
 /* ============================================================================
    13. ШАПКА СТРАНИЦЫ КАТАЛОГА
@@ -5871,6 +5966,383 @@ body.v2 .privacy-container a:hover { color: var(--signal-500); }
    так же названа ведомость «как проходит покупка» в колонке 420px. Правила
    таблицы теперь адресованы самому элементу table, иначе они растягивали
    ведомость шире её колонки, и та обрезалась `overflow-x: hidden`. */
+
+/* ============================================================================
+   23. КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ (kp.html)
+
+   Страница ведёт себя как документ, а не как лендинг: разделы идут в том же
+   порядке, что в PDF-шаблоне компании (core/kp.py), ярлыки моноширинные
+   капсом, все суммы — табличными цифрами по правому краю. Человек, который
+   получал бумажное КП, должен узнать бумагу.
+
+   Красное здесь ровно одно — «СКАЧАТЬ PDF». Всё остальное (поделиться,
+   телефон, «написать менеджеру») ведёт дальше по сайту и стоит обводкой:
+   правило «один сигнальный красный — одно действие».
+   ============================================================================ */
+body.v2 .kp {
+  padding-bottom: var(--space-96);
+  max-width: 900px;   /* мера строки документа: 1240px читается как таблица */
+}
+
+body.v2 .kp__head { padding-bottom: 0; }
+
+/* Реквизиты шапки — в строку на просторе, в столбик на телефоне. */
+body.v2 .kp__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 40px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: var(--rule-heavy);
+}
+
+body.v2 .kp__meta-item { display: flex; flex-direction: column; gap: 4px; }
+
+body.v2 .kp__meta-label {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--asphalt-400);
+}
+
+body.v2 .kp__meta-value {
+  font: var(--v2-data);
+  font-variant-numeric: tabular-nums;
+  color: var(--asphalt-900);
+}
+
+body.v2 .kp__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0 8px;
+}
+
+/* Подтверждение копирования. Не alert и не всплывашка поверх страницы:
+   строка рядом с кнопкой, которая гаснет сама. role="status" в разметке —
+   значит скринридер её тоже произнесёт. */
+body.v2 .kp__toast {
+  font: var(--v2-small);
+  color: var(--clear-600);
+  opacity: 0;
+  transition: opacity .18s ease;
+}
+
+body.v2 .kp__toast.is-on { opacity: 1; }
+
+body.v2 .kp__block { margin-top: 24px; }
+
+body.v2 .kp__seller-name {
+  font-family: var(--type-display);
+  font-weight: 600;
+  font-size: var(--fs-20);
+  line-height: 1.2;
+  letter-spacing: var(--ls-display);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+/* Реквизиты и характеристики — длинные значения (адрес банка, SWIFT), и
+   nowrap из .vp__row-value их бы обрезал. Здесь значение переносится, а
+   выравнивание по правому краю сохраняется. */
+body.v2 .kp__rows .vp__row-value {
+  white-space: normal;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+body.v2 .kp__rows .vp__row-label { flex: 0 0 auto; }
+
+body.v2 .kp__subject {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* Техника без снимка — обычное дело в каталоге, и на КП это не должно
+   ломать раскладку. Скрытая <figure> выпадает из потока грида, описание
+   становится ПЕРВЫМ элементом и садится в колонку 280px, отведённую под
+   фото: таблица цен уезжает в горизонтальную прокрутку на пустом месте.
+   Поэтому без фото колонка одна. */
+body.v2 .kp__subject:has(.kp__photo[hidden]) { grid-template-columns: 1fr; }
+
+body.v2 .kp__photo {
+  margin: 0;
+  border: var(--rule-hair);
+  background: var(--asphalt-100);
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+body.v2 .kp__photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+body.v2 .kp__subject-title {
+  font-family: var(--type-display);
+  font-weight: 600;
+  font-size: var(--fs-20);
+  line-height: 1.15;
+  letter-spacing: var(--ls-display);
+  word-spacing: 0.06em;
+  text-transform: uppercase;
+  margin: 0 0 8px;
+}
+
+body.v2 .kp__subject-note {
+  font: var(--v2-body);
+  color: var(--asphalt-500);
+  margin: 0 0 16px;
+}
+
+body.v2 .kp__avail {
+  font: var(--v2-small);
+  color: var(--clear-600);
+  margin: 12px 0 0;
+}
+
+/* Таблица «количество / цена» скроллится внутри себя, а не растягивает
+   страницу: четыре колонки с суммами на 390px иначе не помещаются. */
+body.v2 .kp__table-wrap { overflow-x: auto; }
+
+body.v2 .kp__table {
+  width: 100%;
+  min-width: 380px;
+  border-collapse: collapse;
+}
+
+body.v2 .kp__table th {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--v2-text-on-dark);
+  background: var(--asphalt-700);
+  text-align: right;
+  padding: 9px 12px;
+  white-space: nowrap;
+}
+
+body.v2 .kp__table th:first-child,
+body.v2 .kp__table td:first-child { text-align: center; }
+
+body.v2 .kp__table td {
+  font: var(--v2-data);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  padding: 12px;
+  border-bottom: var(--rule-hair);
+  white-space: nowrap;
+}
+
+body.v2 .kp__specs { margin-top: 26px; }
+
+body.v2 .kp__subhead {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--asphalt-400);
+  margin-bottom: 8px;
+}
+
+/* --- Разбивка расчёта ---------------------------------------------------- */
+/* Группа = точка маршрута, где уходят деньги. Та же нарезка, что в
+   CostBreakdown на калькуляторе, и те же подписи строк: одно и то же число
+   не должно называться в двух местах по-разному. */
+body.v2 .kp__group { margin-bottom: 22px; }
+body.v2 .kp__group:last-child { margin-bottom: 0; }
+
+body.v2 .kp__group-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0 0 4px;
+  padding-bottom: 8px;
+  border-bottom: var(--rule-heavy);
+}
+
+body.v2 .kp__group-n {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  color: var(--signal-500);
+}
+
+body.v2 .kp__group-title {
+  font-family: var(--type-display);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: var(--ls-display);
+  text-transform: uppercase;
+  flex: 1 1 auto;
+}
+
+body.v2 .kp__group-sum {
+  font: var(--v2-data);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Подписи строк расхода — предложения, а не ярлыки полей: капс и трекинг
+   ярлыка на них не ставим, иначе «Утилизационный сбор (25 т)» читается по
+   складам. */
+body.v2 .kp__row-label {
+  font: var(--v2-body);
+  color: var(--asphalt-500);
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+/* Итог — асфальтовая плашка с шевронной лентой по верхней кромке, как
+   «Итого» на калькуляторе. Одно из двух мест в системе, где лента вообще
+   появляется. */
+body.v2 .kp__total {
+  margin-top: 26px;
+  padding: 22px 24px 24px;
+  background: var(--v2-panel-dark);
+  border-top: 6px solid transparent;
+  border-image: var(--hazard-chevron) 6;
+}
+
+body.v2 .kp__total-label {
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--v2-text-on-dark-secondary);
+}
+
+body.v2 .kp__total-value {
+  font: var(--v2-price);
+  font-variant-numeric: tabular-nums;
+  color: var(--v2-text-on-dark);
+  margin: 6px 0 4px;
+}
+
+body.v2 .kp__total-alt {
+  font: var(--v2-data);
+  font-variant-numeric: tabular-nums;
+  color: var(--v2-text-on-dark-secondary);
+  white-space: pre-wrap;
+}
+
+body.v2 .kp__total-note {
+  font: var(--v2-small);
+  color: var(--v2-text-on-dark-secondary);
+  margin-top: 10px;
+}
+
+/* --- Условия и сроки ----------------------------------------------------- */
+body.v2 .kp__terms {
+  font: var(--v2-body-lg);
+  font-weight: 600;
+  color: var(--asphalt-900);
+  margin-bottom: 20px;
+}
+
+body.v2 .kp__timeline { margin: 0; padding: 0; list-style: none; counter-reset: kp-step; }
+
+body.v2 .kp__timeline-item {
+  position: relative;
+  counter-increment: kp-step;
+  padding: 11px 0 11px 40px;
+  border-bottom: var(--rule-hair);
+  font: var(--v2-body);
+  color: var(--asphalt-700);
+}
+
+body.v2 .kp__timeline-item:last-child { border-bottom: 0; }
+
+/* Номер шага — моно табличными, чтобы двузначные не сдвигали текст. */
+body.v2 .kp__timeline-item::before {
+  content: counter(kp-step, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 12px;
+  font: var(--v2-label);
+  letter-spacing: var(--ls-mono-label);
+  font-variant-numeric: tabular-nums;
+  color: var(--asphalt-400);
+}
+
+body.v2 .kp__service { font: var(--v2-body); color: var(--asphalt-700); margin: 0; }
+
+body.v2 .kp__foot { margin-top: 32px; padding-top: 24px; border-top: var(--rule-heavy); }
+
+body.v2 .kp__foot-note { font: var(--v2-body); color: var(--asphalt-500); margin: 0 0 16px; }
+
+body.v2 .kp__foot-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
+body.v2 .kp__state { padding: 64px 0 96px; }
+
+body.v2 .kp__state-text {
+  font: var(--v2-body-lg);
+  color: var(--asphalt-500);
+}
+
+@media (max-width: 720px) {
+  /* Фото уходит наверх во всю ширину: на телефоне колонка 280px съедала
+     больше половины строки, и характеристики набирались в два слова. */
+  body.v2 .kp__subject { grid-template-columns: 1fr; }
+  body.v2 .kp__photo { max-width: 380px; }
+  body.v2 .kp__meta { gap: 12px 28px; }
+}
+
+@media (max-width: 560px) {
+  body.v2 .kp__actions .v2-btn { flex: 1 1 100%; }
+  body.v2 .kp__foot-actions .v2-btn { flex: 1 1 100%; }
+  body.v2 .kp__total-value { font-size: 24px; }
+}
+
+/* ============================================================================
+   ПЕЧАТЬ КП
+   «Скачать PDF» до появления эндпоинта печатает страницу, и лист должен
+   выглядеть документом, а не скриншотом сайта: с него уходят шапка, футер,
+   плавающий круг связи и сами кнопки — нажать их на бумаге нельзя.
+   Правила ограничены телом КП: печать остальных страниц сайта не трогаем.
+   ============================================================================ */
+@media print {
+  /* .v2-dial-wrap — весь плавающий блок целиком: и круг связи, и кнопка
+     размера шрифта. Скрывать .v2-dial отдельно недостаточно, это только
+     круг, а «A+» остаётся стоять поверх характеристик. */
+  body.v2 #siteHeader,
+  body.v2 #siteFooter,
+  body.v2 .kp__actions,
+  body.v2 .kp__foot-actions,
+  body.v2 .v2-dial-wrap { display: none !important; }
+
+  /* Печатаем на белом при любой теме: тёмная заливка съедает картридж, а
+     светлый бетон фона страницы на бумаге выходит грязно-серой заливкой
+     под всем документом. Документ печатается чёрным по белому. */
+  html, body.v2,
+  html.dark, html.dark body.v2 { background: #fff; }
+
+  body.v2 .kp { max-width: none; padding: 0; }
+
+  body.v2 .kp__block {
+    border: 0;
+    padding: 0;
+    margin-top: 18px;
+    /* Раздел не разрывается между листами, если помещается целиком. */
+    break-inside: avoid;
+  }
+
+  body.v2 .kp__group { break-inside: avoid; }
+
+  /* Итог на бумаге — рамкой, а не заливкой: та же роль, без сплошного
+     чёрного прямоугольника на весь лист. */
+  body.v2 .kp__total {
+    background: transparent;
+    border: 2px solid #16181C;
+    border-top: 6px solid #16181C;
+    border-image: none;
+  }
+
+  body.v2 .kp__total-label,
+  body.v2 .kp__total-value,
+  body.v2 .kp__total-alt,
+  body.v2 .kp__total-note { color: #16181C; }
+
+  body.v2 .kp__table th { background: transparent; color: #16181C; border-bottom: 2px solid #16181C; }
+}
 
 /* ============================================================================
    PREFERS-REDUCED-MOTION
