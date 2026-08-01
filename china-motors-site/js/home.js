@@ -44,6 +44,93 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  /* ---------- Видео в hero -------------------------------------------- */
+  // Живой кадр площадки поверх фотографии. Правило одно: фотография
+  // остаётся на экране, пока видео не доказало, что играет. Она и фон
+  // секции (.hp-hero), и постер элемента; видео лежит поверх прозрачным.
+  // Поэтому у отказов нет отдельных веток — не запустилось, ничего не
+  // проявилось. Каждый `video.remove()` ниже читается как «остаёмся с
+  // фотографией».
+  function initHeroVideo() {
+    const video = document.querySelector('.v2-hero__video');
+    if (!video) return;
+
+    const src = (video.dataset.src || '').trim();
+    if (!src) { video.remove(); return; }            // файла ещё нет
+
+    // «Меньше движения» — требование, а не пожелание: видео не должно ни
+    // запускаться, ни загружаться.
+    const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (reduced && reduced.matches) { video.remove(); return; }
+
+    // Проверка намеренно грубая, без codecs="avc1...": точную строку
+    // профиля браузеры отдают осторожно и иногда отвечают пустой строкой
+    // на то, что на деле играют. Ложный отказ здесь хуже лишней попытки —
+    // то, что не декодировалось, снимет обработчик error.
+    if (!video.canPlayType || !video.canPlayType('video/mp4')) { video.remove(); return; }
+
+    // playing, а не canplay: до первого показанного кадра проявлять нечего.
+    video.addEventListener('playing', () => video.classList.add('is-playing'), { once: true });
+    video.addEventListener('error', () => video.remove(), { once: true });
+
+    // Порог по downlink, а не по effectiveType: замер показал, что канал
+    // 1.6 Мбит/с с задержкой 150 мс браузер всё равно называет «4g».
+    // 4 Мбит/с — примерно четыре секунды на полуторамегабайтный файл;
+    // ниже видео начинает соперничать за канал с фотографиями каталога.
+    const MIN_DOWNLINK_MBPS = 4;
+    const linkTooSlow = () => {
+      const c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      if (!c) return false;                          // нет данных — не мешаем
+      if (c.saveData) return true;
+      if (/^(slow-)?2g$|^3g$/.test(c.effectiveType || '')) return true;
+      return typeof c.downlink === 'number' && c.downlink > 0 && c.downlink < MIN_DOWNLINK_MBPS;
+    };
+
+    const start = () => {
+      // Канал проверяем здесь, а не наверху: navigator.connection оценивает
+      // его по недавно прошедшему трафику, и к этому моменту страница уже
+      // прокачала через себя стили, шрифты и фотографию героя — оценке есть
+      // на чём стоять, тогда как на DOMContentLoaded она ещё оптимистична.
+      if (linkTooSlow()) { video.remove(); return; }
+      video.src = src;
+      // play() отклоняется, если автовоспроизведение запрещено политикой
+      // браузера или режимом энергосбережения. Это не ошибка страницы.
+      const p = video.play();
+      if (p && typeof p.catch === 'function') p.catch(() => video.remove());
+    };
+
+    // Ждём load, потом простоя: фотография героя — LCP-ресурс страницы, и
+    // запрос за видео не должен стоять с ней в одной очереди.
+    const afterLoad = () => {
+      if (window.requestIdleCallback) window.requestIdleCallback(start, { timeout: 1500 });
+      else setTimeout(start, 300);
+    };
+    if (document.readyState === 'complete') afterLoad();
+    else window.addEventListener('load', afterLoad, { once: true });
+
+    // Пока hero не на экране, крутить кадры незачем — это работа декодера и
+    // расход батареи на всю длину страницы. Наблюдатель свой и со счётчиками
+    // (cmCountUp) не пересекается: те следят за числами внутри hero и
+    // отключаются после первого срабатывания, этот следит за самим видео.
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (!video.src) return;
+          if (e.isIntersecting) { const p = video.play(); if (p && p.catch) p.catch(() => {}); }
+          else video.pause();
+        });
+      }, { threshold: 0.01 }).observe(video);
+    }
+
+    // Возврат на вкладку: браузер сам паузу не снимает.
+    document.addEventListener('visibilitychange', () => {
+      if (!video.src || !video.paused) return;
+      if (!document.hidden && video.getBoundingClientRect().bottom > 0) {
+        const p = video.play(); if (p && p.catch) p.catch(() => {});
+      }
+    });
+  }
+
   /* ---------- Карточка техники — тот же паспорт, что в каталоге -------- */
   function passportRows(v) {
     return [
@@ -147,8 +234,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     btn.classList.toggle('active', nowFav);
     const icon = btn.querySelector('i');
     if (icon) icon.className = `fa-${nowFav ? 'solid' : 'regular'} fa-bookmark`;
+    window.cmBump?.(btn);
   });
 
+  initHeroVideo();
   fillRate();
 
   try {
@@ -164,6 +253,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       grid.innerHTML = preview.length
         ? preview.map(vehicleCard).join('')
         : `<div class="v2-empty"><p>${tr('hp_vehicles_empty', 'Пока нет доступной техники в каталоге.')}</p></div>`;
+      // Карточки приходят из сети — статичная регистрация в common.js их не
+      // застала. Проявляем лесенкой, тем же наблюдателем, что и секции.
+      window.cmReveal?.(grid.querySelectorAll('.vp'));
     }
   } catch (e) {
     if (grid) {

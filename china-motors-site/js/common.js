@@ -2092,6 +2092,169 @@
   }
   window.cmScrollIntoView = cmScrollIntoView;
 
+  /* =====================
+     SCROLL-REVEAL (секции и карточки проявляются при подходе к ним)
+     =====================
+     Та же техника, что у счётчиков: IntersectionObserver, disconnect после
+     первого срабатывания, никакого повторного проигрывания при прокрутке
+     назад. Отличия — по существу задачи:
+
+       • Прячущий класс .cm-reveal вешает JS, а не разметка. Это главное
+         решение всего блока: без JS (или если он упал на строке выше)
+         текст остаётся на экране, а не пропадает навсегда. Разметка,
+         которая прячет контент сама, такой гарантии не даёт.
+       • prefers-reduced-motion — выходим до того, как что-то спрятали.
+         Не «спрятали и сразу показали», а вообще не трогали DOM.
+       • Соседи в одной пачке проявляются лесенкой (--cm-reveal-delay),
+         чтобы сетка каталога не вспыхивала целиком.
+       • Аварийный таймер снимает скрытие со всего, что по любой причине
+         не дождалось наблюдателя (элемент в свёрнутом блоке, вкладка
+         открыта в фоне и IO не сработал, зум/скролл-контейнер). Контент
+         не должен зависеть от того, отработала анимация или нет. */
+  const REVEAL_STAGGER_MS  = 70;   // 60–80ms между соседями
+  const REVEAL_STAGGER_MAX = 6;    // не длиннее ~420ms на всю пачку
+  const REVEAL_SAFETY_MS   = 2000; // после этого показываем всё безусловно
+  const revealSeen = new WeakSet();
+  let revealObserver = null;
+  let revealSafety = null;
+
+  function revealNow(el) {
+    el.style.removeProperty('--cm-reveal-delay');
+    el.classList.remove('cm-reveal');
+    el.classList.add('cm-reveal--in');
+  }
+
+  // Показать всё, что ещё висит спрятанным, и больше не прятать.
+  function cmRevealAll() {
+    if (revealObserver) { revealObserver.disconnect(); revealObserver = null; }
+    document.querySelectorAll('.cm-reveal').forEach(revealNow);
+  }
+
+  function getRevealObserver() {
+    if (revealObserver) return revealObserver;
+    revealObserver = new IntersectionObserver((entries, obs) => {
+      const late = [];   // проехали мимо — показать сразу, без лесенки
+      const shown = [];  // вошли в кадр — показать лесенкой
+
+      entries.forEach((e) => {
+        if (e.isIntersecting) { shown.push(e); return; }
+        // Быстрая прокрутка. Наблюдатель отдаёт последнее посчитанное
+        // состояние, а не всю историю: если элемент успел войти в кадр и
+        // выйти между двумя доставками, сюда придёт «не виден», и элемент
+        // остался бы спрятанным до аварийного таймера. Отрицательный
+        // bottom означает, что он уже ушёл ВВЕРХ, то есть его пролистали, —
+        // проявлять его плавно поздно, надо просто показать.
+        if (e.boundingClientRect.bottom < 0) late.push(e);
+      });
+
+      late.forEach((e) => { obs.unobserve(e.target); revealNow(e.target); });
+
+      // Порядок появления — сверху вниз по документу, а не в том порядке,
+      // в котором наблюдатель отдал записи: иначе лесенка идёт вразнобой.
+      // Координату берём из самой записи (e.boundingClientRect), а не через
+      // getBoundingClientRect(): вызов из обработчика заставляет браузер
+      // пересчитать раскладку немедленно, и на пачке из десятка карточек
+      // это выливается в заметную задержку на слабом процессоре. Наблюдатель
+      // уже посчитал этот прямоугольник — второй раз он не нужен.
+      shown.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+      shown.forEach((e, i) => {
+        obs.unobserve(e.target);
+        // Лесенка ограничена REVEAL_STAGGER_MAX ступенями. Без ограничения
+        // одна пачка на два десятка элементов (широкий экран, быстрая
+        // прокрутка, вся сетка каталога разом) растягивала бы проявление
+        // последней карточки почти на полторы секунды — человек успевает
+        // дочитать блок раньше, чем он договорит.
+        const step = Math.min(i, REVEAL_STAGGER_MAX);
+        e.target.style.setProperty('--cm-reveal-delay', (step * REVEAL_STAGGER_MS) + 'ms');
+        // Ждём кадр: класс должен успеть примениться в спрятанном
+        // состоянии, иначе перехода не будет — элемент просто появится.
+        requestAnimationFrame(() => revealNow(e.target));
+      });
+    }, {
+      // 12% высоты элемента в кадре — проявление начинается, когда блок
+      // уже виден, но ещё не дочитан. rootMargin снизу отрицательный,
+      // чтобы карточка не «доезжала» проявленной из-за края экрана.
+      threshold: 0.12,
+      rootMargin: '0px 0px -8% 0px',
+    });
+    return revealObserver;
+  }
+
+  // Регистрирует элементы (NodeList, массив или селектор) на проявление.
+  // Вызывается и для статичной разметки, и после отрисовки карточек.
+  function cmReveal(target) {
+    if (REDUCED_MOTION.matches || !('IntersectionObserver' in window)) return;
+
+    const list = typeof target === 'string'
+      ? document.querySelectorAll(target)
+      : (target && target.length !== undefined ? target : [target]);
+
+    const obs = getRevealObserver();
+    let added = 0;
+    Array.prototype.forEach.call(list, (el) => {
+      if (!el || !el.nodeType || revealSeen.has(el)) return;
+      revealSeen.add(el);
+      el.classList.add('cm-reveal');
+      obs.observe(el);
+      added++;
+    });
+    if (!added) return;
+
+    if (revealSafety) clearTimeout(revealSafety);
+    revealSafety = setTimeout(cmRevealAll, REVEAL_SAFETY_MS);
+  }
+  window.cmReveal = cmReveal;
+  window.cmRevealAll = cmRevealAll;
+
+  // Настройку могли включить уже на открытой странице — тогда снимаем всё
+  // спрятанное сразу, а не оставляем человека ждать наблюдателя.
+  if (REDUCED_MOTION.addEventListener) {
+    REDUCED_MOTION.addEventListener('change', (e) => { if (e.matches) cmRevealAll(); });
+  }
+
+  // Статичная разметка регистрируется здесь же, синхронно, а не по
+  // DOMContentLoaded: common.js подключён последним тегом <body> на всех
+  // страницах, значит секции уже разобраны, а первый кадр ещё не показан.
+  // Из DOMContentLoaded скрытие пришло бы уже после отрисовки — блок успел
+  // бы моргнуть. Карточки, которых в разметке нет, регистрируют сами
+  // страницы после отрисовки (catalog.js, home.js, favorites.js).
+  cmReveal('[data-reveal]');
+
+  /* =====================
+     МИКРО-ОТКЛИК НА КЛИК (закладка «в избранное»)
+     =====================
+     Класс снимается по animationend, иначе второе нажатие не перезапустит
+     анимацию. Блок prefers-reduced-motion гасит длительность до 0.01ms, а
+     не в none, поэтому событие приходит и там; таймер — страховка на
+     случай, если анимации не будет вовсе. */
+  function cmBump(el) {
+    if (!el) return;
+    el.classList.remove('cm-bump');
+    // Перезапуск анимации требует кадра без класса — reflow даёт его сразу.
+    void el.offsetWidth;
+    el.classList.add('cm-bump');
+    const done = () => el.classList.remove('cm-bump');
+    el.addEventListener('animationend', done, { once: true });
+    setTimeout(done, 400);
+  }
+  window.cmBump = cmBump;
+
+  /* =====================
+     РАСКРЫТИЕ СВЁРНУТОГО БЛОКА
+     =====================
+     display анимировать нечем, поэтому проявление вешаем одноразовым
+     классом (@keyframes v2-reveal) — тем же, на котором стоит подробный
+     расчёт в калькуляторе. Вынесено сюда, чтобы «Уточнить» в каталоге и
+     подробный расчёт открывались одинаково, а не каждый по-своему. */
+  function cmRevealToggle(el) {
+    if (!el) return;
+    el.classList.add('is-revealing');
+    const done = () => el.classList.remove('is-revealing');
+    el.addEventListener('animationend', done, { once: true });
+    setTimeout(done, 400);
+  }
+  window.cmRevealToggle = cmRevealToggle;
+
   function initFavNav() {
     const countEl = document.getElementById('navFavCount');
     if (!countEl) return;

@@ -210,6 +210,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ================= RENDER ================= */
 
+  let revealedOnce = false;
+
   function render(list) {
     if (!list.length) {
       // Пустой список — не тупик: подсказываем, что делать дальше.
@@ -233,6 +235,14 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     } else {
       grid.innerHTML = list.map(cardHTML).join('');
+      // Лесенка проявления — только на первой выдаче. render() вызывается
+      // и на каждый символ в поиске: проявлять сетку заново на каждое
+      // нажатие клавиши значило бы держать выдачу в постоянном мерцании и
+      // не давать её прочитать. Дальше карточки просто меняются.
+      if (!revealedOnce) {
+        revealedOnce = true;
+        window.cmReveal?.(grid.querySelectorAll('.vp'));
+      }
     }
     const countEl = document.getElementById('resultsCount');
     if (countEl) countEl.textContent = list.length;
@@ -249,6 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.classList.toggle('active', nowFav);
     const icon = btn.querySelector('i');
     if (icon) icon.className = `fa-${nowFav ? 'solid' : 'regular'} fa-bookmark`;
+    window.cmBump?.(btn);
   });
 
   /* ================= SEO (ItemList) ================= */
@@ -363,6 +374,10 @@ document.addEventListener('DOMContentLoaded', () => {
     e.currentTarget.textContent = open
       ? (window.t ? window.t('task_less') : 'Скрыть уточнения')
       : (window.t ? window.t('task_more') : 'Уточнить: марка, колёсная формула, сортировка');
+    // Тот же жест, что у подробного расчёта в калькуляторе: поля
+    // проявляются, а не возникают. Высоту не тянем — под блоком лежит вся
+    // выдача, и двигать её 180 мс было бы хуже, чем не двигать вовсе.
+    if (open) window.cmRevealToggle?.(adv);
   });
 
   // Если выбранного типа нет в каталоге — прячем кнопку, чтобы не вести
