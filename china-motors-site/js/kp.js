@@ -241,6 +241,29 @@ document.addEventListener('DOMContentLoaded', () => {
     docEl.hidden = true;
     errorEl.hidden = false;
   }
+  
+  // ...
+  
+  async function generateKP(id) {
+    // 1. Подтягиваем свежий конфиг (курс валют и сборы)
+    await loadCalcConfig();
+  
+    // 2. Пересчитываем breakdown с новым курсом
+    if (LAST_CALC_BREAKDOWN) {
+      const freshRate = CALC_CONFIG.currency.usd_kzt;
+      LAST_CALC_BREAKDOWN.rate = freshRate;
+      LAST_CALC_BREAKDOWN.basePriceKZT = LAST_CALC_BREAKDOWN.priceUSD * freshRate;
+    }
+  
+    // 3. Отправляем на сервер для генерации PDF
+    const res = await fetch(`${API_BASE}/api/kp/${encodeURIComponent(id)}/pdf`, {
+      method: 'POST',
+      body: JSON.stringify(LAST_CALC_BREAKDOWN),
+      headers: { 'Content-Type': 'application/json' }
+    });
+  
+    // ...
+  }
 
   /* ================= ЗАГРУЗКА ================= */
 
