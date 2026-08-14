@@ -65,6 +65,13 @@
           <span class="kp__meta-label" data-i18n="kp_meta_date">ДАТА</span>
           <span class="kp__meta-value num" id="kpDate">—</span>
         </div>
+        <!-- Срок действия. Цена посчитана по курсу на дату выдачи, и
+             бессрочной быть не может — в бумажных КП компании эта строка
+             тоже есть. -->
+        <div class="kp__meta-item" id="kpValidWrap" hidden>
+          <span class="kp__meta-label" data-i18n="kp_meta_valid">ДЕЙСТВИТЕЛЬНО ДО</span>
+          <span class="kp__meta-value num" id="kpValid">—</span>
+        </div>
         <div class="kp__meta-item" id="kpBuyerWrap" hidden>
           <span class="kp__meta-label" data-i18n="kp_meta_buyer">ПОКУПАТЕЛЬ</span>
           <span class="kp__meta-value" id="kpBuyer">—</span>
@@ -77,14 +84,13 @@
            неравнозначных файлов нельзя прятать за один клик.
 
            Официальный (с печатью и подписью) собирает бэкенд — тот же
-           файл, что уходит письмом. Пока эндпоинта нет, кнопка стоит
-           выключенной с пометкой «скоро»: подменять её печатью страницы
-           значило бы отдать под видом подписанного документа неподписанный.
+           файл, что уходит письмом.
 
-           Заливку держит та кнопка, которая сейчас работает и является
-           предпочтительной. Пока официальной версии нет — это «как на
-           сайте»; когда бэкенд отдаст kp_pdf_url, kp.js передаст заливку
-           официальной, а эту переведёт в обводку. -->
+           Разметка ниже — состояние «бэкенд ещё не ответил»: кнопка с
+           подписью выключена. Как только придёт kp_pdf_url, kp.js включит
+           её, передаст ей заливку, а печать страницы переведёт в обводку.
+           Если url не придёт вовсе, подменять подписанный документ печатью
+           страницы нельзя — потому кнопка и остаётся выключенной. -->
       <div class="kp__actions" id="kpActions">
         <div class="kp__dl">
           <button type="button" class="v2-btn v2-btn--secondary is-disabled" id="kpDownloadSigned"
@@ -204,6 +210,20 @@
     <p class="kp__state-text" data-i18n="kp_loading">Готовим коммерческое предложение…</p>
   </div>
 
+  <!-- Курс валют недоступен. Отдельно от общей ошибки: сайт исправен, а
+       предложение не выпущено намеренно — цена в КП считается по живому
+       курсу НБ РК, и выдавать документ по выдуманному курсу нельзя. -->
+  <div class="v2-wrap kp__state" id="kpRates" hidden>
+    <div class="v2-empty">
+      <h2 class="v2-empty__title" data-i18n="kp_rates_t">Курс валют временно недоступен</h2>
+      <p id="kpRatesText" data-i18n="kp_rates_d">Цена в предложении считается по курсу Нацбанка на день выдачи. Пока курс не пришёл, документ не выпускается — попробуйте позже или позвоните, пришлём КП сами.</p>
+      <div class="v2-empty__actions">
+        <a class="v2-btn v2-btn--secondary num" href="tel:+77776133731">+7 777 613 37 31</a>
+        <a class="v2-btn v2-btn--secondary" href="catalog.html" data-i18n="kp_error_catalog">В КАТАЛОГ</a>
+      </div>
+    </div>
+  </div>
+
   <div class="v2-wrap kp__state" id="kpError" hidden>
     <div class="v2-empty v2-empty--error">
       <h2 class="v2-empty__title" data-i18n="kp_error_t">Не удалось собрать предложение</h2>
@@ -220,10 +240,6 @@
 <!-- scripts -->
 <script src="js/common.js"></script>
 <script src="js/auth.js"></script>
-<!-- Моковые данные КП. Живут отдельным файлом ровно для того, чтобы
-     подключение бэкенда было удалением одного <script> и одного ветвления
-     в kp.js: форма объекта здесь — это форма будущего ответа /api/kp/<id>/. -->
-<script src="js/kp-mock.js"></script>
 <script src="js/kp.js"></script>
 
 </body>
