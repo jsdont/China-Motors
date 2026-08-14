@@ -108,6 +108,10 @@ document.addEventListener('DOMContentLoaded', () => {
     render();
   }
 
+  // Отклика cmBump на закладке здесь нет намеренно: на этой странице
+  // нажатие означает «убрать», карточка сразу уезжает из сетки, и толчок
+  // играл бы на кнопке, которой в этот момент уже нет. Подтверждение
+  // действия даёт само исчезновение карточки.
   gridEl?.addEventListener('click', (e) => {
     const btn = e.target.closest('.vp__fav, .cm-card__fav-btn');
     if (!btn) return;

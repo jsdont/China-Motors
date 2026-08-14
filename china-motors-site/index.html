@@ -77,6 +77,55 @@
        «официальный договор / банк / документы» тоже снят — он дословно
        повторял секцию 04 «Почему это безопасно» ниже. -->
   <section class="hp-hero v2-hero fade-in">
+    <!-- Живой кадр площадки вместо статичной фотографии.
+
+         Фотография никуда не убрана: она осталась фоном самой секции
+         (.hp-hero в style-v2.css) и одновременно стоит здесь постером.
+         Видео лежит поверх неё прозрачным и проявляется только тогда,
+         когда реально пошло, — поэтому фотография работает и как заглушка
+         на время загрузки, и как запасной вариант сразу для всех случаев,
+         когда видео не будет: prefers-reduced-motion, медленный канал,
+         нет кодека, файл не отдался. Ни один из них не требует отдельной
+         обработки — на экране просто остаётся фото.
+
+         Адрес в poster ПОБУКВЕННО тот же, что в background у .hp-hero, и
+         это не косметика. Стоило добавить постеру преобразования
+         Cloudinary (f_auto,q_auto,w_1920) — и адрес переставал совпадать
+         с фоновым, браузер видел два разных ресурса и качал фотографию
+         героя дважды. Замер поймал это как +257 КБ на загрузку главной.
+         Меняются эти два адреса только вместе.
+
+         src здесь намеренно нет: адрес лежит в data-src и подставляется
+         скриптом ПОСЛЕ события load (см. initHeroVideo в js/home.js).
+         Атрибут src в разметке заставил бы браузер идти за метаданными в
+         одной очереди с фотографией героя, то есть с LCP-ресурсом
+         страницы. preload="metadata" (не "auto") ограничивает предзагрузку
+         заголовком файла — сами кадры браузер тянет уже по play().
+
+         muted обязателен: без него autoplay не разрешён ни в одном
+         браузере. playsinline — чтобы iOS не открывал видео на весь экран.
+
+         data-src ПУСТОЙ, и это не забытая строка. Самого кадра площадки в
+         репозитории пока нет: снять его может только тот, кто стоит на
+         площадке. Пустое значение скрипт понимает как «видео нет» — он
+         удаляет элемент, не делает ни одного запроса, и главная работает
+         ровно так же, как до этой правки. Включение — одна строка:
+
+             data-src="media/hero-loop.mp4"
+
+         Требования к файлу и команда, которой он готовится, лежат рядом
+         с местом, куда его класть: media/README.md. -->
+    <video
+      class="v2-hero__video"
+      data-src="media/hero-loop.mp4"
+      poster="https://res.cloudinary.com/dkita2qyq/image/upload/v1756128166/%D0%98%D0%B7%D0%BE%D0%B1%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5_WhatsApp_2025-05-27_%D0%B2_18.33.35_cbb88195_nxd0wv.jpg"
+      preload="metadata"
+      muted
+      loop
+      playsinline
+      disablepictureinpicture
+      aria-hidden="true"
+      tabindex="-1"></video>
     <div class="hp-hero-overlay v2-hero__scrim"></div>
     <div class="v2-hero__inner v2-wrap">
       <!-- Цифры живые: количество — из /api/vehicles/, курс — из /api/rates/.
@@ -167,28 +216,28 @@
     </div>
 
     <div class="v2-wrap hp-route__grid">
-      <a class="hp-route__step" href="catalog.html">
+      <a class="hp-route__step" data-reveal href="catalog.html">
         <div class="hp-route__n">01</div>
         <h3 data-i18n="route1_t">Посмотрите технику</h3>
         <p data-i18n="route1_d">В каталоге выберите, что вам нужно делать — возить песок, грузы или поднимать на стройке. Покажем подходящие машины.</p>
         <span class="hp-route__go" data-i18n="route1_go">Открыть каталог →</span>
       </a>
 
-      <a class="hp-route__step" href="calculator.html">
+      <a class="hp-route__step" data-reveal href="calculator.html">
         <div class="hp-route__n">02</div>
         <h3 data-i18n="route2_t">Узнайте цену «под ключ»</h3>
         <p data-i18n="route2_d">Калькулятор покажет итоговую сумму с растаможкой и доставкой. Не хотите считать — ответьте на три вопроса, посчитаем сами.</p>
         <span class="hp-route__go" data-i18n="route2_go">Рассчитать стоимость →</span>
       </a>
 
-      <a class="hp-route__step" href="contacts.html">
+      <a class="hp-route__step" data-reveal href="contacts.html">
         <div class="hp-route__n">03</div>
         <h3 data-i18n="route3_t">Оставьте заявку</h3>
         <p data-i18n="route3_d">Достаточно имени и телефона. Менеджер перезвонит, уточнит детали и пришлёт коммерческое предложение.</p>
         <span class="hp-route__go" data-i18n="route3_go">Оставить заявку →</span>
       </a>
 
-      <a class="hp-route__step" href="account.html">
+      <a class="hp-route__step" data-reveal href="account.html">
         <div class="hp-route__n">04</div>
         <h3 data-i18n="route4_t">Следите за сделкой</h3>
         <p data-i18n="route4_d">После заключения договора в личном кабинете видно, где сейчас ваша машина: оплата, доставка, таможня, выдача.</p>
@@ -205,7 +254,7 @@
        контенте сайта, а придумывать их — значит выдавать за обязательство
        компании то, чего она не заявляла. Появятся реальные — колонка
        добавляется одной строкой. -->
-  <section id="services" class="hp-services v2-sec fade-in">
+  <section id="services" class="hp-services v2-sec fade-in" data-reveal>
     <div class="v2-wrap">
       <div class="v2-rule v2-sec__rule">
         <span class="v2-rule__index">02</span>
@@ -262,7 +311,7 @@
        которая идёт на перегоне между двумя географическими точками, и
        привязывать каждую карточку к одному узлу значило бы придумать
        соответствие, которого в контенте нет. -->
-  <section class="hp-process v2-sec v2-sec--tight fade-in">
+  <section class="hp-process v2-sec v2-sec--tight fade-in" data-reveal>
     <div class="v2-wrap">
       <div class="v2-rule v2-sec__rule">
         <span class="v2-rule__index">03</span>
@@ -350,19 +399,19 @@
       <h2 class="v2-section-title" data-i18n="hp_trust_title">Деньги и документы под договором</h2>
     </div>
     <div class="v2-wrap hp-trust__grid">
-      <div class="hp-trust__item">
+      <div class="hp-trust__item" data-reveal>
         <h4 data-i18n="trust1_t">Официальный договор</h4>
         <p data-i18n="trust1_d">Все условия и сроки прописаны на бумаге. Никаких скрытых доплат.</p>
       </div>
-      <div class="hp-trust__item">
+      <div class="hp-trust__item" data-reveal>
         <h4 data-i18n="trust2_t">Оплата через банк</h4>
         <p data-i18n="trust2_d">Деньги идут на расчётный счёт компании по договору — не на карту частному лицу.</p>
       </div>
-      <div class="hp-trust__item">
+      <div class="hp-trust__item" data-reveal>
         <h4 data-i18n="trust3_t">Полный пакет документов</h4>
         <p data-i18n="trust3_d">ЭПТС, СБКТС и таможенные документы оформляем сами — вы получаете технику готовой к учёту.</p>
       </div>
-      <div class="hp-trust__item">
+      <div class="hp-trust__item" data-reveal>
         <h4 data-i18n="trust4_t">Живой менеджер</h4>
         <p data-i18n="trust4_d">Не нужно разбираться самому — позвоните, и мы подберём технику и посчитаем стоимость.</p>
       </div>
@@ -388,7 +437,7 @@
 
   <!-- ЧИСЛА. Цифры моно и табличные — как показания прибора, а не как
        рекламный баннер. Значения не тронуты. -->
-  <section class="hp-stats v2-sec fade-in">
+  <section class="hp-stats v2-sec fade-in" data-reveal>
     <div class="hp-stats-inner v2-wrap">
       <div class="v2-rule v2-sec__rule">
         <span class="v2-rule__index">06</span>
@@ -412,27 +461,27 @@
       <h2 class="v2-section-title" data-i18n="gallery_title">Галерея</h2>
       <div class="gallery-grid">
         <!-- карточки галереи — как было -->
-        <div class="card gallery-card">
+        <div class="card gallery-card" data-reveal>
           <img src="https://res.cloudinary.com/dkita2qyq/image/upload/f_auto,q_auto,w_600/v1756127944/%D0%98%D0%B7%D0%BE%D0%B1%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5_WhatsApp_2025-06-19_%D0%B2_13.42.41_b73e1123_ss0yyn.jpg" class="gallery-img" loading="lazy" decoding="async" alt="trailer">
           <p data-i18n="gallery_cap1">Прицепы</p>
         </div>
-        <div class="card gallery-card">
+        <div class="card gallery-card" data-reveal>
           <img src="https://res.cloudinary.com/dkita2qyq/image/upload/f_auto,q_auto,w_600/v1756127999/%D0%98%D0%B7%D0%BE%D0%B1%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5_WhatsApp_2025-05-27_%D0%B2_18.51.26_2b24706c_n8szas.jpg" class="gallery-img" loading="lazy" decoding="async" alt="semi">
           <p data-i18n="gallery_cap2">Полуприцепы</p>
         </div>
-        <div class="card gallery-card">
+        <div class="card gallery-card" data-reveal>
           <img src="https://res.cloudinary.com/dkita2qyq/image/upload/f_auto,q_auto,w_600/v1756128059/%D0%98%D0%B7%D0%BE%D0%B1%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5_WhatsApp_2025-05-27_%D0%B2_18.43.12_99175c1b_voqpx6.jpg" class="gallery-img" loading="lazy" decoding="async" alt="tral">
           <p data-i18n="gallery_cap3">Тралы</p>
         </div>
-        <div class="card gallery-card">
+        <div class="card gallery-card" data-reveal>
           <img src="https://res.cloudinary.com/dkita2qyq/image/upload/f_auto,q_auto,w_600/v1756128154/%D0%98%D0%B7%D0%BE%D0%B1%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5_WhatsApp_2025-05-27_%D0%B2_18.33.43_8420c0d2_sgnoip.jpg" class="gallery-img" loading="lazy" decoding="async" alt="dump">
           <p data-i18n="gallery_cap4">Самосвалы</p>
         </div>
-        <div class="card gallery-card">
+        <div class="card gallery-card" data-reveal>
           <img src="https://res.cloudinary.com/dkita2qyq/image/upload/f_auto,q_auto,w_600/v1756128035/%D0%98%D0%97%D0%BE%D0%B1%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5_WhatsApp_2025-05-27_%D0%B2_18.44.42_7445727d_drndzs.jpg" class="gallery-img" loading="lazy" decoding="async" alt="truck">
           <p data-i18n="gallery_cap5">Тягачи</p>
         </div>
-        <div class="card gallery-card">
+        <div class="card gallery-card" data-reveal>
           <img src="https://res.cloudinary.com/dkita2qyq/image/upload/f_auto,q_auto,w_600/v1756128032/%D0%98%D0%B7%D0%BE%D0%B1%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5_WhatsApp_2025-05-27_%D0%B2_18.44.46_30e2e092_sxxiuc.jpg" class="gallery-img" loading="lazy" decoding="async" alt="spec">
           <p data-i18n="gallery_cap6">Спецтехника</p>
         </div>
@@ -449,7 +498,7 @@
       </div>
       <h2 class="v2-section-title" data-i18n="reviews_title">Отзывы</h2>
       <div class="reviews-grid">
-        <div class="review-card">
+        <div class="review-card" data-reveal>
           <iframe 
             width="100%" height="300" 
             src="https://www.youtube.com/embed/6uJ8pl_B6HQ"
@@ -460,7 +509,7 @@
           </iframe>
           <p data-i18n="reviews_title3" class="review-caption">Отзыв клиента о доставке тягача</p>
         </div>
-        <div class="review-card">
+        <div class="review-card" data-reveal>
         <iframe 
           width="100%" height="300" 
           src="https://www.youtube.com/embed/NnMjSAFoZxo"
@@ -471,7 +520,7 @@
         </iframe>
         <p data-i18n="reviews_title3" class="review-caption">Отзыв клиента о доставке тягача</p>
         </div>
-        <div class="review-card">
+        <div class="review-card" data-reveal>
         <iframe 
           width="100%" height="300"
           src="https://www.youtube.com/embed/PInZTKN5JQ4"
@@ -482,7 +531,7 @@
         </iframe>
         <p data-i18n="reviews_title3" class="review-caption">Отзыв клиента о доставке тягача</p>
         </div>
-        <div class="review-card">
+        <div class="review-card" data-reveal>
         <iframe 
           width="100%" height="300"
           src="https://www.youtube.com/embed/C9zc_PfWywc"
@@ -494,18 +543,29 @@
         <p data-i18n="reviews_title3" class="review-caption">Отзыв клиента о доставке тягача</p>
         </div>
         <!-- Image Review Card -->
-        <div class="review-card">
+        <div class="review-card" data-reveal>
           <img src="https://res.cloudinary.com/dkita2qyq/image/upload/f_auto,q_auto,w_600/v1756127980/%D0%98%D0%B7%D0%BE%D0%B1%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5_WhatsApp_2025-05-28_%D0%B2_17.16.01_d2a1c43b_jjja5b.jpg" loading="lazy" decoding="async" alt="Счастливый клиент с машиной" class="review-img">
           <p  data-i18n="reviews_title2" class="review-caption">Клиент с новым автомобилем</p>
         </div>
         <!-- Another Image Review Card -->
-        <div class="review-card">
+        <div class="review-card" data-reveal>
           <img src="https://res.cloudinary.com/dkita2qyq/image/upload/f_auto,q_auto,w_600/v1756127981/%D0%98%D0%B7%D0%BE%D0%B1%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5_WhatsApp_2025-05-28_%D0%B2_17.13.35_e5e328c3_kwvrrx.jpg" loading="lazy" decoding="async" alt="Техника на складе" class="review-img">
           <p data-i18n="reviews_title1" class="review-caption">Техника у клиента</p>
         </div>
-        <div class="review-card">
+        <div class="review-card" data-reveal>
           <img src="https://res.cloudinary.com/dkita2qyq/image/upload/f_auto,q_auto,w_600/v1756127983/%D0%98%D0%B7%D0%BE%D0%B1%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5_WhatsApp_2025-05-28_%D0%B2_17.13.32_e22d1fe3_xhpt6a.jpg" loading="lazy" decoding="async" alt="Техника на складе" class="review-img">
           <p data-i18n="reviews_title1" class="review-caption">Техника у клиента</p>
+        </div>
+        <div class="review-card" data-reveal>
+        <iframe 
+          width="100%" height="300"
+          src="https://www.youtube.com/embed/0MKYYHxZSAA"
+          title="Отзыв клиента о доставке тягача"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+        <p data-i18n="reviews_title3" class="review-caption">Отзыв клиента о доставке тягача</p>
         </div>
       </div>
       <!-- Закрывающий шаг. Кнопка вторичная: единственный primary страницы

@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
   btnFav?.addEventListener('click', () => {
     window.CMFavorites?.toggleFavorite(id);
     syncFavBtn();
+    window.cmBump?.(btnFav);
   });
   const extraCardEl = document.getElementById('extraInfo');
   const extraEl = document.getElementById('extraInfoText');

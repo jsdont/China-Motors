@@ -1004,15 +1004,10 @@
       toggle.textContent = showDetailed ? t('scalc_hide_detailed') : t('scalc_show_detailed');
       if (showDetailed) {
         // display анимировать нечем, поэтому проявление вешаем одноразовым
-        // классом (@keyframes v2-reveal). Класс снимаем по animationend, иначе
-        // второе раскрытие не перезапустит анимацию. При prefers-reduced-motion
-        // блок в конце style-v2.css гасит длительность до 0.01ms, а не в none,
-        // поэтому animationend приходит сразу и класс снимается там же.
-        // Таймер — страховка на случай, если анимации не будет вовсе.
-        grid.classList.add('is-revealing');
-        const done = () => grid.classList.remove('is-revealing');
-        grid.addEventListener('animationend', done, { once: true });
-        setTimeout(done, 400);
+        // классом (@keyframes v2-reveal). Логика снятия класса переехала в
+        // cmRevealToggle (common.js) — тем же жестом открывается «Уточнить»
+        // в каталоге, и держать две копии одного поведения незачем.
+        window.cmRevealToggle?.(grid);
         recalc();
         if (window.cmScrollIntoView) window.cmScrollIntoView(grid, { block: 'start' });
         else grid.scrollIntoView({ behavior: 'smooth', block: 'start' });

@@ -78,37 +78,6 @@
         </div>
       </div>
 
-      <!-- Скачать можно двумя разными документами, и разница между ними не
-           косметическая, поэтому это две отдельные кнопки с подписями под
-           ними, а не одна кнопка с выпадающим списком: выбор из двух
-           неравнозначных файлов нельзя прятать за один клик.
-
-           Официальный (с печатью и подписью) собирает бэкенд — тот же
-           файл, что уходит письмом.
-
-           Разметка ниже — состояние «бэкенд ещё не ответил»: кнопка с
-           подписью выключена. Как только придёт kp_pdf_url, kp.js включит
-           её, передаст ей заливку, а печать страницы переведёт в обводку.
-           Если url не придёт вовсе, подменять подписанный документ печатью
-           страницы нельзя — потому кнопка и остаётся выключенной. -->
-      <div class="kp__actions" id="kpActions">
-        <div class="kp__dl">
-          <button type="button" class="v2-btn v2-btn--secondary is-disabled" id="kpDownloadSigned"
-                  disabled aria-describedby="kpDownloadSignedNote" data-i18n="kp_download_signed">СКАЧАТЬ С ПОДПИСЬЮ</button>
-          <span class="kp__dl-note" id="kpDownloadSignedNote" data-i18n="kp_download_signed_note">с печатью компании · скоро</span>
-        </div>
-
-        <div class="kp__dl">
-          <button type="button" class="v2-btn v2-btn--primary" id="kpDownloadPage"
-                  aria-describedby="kpDownloadPageNote" data-i18n="kp_download_page">СКАЧАТЬ КАК НА САЙТЕ</button>
-          <span class="kp__dl-note" id="kpDownloadPageNote" data-i18n="kp_download_page_note">эта страница, без печати</span>
-        </div>
-
-        <div class="kp__dl">
-          <button type="button" class="v2-btn v2-btn--secondary" id="kpShare" data-i18n="kp_share">ПОДЕЛИТЬСЯ</button>
-          <span class="kp__toast" id="kpToast" role="status" aria-live="polite"></span>
-        </div>
-      </div>
     </section>
 
     <!-- ПРОДАВЕЦ -->
@@ -193,9 +162,41 @@
       <p class="kp__service" id="kpService"></p>
     </section>
 
-    <!-- ПОДВАЛ ДОКУМЕНТА: связаться с человеком. Кнопки обводкой — ведут
-         дальше по сайту, а не совершают действие этой страницы. -->
+    <!-- ПОДВАЛ ДОКУМЕНТА: сначала действия с самим КП, потом связаться с
+         человеком. Кнопки телефона и «написать менеджеру» — обводкой: они
+         ведут дальше по сайту, а не совершают действие этой страницы. -->
     <section class="kp__foot fade-in">
+      <!-- Скачать можно двумя разными документами, и разница между ними не
+           косметическая, поэтому это две отдельные кнопки с подписями под
+           ними, а не одна кнопка с выпадающим списком: выбор из двух
+           неравнозначных файлов нельзя прятать за один клик.
+
+           Официальный (с печатью и подписью) собирает бэкенд — тот же файл,
+           что уходит письмом.
+
+           Разметка ниже — состояние «бэкенд ещё не ответил»: кнопка с
+           подписью выключена. Как только придёт kp_pdf_url, kp.js включит
+           её, передаст ей заливку, а печать страницы переведёт в обводку.
+           Если url не придёт вовсе, подменять подписанный документ печатью
+           страницы нельзя — потому кнопка и остаётся выключенной. -->
+      <div class="kp__actions" id="kpActions">
+        <div class="kp__dl">
+          <button type="button" class="v2-btn v2-btn--secondary is-disabled" id="kpDownloadSigned"
+                  disabled aria-describedby="kpDownloadSignedNote" data-i18n="kp_download_signed">СКАЧАТЬ С ПОДПИСЬЮ</button>
+          <span class="kp__dl-note" id="kpDownloadSignedNote" data-i18n="kp_download_signed_note">с печатью компании · скоро</span>
+        </div>
+
+        <div class="kp__dl">
+          <button type="button" class="v2-btn v2-btn--primary" id="kpDownloadPage"
+                  aria-describedby="kpDownloadPageNote" data-i18n="kp_download_page">СКАЧАТЬ КАК НА САЙТЕ</button>
+          <span class="kp__dl-note" id="kpDownloadPageNote" data-i18n="kp_download_page_note">эта страница, без печати</span>
+        </div>
+
+        <div class="kp__dl">
+          <button type="button" class="v2-btn v2-btn--secondary" id="kpShare" data-i18n="kp_share">ПОДЕЛИТЬСЯ</button>
+          <span class="kp__toast" id="kpToast" role="status" aria-live="polite"></span>
+        </div>
+      </div>
       <p class="kp__foot-note" data-i18n="kp_foot_note">Вопросы по предложению — позвоните или напишите, ответим по этому же КП.</p>
       <div class="kp__foot-actions">
         <a class="v2-btn v2-btn--secondary num" href="tel:+77776133731">+7 777 613 37 31</a>
