@@ -45,6 +45,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const fmtNum = (n) =>
     (n === null || n === undefined || n === '') ? '—' : nf.format(Math.round(n)).replace(/\s/g, ' ');
 
+  // Цена в валюте — с копейками, если они есть. Доллары человек сравнивает
+  // с полем калькулятора, где стоит ровно два знака (toFixed(2)); округли мы
+  // здесь до целых, вышло бы «44 326» против «44 326.36», и это читалось бы
+  // как очередное расхождение цен. В тенге копеек нет по смыслу.
+  const fmtPrice = (n) => {
+    if (n === null || n === undefined || n === '') return '\u2014';
+    const kopecks = Math.round(n * 100) % 100 !== 0 ? 2 : 0;
+    return new Intl.NumberFormat('ru-RU', {
+      minimumFractionDigits: kopecks,
+      maximumFractionDigits: kopecks,
+    }).format(n).replace(/\s/g, '\u00a0');
+  };
+
   function fmtDate(iso) {
     const d = new Date(iso);
     if (Number.isNaN(d.getTime())) return iso || '—';
@@ -100,8 +113,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (v.extra_info) { extra.textContent = v.extra_info; extra.hidden = false; }
 
     $('#kpQty').textContent = kp.quantity ?? 1;
-    $('#kpPriceUsd').textContent = kp.price?.usd ? fmtNum(kp.price.usd) : tr('kp_on_request', 'по запросу');
-    $('#kpPriceCny').textContent = kp.price?.cny ? fmtNum(kp.price.cny) : '—';
+    $('#kpPriceUsd').textContent = kp.price?.usd ? fmtPrice(kp.price.usd) : tr('kp_on_request', 'по запросу');
+    $('#kpPriceCny').textContent = kp.price?.cny ? fmtPrice(kp.price.cny) : '—';
     $('#kpPriceKzt').textContent = kp.price?.kzt_total ? fmtKzt(kp.price.kzt_total) : tr('kp_on_request', 'по запросу');
 
     const avail = $('#kpAvailability');
@@ -168,6 +181,13 @@ document.addEventListener('DOMContentLoaded', () => {
     $('#kpTitle').textContent = title;
     $('#kpNumber').textContent = kp.number || '—';
     $('#kpDate').textContent = fmtDate(kp.date);
+
+    // Срок действия: цена заморожена по курсу на дату выдачи, и документ
+    // честно говорит, до какого числа он в силе.
+    if (kp.valid_until) {
+      $('#kpValid').textContent = fmtDate(kp.valid_until);
+      $('#kpValidWrap').hidden = false;
+    }
 
     if (kp.buyer_name) {
       $('#kpBuyer').textContent = kp.buyer_name;
@@ -242,41 +262,63 @@ document.addEventListener('DOMContentLoaded', () => {
     errorEl.hidden = false;
   }
 
+  // Отдельное состояние для «курс недоступен»: причина внешняя и временная,
+  // и текст должен это говорить, а не сваливать всё в «не удалось собрать».
+  function showRatesUnavailable(detail) {
+    loadingEl.hidden = true;
+    docEl.hidden = true;
+    const box = $('#kpRates');
+    if (!box) { showError(); return; }
+    if (detail) {
+      const p = $('#kpRatesText');
+      if (p) p.textContent = detail;
+    }
+    box.hidden = false;
+  }
+
   /* ================= ЗАГРУЗКА ================= */
 
+  // Единственный источник данных — /api/kp/<id>/. Моковая ветка удалена
+  // вместе с js/kp-mock.js: она собирала КП на зашитом курсе, то есть
+  // делала ровно то, от чего бэкенд теперь отказывается намеренно —
+  // называла цену, которую никто не подтверждал. Пока бэкенда не было,
+  // это была честная заглушка; рядом с работающим эндпоинтом это второй
+  // источник истины, а он здесь запрещён.
   async function loadKP() {
     if (!id) { showError(); return; }
 
-    // --- Ветка на время отсутствия бэкенда -------------------------------
-    // Когда /api/kp/<id>/ появится, остаётся только первый запрос: убрать
-    // catch с моком и <script src="js/kp-mock.js"> из kp.html.
+    let res;
     try {
-      const res = await fetch(`${API_BASE}/api/kp/${encodeURIComponent(id)}/`, {
+      res = await fetch(`${API_BASE}/api/kp/${encodeURIComponent(id)}/`, {
         headers: { Accept: 'application/json' }
       });
-      if (res.ok) {
-        render(await res.json());
-        return;
-      }
-      if (res.status !== 404) throw new Error('HTTP ' + res.status);
     } catch (e) {
-      // Сети нет или эндпоинта ещё нет — идём в мок ниже.
-      console.info('KP endpoint unavailable, falling back to mock:', e?.message || e);
-    }
-
-    if (!window.CMKPMock) { showError(); return; }
-
-    try {
-      const res = await fetch(`${API_BASE}/api/vehicles/${encodeURIComponent(id)}/`, {
-        headers: { Accept: 'application/json' }
-      });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      render(window.CMKPMock.buildFromVehicle(await res.json()));
-    } catch (e) {
-      console.error(e);
+      console.error('KP request failed:', e);
       showError();
+      return;
     }
-    // --- /Ветка на время отсутствия бэкенда ------------------------------
+
+    if (res.ok) {
+      try {
+        render(await res.json());
+      } catch (e) {
+        console.error(e);
+        showError();
+      }
+      return;
+    }
+
+    // 503 — курс валют недоступен, и предложение сознательно не выпущено.
+    // Это не поломка, и показывать общий экран ошибки здесь неправильно:
+    // человеку нужно понять, что цена появится позже, а не что сайт сломан.
+    if (res.status === 503) {
+      let detail = '';
+      try { detail = (await res.json()).detail || ''; } catch (_) {}
+      showRatesUnavailable(detail);
+      return;
+    }
+
+    showError();
   }
 
   /* ================= ДЕЙСТВИЯ ================= */
